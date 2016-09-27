@@ -11,6 +11,29 @@ var Remote = {
         }
     },
 
+    hasClass: function(element, name) {
+        return (' ' + element.className + ' ').indexOf(' ' + name + ' ') > -1;
+    },
+
+    loadEditButtons: function() {
+        var self = this;
+
+        var buttons = document.getElementsByClassName("edit-button");
+        for (var i = 0; i < buttons.length; i++) {
+            console.log(buttons[i]);
+            buttons[i].addEventListener("click", function (event) {
+                if (self.hasClass(event.currentTarget, 'hidden-on-mirror'))
+                {
+                    self.getWithStatus("action=SHOW&module=" + event.currentTarget.id);
+                    event.currentTarget.className = event.currentTarget.className.replace("hidden-on-mirror", 'shown-on-mirror');
+                } else {
+                    self.getWithStatus("action=HIDE&module=" + event.currentTarget.id);
+                    event.currentTarget.className = event.currentTarget.className.replace("shown-on-mirror", 'hidden-on-mirror');
+                }
+            }, false);
+        }
+    },
+
     showMenu: function(newMenu) {
         var allMenus = document.getElementsByClassName("menu-button");
 
@@ -27,6 +50,8 @@ var Remote = {
 
             button.style.display = '';
         }
+
+        this.setStatus('none');
     },
 
     setStatus: function(status) {
@@ -44,6 +69,24 @@ var Remote = {
         {
             currentInfo.style.display = '';
         }
+    },
+
+    getWithStatus: function(params, callback) {
+        var self = this;
+
+        self.setStatus('loading');
+        self.get(params, function (response) {
+            if (callback) {
+                callback(response);
+            } else {
+                var result = JSON.parse(response);
+                if (result.status === "success") {
+                    self.setStatus('success');
+                } else {
+                    self.setStatus('error');
+                }
+            }
+        });
     },
 
     get: function(params, callback) {
@@ -72,7 +115,7 @@ var buttons = {
         window.location.hash = 'power-menu';
     },
     'edit-button': function () {
-        window.location.hash = 'module-menu';
+        window.location.hash = 'edit-menu';
     },
     'back-button': function () {
         window.location.hash = 'main-menu';
@@ -80,20 +123,15 @@ var buttons = {
     
     // power menu buttons
     'shut-down-button': function () {
-        Remote.setStatus('loading');
-        Remote.get("action=SHUTDOWN", function (){
-            Remote.setStatus('success');
-        });
+        Remote.getWithStatus("action=SHUTDOWN");
     },
     'restart-button': function () {
-        Remote.setStatus('loading');
-        Remote.get("action=REBOOT", function (){
-            Remote.setStatus('success');
-        });
+        Remote.getWithStatus("action=REBOOT");
     }
 }
 
 Remote.loadButtons(buttons);
+Remote.loadEditButtons();
 
 Remote.setStatus('none');
 

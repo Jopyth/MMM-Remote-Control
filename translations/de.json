@@ -1,0 +1,11 @@
+{
+    "TITLE": "Magic Mirror Menu",
+    "SHUTDOWN_MENU_NAME": "Ausschalten",
+    "EDIT_MENU_NAME": "Editieren",
+    "SHUTDOWN": "Ausschalten",
+    "RESTART": "Neu starten",
+    "BACK": "Zurück",
+    "ERROR": "Fehler!",
+    "LOADING": "Lade &hellip;",
+    "DONE": "Fertig."
+}

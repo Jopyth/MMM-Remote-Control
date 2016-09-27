@@ -1,0 +1,15 @@
+body {
+  overflow-y:scroll
+}
+
+.result {
+  border-top: 1px solid #666;
+}
+
+.hidden-on-mirror > .symbol-on-show {
+    display: none;
+}
+
+.shown-on-mirror > .symbol-on-hide {
+    display: none;
+}

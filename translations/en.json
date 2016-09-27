@@ -1,0 +1,11 @@
+{
+    "TITLE": "Magic Mirror Menu",
+    "SHUTDOWN_MENU_NAME": "Power",
+    "EDIT_MENU_NAME": "Edit modules",
+    "SHUTDOWN": "Shutdown",
+    "RESTART": "Restart",
+    "BACK": "Back",
+    "ERROR": "Error!",
+    "LOADING": "Loading &hellip;",
+    "DONE": "Done."
+}

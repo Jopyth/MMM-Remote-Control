@@ -1,59 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Magic Mirror Remote</title>
+	<title>%%TRANSLATE:TITLE%%</title>
 	<meta name="google" content="notranslate" />
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="fonts/roboto.css">
     <link rel="stylesheet" type="text/css" href="vendor/font-awesome-4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/MMM-Remote-Control/remote.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
 <div class="container">
     <div id="module_1_MMM-Remote-Control" class="module">
-        <div class="header">Magic Mirror Menu</div>
+        <div class="header">%%TRANSLATE:TITLE%%</div>
         <div class="module-content">
             <div class="menu normal">
                 <!-- main menu -->
                 <div id="power-button" class="menu-button main-menu">
                     <span class="fa fa-power-off" aria-hidden="true"></span>
-                    <span class="text">Ausschalten</span>
+                    <span class="text">%%TRANSLATE:SHUTDOWN_MENU_NAME%%</span>
                 </div>
                 <div id="edit-button" class="menu-button main-menu">
                     <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
-                    <span class="text">Editieren</span>
+                    <span class="text">%%TRANSLATE:EDIT_MENU_NAME%%</span>
                 </div>
 
                 <!-- power menu -->
                 <div id="shut-down-button" class="menu-button power-menu">
                     <span class="fa fa-power-off" aria-hidden="true"></span>
-                    <span class="text">Herunterfahren</span>
+                    <span class="text">%%TRANSLATE:SHUTDOWN%%</span>
                 </div>
                 <div id="restart-button" class="menu-button power-menu">
                     <span class="fa fa-refresh" aria-hidden="true"></span>
-                    <span class="text">Neu starten</span>
+                    <span class="text">%%TRANSLATE:RESTART%%</span>
                 </div>
 
+                <!-- edit menu (created dynamically) -->
+                <!-- EDIT_MENU_TEMPLATE -->
+
                 <!-- general back button -->
-                <div id="back-button" class="menu-button power-menu module-menu">
+                <div id="back-button" class="menu-button power-menu edit-menu">
                     <span class="fa fa-arrow-left" aria-hidden="true"></span>
-                    <span class="text">Zurück</span>
+                    <span class="text">%%TRANSLATE:BACK%%</span>
                 </div>
             </div>
             <div class="result">
                 <div id="loading" class="status-indicator">
                     <span class="fa fa-spinner fa-pulse fa-fw"></span>
-                    <span class="text">Lade...</span>
+                    <span class="text">%%TRANSLATE:LOADING%%</span>
                 </div>
                 <div id="error" class="status-indicator">
                     <span class="fa fa-exclamation-circle"></span>
-                    <span class="text">Fehler!</span>
+                    <span class="text">%%TRANSLATE:ERROR%%</span>
                 </div>
                 <div id="success" class="status-indicator">
                     <span class="fa fa-check-circle"></span>
-                    <span class="text">Fertig!</span>
+                    <span class="text">%%TRANSLATE:DONE%%</span>
                 </div>
             </div>
         </div>
