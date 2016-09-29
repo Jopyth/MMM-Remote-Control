@@ -33,7 +33,10 @@ Module.register("MMM-Remote-Control", {
 	socketNotificationReceived: function(notification, payload) {
 		if (notification === "IP_ADDRESSES") {
 			this.addresses = payload;
-			this.updateDom();
+			if (this.config.position)
+			{
+				this.updateDom();
+			}
 		}
 		if (notification === "UPDATE") {
 			this.sendModuleData();
