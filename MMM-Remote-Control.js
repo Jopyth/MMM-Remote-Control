@@ -18,6 +18,8 @@ Module.register("MMM-Remote-Control", {
 	start: function() {
 		Log.info("Starting module: " + this.name);
 
+		this.addresses = [];
+
 		this.sendSocketNotification("LANG", config.language);
 	},
 
@@ -29,6 +31,10 @@ Module.register("MMM-Remote-Control", {
 
 	// Override socket notification handler.
 	socketNotificationReceived: function(notification, payload) {
+		if (notification === "IP_ADDRESSES") {
+			this.addresses = payload;
+			this.updateDom();
+		}
 		if (notification === "UPDATE") {
 			this.sendModuleData();
 		}
@@ -45,6 +51,24 @@ Module.register("MMM-Remote-Control", {
 			}
 			this.sendModuleData();
 		}
+	},
+
+	// Override required translations.
+	getTranslations: function() {
+		return {
+			en: "translations/en.json",
+			de: "translations/de.json",
+		};
+	},
+
+	getDom: function() {
+		var wrapper = document.createElement("div");
+		if (this.addresses.length === 0) {
+			this.addresses = ["ip-of-your-mirror"];
+		}
+		wrapper.innerHTML = "http://" + this.addresses[0] + ":8080/remote.html";
+		wrapper.className = "normal xsmall";
+		return wrapper;
 	},
 
 	sendModuleData: function() {
