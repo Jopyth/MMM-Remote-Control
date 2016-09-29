@@ -1,5 +1,13 @@
+html {
+  cursor: auto;
+}
+
 body {
-  overflow-y:scroll
+  overflow-y: scroll;
+}
+
+.menu-button {
+  cursor: pointer;
 }
 
 .result {

@@ -11,7 +11,7 @@ Module.register("MMM-Remote-Control", {
 
 	// Default module config.
 	defaults: {
-		// updateInterval: 10 * 1000, // every 10 seconds
+		// no config options at the moment
 	},
 
 	// Define start sequence.
@@ -52,7 +52,6 @@ Module.register("MMM-Remote-Control", {
 		var moduleData = [];
 		for (var i = 0; i < modules.length; i++) {
 			moduleData.push({});
-			console.log(modules[i]);
 			moduleData[i]["hidden"] = modules[i].hidden;
 			moduleData[i]["name"] = modules[i].name;
 			moduleData[i]["identifier"] = modules[i].identifier;
