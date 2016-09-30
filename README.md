@@ -26,7 +26,7 @@ git clone https://github.com/Jopyth/MMM-Remote-Control.git
 },
 ````
 
-3. Access the remote interface on (http://<ip address of your mirror>:8080/remote.html)[http://<ip address of your mirror>:8080/remote.html].
+3. Access the remote interface on [http://ip.of.your.mirror:8080/remote.html](http://ip.of.your.mirror:8080/remote.html).
 
 4. If you are not running with `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
 
