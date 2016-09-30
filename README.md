@@ -11,24 +11,24 @@ Additionally you can hide and show modules on your mirror.
 
 ## Installation
 
-1. Clone this repository in your `MagicMirror/modules` folder:
+- (1) Clone this repository in your `MagicMirror/modules` folder:
 ```bash
 git clone https://github.com/Jopyth/MMM-Remote-Control.git
 ```
 
-2. Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
+- (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
 ````javascript
 {
     module: 'MMM-Remote-Control'
     // uncomment the following line to show the URL of the remote control on the mirror
-    // you can hide this module afterwards from the remote control itself
     // , position: 'bottom_left'
+    // you can hide this module afterwards from the remote control itself
 },
 ````
 
-3. Access the remote interface on [http://ip.of.your.mirror:8080/remote.html](http://ip.of.your.mirror:8080/remote.html).
+- (3) Access the remote interface on [http://ip.of.your.mirror:8080/remote.html](http://ip.of.your.mirror:8080/remote.html).
 
-4. If you are not running with `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
+- (4) If you are not running with `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
 
 The MIT License (MIT)
 =====================
