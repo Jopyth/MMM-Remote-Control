@@ -51,6 +51,24 @@ module.exports = NodeHelper.create({
 					exec('sudo shutdown -r now', function(error, stdout, stderr){ callback(stdout); });
 					return;
 				}
+				if (query.action === 'RESTART')
+				{
+					res.send({'status': 'success'});
+					exec('pm2 restart mm', function(error, stdout, stderr){ callback(stdout); });
+					return;
+				}
+				if (query.action === 'MONITORON')
+				{
+					res.send({'status': 'success'});
+					exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', function(error, stdout, stderr){ callback(stdout); });
+					return;
+				}
+				if (query.action === 'MONITOROFF')
+				{
+					res.send({'status': 'success'});
+					exec('/opt/vc/bin/tvservice -o', function(error, stdout, stderr){ callback(stdout); });
+					return;
+				}
 				if (query.action === 'HIDE' || query.action === 'SHOW')
 				{
 					self.sendSocketNotification(query.action, query.module);

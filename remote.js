@@ -127,6 +127,15 @@ var buttons = {
     },
     'restart-button': function () {
         Remote.getWithStatus("action=REBOOT");
+    },
+    'restart-mm-button': function () {
+        Remote.getWithStatus("action=RESTART");
+    },
+    'monitor-on-button': function () {
+        Remote.getWithStatus("action=MONITORON");
+    },
+    'monitor-off-button': function () {
+        Remote.getWithStatus("action=MONITOROFF");
     }
 }
 
