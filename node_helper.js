@@ -60,7 +60,7 @@ module.exports = NodeHelper.create({
 				if (query.action === 'MONITORON')
 				{
 					res.send({'status': 'success'});
-					exec('/opt/vc/bin/tvservice -p', function(error, stdout, stderr){ callback(stdout); });
+					exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', function(error, stdout, stderr){ callback(stdout); });
 					return;
 				}
 				if (query.action === 'MONITOROFF')
