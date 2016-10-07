@@ -19,7 +19,7 @@ module.exports = NodeHelper.create({
 		console.log("Starting node helper for: " + self.name);
 
 		// load fall back translation
-		self.loadTranslation("de");
+		self.loadTranslation("en");
 
 		this.expressApp.get("/remote.html", function(req, res) {
 			fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
