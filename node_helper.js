@@ -19,7 +19,7 @@ module.exports = NodeHelper.create({
 		console.log("Starting node helper for: " + self.name);
 
 		// load fall back translation
-		self.loadTranslation("en");
+		self.loadTranslation("de");
 
 		this.expressApp.get("/remote.html", function(req, res) {
 			fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
@@ -49,6 +49,24 @@ module.exports = NodeHelper.create({
 				{
 					res.send({'status': 'success'});
 					exec('sudo shutdown -r now', function(error, stdout, stderr){ callback(stdout); });
+					return;
+				}
+				if (query.action === 'RESTART')
+				{
+					res.send({'status': 'success'});
+					exec('pm2 restart mm', function(error, stdout, stderr){ callback(stdout); });
+					return;
+				}
+				if (query.action === 'MONITORON')
+				{
+					res.send({'status': 'success'});
+					exec('/opt/vc/bin/tvservice -p', function(error, stdout, stderr){ callback(stdout); });
+					return;
+				}
+				if (query.action === 'MONITOROFF')
+				{
+					res.send({'status': 'success'});
+					exec('/opt/vc/bin/tvservice -o', function(error, stdout, stderr){ callback(stdout); });
 					return;
 				}
 				if (query.action === 'HIDE' || query.action === 'SHOW')
