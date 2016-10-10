@@ -1,6 +1,6 @@
-# [Magic Mirror²](https://github.com/MichMich/MagicMirror) Module: Remote control
+# Magic Mirror Module: Remote Control
 
-This module allows you to quickly shutdown your mirror through a web browser.
+This module for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
 Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug everytime, am I right?
 Additionally you can hide and show modules on your mirror.
