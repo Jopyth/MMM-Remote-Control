@@ -42,37 +42,37 @@ module.exports = NodeHelper.create({
 				if (query.action === 'SHUTDOWN')
 				{
 					res.send({'status': 'success'});
-					exec('sudo shutdown -h now', function(error, stdout, stderr){ callback(stdout); });
+					exec('sudo shutdown -h now', function(error, stdout, stderr){ console.log(stdout); });
 					return;
 				}
 				if (query.action === 'REBOOT')
 				{
 					res.send({'status': 'success'});
-					exec('sudo shutdown -r now', function(error, stdout, stderr){ callback(stdout); });
+					exec('sudo shutdown -r now', function(error, stdout, stderr){ console.log(stdout); });
 					return;
 				}
 				if (query.action === 'RESTART')
 				{
 					res.send({'status': 'success'});
-					exec('pm2 restart mm', function(error, stdout, stderr){ callback(stdout); });
+					exec('pm2 restart mm', function(error, stdout, stderr){ console.log(stdout); });
 					return;
 				}
 				if (query.action === 'MONITORON')
 				{
 					res.send({'status': 'success'});
-					exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', function(error, stdout, stderr){ callback(stdout); });
+					exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', function(error, stdout, stderr){ console.log(stdout); });
 					return;
 				}
 				if (query.action === 'MONITOROFF')
 				{
 					res.send({'status': 'success'});
-					exec('/opt/vc/bin/tvservice -o', function(error, stdout, stderr){ callback(stdout); });
+					exec('/opt/vc/bin/tvservice -o', function(error, stdout, stderr){ console.log(stdout); });
 					return;
 				}
 				if (query.action === 'HIDE' || query.action === 'SHOW')
 				{
-					self.sendSocketNotification(query.action, query.module);
 					res.send({'status': 'success'});
+					self.sendSocketNotification(query.action, query.module);
 					return;
 				}
 			}
@@ -96,7 +96,7 @@ module.exports = NodeHelper.create({
 		if (!this.moduleData) {
 			var error =
 				'<div class="menu-button edit-menu">\n' +
-					'<span class="fa fa-exclamation-circle" aria-hidden="true"></span>\n' +
+					'<span class="fa fa-fw fa-exclamation-circle" aria-hidden="true"></span>\n' +
 					'<span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>\n' +
 				'</div>\n';
 			error = this.translate(error);
@@ -117,8 +117,8 @@ module.exports = NodeHelper.create({
 
 			var moduleElement =
 				'<div id="' + this.moduleData[i].identifier + '" class="menu-button edit-button edit-menu ' + hiddenStatus + '">\n' +
-					'<span class="symbol-on-show fa fa-check-square-o" aria-hidden="true"></span>\n' +
-					'<span class="symbol-on-hide fa fa-square-o" aria-hidden="true"></span>\n' +
+					'<span class="symbol-on-show fa fa-fw fa-toggle-on" aria-hidden="true"></span>\n' +
+					'<span class="symbol-on-hide fa fa-fw fa-toggle-off" aria-hidden="true"></span>\n' +
 					'<span class="text">' + this.moduleData[i].name + '</span>\n' +
 				'</div>\n'
 
@@ -130,7 +130,7 @@ module.exports = NodeHelper.create({
 	loadTranslation: function(language) {
 		var self = this;
 
-		fs.readFile(path.resolve(__dirname + "/translations/en.json"), function(err, data) {
+		fs.readFile(path.resolve(__dirname + "/translations/" + language + ".json"), function(err, data) {
 			if (err) {
 				return;
 			}
@@ -162,6 +162,10 @@ module.exports = NodeHelper.create({
 			}
 			self.sendSocketNotification("IP_ADDRESSES", addresses);
 
+			// load default english translation
+			self.loadTranslation("en");
+
+			// try to load translation in user language
 			self.loadTranslation(payload);
 		}
 	},
