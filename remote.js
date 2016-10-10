@@ -135,6 +135,9 @@ var buttons = {
     },
     'monitor-off-button': function () {
         Remote.getWithStatus("action=MONITOROFF");
+    },
+    'save-button': function () {
+        Remote.getWithStatus("action=SAVE");
     }
 }
 

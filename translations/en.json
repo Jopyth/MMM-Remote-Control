@@ -1,15 +1,21 @@
 {
     "TITLE": "Magic Mirror Menu",
-    "SHUTDOWN_MENU_NAME": "Power",
-    "NO_MODULES_LOADED": "No module loaded.",
+
     "EDIT_MENU_NAME": "Edit modules",
-    "SHUTDOWN": "Shutdown",
+    "SHUTDOWN_MENU_NAME": "Power",
+
+    "BACK": "Back",
+
+    "MONITOROFF": "Turn monitor OFF",
+    "MONITORON": "Turn monitor ON",
     "RESTART": "Restart",
     "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
-    "MONITORON": "Turn monitor ON",
-    "MONITOROFF": "Turn monitor OFF",
-    "BACK": "Back",
+    "SHUTDOWN": "Shutdown",
+
+    "NO_MODULES_LOADED": "No module loaded.",
+    "SAVE": "Save as default",
+
+    "DONE": "Done.",
     "ERROR": "Error!",
-    "LOADING": "Loading &hellip;",
-    "DONE": "Done."
+    "LOADING": "Loading &hellip;"
 }

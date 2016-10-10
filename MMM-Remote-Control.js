@@ -25,6 +25,7 @@ Module.register("MMM-Remote-Control", {
 
 	notificationReceived: function(notification, payload, sender) {
 		if (notification === "DOM_OBJECTS_CREATED") {
+			this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
 			this.sendModuleData();
 		}
 	},
@@ -38,7 +39,17 @@ Module.register("MMM-Remote-Control", {
 				this.updateDom();
 			}
 		}
-		if (notification === "UPDATE") {
+		if (notification === "DEFAULT_SETTINGS") {
+			var modules = MM.getModules();
+			for (var k = 0; k < payload.length; k++) {
+				for (var i = 0; i < modules.length; i++) {
+					if (modules[i].identifier === payload[k].identifier) {
+						if (payload[k].hidden) {
+							modules[i].hide();
+						}
+					}
+				}
+			}
 			this.sendModuleData();
 		}
 		if (notification === "HIDE" || notification === "SHOW") {

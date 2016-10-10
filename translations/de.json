@@ -1,15 +1,21 @@
 {
     "TITLE": "Magic Mirror Menu",
-    "SHUTDOWN_MENU_NAME": "Ausschalten",
-    "NO_MODULES_LOADED": "Keine Module geladen.",
+
     "EDIT_MENU_NAME": "Editieren",
-    "SHUTDOWN": "Ausschalten",
+    "SHUTDOWN_MENU_NAME": "Ausschalten",
+
+    "BACK": "Zurück",
+
+    "MONITOROFF": "Bildschirm ausschalten",
+    "MONITORON": "Bildschirm einschalten",
     "RESTART": "Neu starten",
     "RESTARTMM": "Starte MagicMirror<sup>2</sup> neu",
-    "MONITORON": "Bildschirm einschalten",
-    "MONITOROFF": "Bildschirm ausschalten",
-    "BACK": "Zurück",
+    "SHUTDOWN": "Ausschalten",
+
+    "NO_MODULES_LOADED": "Keine Module geladen.",
+    "SAVE": "Als Standard speichern",
+
+    "DONE": "Fertig.",
     "ERROR": "Fehler!",
-    "LOADING": "Lade &hellip;",
-    "DONE": "Fertig."
+    "LOADING": "Lade &hellip;"
 }
