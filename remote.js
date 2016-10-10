@@ -20,7 +20,6 @@ var Remote = {
 
         var buttons = document.getElementsByClassName("edit-button");
         for (var i = 0; i < buttons.length; i++) {
-            console.log(buttons[i]);
             buttons[i].addEventListener("click", function (event) {
                 if (self.hasClass(event.currentTarget, 'hidden-on-mirror'))
                 {
@@ -48,7 +47,7 @@ var Remote = {
         for (var i = 0; i < currentMenu.length; i++) {
             var button = currentMenu[i];
 
-            button.style.display = '';
+            button.style.display = 'block';
         }
 
         this.setStatus('none');
@@ -67,7 +66,7 @@ var Remote = {
 
         if (currentInfo)
         {
-            currentInfo.style.display = '';
+            currentInfo.style.display = 'block';
         }
     },
 

@@ -11,10 +11,23 @@ body {
 
 .menu-button {
   cursor: pointer;
+  display: none;
+}
+
+.status-indicator {
+  display: none;
+}
+
+#error {
+  display: inline;
 }
 
 .result {
-  border-top: 1px solid #666;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    line-height: 1em;
+    font-size: 15px;
 }
 
 .hidden-on-mirror > .symbol-on-show {

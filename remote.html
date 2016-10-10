@@ -18,6 +18,12 @@
         <header class="header">%%TRANSLATE:TITLE%%</header>
         <div class="module-content">
             <div class="menu normal">
+                <!-- general back button -->
+                <div id="back-button" class="menu-button power-menu edit-menu">
+                    <span class="fa fa-fw fa-arrow-left" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:BACK%%</span>
+                </div>
+
                 <!-- main menu -->
                 <div id="power-button" class="menu-button main-menu">
                     <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
@@ -38,12 +44,12 @@
                     <span class="text">%%TRANSLATE:RESTART%%</span>
                 </div>
                 
-		<!-- MagicMirror menu -->
-		<div id="restart-mm-button" class="menu-button power-menu">
+                <!-- MagicMirror menu -->
+                <div id="restart-mm-button" class="menu-button power-menu">
                     <span class="fa fa-fw fa-recycle" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:RESTARTMM%%</span>
                 </div>
-		<div id="monitor-on-button" class="menu-button power-menu">
+                <div id="monitor-on-button" class="menu-button power-menu">
                     <span class="fa fa-fw fa-toggle-on" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:MONITORON%%</span>
                 </div>
@@ -55,24 +61,19 @@
                 <!-- edit menu (created dynamically) -->
                 <!-- EDIT_MENU_TEMPLATE -->
 
-                <!-- general back button -->
-                <div id="back-button" class="menu-button power-menu edit-menu">
-                    <span class="fa fa-fw fa-arrow-left" aria-hidden="true"></span>
-                    <span class="text">%%TRANSLATE:BACK%%</span>
-                </div>
             </div>
             <div class="result">
                 <div id="loading" class="status-indicator">
                     <span class="fa fa-fw fa-spinner fa-pulse fa-fw"></span>
-                    <span class="text">%%TRANSLATE:LOADING%%</span>
+                    <!-- <span class="text">%%TRANSLATE:LOADING%%</span> -->
                 </div>
                 <div id="error" class="status-indicator">
                     <span class="fa fa-fw fa-exclamation-circle"></span>
-                    <span class="text">%%TRANSLATE:ERROR%%</span>
+                    <!-- <span class="text">%%TRANSLATE:ERROR%%</span> -->
                 </div>
                 <div id="success" class="status-indicator">
                     <span class="fa fa-fw fa-check-circle"></span>
-                    <span class="text">%%TRANSLATE:DONE%%</span>
+                    <!-- <span class="text">%%TRANSLATE:DONE%%</span> -->
                 </div>
             </div>
         </div>
