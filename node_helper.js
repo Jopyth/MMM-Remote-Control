@@ -112,11 +112,18 @@ module.exports = NodeHelper.create({
 		});
 	},
 
+	in: function(pattern, string) {
+		return string.indexOf(pattern) !== -1;
+	},
+
 	loadDefaultSettings: function() {
 		var self = this;
 
 		fs.readFile(path.resolve(__dirname + "/settings.json"), function(err, data) {
 			if (err) {
+				if (self.in("no such file or directory", err.message)) {
+					return;
+				}
 				console.log(err);
 			} else {
 				var data = JSON.parse(data.toString());
