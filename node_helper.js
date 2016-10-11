@@ -37,45 +37,11 @@ module.exports = NodeHelper.create({
 		this.expressApp.get('/remote', (req, res) => {
 			var query = url.parse(req.url, true).query;
 
-			var opts = {timeout: 5000};
 
 			if (query.action)
 			{
-				if (query.action === 'SHUTDOWN')
-				{
-					exec('sudo shutdown -h now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'REBOOT')
-				{
-					exec('sudo shutdown -r now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'RESTART')
-				{
-					exec('pm2 restart mm', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'MONITORON')
-				{
-					exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'MONITOROFF')
-				{
-					exec('/opt/vc/bin/tvservice -o', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'HIDE' || query.action === 'SHOW')
-				{
-					res.send({'status': 'success'});
-					self.sendSocketNotification(query.action, query.module);
-					return;
-				}
-				if (query.action === 'SAVE')
-				{
-					res.send({'status': 'success'});
-					self.saveDefaultSettings();
+				var result = self.socketNotificationReceived("REMOTE_ACTION", {query: query, res: res});
+				if (result === true) {
 					return;
 				}
 			}
@@ -86,10 +52,10 @@ module.exports = NodeHelper.create({
 	checkForExecError: function(error, stdout, stderr, res) {
 		if (error) {
 			console.log(error);
-			res.send({'status': 'error', 'reason': 'unknown', 'info': error});
+			if (res) { res.send({'status': 'error', 'reason': 'unknown', 'info': error}); }
 			return;
 		}
-		res.send({'status': 'success'});
+		if (res) { res.send({'status': 'success'}); }
 	},
 
 	translate: function(data) {
@@ -221,5 +187,52 @@ module.exports = NodeHelper.create({
 			// module started, answer with current ip addresses
 			self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
 		}
+		
+		
+		if (notification === "REMOTE_ACTION")
+		{
+			var query = payload.query;
+			var res = payload.res;
+			var opts = {timeout: 5000};
+
+			if (query.action === 'SHUTDOWN')
+			{
+				exec('sudo shutdown -h now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+				return true;
+			}
+			if (query.action === 'REBOOT')
+			{
+				exec('sudo shutdown -r now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+				return true;
+			}
+			if (query.action === 'RESTART')
+			{
+				exec('pm2 restart mm', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+				return true;
+			}
+			if (query.action === 'MONITORON')
+			{
+				exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+				return true;
+			}
+			if (query.action === 'MONITOROFF')
+			{
+				exec('/opt/vc/bin/tvservice -o', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+				return true;
+			}
+			if (query.action === 'HIDE' || query.action === 'SHOW')
+			{
+				if (res) { res.send({'status': 'success'}); }
+				self.sendSocketNotification(query.action, query.module);
+				return true;
+			}
+			if (query.action === 'SAVE')
+			{
+				if (res) { res.send({'status': 'success'}); }
+				self.saveDefaultSettings();
+				return true;
+			}
+		}
+		
 	},
 });
