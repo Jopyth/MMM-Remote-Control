@@ -1,10 +1,14 @@
 {
     "TITLE": "Magic Mirror Menu",
 
-    "EDIT_MENU_NAME": "Editieren",
+    "EDIT_MENU_NAME": "Module editieren",
     "SHUTDOWN_MENU_NAME": "Ausschalten",
+    "CONFIGURE_MENU_NAME": "Einstellungen",
 
     "BACK": "Zurück",
+
+    "BRIGHTNESS": "Helligkeit",
+    "RESET": "Zur&uuml;cksetzen",
 
     "MONITOROFF": "Bildschirm ausschalten",
     "MONITORON": "Bildschirm einschalten",

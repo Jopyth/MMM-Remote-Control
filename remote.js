@@ -33,6 +33,16 @@ var Remote = {
         }
     },
 
+    loadSliders: function() {
+        var self = this;
+
+        var element = document.getElementById("brightness-slider");
+
+        element.addEventListener("change", function(event) {
+            Remote.getWithStatus("action=BRIGHTNESS&value=" + element.value);
+        }, false);
+    },
+
     showMenu: function(newMenu) {
         var allMenus = document.getElementsByClassName("menu-button");
 
@@ -116,10 +126,20 @@ var buttons = {
     'edit-button': function () {
         window.location.hash = 'edit-menu';
     },
+    'settings-button': function () {
+        window.location.hash = 'settings-menu';
+    },
     'back-button': function () {
         window.location.hash = 'main-menu';
     },
-    
+
+    // settings menu buttons
+    'brightness-reset': function () {
+        var element = document.getElementById("brightness-slider");
+        element.value = 100;
+        Remote.getWithStatus("action=BRIGHTNESS&value=100");
+    },
+
     // power menu buttons
     'shut-down-button': function () {
         Remote.getWithStatus("action=SHUTDOWN");
@@ -143,6 +163,7 @@ var buttons = {
 
 Remote.loadButtons(buttons);
 Remote.loadEditButtons();
+Remote.loadSliders();
 
 Remote.setStatus('none');
 

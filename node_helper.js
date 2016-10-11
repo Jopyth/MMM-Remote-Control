@@ -28,7 +28,7 @@ module.exports = NodeHelper.create({
 				}
 				else {
 					res.contentType('text/html');
-					var transformedData = self.fillTemplate(data.toString());
+					var transformedData = self.fillTemplates(data.toString());
 					res.send(transformedData)
 				}
 			});
@@ -72,6 +72,12 @@ module.exports = NodeHelper.create({
 					self.sendSocketNotification(query.action, query.module);
 					return;
 				}
+				if (query.action === 'BRIGHTNESS')
+				{
+					res.send({'status': 'success'});
+					self.sendSocketNotification(query.action, query.value);
+					return;
+				}
 				if (query.action === 'SAVE')
 				{
 					res.send({'status': 'success'});
@@ -79,7 +85,7 @@ module.exports = NodeHelper.create({
 					return;
 				}
 			}
-			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + query});
+			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + JSON.stringify(query)});
 		});
 	},
 
@@ -103,7 +109,7 @@ module.exports = NodeHelper.create({
 	},
 
 	saveDefaultSettings: function() {
-		var text = JSON.stringify(this.moduleData);
+		var text = JSON.stringify(this.configData);
 
 		fs.writeFile(path.resolve(__dirname + "/settings.json"), text, function(err) {
 			if (err) {
@@ -137,10 +143,18 @@ module.exports = NodeHelper.create({
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
-	fillTemplate: function(data) {
+	fillTemplates: function(data) {
 		data = this.translate(data);
 
-		if (!this.moduleData) {
+		var brightness = 100;
+		if (this.configData) {
+			brightness = this.configData.brightness;
+		}
+		data = data.replace("%%REPLACE::BRIGHTNESS%%", brightness);
+
+		var moduleData = this.configData.moduleData;
+
+		if (!moduleData) {
 			var error =
 				'<div class="menu-button edit-menu">\n' +
 					'<span class="fa fa-fw fa-exclamation-circle" aria-hidden="true"></span>\n' +
@@ -152,21 +166,21 @@ module.exports = NodeHelper.create({
 
 		var editMenu = [];
 
-		for (var i = 0; i < this.moduleData.length; i++) {
-			if (!this.moduleData[i]["position"]) {
+		for (var i = 0; i < moduleData.length; i++) {
+			if (!moduleData[i]["position"]) {
 				continue;
 			}
 
 			var hiddenStatus = 'shown-on-mirror';
-			if (this.moduleData[i].hidden) {
+			if (moduleData[i].hidden) {
 				hiddenStatus = 'hidden-on-mirror';
 			}
 
 			var moduleElement =
-				'<div id="' + this.moduleData[i].identifier + '" class="menu-button edit-button edit-menu ' + hiddenStatus + '">\n' +
+				'<div id="' + moduleData[i].identifier + '" class="menu-button edit-button edit-menu ' + hiddenStatus + '">\n' +
 					'<span class="symbol-on-show fa fa-fw fa-toggle-on" aria-hidden="true"></span>\n' +
 					'<span class="symbol-on-hide fa fa-fw fa-toggle-off" aria-hidden="true"></span>\n' +
-					'<span class="text">' + this.format(this.moduleData[i].name) + '</span>\n' +
+					'<span class="text">' + this.format(moduleData[i].name) + '</span>\n' +
 				'</div>\n'
 
 			editMenu.push(moduleElement);
@@ -205,9 +219,9 @@ module.exports = NodeHelper.create({
 	socketNotificationReceived: function(notification, payload) {
 		var self = this;
 
-		if (notification === "MODULE_STATUS")
+		if (notification === "CURRENT_STATUS")
 		{
-			this.moduleData = payload;
+			this.configData = payload;
 		}
 		if (notification === "REQUEST_DEFAULT_SETTINGS")
 		{

@@ -19,6 +19,7 @@ Module.register("MMM-Remote-Control", {
 		Log.info("Starting module: " + this.name);
 
 		this.addresses = [];
+		this.brightness = 100;
 
 		this.sendSocketNotification("LANG", config.language);
 	},
@@ -26,7 +27,7 @@ Module.register("MMM-Remote-Control", {
 	notificationReceived: function(notification, payload, sender) {
 		if (notification === "DOM_OBJECTS_CREATED") {
 			this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
-			this.sendModuleData();
+			this.sendCurrentData();
 		}
 	},
 
@@ -40,17 +41,23 @@ Module.register("MMM-Remote-Control", {
 			}
 		}
 		if (notification === "DEFAULT_SETTINGS") {
+			var moduleData = payload.moduleData;
 			var modules = MM.getModules();
-			for (var k = 0; k < payload.length; k++) {
+			for (var k = 0; k < moduleData.length; k++) {
 				for (var i = 0; i < modules.length; i++) {
-					if (modules[i].identifier === payload[k].identifier) {
-						if (payload[k].hidden) {
+					if (modules[i].identifier === moduleData[k].identifier) {
+						if (moduleData[k].hidden) {
 							modules[i].hide();
 						}
 					}
 				}
 			}
-			this.sendModuleData();
+			this.setBrightness(payload.brightness);
+			this.sendCurrentData();
+		}
+		if (notification === "BRIGHTNESS") {
+			this.setBrightness(parseInt(payload));
+			this.sendCurrentData();
 		}
 		if (notification === "HIDE" || notification === "SHOW") {
 			var modules = MM.getModules();
@@ -63,8 +70,46 @@ Module.register("MMM-Remote-Control", {
 					}
 				}
 			}
-			this.sendModuleData();
+			this.sendCurrentData();
 		}
+	},
+
+	setBrightness: function(newValue) {
+		this.brightness = newValue;
+
+		var style = document.getElementById('remote-control-styles');
+		if (!style) {
+			// create custom css if not existing
+			style = document.createElement('style');
+			style.type = 'text/css';
+			style.id = 'remote-control-styles';
+			document.getElementsByTagName('head')[0].appendChild(style);
+		}
+
+		var css = "";
+		var defaults = {
+			"header": parseInt("99", 16),
+			".dimmed": parseInt("66", 16),
+			".normal": parseInt("99", 16),
+			".bright": parseInt("ff", 16)
+		}
+		for (var key in defaults) {
+			var value = defaults[key] / 100 * newValue;
+			value = Math.round(value);
+			value = Math.min(value, 255);
+			if (value < 16)
+			{
+				value = "0" + value.toString(16);
+			} else {
+				value = value.toString(16);
+			}
+			var extra = "";
+			if (key === "header") {
+				extra = "border-bottom: 1px solid #" + value + value + value + ";"
+			}
+			css += key + " { color: #" + value + value + value + "; " + extra + "} ";
+		}
+		style.innerHTML = css;
 	},
 
 	// Override required translations.
@@ -85,16 +130,20 @@ Module.register("MMM-Remote-Control", {
 		return wrapper;
 	},
 
-	sendModuleData: function() {
+	sendCurrentData: function() {
 		var modules = MM.getModules();
-		var moduleData = [];
+		var currentModuleData = [];
 		for (var i = 0; i < modules.length; i++) {
-			moduleData.push({});
-			moduleData[i]["hidden"] = modules[i].hidden;
-			moduleData[i]["name"] = modules[i].name;
-			moduleData[i]["identifier"] = modules[i].identifier;
-			moduleData[i]["position"] = modules[i].data.position;
+			currentModuleData.push({});
+			currentModuleData[i]["hidden"] = modules[i].hidden;
+			currentModuleData[i]["name"] = modules[i].name;
+			currentModuleData[i]["identifier"] = modules[i].identifier;
+			currentModuleData[i]["position"] = modules[i].data.position;
 		}
-		this.sendSocketNotification("MODULE_STATUS", moduleData);		
+		var configData = {
+			moduleData: currentModuleData,
+			brightness: this.brightness
+		};
+		this.sendSocketNotification("CURRENT_STATUS", configData);		
 	},
 });

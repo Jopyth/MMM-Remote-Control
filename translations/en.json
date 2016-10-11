@@ -3,8 +3,12 @@
 
     "EDIT_MENU_NAME": "Edit modules",
     "SHUTDOWN_MENU_NAME": "Power",
+    "CONFIGURE_MENU_NAME": "Settings",
 
     "BACK": "Back",
+
+    "BRIGHTNESS": "Brightness",
+    "RESET": "Reset",
 
     "MONITOROFF": "Turn monitor OFF",
     "MONITORON": "Turn monitor ON",
