@@ -19,13 +19,13 @@ Module.register("MMM-Remote-Control", {
 		Log.info("Starting module: " + this.name);
 
 		this.addresses = [];
-		this.brightness = 100;
 
-		this.sendSocketNotification("LANG", config.language);
+		this.brightness = 100;
 	},
 
 	notificationReceived: function(notification, payload, sender) {
 		if (notification === "DOM_OBJECTS_CREATED") {
+			this.sendSocketNotification("LANG", config.language);
 			this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
 			this.sendCurrentData();
 		}
@@ -35,7 +35,7 @@ Module.register("MMM-Remote-Control", {
 	socketNotificationReceived: function(notification, payload) {
 		if (notification === "IP_ADDRESSES") {
 			this.addresses = payload;
-			if (this.config.position)
+			if (this.data.position)
 			{
 				this.updateDom();
 			}
