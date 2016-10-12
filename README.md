@@ -41,10 +41,12 @@ For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders
 
 ### Examples
 
-Example for a GET request to trigger a RaspberryPi restart:
-`http://192.168.xxx.xxx:8080/remote?action=RESTART`
+- Example for a GET request to trigger a RaspberryPi restart:
+```
+http://192.168.xxx.xxx:8080/remote?action=RESTART
+```
 
-Example for a notification schedule for [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically switch your monitor on and off with :
+- Example for a notification schedule for [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically switch your monitor on and off with :
 ```javascript
 notification_schedule: [
     {notification: 'REMOTE_ACTION', schedule: '30 9 * * *', payload: {action: 'MONITOROFF'}},
@@ -52,8 +54,10 @@ notification_schedule: [
 ]
 ```
 
-Example to trigger a RaspberryPi restart in your module:
-`this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});`
+- Example to trigger a RaspberryPi restart in your module:
+```
+this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
+```
 
 ### List of actions
 
