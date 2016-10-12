@@ -26,13 +26,47 @@ git clone https://github.com/Jopyth/MMM-Remote-Control.git
 },
 ```
 
-- (3) Access the remote interface on [http://ip.of.your.mirror:8080/remote.html](http://ip.of.your.mirror:8080/remote.html).
+- (3) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html).
 
 - (4) If you are not running with `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
 
 ## Update
 
 Update this module by navigating into its folder on the command line and executing this command: `git pull`.
+
+## Call methods from other modules
+
+You can call any of the methods provided in the UI directly through a GET request, or a module notification.
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems.
+
+### Examples
+
+Example for a GET request to trigger a RaspberryPi restart:
+`http://192.168.xxx.xxx:8080/remote?action=RESTART`
+
+Example for a notification schedule for [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically switch your monitor on and off with :
+```javascript
+notification_schedule: [
+    {notification: 'REMOTE_ACTION', schedule: '30 9 * * *', payload: {action: 'MONITOROFF'}},
+    {notification: 'REMOTE_ACTION', schedule: '30 18 * * *', payload: {action: 'MONITORON'}}
+]
+```
+
+Example to trigger a RaspberryPi restart in your module:
+`this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});`
+
+### List of actions
+
+| action | description |
+| ------------- | ------------- |
+| SHUTDOWN | Shutdown your RaspberryPi |
+| REBOOT | Restart your RaspberryPi |
+| RESTART | Restart your MagicMirror |
+| MONITORON | Switch your display on |
+| MONITOROFF | Switch your display off |
+| SAVE | Save the current configuration (show and hide status of modules), will be applied after the mirror starts |
+| HIDE | (Not recommended, simply hide the module directly) hide a module, with the identifier specified by `module` |
+| SHOW | (Not recommended, simply show the module directly) show a module, with the identifier specified by `module` |
 
 ## License
 
