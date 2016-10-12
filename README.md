@@ -69,8 +69,8 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | MONITORON | Switch your display on |
 | MONITOROFF | Switch your display off |
 | SAVE | Save the current configuration (show and hide status of modules), will be applied after the mirror starts |
-| HIDE | (Not recommended, simply hide the module directly) hide a module, with the identifier specified by `module` |
-| SHOW | (Not recommended, simply show the module directly) show a module, with the identifier specified by `module` |
+| HIDE | Hide a module, with the identifier specified by `module` |
+| SHOW | Show a module, with the identifier specified by `module` |
 
 ## License
 
