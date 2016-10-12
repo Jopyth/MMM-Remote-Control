@@ -1,4 +1,4 @@
-/* global Module */
+/* global Module, Log, MM, config */
 
 /* Magic Mirror
  * Module: Remote Control
@@ -22,10 +22,17 @@ Module.register("MMM-Remote-Control", {
 	},
 
 	notificationReceived: function(notification, payload, sender) {
-		if (notification === "DOM_OBJECTS_CREATED") {
-			this.sendSocketNotification("LANG", config.language);
-			this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
-			this.sendModuleData();
+		if (sender) {
+			Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
+			if (notification === "REMOTE_ACTION") {
+				this.sendSocketNotification(notification, payload);	
+			}
+		} else { 
+			if (notification === "DOM_OBJECTS_CREATED") {
+				this.sendSocketNotification("LANG", config.language);
+				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
+				this.sendModuleData();
+			}
 		}
 	},
 

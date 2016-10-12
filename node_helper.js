@@ -29,7 +29,7 @@ module.exports = NodeHelper.create({
 				else {
 					res.contentType('text/html');
 					var transformedData = self.fillTemplate(data.toString());
-					res.send(transformedData)
+					res.send(transformedData);
 				}
 			});
 		});
@@ -37,59 +37,68 @@ module.exports = NodeHelper.create({
 		this.expressApp.get('/remote', (req, res) => {
 			var query = url.parse(req.url, true).query;
 
-			var opts = {timeout: 5000};
 
 			if (query.action)
 			{
-				if (query.action === 'SHUTDOWN')
-				{
-					exec('sudo shutdown -h now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'REBOOT')
-				{
-					exec('sudo shutdown -r now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'RESTART')
-				{
-					exec('pm2 restart mm', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'MONITORON')
-				{
-					exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'MONITOROFF')
-				{
-					exec('/opt/vc/bin/tvservice -o', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-					return;
-				}
-				if (query.action === 'HIDE' || query.action === 'SHOW')
-				{
-					res.send({'status': 'success'});
-					self.sendSocketNotification(query.action, query.module);
-					return;
-				}
-				if (query.action === 'SAVE')
-				{
-					res.send({'status': 'success'});
-					self.saveDefaultSettings();
+				var result = this.executeQuery(query, res);
+				if (result === true) {
 					return;
 				}
 			}
 			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + query});
 		});
 	},
+	
+	executeQuery: function(query, res) {
+		var self = this;
+		var opts = {timeout: 5000};
 
+		if (query.action === 'SHUTDOWN')
+		{
+			exec('sudo shutdown -h now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			return true;
+		}
+		if (query.action === 'REBOOT')
+		{
+			exec('sudo shutdown -r now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			return true;
+		}
+		if (query.action === 'RESTART')
+		{
+			exec('pm2 restart mm', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			return true;
+		}
+		if (query.action === 'MONITORON')
+		{
+			exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			return true;
+		}
+		if (query.action === 'MONITOROFF')
+		{
+			exec('/opt/vc/bin/tvservice -o', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			return true;
+		}
+		if (query.action === 'HIDE' || query.action === 'SHOW')
+		{
+			if (res) { res.send({'status': 'success'}); }
+			self.sendSocketNotification(query.action, query.module);
+			return true;
+		}
+		if (query.action === 'SAVE')
+		{
+			if (res) { res.send({'status': 'success'}); }
+			self.saveDefaultSettings();
+			return true;
+		}		
+	},
+	
 	checkForExecError: function(error, stdout, stderr, res) {
 		if (error) {
 			console.log(error);
-			res.send({'status': 'error', 'reason': 'unknown', 'info': error});
+			if (res) { res.send({'status': 'error', 'reason': 'unknown', 'info': error}); }
 			return;
 		}
-		res.send({'status': 'success'});
+		if (res) { res.send({'status': 'success'}); }
 	},
 
 	translate: function(data) {
@@ -167,7 +176,7 @@ module.exports = NodeHelper.create({
 					'<span class="symbol-on-show fa fa-fw fa-toggle-on" aria-hidden="true"></span>\n' +
 					'<span class="symbol-on-hide fa fa-fw fa-toggle-off" aria-hidden="true"></span>\n' +
 					'<span class="text">' + this.format(this.moduleData[i].name) + '</span>\n' +
-				'</div>\n'
+				'</div>\n';
 
 			editMenu.push(moduleElement);
 		}
@@ -199,7 +208,7 @@ module.exports = NodeHelper.create({
 				}
 			}
 		}
-		return addresses
+		return addresses;
 	},
 
 	socketNotificationReceived: function(notification, payload) {
@@ -221,5 +230,11 @@ module.exports = NodeHelper.create({
 			// module started, answer with current ip addresses
 			self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
 		}
+		
+		if (notification === "REMOTE_ACTION")
+		{
+			this.executeQuery(payload);
+		}
+		
 	},
 });
