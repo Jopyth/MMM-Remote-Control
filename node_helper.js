@@ -40,7 +40,7 @@ module.exports = NodeHelper.create({
 
 			if (query.action)
 			{
-				var result = this.executeQuery(query, res);
+				var result = self.executeQuery(query, res);
 				if (result === true) {
 					return;
 				}
