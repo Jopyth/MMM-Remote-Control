@@ -69,6 +69,7 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | MONITORON | Switch your display on |
 | MONITOROFF | Switch your display off |
 | SAVE | Save the current configuration (show and hide status of modules), will be applied after the mirror starts |
+| BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 | HIDE | Hide a module, with the identifier specified by `module` |
 | SHOW | Show a module, with the identifier specified by `module` |
 
