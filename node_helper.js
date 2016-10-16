@@ -21,6 +21,8 @@ module.exports = NodeHelper.create({
 		// load fall back translation
 		self.loadTranslation("en");
 
+		this.configData = {};
+
 		this.expressApp.get("/remote.html", function(req, res) {
 			fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
 				if (err) {
@@ -28,7 +30,7 @@ module.exports = NodeHelper.create({
 				}
 				else {
 					res.contentType('text/html');
-					var transformedData = self.fillTemplate(data.toString());
+					var transformedData = self.fillTemplates(data.toString());
 					res.send(transformedData);
 				}
 			});
@@ -88,14 +90,15 @@ module.exports = NodeHelper.create({
 		{
 			res.send({'status': 'success'});
 			self.sendSocketNotification(query.action, query.value);
-			return;
+			return true;
 		}
 		if (query.action === 'SAVE')
 		{
 			if (res) { res.send({'status': 'success'}); }
 			self.saveDefaultSettings();
 			return true;
-		}		
+		}
+		return false;
 	},
 	
 	checkForExecError: function(error, stdout, stderr, res) {
@@ -162,7 +165,6 @@ module.exports = NodeHelper.create({
 		data = data.replace("%%REPLACE::BRIGHTNESS%%", brightness);
 
 		var moduleData = this.configData.moduleData;
-
 		if (!moduleData) {
 			var error =
 				'<div class="menu-button edit-menu">\n' +
@@ -189,7 +191,7 @@ module.exports = NodeHelper.create({
 				'<div id="' + moduleData[i].identifier + '" class="menu-button edit-button edit-menu ' + hiddenStatus + '">\n' +
 					'<span class="symbol-on-show fa fa-fw fa-toggle-on" aria-hidden="true"></span>\n' +
 					'<span class="symbol-on-hide fa fa-fw fa-toggle-off" aria-hidden="true"></span>\n' +
-					'<span class="text">' + this.format(this.moduleData[i].name) + '</span>\n' +
+					'<span class="text">' + this.format(moduleData[i].name) + '</span>\n' +
 				'</div>\n';
 
 			editMenu.push(moduleElement);

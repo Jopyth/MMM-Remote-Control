@@ -9,6 +9,8 @@
 
 Module.register("MMM-Remote-Control", {
 
+	requiresVersion: "2.0.0",
+
 	// Default module config.
 	defaults: {
 		// no config options at the moment
@@ -18,9 +20,15 @@ Module.register("MMM-Remote-Control", {
 	start: function() {
 		Log.info("Starting module: " + this.name);
 
+		this.settingsVersion = 1;
+
 		this.addresses = [];
 
 		this.brightness = 100;
+	},
+
+	getStyles: function() {
+		return ["remote-control.css"];
 	},
 
 	notificationReceived: function(notification, payload, sender) {
@@ -48,6 +56,18 @@ Module.register("MMM-Remote-Control", {
 			}
 		}
 		if (notification === "DEFAULT_SETTINGS") {
+			var settingsVersion = payload.settingsVersion;
+
+			if (settingsVersion === undefined) {
+				settingsVersion = 0;
+			}
+			if (settingsVersion < this.settingsVersion) {
+				if (settingsVersion === 0) {
+					// move old data into moduleData
+					payload = { moduleData : payload, brightness : 100};
+				}
+			}
+
 			var moduleData = payload.moduleData;
 			var modules = MM.getModules();
 			for (var k = 0; k < moduleData.length; k++) {
@@ -81,27 +101,19 @@ Module.register("MMM-Remote-Control", {
 		}
 	},
 
-	setBrightness: function(newValue) {
-		this.brightness = newValue;
-
-		var style = document.getElementById('remote-control-styles');
-		if (!style) {
-			// create custom css if not existing
-			style = document.createElement('style');
-			style.type = 'text/css';
-			style.id = 'remote-control-styles';
-			document.getElementsByTagName('head')[0].appendChild(style);
-		}
-
+	buildCssContent: function(brightness) {
 		var css = "";
+
 		var defaults = {
+			"body": parseInt("aa", 16),
 			"header": parseInt("99", 16),
 			".dimmed": parseInt("66", 16),
 			".normal": parseInt("99", 16),
 			".bright": parseInt("ff", 16)
 		}
+
 		for (var key in defaults) {
-			var value = defaults[key] / 100 * newValue;
+			var value = defaults[key] / 100 * brightness;
 			value = Math.round(value);
 			value = Math.min(value, 255);
 			if (value < 16)
@@ -116,15 +128,63 @@ Module.register("MMM-Remote-Control", {
 			}
 			css += key + " { color: #" + value + value + value + "; " + extra + "} ";
 		}
-		style.innerHTML = css;
+		return css;
 	},
 
-	// Override required translations.
-	getTranslations: function() {
-		return {
-			en: "translations/en.json",
-			de: "translations/de.json",
-		};
+	setBrightness: function(newBrightnessValue) {
+		if (newBrightnessValue < 10) {
+			newBrightnessValue = 10;
+		}
+		if (newBrightnessValue > 200) {
+			newBrightnessValue = 200;
+		}
+
+		this.brightness = newBrightnessValue;
+
+		var style = document.getElementById('remote-control-styles');
+		if (!style) {
+			// create custom css if not existing
+			style = document.createElement('style');
+			style.type = 'text/css';
+			style.id = 'remote-control-styles';
+			var parent = document.getElementsByTagName('head')[0];
+			parent.appendChild(style);
+		}
+
+		if (newBrightnessValue < 100) {
+			style.innerHTML = "";
+			this.createOverlay(newBrightnessValue);
+			return;
+		}
+		if (newBrightnessValue > 100) {
+			style.innerHTML = this.buildCssContent(newBrightnessValue);
+			this.removeOverlay();
+			return;
+		}
+		// default brightness
+		style.innerHTML = "";
+		this.removeOverlay();
+	},
+
+	createOverlay: function(brightness) {
+		var overlay = document.getElementById('remote-control-overlay');
+		if (!overlay) {
+			// if not existing, create overlay
+			var overlay = document.createElement("div");
+			overlay.id = "remote-control-overlay";
+			var parent = document.body;
+			parent.insertBefore(overlay, parent.firstChild);
+		}
+		var bgColor = "rgba(0,0,0," + (100 - brightness)/100 + ")";
+		overlay.style.backgroundColor = bgColor;
+	},
+
+	removeOverlay: function() {
+		var overlay = document.getElementById('remote-control-overlay');
+		if (overlay) {
+			var parent = document.body;
+			parent.removeChild(overlay);
+		}
 	},
 
 	getDom: function() {
@@ -149,8 +209,9 @@ Module.register("MMM-Remote-Control", {
 		}
 		var configData = {
 			moduleData: currentModuleData,
-			brightness: this.brightness
+			brightness: this.brightness,
+			settingsVersion: this.settingsVersion
 		};
-		this.sendSocketNotification("CURRENT_STATUS", configData);		
+		this.sendSocketNotification("CURRENT_STATUS", configData);
 	},
 });

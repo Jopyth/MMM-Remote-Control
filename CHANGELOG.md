@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Changelog
 - Contributing hints
-- Option to adapt brightness (making the brighter than usual can be limited to certain modules)
+- Internal versioning of saved config
+- Option to adapt brightness (making the mirror brighter than 100% can be limited to certain modules)
 
 ## [0.1.0] - 2016-09-30
 ### Initial release of the Remote Control module.
