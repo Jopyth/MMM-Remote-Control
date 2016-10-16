@@ -142,7 +142,7 @@ module.exports = NodeHelper.create({
 	},
 
 	format: function(string) {
-		string = string.replace("MMM-", "");
+		string = string.replace(/MMM-/ig, "");
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
