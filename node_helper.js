@@ -16,6 +16,7 @@ module.exports = NodeHelper.create({
 	// Subclass start method.
 	start: function() {
 		var self = this;
+
 		console.log("Starting node helper for: " + self.name);
 
 		// load fall back translation
@@ -23,22 +24,25 @@ module.exports = NodeHelper.create({
 
 		this.configData = {};
 
+		this.waitingResponses = [];
+
+		this.template = "";
+
+		fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
+			self.template = data.toString();
+		});
+
 		this.expressApp.get("/remote.html", function(req, res) {
-			fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
-				if (err) {
-					res.send(404);
-				}
-				else {
-					res.contentType('text/html');
-					var transformedData = self.fillTemplates(data.toString());
-					res.send(transformedData);
-				}
-			});
+			if (self.template === "") {
+				res.send(503);
+			} else {
+				self.waitingResponses.push(res);
+				self.sendSocketNotification("UPDATE");
+			}
 		});
 
 		this.expressApp.get('/remote', (req, res) => {
 			var query = url.parse(req.url, true).query;
-
 
 			if (query.action)
 			{
@@ -233,6 +237,14 @@ module.exports = NodeHelper.create({
 		if (notification === "CURRENT_STATUS")
 		{
 			this.configData = payload;
+			for (var i = 0; i < this.waitingResponses.length; i++) {
+				var res = this.waitingResponses[i];
+
+				res.contentType('text/html');
+				var transformedData = self.fillTemplates(self.template);
+				res.send(transformedData);
+			}
+			this.waitingResponses = [];
 		}
 		if (notification === "REQUEST_DEFAULT_SETTINGS")
 		{

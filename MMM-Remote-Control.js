@@ -41,13 +41,15 @@ Module.register("MMM-Remote-Control", {
 			if (notification === "DOM_OBJECTS_CREATED") {
 				this.sendSocketNotification("LANG", config.language);
 				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
-				this.sendCurrentData();
 			}
 		}
 	},
 
 	// Override socket notification handler.
 	socketNotificationReceived: function(notification, payload) {
+		if (notification === "UPDATE") {
+			this.sendCurrentData();
+		}
 		if (notification === "IP_ADDRESSES") {
 			this.addresses = payload;
 			if (this.data.position)
@@ -80,11 +82,9 @@ Module.register("MMM-Remote-Control", {
 				}
 			}
 			this.setBrightness(payload.brightness);
-			this.sendCurrentData();
 		}
 		if (notification === "BRIGHTNESS") {
 			this.setBrightness(parseInt(payload));
-			this.sendCurrentData();
 		}
 		if (notification === "HIDE" || notification === "SHOW") {
 			var modules = MM.getModules();
@@ -97,7 +97,6 @@ Module.register("MMM-Remote-Control", {
 					}
 				}
 			}
-			this.sendCurrentData();
 		}
 	},
 
