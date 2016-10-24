@@ -15,26 +15,52 @@ var Remote = {
         return (' ' + element.className + ' ').indexOf(' ' + name + ' ') > -1;
     },
 
-    loadEditButtons: function() {
+    loadToggleButton: function(element, toggleCallback) {
+        var self = this;
+
+        element.addEventListener("click", function (event) {
+            if (self.hasClass(event.currentTarget, "toggled-off"))
+            {
+                event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
+                if (toggleCallback) {
+                    toggleCallback(true, event);
+                }
+            } else {
+                event.currentTarget.className = event.currentTarget.className.replace("toggled-on", "toggled-off");
+                if (toggleCallback) {
+                    toggleCallback(false, event);
+                }
+            }
+        }, false);
+    },
+
+    loadModuleButtons: function() {
         var self = this;
 
         var buttons = document.getElementsByClassName("edit-button");
         for (var i = 0; i < buttons.length; i++) {
-            buttons[i].addEventListener("click", function (event) {
-                if (self.hasClass(event.currentTarget, 'hidden-on-mirror'))
-                {
-                    self.getWithStatus("action=SHOW&module=" + event.currentTarget.id);
-                    event.currentTarget.className = event.currentTarget.className.replace("hidden-on-mirror", 'shown-on-mirror');
+            self.loadToggleButton(buttons[i], function (toggledOn, event) {
+                if (toggledOn) {
+                    self.showModule(event.currentTarget.id);
                 } else {
-                    self.getWithStatus("action=HIDE&module=" + event.currentTarget.id);
-                    event.currentTarget.className = event.currentTarget.className.replace("shown-on-mirror", 'hidden-on-mirror');
+                    self.hideModule(event.currentTarget.id);
                 }
-            }, false);
+            });
         }
     },
 
+    loadBrightnessSlider: function() {
+        var self = this;
+
+        var element = document.getElementById("brightness-slider");
+
+        element.addEventListener("change", function(event) {
+            self.getWithStatus("action=BRIGHTNESS&value=" + element.value);
+        }, false);
+    },
+
     showMenu: function(newMenu) {
-        var allMenus = document.getElementsByClassName("menu-button");
+        var allMenus = document.getElementsByClassName("menu-element");
 
         for (var i = 0; i < allMenus.length; i++) {
             var button = allMenus[i];
@@ -88,6 +114,14 @@ var Remote = {
         });
     },
 
+    showModule: function(id) {
+        this.getWithStatus("action=SHOW&module=" + id);
+    },
+
+    hideModule: function(id) {
+        this.getWithStatus("action=HIDE&module=" + id);
+    },
+
     get: function(params, callback) {
         var http = new XMLHttpRequest();
         var url = "remote?" + params;
@@ -116,10 +150,39 @@ var buttons = {
     'edit-button': function () {
         window.location.hash = 'edit-menu';
     },
+    'settings-button': function () {
+        window.location.hash = 'settings-menu';
+    },
+    'mirror-link-button': function () {
+        window.open("/", "_blank");
+    },
     'back-button': function () {
         window.location.hash = 'main-menu';
     },
-    
+
+    // settings menu buttons
+    'brightness-reset': function () {
+        var element = document.getElementById("brightness-slider");
+        element.value = 100;
+        Remote.getWithStatus("action=BRIGHTNESS&value=100");
+    },
+
+    // edit menu buttons
+    'show-all-button': function() {
+        var buttons = document.getElementsByClassName("edit-button");
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].className = buttons[i].className.replace("toggled-off", "toggled-on");
+            Remote.showModule(buttons[i].id);
+        }
+    },
+    'hide-all-button': function() {
+        var buttons = document.getElementsByClassName("edit-button");
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].className = buttons[i].className.replace("toggled-on", "toggled-off");
+            Remote.hideModule(buttons[i].id);
+        }
+    },
+
     // power menu buttons
     'shut-down-button': function () {
         Remote.getWithStatus("action=SHUTDOWN");
@@ -136,13 +199,16 @@ var buttons = {
     'monitor-off-button': function () {
         Remote.getWithStatus("action=MONITOROFF");
     },
+
+    // main menu
     'save-button': function () {
         Remote.getWithStatus("action=SAVE");
     }
 }
 
 Remote.loadButtons(buttons);
-Remote.loadEditButtons();
+Remote.loadModuleButtons();
+Remote.loadBrightnessSlider();
 
 Remote.setStatus('none');
 

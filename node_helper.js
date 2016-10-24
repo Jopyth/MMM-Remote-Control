@@ -16,27 +16,36 @@ module.exports = NodeHelper.create({
 	// Subclass start method.
 	start: function() {
 		var self = this;
+
 		console.log("Starting node helper for: " + self.name);
 
 		// load fall back translation
 		self.loadTranslation("en");
 
+		this.configData = {};
+
+		this.waiting = [];
+
+		this.template = "";
+
+		fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
+			self.template = data.toString();
+		});
+
 		this.expressApp.get("/remote.html", function(req, res) {
-			fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
-				if (err) {
-					res.send(404);
-				}
-				else {
+			if (self.template === "") {
+				res.send(503);
+			} else {
+				self.callAfterUpdate(function () {
 					res.contentType('text/html');
-					var transformedData = self.fillTemplate(data.toString());
+					var transformedData = self.fillTemplates(self.template);
 					res.send(transformedData);
-				}
-			});
+				});
+			}
 		});
 
 		this.expressApp.get('/remote', (req, res) => {
 			var query = url.parse(req.url, true).query;
-
 
 			if (query.action)
 			{
@@ -45,13 +54,37 @@ module.exports = NodeHelper.create({
 					return;
 				}
 			}
-			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + query});
+			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + JSON.stringify(query)});
 		});
+	},
+
+	callAfterUpdate: function(callback, timeout) {
+		if (timeout === undefined) {
+			timeout = 3000;
+		}
+
+		var waitObject = {
+			finished: false,
+			run: function () {
+				if (this.finished) {
+					return;
+				}
+				this.finished = true;
+				this.callback();
+			},
+			callback: callback
+		}
+
+		this.waiting.push(waitObject);
+		this.sendSocketNotification("UPDATE");
+		setTimeout(function() {
+			waitObject.run();
+		}, timeout);
 	},
 	
 	executeQuery: function(query, res) {
 		var self = this;
-		var opts = {timeout: 5000};
+		var opts = {timeout: 8000};
 
 		if (query.action === 'SHUTDOWN')
 		{
@@ -81,15 +114,35 @@ module.exports = NodeHelper.create({
 		if (query.action === 'HIDE' || query.action === 'SHOW')
 		{
 			if (res) { res.send({'status': 'success'}); }
-			self.sendSocketNotification(query.action, query.module);
+			var payload = { module: query.module, useLockStrings: query.useLockStrings };
+			if (query.action === 'SHOW' && query.force === "true") {
+				payload.force = true;
+			}
+			self.sendSocketNotification(query.action, payload);
+			return true;
+		}
+		if (query.action === 'BRIGHTNESS')
+		{
+			res.send({'status': 'success'});
+			self.sendSocketNotification(query.action, query.value);
 			return true;
 		}
 		if (query.action === 'SAVE')
 		{
 			if (res) { res.send({'status': 'success'}); }
-			self.saveDefaultSettings();
+			self.callAfterUpdate(function () { self.saveDefaultSettings(); });
 			return true;
-		}		
+		}
+		if (query.action === 'MODULE_DATA')
+		{
+			self.callAfterUpdate(function () {
+				var text = JSON.stringify(self.configData);
+				res.contentType('application/json');
+				res.send(text);
+			});
+			return true;
+		}
+		return false;
 	},
 	
 	checkForExecError: function(error, stdout, stderr, res) {
@@ -112,7 +165,7 @@ module.exports = NodeHelper.create({
 	},
 
 	saveDefaultSettings: function() {
-		var text = JSON.stringify(this.moduleData);
+		var text = JSON.stringify(this.configData);
 
 		fs.writeFile(path.resolve(__dirname + "/settings.json"), text, function(err) {
 			if (err) {
@@ -146,12 +199,19 @@ module.exports = NodeHelper.create({
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
-	fillTemplate: function(data) {
+	fillTemplates: function(data) {
 		data = this.translate(data);
 
-		if (!this.moduleData) {
+		var brightness = 100;
+		if (this.configData) {
+			brightness = this.configData.brightness;
+		}
+		data = data.replace("%%REPLACE::BRIGHTNESS%%", brightness);
+
+		var moduleData = this.configData.moduleData;
+		if (!moduleData) {
 			var error =
-				'<div class="menu-button edit-menu">\n' +
+				'<div class="menu-element button edit-menu">\n' +
 					'<span class="fa fa-fw fa-exclamation-circle" aria-hidden="true"></span>\n' +
 					'<span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>\n' +
 				'</div>\n';
@@ -161,21 +221,27 @@ module.exports = NodeHelper.create({
 
 		var editMenu = [];
 
-		for (var i = 0; i < this.moduleData.length; i++) {
-			if (!this.moduleData[i]["position"]) {
+		for (var i = 0; i < moduleData.length; i++) {
+			if (!moduleData[i]["position"]) {
 				continue;
 			}
 
-			var hiddenStatus = 'shown-on-mirror';
-			if (this.moduleData[i].hidden) {
-				hiddenStatus = 'hidden-on-mirror';
+			var hiddenStatus = 'toggled-on';
+			if (moduleData[i].hidden) {
+				hiddenStatus = 'toggled-off';
+				if (moduleData[i].lockStrings && moduleData[i].lockStrings.length) {
+					hiddenStatus += ' external-locked';
+				}
 			}
 
 			var moduleElement =
-				'<div id="' + this.moduleData[i].identifier + '" class="menu-button edit-button edit-menu ' + hiddenStatus + '">\n' +
-					'<span class="symbol-on-show fa fa-fw fa-toggle-on" aria-hidden="true"></span>\n' +
-					'<span class="symbol-on-hide fa fa-fw fa-toggle-off" aria-hidden="true"></span>\n' +
-					'<span class="text">' + this.format(this.moduleData[i].name) + '</span>\n' +
+				'<div id="' + moduleData[i].identifier + '" class="menu-element button edit-button edit-menu ' + hiddenStatus + '">\n' +
+					'<span class="stack fa-fw">\n' +
+						'<span class="fa fa-fw fa-toggle-on outer-label fa-stack-1x" aria-hidden="true"></span>\n' +
+						'<span class="fa fa-fw fa-toggle-off outer-label fa-stack-1x" aria-hidden="true"></span>\n' +
+						'<span class="fa fa-fw fa-lock inner-small-label fa-stack-1x" aria-hidden="true"></span>\n' +
+					'</span>\n' +
+					'<span class="text">' + this.format(moduleData[i].name) + '</span>\n' +
 				'</div>\n';
 
 			editMenu.push(moduleElement);
@@ -214,9 +280,15 @@ module.exports = NodeHelper.create({
 	socketNotificationReceived: function(notification, payload) {
 		var self = this;
 
-		if (notification === "MODULE_STATUS")
+		if (notification === "CURRENT_STATUS")
 		{
-			this.moduleData = payload;
+			this.configData = payload;
+			for (var i = 0; i < this.waiting.length; i++) {
+				var waitObject = this.waiting[i];
+
+				waitObject.run();
+			}
+			this.waiting = [];
 		}
 		if (notification === "REQUEST_DEFAULT_SETTINGS")
 		{

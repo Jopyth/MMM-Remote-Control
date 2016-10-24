@@ -3,14 +3,22 @@
 
     "EDIT_MENU_NAME": "Edit modules",
     "SHUTDOWN_MENU_NAME": "Power",
+    "CONFIGURE_MENU_NAME": "Settings",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
 
     "BACK": "Back",
+
+    "BRIGHTNESS": "Brightness",
+    "RESET": "Reset",
 
     "MONITOROFF": "Turn monitor OFF",
     "MONITORON": "Turn monitor ON",
     "RESTART": "Restart",
     "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
     "SHUTDOWN": "Shutdown",
+
+    "SHOWALL": "Show all",
+    "HIDEALL": "Hide all",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save as default",
