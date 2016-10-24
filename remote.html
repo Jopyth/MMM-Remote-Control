@@ -19,70 +19,85 @@
         <div class="module-content">
             <div class="menu normal">
                 <!-- general back button -->
-                <div id="back-button" class="menu-button power-menu edit-menu settings-menu">
+                <div id="back-button" class="menu-element button power-menu edit-menu settings-menu">
                     <span class="fa fa-fw fa-arrow-left" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:BACK%%</span>
                 </div>
 
                 <!-- main menu -->
-                <div id="power-button" class="menu-button main-menu">
+                <div id="power-button" class="menu-element button main-menu">
                     <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:SHUTDOWN_MENU_NAME%%</span>
                 </div>
-                <div id="edit-button" class="menu-button main-menu">
+                <div id="edit-button" class="menu-element button main-menu">
                     <span class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:EDIT_MENU_NAME%%</span>
                 </div>
-                <div id="settings-button" class="menu-button main-menu">
+                <div id="settings-button" class="menu-element button main-menu">
                     <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:CONFIGURE_MENU_NAME%%</span>
                 </div>
-                <div id="save-button" class="menu-button main-menu">
+                <div id="save-button" class="menu-element button main-menu">
                     <span class="fa fa-fw fa-save" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:SAVE%%</span>
                 </div>
 
                 <!-- settings menu -->
-                <div id="brightness-description" class="menu-button settings-menu">
+                <div id="brightness-description" class="menu-element button settings-menu">
                     <span class="stack fa-fw">
                         <span class="fa fa-fw fa-sun-o outer-label fa-stack-1x" aria-hidden="true"></span>
                         <span class="fa fa-fw fa-adjust inner-label fa-stack-1x" aria-hidden="true"></span>
                     </span>
                     <span class="text">%%TRANSLATE:BRIGHTNESS%%</span>
                 </div>
-                <div id="brightness-container" class="slider-container menu-button settings-menu">
+                <div id="brightness-container" class="slider-container menu-element button settings-menu">
                     <input id="brightness-slider" type="range" min="10" max="200" step="10" value="%%REPLACE::BRIGHTNESS%%" class="slider"/>
                 </div>
-                <div id="brightness-reset" class="menu-button settings-menu">
+                <div id="brightness-reset" class="menu-element button settings-menu">
                     <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:RESET%%</span>
                 </div>
 
                 <!-- power menu -->
-                <div id="shut-down-button" class="menu-button power-menu">
+                <div id="shut-down-button" class="menu-element button power-menu">
                     <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:SHUTDOWN%%</span>
                 </div>
-                <div id="restart-button" class="menu-button power-menu">
+                <div id="restart-button" class="menu-element button power-menu">
                     <span class="fa fa-fw fa-refresh" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:RESTART%%</span>
                 </div>
                 
                 <!-- MagicMirror menu -->
-                <div id="restart-mm-button" class="menu-button power-menu">
+                <div id="restart-mm-button" class="menu-element button power-menu">
                     <span class="fa fa-fw fa-recycle" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:RESTARTMM%%</span>
                 </div>
-                <div id="monitor-on-button" class="menu-button power-menu">
-                    <span class="fa fa-fw fa-toggle-on" aria-hidden="true"></span>
+                <div id="monitor-on-button" class="menu-element button power-menu">
+                    <span class="stack fa-fw">
+                        <span class="fa fa-fw fa-television outer-label fa-stack-1x" aria-hidden="true"></span>
+                        <span class="fa fa-fw fa-check inner-monitor-label fa-stack-1x" aria-hidden="true"></span>
+                    </span>
                     <span class="text">%%TRANSLATE:MONITORON%%</span>
                 </div>
-                <div id="monitor-off-button" class="menu-button power-menu">
-                    <span class="fa fa-fw fa-toggle-off" aria-hidden="true"></span>
+                <div id="monitor-off-button" class="menu-element button power-menu">
+                    <span class="stack fa-fw">
+                        <span class="fa fa-fw fa-television outer-label fa-stack-1x" aria-hidden="true"></span>
+                        <span class="fa fa-fw fa-close inner-monitor-label fa-stack-1x" aria-hidden="true"></span>
+                    </span>
                     <span class="text">%%TRANSLATE:MONITOROFF%%</span>
                 </div>
 
                 <!-- edit menu -->
+                <div id="show-all-button" class="menu-element button edit-menu">
+                    <span class="fa fa-fw fa-toggle-on" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:SHOWALL%%</span>
+                </div>
+                <div id="hide-all-button" class="menu-element button edit-menu">
+                    <span class="fa fa-fw fa-toggle-off" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:HIDEALL%%</span>
+                </div>
+                <header class="header menu-element edit-menu"></header>
                 <!-- (created dynamically) -->
                 <!-- EDIT_MENU_TEMPLATE -->
 

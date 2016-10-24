@@ -87,13 +87,17 @@ Module.register("MMM-Remote-Control", {
 			this.setBrightness(parseInt(payload));
 		}
 		if (notification === "HIDE" || notification === "SHOW") {
+			var options = {lockString: this.identifier};
 			var modules = MM.getModules();
 			for (var i = 0; i < modules.length; i++) {
-				if (modules[i].identifier === payload) {
+				if (modules[i].identifier === payload.module) {
 					if (notification === "HIDE") {
-						modules[i].hide(1000);
+						if (payload.force) {
+							options.force = true;
+						}
+						modules[i].hide(1000, options);
 					} else {
-						modules[i].show(1000);
+						modules[i].show(1000, options);
 					}
 				}
 			}
@@ -196,12 +200,26 @@ Module.register("MMM-Remote-Control", {
 		return wrapper;
 	},
 
+	removeOwnLockString: function(lockStrings) {
+		if (!lockStrings) {
+			return [];
+		}
+		var newLockStrings = [];
+		for (var i = 0; i < lockStrings.length; i++) {
+			if (lockStrings[i] !== this.id) {
+				newLockStrings.push(lockStrings[i]);
+			}
+		}
+		return newLockStrings;
+	},
+
 	sendCurrentData: function() {
 		var modules = MM.getModules();
 		var currentModuleData = [];
 		for (var i = 0; i < modules.length; i++) {
 			currentModuleData.push({});
 			currentModuleData[i]["hidden"] = modules[i].hidden;
+			currentModuleData[i]["lockStrings"] = this.removeOwnLockString(modules[i].lockStrings);
 			currentModuleData[i]["name"] = modules[i].name;
 			currentModuleData[i]["identifier"] = modules[i].identifier;
 			currentModuleData[i]["position"] = modules[i].data.position;

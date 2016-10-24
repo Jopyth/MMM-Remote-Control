@@ -9,9 +9,12 @@ body {
   width: calc(100% - 40px);
 }
 
-.menu-button {
-  cursor: pointer;
+.menu-element {
   display: none;
+}
+
+.button {
+  cursor: pointer;
 }
 
 .status-indicator {
@@ -30,12 +33,26 @@ body {
     font-size: 15px;
 }
 
-.hidden-on-mirror > .symbol-on-show {
+/* general toggle rules */
+.toggled-off > * > .fa-toggle-on {
+    display: none;
+}
+.toggled-off > .fa-toggle-on {
+    display: none;
+}
+.toggled-on > * > .fa-toggle-off {
+    display: none;
+}
+.toggled-on > .fa-toggle-off {
     display: none;
 }
 
-.shown-on-mirror > .symbol-on-hide {
+/* edit button specific stuff */
+.edit-button > * > .fa-lock {
     display: none;
+}
+.external-locked > * > .fa-lock.inner-small-label {
+    display: inline-block;
 }
 
 .slider-container {
@@ -56,6 +73,17 @@ body {
 
 .inner-label {
   font-size: 0.9em;
+}
+
+.inner-monitor-label {
+  font-size: 0.5em;
+  top: -0.15em;
+  left: -0.05em;
+}
+
+.inner-small-label {
+  font-size: 0.4em;
+  left: -0.5em;
 }
 
 .outer-label {

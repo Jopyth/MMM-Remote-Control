@@ -16,6 +16,9 @@
     "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
     "SHUTDOWN": "Shutdown",
 
+    "SHOWALL": "Show all",
+    "HIDEALL": "Hide all",
+
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save as default",
 

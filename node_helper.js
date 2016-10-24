@@ -87,7 +87,11 @@ module.exports = NodeHelper.create({
 		if (query.action === 'HIDE' || query.action === 'SHOW')
 		{
 			if (res) { res.send({'status': 'success'}); }
-			self.sendSocketNotification(query.action, query.module);
+			var payload = { module: query.module, useLockStrings: query.useLockStrings };
+			if (query.action === 'SHOW' && query.force === "true") {
+				payload.force = true;
+			}
+			self.sendSocketNotification(query.action, payload);
 			return true;
 		}
 		if (query.action === 'BRIGHTNESS')
@@ -171,7 +175,7 @@ module.exports = NodeHelper.create({
 		var moduleData = this.configData.moduleData;
 		if (!moduleData) {
 			var error =
-				'<div class="menu-button edit-menu">\n' +
+				'<div class="menu-element button edit-menu">\n' +
 					'<span class="fa fa-fw fa-exclamation-circle" aria-hidden="true"></span>\n' +
 					'<span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>\n' +
 				'</div>\n';
@@ -186,15 +190,21 @@ module.exports = NodeHelper.create({
 				continue;
 			}
 
-			var hiddenStatus = 'shown-on-mirror';
+			var hiddenStatus = 'toggled-on';
 			if (moduleData[i].hidden) {
-				hiddenStatus = 'hidden-on-mirror';
+				hiddenStatus = 'toggled-off';
+				if (moduleData[i].lockStrings && moduleData[i].lockStrings.length) {
+					hiddenStatus += ' external-locked';
+				}
 			}
 
 			var moduleElement =
-				'<div id="' + moduleData[i].identifier + '" class="menu-button edit-button edit-menu ' + hiddenStatus + '">\n' +
-					'<span class="symbol-on-show fa fa-fw fa-toggle-on" aria-hidden="true"></span>\n' +
-					'<span class="symbol-on-hide fa fa-fw fa-toggle-off" aria-hidden="true"></span>\n' +
+				'<div id="' + moduleData[i].identifier + '" class="menu-element button edit-button edit-menu ' + hiddenStatus + '">\n' +
+					'<span class="stack fa-fw">\n' +
+						'<span class="fa fa-fw fa-toggle-on outer-label fa-stack-1x" aria-hidden="true"></span>\n' +
+						'<span class="fa fa-fw fa-toggle-off outer-label fa-stack-1x" aria-hidden="true"></span>\n' +
+						'<span class="fa fa-fw fa-lock inner-small-label fa-stack-1x" aria-hidden="true"></span>\n' +
+					'</span>\n' +
 					'<span class="text">' + this.format(moduleData[i].name) + '</span>\n' +
 				'</div>\n';
 
