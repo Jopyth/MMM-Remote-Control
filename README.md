@@ -68,11 +68,27 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | RESTART | Restart your MagicMirror |
 | MONITORON | Switch your display on |
 | MONITOROFF | Switch your display off |
-| SAVE | Save the current configuration (show and hide status of modules), will be applied after the mirror starts |
+| SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
-| HIDE | Hide a module, with the identifier specified by `module` |
-| SHOW | Show a module, with the identifier specified by `module` |
-| MODULE_DATA | Returns a JSON format of the data displayed in the UI |
+| HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
+| SHOW | Show a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
+| MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
+
+### Format of module data response
+
+The response will be in the JSON format, here is an example:
+
+```json
+{
+"moduleData":[
+    {"hidden":false,"name":"alert","identifier":"module_0_alert"},
+    {"hidden":true,"name":"clock","identifier":"module_1_clock","position":"bottom_right"},
+    {"hidden":false,"name":"currentweather","identifier":"module_2_currentweather","position":"top_right"}
+],
+"brightness":40,
+"settingsVersion":1
+}
+```
 
 ## License
 
