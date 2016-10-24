@@ -53,7 +53,7 @@ module.exports = NodeHelper.create({
 	
 	executeQuery: function(query, res) {
 		var self = this;
-		var opts = {timeout: 5000};
+		var opts = {timeout: 8000};
 
 		if (query.action === 'SHUTDOWN')
 		{
