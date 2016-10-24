@@ -24,7 +24,7 @@ module.exports = NodeHelper.create({
 
 		this.configData = {};
 
-		this.waitingResponses = [];
+		this.waiting = [];
 
 		this.template = "";
 
@@ -36,8 +36,11 @@ module.exports = NodeHelper.create({
 			if (self.template === "") {
 				res.send(503);
 			} else {
-				self.waitingResponses.push(res);
-				self.sendSocketNotification("UPDATE");
+				self.callAfterUpdate(function () {
+					res.contentType('text/html');
+					var transformedData = self.fillTemplates(self.template);
+					res.send(transformedData);
+				});
 			}
 		});
 
@@ -53,6 +56,30 @@ module.exports = NodeHelper.create({
 			}
 			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + JSON.stringify(query)});
 		});
+	},
+
+	callAfterUpdate: function(callback, timeout) {
+		if (timeout === undefined) {
+			timeout = 3000;
+		}
+
+		var waitObject = {
+			finished: false,
+			run: function () {
+				if (this.finished) {
+					return;
+				}
+				this.finished = true;
+				this.callback();
+			},
+			callback: callback
+		}
+
+		this.waiting.push(waitObject);
+		this.sendSocketNotification("UPDATE");
+		setTimeout(function() {
+			waitObject.run();
+		}, timeout);
 	},
 	
 	executeQuery: function(query, res) {
@@ -103,7 +130,16 @@ module.exports = NodeHelper.create({
 		if (query.action === 'SAVE')
 		{
 			if (res) { res.send({'status': 'success'}); }
-			self.saveDefaultSettings();
+			self.callAfterUpdate(function () { self.saveDefaultSettings(); });
+			return true;
+		}
+		if (query.action === 'MODULE_DATA')
+		{
+			self.callAfterUpdate(function () {
+				var text = JSON.stringify(self.configData);
+				res.contentType('application/json');
+				res.send(text);
+			});
 			return true;
 		}
 		return false;
@@ -247,14 +283,12 @@ module.exports = NodeHelper.create({
 		if (notification === "CURRENT_STATUS")
 		{
 			this.configData = payload;
-			for (var i = 0; i < this.waitingResponses.length; i++) {
-				var res = this.waitingResponses[i];
+			for (var i = 0; i < this.waiting.length; i++) {
+				var waitObject = this.waiting[i];
 
-				res.contentType('text/html');
-				var transformedData = self.fillTemplates(self.template);
-				res.send(transformedData);
+				waitObject.run();
 			}
-			this.waitingResponses = [];
+			this.waiting = [];
 		}
 		if (notification === "REQUEST_DEFAULT_SETTINGS")
 		{

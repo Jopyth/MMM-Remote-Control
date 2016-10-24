@@ -72,6 +72,7 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 | HIDE | Hide a module, with the identifier specified by `module` |
 | SHOW | Show a module, with the identifier specified by `module` |
+| MODULE_DATA | Returns a JSON format of the data displayed in the UI |
 
 ## License
 

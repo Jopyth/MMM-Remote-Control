@@ -153,6 +153,9 @@ var buttons = {
     'settings-button': function () {
         window.location.hash = 'settings-menu';
     },
+    'mirror-link-button': function () {
+        window.open("/", "_blank");
+    },
     'back-button': function () {
         window.location.hash = 'main-menu';
     },
