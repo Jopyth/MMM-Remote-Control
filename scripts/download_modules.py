@@ -45,9 +45,12 @@ def parse(content):
         url = url.replace("bit.ly/MMM-Instagram", "github.com/kapsolas/MMM-Instagram")
         url = url.replace("bit.ly/MMM-Flickr", "github.com/kapsolas/MMM-Flickr")
         url = url.replace("http:", "https:")
-        url = "/".join(url.split("/")[:5])
+        split_url = url.split("/")[:5]
+        identifier = split_url[-2] + "/" + split_url[-1]
+        url = "/".join(split_url)
 
         module_data = {}
+        module_data["id"] = identifier
         module_data["longname"] = name
         module_data["name"] = short_name
         module_data["author"] = author

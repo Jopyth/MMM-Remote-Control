@@ -9,8 +9,9 @@ const NodeHelper = require("node_helper");
 const path = require("path");
 const url = require("url");
 const fs = require("fs");
-const exec = require('child_process').exec;
-const os = require('os');
+const exec = require("child_process").exec;
+const os = require("os");
+const simpleGit = require("simple-git")(path.resolve(__dirname + "/.."));
 
 module.exports = NodeHelper.create({
 	// Subclass start method.
@@ -41,7 +42,7 @@ module.exports = NodeHelper.create({
 				res.send(503);
 			} else {
 				self.callAfterUpdate(function () {
-					res.contentType('text/html');
+					res.contentType("text/html");
 					var transformedData = self.fillTemplates(self.template);
 					res.send(transformedData);
 				});
@@ -54,7 +55,7 @@ module.exports = NodeHelper.create({
 			self.answerGet(query, res);
 		});
 
-		this.expressApp.get('/remote', (req, res) => {
+		this.expressApp.get("/remote", (req, res) => {
 			var query = url.parse(req.url, true).query;
 
 			if (query.action)
@@ -64,7 +65,7 @@ module.exports = NodeHelper.create({
 					return;
 				}
 			}
-			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + JSON.stringify(query)});
+			res.send({"status": "error", "reason": "unknown_command", "info": "original input: " + JSON.stringify(query)});
 		});
 	},
 
@@ -104,17 +105,23 @@ module.exports = NodeHelper.create({
 	answerGet: function(query, res) {
 		var self = this;
 
-		if (query.data === 'modulesAvailable')
+		if (query.data === "modulesAvailable")
 		{
 			var text = JSON.stringify(this.modulesAvailable);
-			res.contentType('application/json');
+			res.contentType("application/json");
 			res.send(text);
 		}
-		if (query.data === 'modules')
+		if (query.data === "translations")
+		{
+			var text = JSON.stringify(this.translation);
+			res.contentType("application/json");
+			res.send(text);
+		}
+		if (query.data === "modules")
 		{
 			this.callAfterUpdate(function () {
 				var text = JSON.stringify(self.configData.moduleData);
-				res.contentType('application/json');
+				res.contentType("application/json");
 				res.send(text);
 			});
 		}
@@ -148,72 +155,103 @@ module.exports = NodeHelper.create({
 		var self = this;
 		var opts = {timeout: 8000};
 
-		if (query.action === 'SHUTDOWN')
+		if (query.action === "SHUTDOWN")
 		{
-			exec('sudo shutdown -h now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("sudo shutdown -h now", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === 'REBOOT')
+		if (query.action === "REBOOT")
 		{
-			exec('sudo shutdown -r now', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("sudo shutdown -r now", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === 'RESTART')
+		if (query.action === "RESTART")
 		{
-			exec('pm2 restart mm', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("pm2 restart mm", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === 'MONITORON')
+		if (query.action === "MONITORON")
 		{
-			exec('/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === 'MONITOROFF')
+		if (query.action === "MONITOROFF")
 		{
-			exec('/opt/vc/bin/tvservice -o', opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("/opt/vc/bin/tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === 'HIDE' || query.action === 'SHOW')
+		if (query.action === "HIDE" || query.action === "SHOW")
 		{
-			if (res) { res.send({'status': 'success'}); }
+			if (res) { res.send({"status": "success"}); }
 			var payload = { module: query.module, useLockStrings: query.useLockStrings };
-			if (query.action === 'SHOW' && query.force === "true") {
+			if (query.action === "SHOW" && query.force === "true") {
 				payload.force = true;
 			}
 			self.sendSocketNotification(query.action, payload);
 			return true;
 		}
-		if (query.action === 'BRIGHTNESS')
+		if (query.action === "BRIGHTNESS")
 		{
-			res.send({'status': 'success'});
+			res.send({"status": "success"});
 			self.sendSocketNotification(query.action, query.value);
 			return true;
 		}
-		if (query.action === 'SAVE')
+		if (query.action === "SAVE")
 		{
-			if (res) { res.send({'status': 'success'}); }
+			if (res) { res.send({"status": "success"}); }
 			self.callAfterUpdate(function () { self.saveDefaultSettings(); });
 			return true;
 		}
-		if (query.action === 'MODULE_DATA')
+		if (query.action === "MODULE_DATA")
 		{
 			self.callAfterUpdate(function () {
 				var text = JSON.stringify(self.configData);
-				res.contentType('application/json');
+				res.contentType("application/json");
 				res.send(text);
 			});
 			return true;
 		}
+		if (query.action === "INSTALL")
+		{
+			self.installModule(query.url, res);
+			return true;
+		}
 		return false;
+	},
+
+	installModule: function(url, res) {
+		var self = this;
+
+		res.contentType("application/json");
+
+		simpleGit.clone(url, path.basename(url), function(error, result) {
+			if (error) {
+				console.log(error);
+				res.send({"status": "error"});
+			} else {
+				var workDir = path.resolve(__dirname + "/../" + path.basename(url));
+				exec("npm install", {cwd: workDir, timeout: 120000}, function(error, stdout, stderr)
+				{
+					if (error) {
+						console.log(error);
+						res.send({"status": "error"});
+					} else {
+						// success part
+						self.readModuleData();
+						res.send({"status": "success"});
+					}
+				});
+			}
+		});
 	},
 	
 	checkForExecError: function(error, stdout, stderr, res) {
 		if (error) {
 			console.log(error);
-			if (res) { res.send({'status': 'error', 'reason': 'unknown', 'info': error}); }
+			if (res) { res.send({"status": "error", "reason": "unknown", "info": error}); }
 			return;
 		}
-		if (res) { res.send({'status': 'success'}); }
+		if (res) { res.send({"status": "success"}); }
 	},
 
 	translate: function(data) {
@@ -293,7 +331,7 @@ module.exports = NodeHelper.create({
 		for (var k in interfaces) {
 			for (var k2 in interfaces[k]) {
 				var address = interfaces[k][k2];
-				if (address.family === 'IPv4' && !address.internal) {
+				if (address.family === "IPv4" && !address.internal) {
 					addresses.push(address.address);
 				}
 			}

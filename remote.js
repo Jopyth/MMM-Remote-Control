@@ -2,6 +2,8 @@
 
 var Remote = {
     savedData : {},
+    translations : {},
+    currentConfig : {},
 
     loadButtons: function(buttons) {
         for (var key in buttons) {
@@ -11,6 +13,18 @@ var Remote = {
                 element.addEventListener("click", buttons[key], false);
             }
         }
+    },
+
+    loadTranslations: function() {
+        var self = this;
+
+        this.get("get", "data=translations", function (text) {
+            self.translations = JSON.parse(text);
+        });
+    },
+
+    translate: function(pattern) {
+        return this.translations[pattern];
     },
 
     hasClass: function(element, name) {
@@ -190,6 +204,30 @@ var Remote = {
         this.getWithStatus("action=HIDE&module=" + id);
     },
 
+    install: function(url, index) {
+        var self = this;
+
+        var downloadButton = document.getElementById("download-button");
+        var symbol = downloadButton.children[0];
+        var text = downloadButton.children[1];
+        symbol.className = "fa fa-fw fa-spinner fa-pulse";
+        text.innerHTML = " " + self.translate("DOWNLOADING");
+
+        self.get("remote", "action=INSTALL&url=" + url, function (response) {
+            var result = JSON.parse(response);
+            if (result.status === "success") {
+                var bgElement = document.getElementById("install-module-" + index);
+                bgElement.firstChild.className = "fa fa-fw fa-check-circle";
+                self.savedData.modulesAvailable[index].installed = true;
+                self.closePopup();
+                self.createAddingPopup(index);
+            } else {
+                symbol.className = "fa fa-fw fa-exclamation-circle";
+                text.innerHTML = " " + self.translate("ERROR");
+            }
+        });
+    },
+
     get: function(route, params, callback) {
         var http = new XMLHttpRequest();
         var url = route + "?" + params;
@@ -306,81 +344,202 @@ var Remote = {
         });
     },
 
+    createSymbolTextDiv: function(symbol, text, eventListener) {
+        var wrapper = document.createElement("div");
+        if (eventListener) {
+            wrapper.className = "button";
+        }
+        var symbolElement = document.createElement("span");
+        symbolElement.className = symbol;
+        wrapper.appendChild(symbolElement);
+        var textElement = document.createElement("span");
+        textElement.innerHTML = " " + text;
+        wrapper.appendChild(textElement);
+        if (eventListener) {
+            wrapper.addEventListener("click", eventListener, false);
+        }
+        return wrapper
+    },
+
+    createConfigElement: {
+        string: function(wrapper, key, value) {
+            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", key);
+            wrapper.appendChild(label);
+
+            var input = document.createElement("input");
+            input.type = "text";
+            input.size = 100;
+            input.value = value;
+            input.id = "config-element-" + key;
+            wrapper.appendChild(input);
+        },
+        number: function(wrapper, key, value) {
+            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", key);
+            wrapper.appendChild(label);
+
+            var input = document.createElement("input");
+            input.type = "number";
+            input.value = value;
+            input.id = "config-element-" + key;
+            wrapper.appendChild(input);
+        },
+        boolean: function(wrapper, key, value) {
+            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", key);
+            wrapper.appendChild(label);
+
+            var input = document.createElement("input");
+            input.type = "checkbox";
+            input.value = value;
+            input.id = "config-element-" + key;
+            wrapper.appendChild(input);
+        },
+        default: function(wrapper, key, value) {
+            var label = Remote.createSymbolTextDiv("fa fa-fw fa-info-circle", key);
+            wrapper.appendChild(label);
+
+            var valueElement = document.createElement("div");
+            valueElement.innerHTML = value;
+            valueElement.id = "config-element-" + key;
+            wrapper.appendChild(valueElement);
+        }
+    },
+
+    createCurrentConfigWrapper: function() {
+        var wrapper = document.createElement("div");
+        wrapper.id = "config-wrapper";
+        wrapper.className = "flex-fill small";
+
+        for (var key in this.currentConfig) {
+            if (this.currentConfig.hasOwnProperty(key)) {
+                var value = this.currentConfig[key];
+                var type = typeof value;
+
+                if (this.createConfigElement[type]) {
+                    this.createConfigElement[type](wrapper, key, value);
+                } else {
+                    var stringValue = JSON.stringify(value);
+                    this.createConfigElement["default"](wrapper, key, stringValue);
+                }
+            }
+        }
+
+        return wrapper;
+    },
+
+    createConfigPopup: function(index) {
+        var self = this;
+        if (typeof index === "string") {
+            index = parseInt(index);
+        }
+
+        var data = this.savedData["modules"][index];
+
+        self.currentConfig = data.config;
+
+        var wrapper = this.getPopupContent();
+        console.log(data);
+
+        var name = document.createElement("div");
+        name.innerHTML = self.formatName(data.name);
+        name.className = "bright title";
+        wrapper.appendChild(name);
+
+        var identifier = document.createElement("div");
+        identifier.innerHTML = data.identifier;
+        identifier.className = "dimmed subtitle xsmall";
+        wrapper.appendChild(identifier);
+
+        var helpElement = self.createSymbolTextDiv("small fa fa-fw fa-question-circle", self.translate("HELP"), function (event) {
+            // load readme
+            console.log("ToDo Helplink");
+        }, false);
+        helpElement.className = "flex-footer align-right";
+        wrapper.appendChild(helpElement);
+
+        wrapper.appendChild(self.createCurrentConfigWrapper());
+
+        var footer = document.createElement("div");
+        footer.className = "flex-footer";
+
+
+        var helpElement = self.createSymbolTextDiv("fa fa-fw fa-save", self.translate("SAVE"), function (event) {
+            // load readme
+            console.log("ToDo Save");
+        }, false);
+        footer.appendChild(helpElement);
+
+        wrapper.appendChild(footer);
+
+        this.showPopup();
+    },
+
     loadConfigModules: function() {
         var self = this;
 
         this.loadList("config-modules", "modules", function (parent, moduleData) {
             for (var i = 0; i < moduleData.length; i++) {
-                var moduleBox = document.createElement("div");
+                var moduleBox = self.createSymbolTextDiv("fa fa-fw fa-pencil", self.formatName(moduleData[i].name), function() {
+                    var i = event.currentTarget.id.replace("edit-module-", "");
+                    self.createConfigPopup(i);
+                });
                 moduleBox.className = "button module-line";
-                moduleBox.id = moduleData[i].identifier;
-
-                var symbol = document.createElement("span");
-                symbol.className = "fa fa-fw fa-pencil";
-                moduleBox.appendChild(symbol);
-
-                var text = document.createElement("span");
-                text.className = "text";
-                text.innerHTML = " " + self.formatName(moduleData[i].name);
-                moduleBox.appendChild(text);
-
+                moduleBox.id = "edit-module-" + i;
                 parent.appendChild(moduleBox);
             }
         });
     },
 
     createAddingPopup: function(index) {
+        var self = this;
+        if (typeof index === "string") {
+            index = parseInt(index);
+        }
+
         var data = this.savedData["modulesAvailable"][index];
         var wrapper = this.getPopupContent();
 
         var name = document.createElement("div");
         name.innerHTML = data.name;
-        name.className = "bright margin-right";
+        name.className = "bright title";
         wrapper.appendChild(name);
 
         var author = document.createElement("div");
-        author.innerHTML = "by " + data.author;
-        author.className = "align-right";
+        author.innerHTML = self.translate("BY") + " " + data.author;
+        author.className = "subtitle";
         wrapper.appendChild(author);
 
         var desc = document.createElement("div");
         desc.innerHTML = data.desc;
-        desc.className = "small";
+        desc.className = "small flex-fill";
         wrapper.appendChild(desc);
 
-        var desc = document.createElement("div");
-        wrapper.appendChild(desc);
+        var footer = document.createElement("div");
+        footer.className = "flex-footer";
 
-        var status = document.createElement("div");
-        var symbol = document.createElement("span");
-        var text = document.createElement("span");
         if (data.installed) {
-            symbol.className = "fa fa-fw fa-check-circle";
-            text.innerHTML = " Installed";
-        } else {
-            symbol.className = "fa fa-fw fa-download";
-            text.innerHTML = " Download";
-            status.className = "button";
-            status.addEventListener("click", function (event) {
-                self.install(data.url);
+            var add = self.createSymbolTextDiv("fa fa-fw fa-plus", self.translate("ADD_THIS"), function (event) {
+                console.log("ToDo");
             }, false);
+            footer.appendChild(add);
         }
-        status.appendChild(symbol);
-        status.appendChild(text);
-        wrapper.appendChild(status);
 
-        var githubElement = document.createElement("div");
-        githubElement.className = "button";
-        var ghSymbol = document.createElement("span");
-        ghSymbol.className = "fa fa-fw fa-github";
-        githubElement.appendChild(ghSymbol);
-        var ghText = document.createElement("span");
-        ghText.innerHTML = " View Code";
-        githubElement.appendChild(ghText);
-        wrapper.appendChild(githubElement);
-        githubElement.addEventListener("click", function (event) {
+        if (data.installed) {
+            var statusElement = self.createSymbolTextDiv("fa fa-fw fa-check-circle", self.translate("INSTALLED"));
+            footer.appendChild(statusElement);
+        } else {
+            var statusElement = self.createSymbolTextDiv("fa fa-fw fa-download", self.translate("DOWNLOAD"), function (event) {
+                self.install(data.url, index);
+            }, false);
+            statusElement.id = "download-button";
+            footer.appendChild(statusElement);
+        }
+
+        var githubElement = self.createSymbolTextDiv("fa fa-fw fa-github", self.translate("CODE_LINK"), function (event) {
             window.open(data.url, "_blank");
         }, false);
+        footer.appendChild(githubElement);
+
+        wrapper.appendChild(footer);
 
         this.showPopup();
     },
@@ -390,28 +549,18 @@ var Remote = {
 
         this.loadList("add-module", "modulesAvailable", function (parent, modules) {
             for (var i = 0; i < modules.length; i++) {
-                var moduleBox = document.createElement("div");
-                moduleBox.className = "button module-line";
-                moduleBox.id = "install-module-" + i;
-
-                var symbol = document.createElement("span");
+                var symbol = "fa fa-fw fa-cloud";
                 if (modules[i].installed) {
-                    symbol.className = "fa fa-fw fa-check-circle";
-                } else {
-                    symbol.className = "fa fa-fw fa-cloud";
+                    symbol = "fa fa-fw fa-check-circle";
                 }
-                moduleBox.appendChild(symbol);
 
-                var name = document.createElement("span");
-                name.innerHTML = " " + modules[i].name;
-                moduleBox.appendChild(name);
-
-                parent.appendChild(moduleBox);
-
-                moduleBox.addEventListener("click", function (event) {
+                var moduleBox = self.createSymbolTextDiv(symbol, modules[i].name, function (event) {
                     var index = event.currentTarget.id.replace("install-module-", "");
                     self.createAddingPopup(index);
                 }, false);
+                moduleBox.className = "button module-line";
+                moduleBox.id = "install-module-" + i;
+                parent.appendChild(moduleBox);
             }
         });
     }
@@ -419,19 +568,19 @@ var Remote = {
 
 var buttons = {
     // navigation buttons
-    "power-button": function () {
+    "power-button": function() {
         window.location.hash = "power-menu";
     },
-    "edit-button": function () {
+    "edit-button": function() {
         window.location.hash = "edit-menu";
     },
-    "settings-button": function () {
+    "settings-button": function() {
         window.location.hash = "settings-menu";
     },
-    "mirror-link-button": function () {
+    "mirror-link-button": function() {
         window.open("/", "_blank");
     },
-    "back-button": function () {
+    "back-button": function() {
         if (window.location.hash === "#add-module-menu") {
             window.location.hash = "settings-menu";
             return;
@@ -441,7 +590,7 @@ var buttons = {
     },
 
     // settings menu buttons
-    "brightness-reset": function () {
+    "brightness-reset": function() {
         var element = document.getElementById("brightness-slider");
         element.value = 100;
         Remote.getWithStatus("action=BRIGHTNESS&value=100");
@@ -466,37 +615,38 @@ var buttons = {
     },
 
     // power menu buttons
-    "shut-down-button": function () {
+    "shut-down-button": function() {
         Remote.getWithStatus("action=SHUTDOWN");
     },
-    "restart-button": function () {
+    "restart-button": function() {
         Remote.getWithStatus("action=REBOOT");
     },
-    "restart-mm-button": function () {
+    "restart-mm-button": function() {
         Remote.getWithStatus("action=RESTART");
     },
-    "monitor-on-button": function () {
+    "monitor-on-button": function() {
         Remote.getWithStatus("action=MONITORON");
     },
-    "monitor-off-button": function () {
+    "monitor-off-button": function() {
         Remote.getWithStatus("action=MONITOROFF");
     },
 
     // config menu buttons
-    "add-module": function () {
+    "add-module": function() {
         window.location.hash = "add-module-menu";
     },
 
     // main menu
-    "save-button": function () {
+    "save-button": function() {
         Remote.getWithStatus("action=SAVE");
     },
 
-    "close-popup": function () {
+    "close-popup": function() {
         Remote.closePopup();
     }
 }
 
+Remote.loadTranslations();
 Remote.loadButtons(buttons);
 Remote.loadOtherElements();
 

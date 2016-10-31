@@ -52,11 +52,15 @@ input {
   color: #999;
   font-size: inherit;
   font: inherit;
-  width: calc(100% - 2em);
+  width: calc(100% - 4px);
   border: 2px solid #999;
   -moz-border-radius: 0.2em;
   -webkit-border-radius: 0.2em;
   border-radius: 0.2em;
+}
+
+.input-with-symbol {
+  width: calc(100% - 2em);
 }
 
 .search-container {
@@ -144,19 +148,37 @@ input {
 }
 
 .popup-contents {
-  padding: 5px 10px 10px 5px;
+  padding: 5px 10px 5px 10px;
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
+  height: calc(100% - 10px);
+  width: calc(100% - 20px);
 }
 
-.margin-right {
+.title {
+  flex: 0 1 auto;
   margin-right: 1.5em;
 }
 
-.align-right {
+.subtitle {
+  flex: 0 1 auto;
   width: 100%;
   text-align: right;
+  font-style: italic;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.flex-fill {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.flex-footer {
+  flex: 0 1 auto;
 }
 
 .hidden {

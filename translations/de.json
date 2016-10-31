@@ -21,6 +21,13 @@
 
     "ADD_MODULE": "Neues Modul",
     "SEARCH": "Suchen &hellip;",
+    "INSTALLED": "Installiert",
+    "DOWNLOAD": "Download",
+    "DOWNLOADING": "Downloading &hellip;",
+    "CODE_LINK": "Code ansehen",
+    "BY": "von",
+    "ADD_THIS": "Hinzuf&uuml;gen",
+    "HELP": "Hilfe",
 
     "NO_MODULES_LOADED": "Keine Module geladen.",
     "SAVE": "Speichern",

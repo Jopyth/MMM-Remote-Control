@@ -21,6 +21,13 @@
 
     "ADD_MODULE": "Add module",
     "SEARCH": "Search &hellip;",
+    "INSTALLED": "Installed",
+    "DOWNLOAD": "Download",
+    "DOWNLOADING": "Downloading &hellip;",
+    "CODE_LINK": "View code",
+    "BY": "by",
+    "ADD_THIS": "Add this module",
+    "HELP": "Show readme",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",

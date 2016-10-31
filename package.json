@@ -19,5 +19,8 @@
   "bugs": {
     "url": "git+https://github.com/jopyth/MMM-Remote-Control/issues"
   },
-  "homepage": "git+https://github.com/jopyth/MMM-Remote-Control#readme"
+  "homepage": "git+https://github.com/jopyth/MMM-Remote-Control#readme",
+  "dependencies": {
+    "simple-git": "latest"
+  }
 }
