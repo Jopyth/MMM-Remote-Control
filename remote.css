@@ -3,10 +3,20 @@ html {
 }
 
 body {
-  overflow-y: scroll;
-  margin: 20px;
-  height: calc(100% - 40px);
-  width: calc(100% - 40px);
+  margin: 10px;
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
+}
+
+.fill {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-list {
+  overflow-y: auto;
+  height: 100%;
 }
 
 .menu-element {
@@ -26,33 +36,59 @@ body {
 }
 
 .result {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    line-height: 1em;
-    font-size: 15px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  line-height: 1em;
+  font-size: 15px;
+}
+
+.module-line {
+  padding-bottom: 5px;
+}
+
+input {
+  background: #000;
+  color: #999;
+  font-size: inherit;
+  font: inherit;
+  width: calc(100% - 2em);
+  border: 2px solid #999;
+  -moz-border-radius: 0.2em;
+  -webkit-border-radius: 0.2em;
+  border-radius: 0.2em;
+}
+
+.search-container {
+  position: relative;
+}
+
+.delete-button {
+  position: absolute;
+  right: 0.35em;
+  top: 0.35em;
 }
 
 /* general toggle rules */
 .toggled-off > * > .fa-toggle-on {
-    display: none;
+  display: none;
 }
 .toggled-off > .fa-toggle-on {
-    display: none;
+  display: none;
 }
 .toggled-on > * > .fa-toggle-off {
-    display: none;
+  display: none;
 }
 .toggled-on > .fa-toggle-off {
-    display: none;
+  display: none;
 }
 
 /* edit button specific stuff */
-.edit-button > * > .fa-lock {
-    display: none;
+.module-line > * > .fa-lock {
+  display: none;
 }
 .external-locked > * > .fa-lock.inner-small-label {
-    display: inline-block;
+  display: inline-block;
 }
 
 .slider-container {
@@ -92,7 +128,41 @@ body {
 
 .slider {
   vertical-align: middle;
+  border: 0px;
 }
+
+.popup {
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  background-color: black;
+  position: absolute;
+  border: 2px solid #999;
+  top: 0px;
+  border-radius: 5px;
+  display: none;
+  overflow-y: auto;
+}
+
+.popup-contents {
+  padding: 5px 10px 10px 5px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.margin-right {
+  margin-right: 1.5em;
+}
+
+.align-right {
+  width: 100%;
+  text-align: right;
+}
+
+.hidden {
+  display: none;
+}
+
 
 /* slider appearance created with http://danielstern.ca/range.css/?ref=css-tricks#/ */
 input[type=range] {

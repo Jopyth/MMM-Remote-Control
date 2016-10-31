@@ -206,7 +206,7 @@ Module.register("MMM-Remote-Control", {
 		}
 		var newLockStrings = [];
 		for (var i = 0; i < lockStrings.length; i++) {
-			if (lockStrings[i] !== this.id) {
+			if (lockStrings[i] !== this.identifier) {
 				newLockStrings.push(lockStrings[i]);
 			}
 		}
@@ -216,6 +216,7 @@ Module.register("MMM-Remote-Control", {
 	sendCurrentData: function() {
 		var modules = MM.getModules();
 		var currentModuleData = [];
+		console.log(modules[0]);
 		for (var i = 0; i < modules.length; i++) {
 			currentModuleData.push({});
 			currentModuleData[i]["hidden"] = modules[i].hidden;
@@ -223,6 +224,7 @@ Module.register("MMM-Remote-Control", {
 			currentModuleData[i]["name"] = modules[i].name;
 			currentModuleData[i]["identifier"] = modules[i].identifier;
 			currentModuleData[i]["position"] = modules[i].data.position;
+			currentModuleData[i]["config"] = modules[i].config;
 		}
 		var configData = {
 			moduleData: currentModuleData,

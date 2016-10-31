@@ -13,13 +13,13 @@
 </head>
 <body>
 
-<div class="container">
-    <div id="module_1_MMM-Remote-Control" class="module">
+<div class="container normal fill">
+    <div id="module_1_MMM-Remote-Control" class="fill">
         <header class="header">%%TRANSLATE:TITLE%%</header>
-        <div class="module-content">
-            <div class="menu normal">
+        <div class="fill">
+            <div class="menu fill">
                 <!-- general back button -->
-                <div id="back-button" class="menu-element button power-menu edit-menu settings-menu">
+                <div id="back-button" class="menu-element button power-menu edit-menu settings-menu add-module-menu">
                     <span class="fa fa-fw fa-arrow-left" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:BACK%%</span>
                 </div>
@@ -30,7 +30,10 @@
                     <span class="text">%%TRANSLATE:SHUTDOWN_MENU_NAME%%</span>
                 </div>
                 <div id="edit-button" class="menu-element button main-menu">
-                    <span class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></span>
+                    <span class="stack fa-fw">
+                        <span class="fa fa-fw fa-television outer-label fa-stack-1x" aria-hidden="true"></span>
+                        <span class="fa fa-fw fa-pencil inner-monitor-label fa-stack-1x" aria-hidden="true"></span>
+                    </span>
                     <span class="text">%%TRANSLATE:EDIT_MENU_NAME%%</span>
                 </div>
                 <div id="settings-button" class="menu-element button main-menu">
@@ -44,22 +47,6 @@
                 <div id="mirror-link-button" class="menu-element button main-menu">
                     <span class="fa fa-fw fa-external-link " aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:VIEW_MIRROR%%</span>
-                </div>
-
-                <!-- settings menu -->
-                <div id="brightness-description" class="menu-element button settings-menu">
-                    <span class="stack fa-fw">
-                        <span class="fa fa-fw fa-sun-o outer-label fa-stack-1x" aria-hidden="true"></span>
-                        <span class="fa fa-fw fa-adjust inner-label fa-stack-1x" aria-hidden="true"></span>
-                    </span>
-                    <span class="text">%%TRANSLATE:BRIGHTNESS%%</span>
-                </div>
-                <div id="brightness-container" class="slider-container menu-element button settings-menu">
-                    <input id="brightness-slider" type="range" min="10" max="200" step="10" value="%%REPLACE::BRIGHTNESS%%" class="slider"/>
-                </div>
-                <div id="brightness-reset" class="menu-element button settings-menu">
-                    <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
-                    <span class="text">%%TRANSLATE:RESET%%</span>
                 </div>
 
                 <!-- power menu -->
@@ -93,6 +80,19 @@
                 </div>
 
                 <!-- edit menu -->
+                <div class="menu-element edit-menu">
+                    <span class="stack fa-fw">
+                        <span class="fa fa-fw fa-sun-o outer-label fa-stack-1x" aria-hidden="true"></span>
+                        <span class="fa fa-fw fa-adjust inner-label fa-stack-1x" aria-hidden="true"></span>
+                    </span>
+                    <span class="text">%%TRANSLATE:BRIGHTNESS%%</span>
+                    <span id="brightness-reset" class="inline-menu-element button edit-menu">
+                        <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                    </span>
+                </div>
+                <div id="brightness-container" class="slider-container menu-element button edit-menu">
+                    <input id="brightness-slider" type="range" min="10" max="200" step="10" value="%%REPLACE:BRIGHTNESS%%" class="slider"/>
+                </div>
                 <div id="show-all-button" class="menu-element button edit-menu">
                     <span class="fa fa-fw fa-toggle-on" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:SHOWALL%%</span>
@@ -102,13 +102,65 @@
                     <span class="text">%%TRANSLATE:HIDEALL%%</span>
                 </div>
                 <header class="header menu-element edit-menu"></header>
-                <!-- (created dynamically) -->
-                <!-- EDIT_MENU_TEMPLATE -->
+                <div id="visible-modules-container" class="result-list menu-element edit-menu">
+                    <div id="visible-modules-loading">
+                        <span class="fa fa-fw fa-spinner fa-pulse"></span>
+                        <span class="text">%%TRANSLATE:LOADING%%</span>
+                    </div>
+                    <div id="visible-modules-empty" class="hidden">
+                        <span class="fa fa-fw fa-exclamation-circle"></span>
+                        <span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>
+                    </div>
+                    <div id="visible-modules-results" class="small">
+                        <!-- elements are inserted here -->
+                    </div>
+                </div>
+
+                <!-- module menu -->
+                <div id="add-module" class="menu-element button settings-menu">
+                    <span class="fa fa-fw fa-plus" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:ADD_MODULE%%</span>
+                </div>
+                <header class="header menu-element settings-menu"></header>
+                <div id="config-modules-container" class="result-list menu-element settings-menu">
+                    <div id="config-modules-loading">
+                        <span class="fa fa-fw fa-spinner fa-pulse"></span>
+                        <span class="text">%%TRANSLATE:LOADING%%</span>
+                    </div>
+                    <div id="config-modules-empty" class="hidden">
+                        <span class="fa fa-fw fa-exclamation-circle"></span>
+                        <span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>
+                    </div>
+                    <div id="config-modules-results" class="small">
+                        <!-- elements are inserted here -->
+                    </div>
+                </div>
+
+                <!-- add new module menu -->
+                <div id="search-container" class="menu-element add-module-menu search-container">
+                    <span class="fa fa-fw fa-search" aria-hidden="true"></span>
+                    <input id="add-module-search" type="text" placeholder="%%TRANSLATE:SEARCH%%"> </input>
+                    <span id="delete-search-input" class="fa fa-fw fa-times-circle delete-button" style="display:none;"></span>
+                </div>
+                <header class="header menu-element add-module-menu"></header>
+                <div id="add-module-container" class="result-list menu-element add-module-menu">
+                    <div id="add-module-loading">
+                        <span class="fa fa-fw fa-spinner fa-pulse"></span>
+                        <span class="text">%%TRANSLATE:LOADING%%</span>
+                    </div>
+                    <div id="add-module-empty" class="hidden">
+                        <span class="fa fa-fw fa-exclamation-circle"></span>
+                        <span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>
+                    </div>
+                    <div id="add-module-results" class="small">
+                        <!-- elements are inserted here -->
+                    </div>
+                </div>
 
             </div>
             <div class="result">
                 <div id="loading" class="status-indicator">
-                    <span class="fa fa-fw fa-spinner fa-pulse fa-fw"></span>
+                    <span class="fa fa-fw fa-spinner fa-pulse"></span>
                     <!-- <span class="text">%%TRANSLATE:LOADING%%</span> -->
                 </div>
                 <div id="error" class="status-indicator">
@@ -118,6 +170,14 @@
                 <div id="success" class="status-indicator">
                     <span class="fa fa-fw fa-check-circle"></span>
                     <!-- <span class="text">%%TRANSLATE:DONE%%</span> -->
+                </div>
+            </div>
+            <div id="popup-container" class="popup">
+                <div id="close-popup">
+                    <span class="fa fa-fw fa-times-circle delete-button"></span>
+                </div>
+                <div id="popup-contents" class="popup-contents">
+                    <!-- content is inserted here -->
                 </div>
             </div>
         </div>

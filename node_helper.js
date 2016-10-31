@@ -27,10 +27,14 @@ module.exports = NodeHelper.create({
 		this.waiting = [];
 
 		this.template = "";
+		this.modulesAvailable = {};
+		this.modulesInstalled = [];
 
 		fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
 			self.template = data.toString();
 		});
+
+		this.readModuleData();
 
 		this.expressApp.get("/remote.html", function(req, res) {
 			if (self.template === "") {
@@ -42,6 +46,12 @@ module.exports = NodeHelper.create({
 					res.send(transformedData);
 				});
 			}
+		});
+
+		this.expressApp.get("/get", function(req, res) {
+			var query = url.parse(req.url, true).query;
+
+			self.answerGet(query, res);
 		});
 
 		this.expressApp.get('/remote', (req, res) => {
@@ -56,6 +66,58 @@ module.exports = NodeHelper.create({
 			}
 			res.send({'status': 'error', 'reason': 'unknown_command', 'info': 'original input: ' + JSON.stringify(query)});
 		});
+	},
+
+	readModuleData: function() {
+		var self = this;
+
+		fs.readFile(path.resolve(__dirname + "/modules.json"), function(err, data) {
+			self.modulesAvailable = JSON.parse(data.toString());
+
+			// now check for installed modules
+			fs.readdir(path.resolve(__dirname + "/.."), function(err, files) {
+				for (var i = 0; i < files.length; i++) {
+					if (files[i] !== "node_modules" && files[i] !== "default") {
+						self.addModule(files[i]);
+					}
+				}
+			});
+		});
+	},
+
+	addModule: function(module) {
+		var self = this;
+
+		var modulePath = path.resolve(__dirname + "/../" + module);
+		fs.stat(modulePath, function(err, stats) {
+			if (stats.isDirectory()) {
+				self.modulesInstalled.push(module);
+				for (var i = 0; i < self.modulesAvailable.length; i++) {
+					if (self.modulesAvailable[i].longname === module) {
+						self.modulesAvailable[i].installed = true;
+					}
+				}
+			}
+		});
+	},
+
+	answerGet: function(query, res) {
+		var self = this;
+
+		if (query.data === 'modulesAvailable')
+		{
+			var text = JSON.stringify(this.modulesAvailable);
+			res.contentType('application/json');
+			res.send(text);
+		}
+		if (query.data === 'modules')
+		{
+			this.callAfterUpdate(function () {
+				var text = JSON.stringify(self.configData.moduleData);
+				res.contentType('application/json');
+				res.send(text);
+			});
+		}
 	},
 
 	callAfterUpdate: function(callback, timeout) {
@@ -206,47 +268,9 @@ module.exports = NodeHelper.create({
 		if (this.configData) {
 			brightness = this.configData.brightness;
 		}
-		data = data.replace("%%REPLACE::BRIGHTNESS%%", brightness);
+		data = data.replace("%%REPLACE:BRIGHTNESS%%", brightness);
 
-		var moduleData = this.configData.moduleData;
-		if (!moduleData) {
-			var error =
-				'<div class="menu-element button edit-menu">\n' +
-					'<span class="fa fa-fw fa-exclamation-circle" aria-hidden="true"></span>\n' +
-					'<span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>\n' +
-				'</div>\n';
-			error = this.translate(error);
-			return data.replace("<!-- EDIT_MENU_TEMPLATE -->", error);
-		}
-
-		var editMenu = [];
-
-		for (var i = 0; i < moduleData.length; i++) {
-			if (!moduleData[i]["position"]) {
-				continue;
-			}
-
-			var hiddenStatus = 'toggled-on';
-			if (moduleData[i].hidden) {
-				hiddenStatus = 'toggled-off';
-				if (moduleData[i].lockStrings && moduleData[i].lockStrings.length) {
-					hiddenStatus += ' external-locked';
-				}
-			}
-
-			var moduleElement =
-				'<div id="' + moduleData[i].identifier + '" class="menu-element button edit-button edit-menu ' + hiddenStatus + '">\n' +
-					'<span class="stack fa-fw">\n' +
-						'<span class="fa fa-fw fa-toggle-on outer-label fa-stack-1x" aria-hidden="true"></span>\n' +
-						'<span class="fa fa-fw fa-toggle-off outer-label fa-stack-1x" aria-hidden="true"></span>\n' +
-						'<span class="fa fa-fw fa-lock inner-small-label fa-stack-1x" aria-hidden="true"></span>\n' +
-					'</span>\n' +
-					'<span class="text">' + this.format(moduleData[i].name) + '</span>\n' +
-				'</div>\n';
-
-			editMenu.push(moduleElement);
-		}
-		return data.replace("<!-- EDIT_MENU_TEMPLATE -->", editMenu.join("\n"));
+		return data;
 	},
 
 	loadTranslation: function(language) {

@@ -1,7 +1,7 @@
 {
     "TITLE": "Magic Mirror Menu",
 
-    "EDIT_MENU_NAME": "Module editieren",
+    "EDIT_MENU_NAME": "Ansicht editieren",
     "SHUTDOWN_MENU_NAME": "Ausschalten",
     "CONFIGURE_MENU_NAME": "Einstellungen",
     "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
@@ -9,7 +9,6 @@
     "BACK": "Zurück",
 
     "BRIGHTNESS": "Helligkeit",
-    "RESET": "Zur&uuml;cksetzen",
 
     "MONITOROFF": "Bildschirm ausschalten",
     "MONITORON": "Bildschirm einschalten",
@@ -20,8 +19,11 @@
     "SHOWALL": "Zeige alle",
     "HIDEALL": "Verstecke alle",
 
+    "ADD_MODULE": "Neues Modul",
+    "SEARCH": "Suchen &hellip;",
+
     "NO_MODULES_LOADED": "Keine Module geladen.",
-    "SAVE": "Als Standard speichern",
+    "SAVE": "Speichern",
 
     "DONE": "Fertig.",
     "ERROR": "Fehler!",
