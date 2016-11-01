@@ -1,5 +1,5 @@
 {
-    "TITLE": "Magic Mirror Menu",
+    "TITLE": "Magic Mirror Men&uuml;",
 
     "EDIT_MENU_NAME": "Ansicht editieren",
     "SHUTDOWN_MENU_NAME": "Ausschalten",
@@ -28,6 +28,9 @@
     "BY": "von",
     "ADD_THIS": "Hinzuf&uuml;gen",
     "HELP": "Hilfe",
+    "MENU": "Men&uuml;",
+    "RESET": "Reset",
+    "ADD_ENTRY": "Neuer Eintrag",
 
     "NO_MODULES_LOADED": "Keine Module geladen.",
     "SAVE": "Speichern",

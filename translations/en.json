@@ -28,6 +28,9 @@
     "BY": "by",
     "ADD_THIS": "Add this module",
     "HELP": "Show readme",
+    "MENU": "Menu",
+    "RESET": "Reset",
+    "ADD_ENTRY": "Add entry",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",

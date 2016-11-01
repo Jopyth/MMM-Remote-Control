@@ -36,6 +36,35 @@ module.exports = NodeHelper.create({
 		});
 
 		this.readModuleData();
+		this.createRoutes();
+		this.combineConfig();
+	},
+
+	combineConfig: function() {
+		// function copied from MichMich (MIT)
+		var defaults = require(__dirname + "/../../js/defaults.js");
+		var configFilename = path.resolve(__dirname + "/../../config/config.js");
+		try {
+			fs.accessSync(configFilename, fs.F_OK);
+			var c = require(configFilename);
+			var config = Object.assign(defaults, c);
+			this.config = config;
+		} catch (e) {
+			if (e.code == "ENOENT") {
+				console.error("WARNING! Could not find config file. Please create one. Starting with default configuration.");
+				this.config = defaults;
+			} else if (e instanceof ReferenceError || e instanceof SyntaxError) {
+				console.error("WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
+				this.config = defaults;
+			} else {
+				console.error("WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
+				this.config = defaults;
+			}
+		}
+	},
+
+	createRoutes: function() {
+		var self = this;
 
 		this.expressApp.get("/remote.html", function(req, res) {
 			if (self.template === "") {
@@ -117,10 +146,26 @@ module.exports = NodeHelper.create({
 			res.contentType("application/json");
 			res.send(text);
 		}
+		if (query.data === "config")
+		{
+			this.callAfterUpdate(function () {
+				var text = JSON.stringify(self.configData.moduleData);
+				res.contentType("application/json");
+				res.send(text);
+			});
+		}
 		if (query.data === "modules")
 		{
 			this.callAfterUpdate(function () {
 				var text = JSON.stringify(self.configData.moduleData);
+				res.contentType("application/json");
+				res.send(text);
+			});
+		}
+		if (query.data === "brightness")
+		{
+			this.callAfterUpdate(function () {
+				var text = JSON.stringify(self.configData.brightness);
 				res.contentType("application/json");
 				res.send(text);
 			});

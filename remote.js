@@ -96,7 +96,13 @@ var Remote = {
         popup.style.display = "block";
     },
 
-    getPopupContent: function() {
+    getPopupContent: function(clear) {
+        if (clear === undefined) {
+            clear = true;
+        }
+        if (clear) {
+            this.closePopup();
+        }
         return document.getElementById("popup-contents");
     },
 
@@ -219,7 +225,6 @@ var Remote = {
                 var bgElement = document.getElementById("install-module-" + index);
                 bgElement.firstChild.className = "fa fa-fw fa-check-circle";
                 self.savedData.modulesAvailable[index].installed = true;
-                self.closePopup();
                 self.createAddingPopup(index);
             } else {
                 symbol.className = "fa fa-fw fa-exclamation-circle";
@@ -228,23 +233,27 @@ var Remote = {
         });
     },
 
-    get: function(route, params, callback) {
-        var http = new XMLHttpRequest();
+    get: function(route, params, callback, timeout) {
+        var req = new XMLHttpRequest();
         var url = route + "?" + params;
-        http.open("GET", url, true);
+        req.open("GET", url, true);
+
+        if (timeout) {
+            req.timeout = timeout; // time in milliseconds
+        }
 
         //Send the proper header information along with the request
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        http.onreadystatechange = function() {
-            if(http.readyState == 4 && http.status == 200) {
+        req.onreadystatechange = function() {
+            if(req.readyState == 4 && req.status == 200) {
                 if (callback)
                 {
-                    callback(http.responseText);
+                    callback(req.responseText);
                 }
             }
         }
-        http.send(null);
+        req.send(null);
     },
 
     loadList: function(listname, dataId, callback) {
@@ -313,6 +322,8 @@ var Remote = {
     loadVisibleModules: function() {
         var self = this;
 
+        console.log("Load visible modules...");
+
         this.loadList("visible-modules", "modules", function (parent, moduleData) {
             for (var i = 0; i < moduleData.length; i++) {
                 if (!moduleData[i]["position"]) {
@@ -362,68 +373,124 @@ var Remote = {
     },
 
     createConfigElement: {
-        string: function(wrapper, key, value) {
-            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", key);
+        string: function(wrapper, key, name, value) {
+            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", name);
             wrapper.appendChild(label);
 
             var input = document.createElement("input");
+            input.className = "input-spacing";
             input.type = "text";
             input.size = 100;
             input.value = value;
-            input.id = "config-element-" + key;
+            input.id = key;
             wrapper.appendChild(input);
         },
-        number: function(wrapper, key, value) {
-            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", key);
+        number: function(wrapper, key, name, value) {
+            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", name);
             wrapper.appendChild(label);
 
             var input = document.createElement("input");
+            input.className = "input-spacing";
             input.type = "number";
             input.value = value;
-            input.id = "config-element-" + key;
+            input.id = key;
             wrapper.appendChild(input);
         },
-        boolean: function(wrapper, key, value) {
-            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", key);
+        boolean: function(wrapper, key, name, value) {
+            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", name);
             wrapper.appendChild(label);
 
             var input = document.createElement("input");
+            input.className = "input-spacing";
             input.type = "checkbox";
             input.value = value;
-            input.id = "config-element-" + key;
+            input.id = key;
             wrapper.appendChild(input);
-        },
-        default: function(wrapper, key, value) {
-            var label = Remote.createSymbolTextDiv("fa fa-fw fa-info-circle", key);
-            wrapper.appendChild(label);
-
-            var valueElement = document.createElement("div");
-            valueElement.innerHTML = value;
-            valueElement.id = "config-element-" + key;
-            wrapper.appendChild(valueElement);
         }
     },
 
-    createCurrentConfigWrapper: function() {
-        var wrapper = document.createElement("div");
-        wrapper.id = "config-wrapper";
-        wrapper.className = "flex-fill small";
-
-        for (var key in this.currentConfig) {
-            if (this.currentConfig.hasOwnProperty(key)) {
-                var value = this.currentConfig[key];
-                var type = typeof value;
-
-                if (this.createConfigElement[type]) {
-                    this.createConfigElement[type](wrapper, key, value);
-                } else {
-                    var stringValue = JSON.stringify(value);
-                    this.createConfigElement["default"](wrapper, key, stringValue);
-                }
-            }
+    appendObjectGUI: function(outerWrapper, path, name, dataToEdit) {
+        var type = typeof dataToEdit;
+        if (this.createConfigElement[type]) {
+            // recursion stop
+            this.createConfigElement[type](outerWrapper, path, name, dataToEdit);
+            return;
         }
 
-        return wrapper;
+        var wrapper = document.createElement("div");
+        wrapper.id = path;
+        wrapper.className = "indent bordered";
+        if (Array.isArray(dataToEdit)) {
+            // array
+            wrapper.appendChild(this.createSymbolTextDiv("fa fa-fw fa-list-ol", name));
+            for (var i = 0; i < dataToEdit.length; i++) {
+                var newName = "[" + i + "]";
+                this.appendObjectGUI(wrapper, path + "/" + newName, newName, dataToEdit[i]);
+            }
+        } else {
+            // object
+            if (path !== "<root>") {
+                wrapper.appendChild(this.createSymbolTextDiv("fa fa-fw fa-list-ul", name));
+            }
+            if (path === "<root>/config") {
+                // do not indent config object
+                wrapper.className = "";
+            }
+            for (var key in dataToEdit) {
+                if (dataToEdit.hasOwnProperty(key)) {
+                    this.appendObjectGUI(wrapper, path + "/" + key, key, dataToEdit[key]);
+                }
+            }            
+        }
+        if (path === "<root>") {
+            // overwrite css classes on root element        
+            wrapper.className = "flex-fill small";
+        } else {
+            wrapper.appendChild(this.createSymbolTextDiv("fa fa-fw fa-plus", this.translate("ADD_ENTRY")));
+        }
+        outerWrapper.appendChild(wrapper);
+    },
+
+    appendConfigMenu: function(index, wrapper) {
+        var self = this;
+
+        var menuElement = self.createSymbolTextDiv("small fa fa-fw fa-navicon", self.translate("MENU"), function (event) {
+            var elements = document.getElementsByClassName("config-menu");
+            for (var i = 0; i < elements.length; i++) {
+                var element = elements[i];
+                if (self.hasClass(element, "hidden")) {
+                    element.className = element.className.replace("hidden", "");
+                } else {
+                    element.className = element.className + " hidden";
+                }
+            }
+        }, false);
+        menuElement.className = "flex-footer";
+        wrapper.appendChild(menuElement);
+
+        var menuDiv = document.createElement("div");
+        menuDiv.className = "flex-footer hidden config-menu";
+
+        var help = self.createSymbolTextDiv("fa fa-fw fa-question-circle", self.translate("HELP"), function (event) {
+            // load readme
+            console.log("ToDo Helplink");
+        }, false);
+        menuDiv.appendChild(help);
+        var undo = self.createSymbolTextDiv("fa fa-fw fa-undo", self.translate("RESET"), function (event) {
+            self.createConfigPopup(index);
+        }, false);
+        menuDiv.appendChild(undo);
+        var save = self.createSymbolTextDiv("fa fa-fw fa-save", self.translate("SAVE"), function (event) {
+            // load readme
+            console.log("ToDo Save");
+        }, false);
+        menuDiv.appendChild(save);
+
+        wrapper.appendChild(menuDiv);
+
+        var line = document.createElement("header");
+        line.className = "header";
+        wrapper.appendChild(line);
     },
 
     createConfigPopup: function(index) {
@@ -432,16 +499,15 @@ var Remote = {
             index = parseInt(index);
         }
 
-        var data = this.savedData["modules"][index];
+        var data = this.savedData["config"][index];
 
         self.currentConfig = data.config;
 
         var wrapper = this.getPopupContent();
-        console.log(data);
 
         var name = document.createElement("div");
         name.innerHTML = self.formatName(data.name);
-        name.className = "bright title";
+        name.className = "bright title medium";
         wrapper.appendChild(name);
 
         var identifier = document.createElement("div");
@@ -449,26 +515,9 @@ var Remote = {
         identifier.className = "dimmed subtitle xsmall";
         wrapper.appendChild(identifier);
 
-        var helpElement = self.createSymbolTextDiv("small fa fa-fw fa-question-circle", self.translate("HELP"), function (event) {
-            // load readme
-            console.log("ToDo Helplink");
-        }, false);
-        helpElement.className = "flex-footer align-right";
-        wrapper.appendChild(helpElement);
+        self.appendConfigMenu(index, wrapper);
 
-        wrapper.appendChild(self.createCurrentConfigWrapper());
-
-        var footer = document.createElement("div");
-        footer.className = "flex-footer";
-
-
-        var helpElement = self.createSymbolTextDiv("fa fa-fw fa-save", self.translate("SAVE"), function (event) {
-            // load readme
-            console.log("ToDo Save");
-        }, false);
-        footer.appendChild(helpElement);
-
-        wrapper.appendChild(footer);
+        self.appendObjectGUI(wrapper, "<root>", "", {config: this.currentConfig});
 
         this.showPopup();
     },
@@ -476,7 +525,9 @@ var Remote = {
     loadConfigModules: function() {
         var self = this;
 
-        this.loadList("config-modules", "modules", function (parent, moduleData) {
+        console.log("Loading modules in config...");
+
+        this.loadList("config-modules", "config", function (parent, moduleData) {
             for (var i = 0; i < moduleData.length; i++) {
                 var moduleBox = self.createSymbolTextDiv("fa fa-fw fa-pencil", self.formatName(moduleData[i].name), function() {
                     var i = event.currentTarget.id.replace("edit-module-", "");
@@ -547,6 +598,8 @@ var Remote = {
     loadModulesToAdd: function() {
         var self = this;
 
+        console.log("Loading modules to add...");
+
         this.loadList("add-module", "modulesAvailable", function (parent, modules) {
             for (var i = 0; i < modules.length; i++) {
                 var symbol = "fa fa-fw fa-cloud";
@@ -585,7 +638,6 @@ var buttons = {
             window.location.hash = "settings-menu";
             return;
         }
-
         window.location.hash = "main-menu";
     },
 

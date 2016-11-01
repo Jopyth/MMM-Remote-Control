@@ -59,6 +59,10 @@ input {
   border-radius: 0.2em;
 }
 
+.input-spacing {
+  margin-bottom: 15px;
+}
+
 .input-with-symbol {
   width: calc(100% - 2em);
 }
@@ -160,11 +164,30 @@ input {
   margin-right: 1.5em;
 }
 
+.wide-element {
+  overflow-x: auto;
+}
+
 .subtitle {
   flex: 0 1 auto;
-  width: 100%;
+  padding-right: 5px;
   text-align: right;
   font-style: italic;
+}
+
+.indent {
+  margin-left: 8px;
+  padding-left: 8px;
+}
+
+.bordered {
+  border-top: 1px dashed #666;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-bottom: 1px dashed #666;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-left: 1px dashed #666;
 }
 
 .align-right {
