@@ -57,6 +57,21 @@ input {
   -moz-border-radius: 0.2em;
   -webkit-border-radius: 0.2em;
   border-radius: 0.2em;
+  max-width: 20em;
+}
+
+input:focus { 
+  color: #FFF;
+  border: 2px solid #FFF;
+  background-color: #444;
+}
+
+.config-label {
+  max-width: 20em;
+}
+
+.focused-label {
+  color: #FFF;
 }
 
 .input-spacing {
@@ -164,10 +179,6 @@ input {
   margin-right: 1.5em;
 }
 
-.wide-element {
-  overflow-x: auto;
-}
-
 .subtitle {
   flex: 0 1 auto;
   padding-right: 5px;
@@ -200,7 +211,7 @@ input {
   overflow-x: auto;
 }
 
-.flex-footer {
+.fixed-size {
   flex: 0 1 auto;
 }
 

@@ -372,39 +372,43 @@ var Remote = {
         return wrapper
     },
 
+    createConfigLabel: function (key, name) {
+        var label = Remote.createSymbolTextDiv("fa fa-fw fa-tag", name, function () {
+            document.getElementById(key).focus();
+        });
+        label.className = "config-label";
+        return label;
+    },
+
+    createConfigInput: function (key, value) {
+        var input = document.createElement("input");
+        input.className = "config-input input-spacing";
+        input.value = value;
+        input.id = key;
+        return input;
+    },
+
     createConfigElement: {
         string: function(wrapper, key, name, value) {
-            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", name);
-            wrapper.appendChild(label);
-
-            var input = document.createElement("input");
-            input.className = "input-spacing";
+            wrapper.appendChild(Remote.createConfigLabel(key, name));
+            var input = Remote.createConfigInput(key, value);
             input.type = "text";
             input.size = 100;
-            input.value = value;
-            input.id = key;
             wrapper.appendChild(input);
         },
         number: function(wrapper, key, name, value) {
-            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", name);
-            wrapper.appendChild(label);
-
-            var input = document.createElement("input");
-            input.className = "input-spacing";
+            wrapper.appendChild(Remote.createConfigLabel(key, name));
+            var input = Remote.createConfigInput(key, value);
             input.type = "number";
-            input.value = value;
-            input.id = key;
+            if (value % 1 !== 0) {
+                input.step = 0.01;
+            }
             wrapper.appendChild(input);
         },
         boolean: function(wrapper, key, name, value) {
-            var label = Remote.createSymbolTextDiv("fa fa-fw fa-pencil", name);
-            wrapper.appendChild(label);
-
-            var input = document.createElement("input");
-            input.className = "input-spacing";
+            wrapper.appendChild(Remote.createConfigLabel(key, name));
+            var input = Remote.createConfigInput(key, value);
             input.type = "checkbox";
-            input.value = value;
-            input.id = key;
             wrapper.appendChild(input);
         }
     },
@@ -424,7 +428,7 @@ var Remote = {
             // array
             wrapper.appendChild(this.createSymbolTextDiv("fa fa-fw fa-list-ol", name));
             for (var i = 0; i < dataToEdit.length; i++) {
-                var newName = "[" + i + "]";
+                var newName = "#" + i;
                 this.appendObjectGUI(wrapper, path + "/" + newName, newName, dataToEdit[i]);
             }
         } else {
@@ -465,11 +469,11 @@ var Remote = {
                 }
             }
         }, false);
-        menuElement.className = "flex-footer";
+        menuElement.className = "fixed-size";
         wrapper.appendChild(menuElement);
 
         var menuDiv = document.createElement("div");
-        menuDiv.className = "flex-footer hidden config-menu";
+        menuDiv.className = "fixed-size hidden config-menu";
 
         var help = self.createSymbolTextDiv("fa fa-fw fa-question-circle", self.translate("HELP"), function (event) {
             // load readme
@@ -519,6 +523,18 @@ var Remote = {
 
         self.appendObjectGUI(wrapper, "<root>", "", {config: this.currentConfig});
 
+        var inputs = document.getElementsByClassName("config-input");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("focus", function (event) {
+                var label = event.currentTarget.previousSibling;
+                label.className = label.className + " focused-label";
+            }, false);
+            inputs[i].addEventListener("focusout", function (event) {
+                var label = event.currentTarget.previousSibling;
+                label.className = label.className.replace("focused-label", "");
+            }, false);
+        }
+
         this.showPopup();
     },
 
@@ -565,7 +581,7 @@ var Remote = {
         wrapper.appendChild(desc);
 
         var footer = document.createElement("div");
-        footer.className = "flex-footer";
+        footer.className = "fixed-size";
 
         if (data.installed) {
             var add = self.createSymbolTextDiv("fa fa-fw fa-plus", self.translate("ADD_THIS"), function (event) {
