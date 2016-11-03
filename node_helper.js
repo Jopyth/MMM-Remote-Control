@@ -23,6 +23,7 @@ module.exports = NodeHelper.create({
 		// load fall back translation
 		self.loadTranslation("en");
 
+		this.configOnHd = {};
 		this.configData = {};
 
 		this.waiting = [];
@@ -48,19 +49,20 @@ module.exports = NodeHelper.create({
 			fs.accessSync(configFilename, fs.F_OK);
 			var c = require(configFilename);
 			var config = Object.assign(defaults, c);
-			this.config = config;
+			this.configOnHd = config;
 		} catch (e) {
 			if (e.code == "ENOENT") {
 				console.error("WARNING! Could not find config file. Please create one. Starting with default configuration.");
-				this.config = defaults;
+				this.configOnHd = defaults;
 			} else if (e instanceof ReferenceError || e instanceof SyntaxError) {
 				console.error("WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
-				this.config = defaults;
+				this.configOnHd = defaults;
 			} else {
 				console.error("WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
-				this.config = defaults;
+				this.configOnHd = defaults;
 			}
 		}
+		console.log(this.configOnHd);
 	},
 
 	createRoutes: function() {
@@ -149,7 +151,7 @@ module.exports = NodeHelper.create({
 		if (query.data === "config")
 		{
 			this.callAfterUpdate(function () {
-				var text = JSON.stringify(self.configData.moduleData);
+				var text = JSON.stringify(self.configOnHd);
 				res.contentType("application/json");
 				res.send(text);
 			});

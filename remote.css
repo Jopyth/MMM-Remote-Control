@@ -47,7 +47,7 @@ body {
   padding-bottom: 5px;
 }
 
-input {
+input, select {
   background: #000;
   color: #999;
   font-size: inherit;
@@ -60,7 +60,7 @@ input {
   max-width: 20em;
 }
 
-input:focus { 
+input:focus, select:focus { 
   color: #FFF;
   border: 2px solid #FFF;
   background-color: #444;
@@ -68,6 +68,7 @@ input:focus {
 
 .config-label {
   max-width: 20em;
+  display: block;
 }
 
 .focused-label {
@@ -84,6 +85,7 @@ input:focus {
 
 .search-container {
   position: relative;
+  max-width: 400px;
 }
 
 .delete-button {
@@ -187,18 +189,14 @@ input:focus {
 }
 
 .indent {
-  margin-left: 8px;
-  padding-left: 8px;
+  max-width: 400px;
+  border: 1px dashed #666;
+  margin: 5px 8px 5px 8px;
+  padding: 5px 8px 5px 8px;
 }
 
-.bordered {
-  border-top: 1px dashed #666;
-  margin-top: 5px;
-  padding-top: 5px;
-  border-bottom: 1px dashed #666;
-  margin-bottom: 5px;
-  padding-bottom: 5px;
-  border-left: 1px dashed #666;
+.disabled {
+  border: 2px solid #222;
 }
 
 .align-right {
@@ -219,6 +217,15 @@ input:focus {
   display: none;
 }
 
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(2); /* Opera */
+  padding: 10px;
+}
 
 /* slider appearance created with http://danielstern.ca/range.css/?ref=css-tricks#/ */
 input[type=range] {
