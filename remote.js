@@ -796,3 +796,7 @@ window.onhashchange = function() {
         Remote.showMenu("main-menu");
     }
 }
+
+// loading successful, remove error message
+var loadError = document.getElementById("load-error");
+loadError.parentNode.removeChild(loadError);

@@ -35,6 +35,9 @@
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",
 
+    "LOAD_ERROR": "If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
+    "ISSUE_LINK": "Github issue page",
+
     "DONE": "Done.",
     "ERROR": "Error!",
     "LOADING": "Loading &hellip;"
