@@ -62,6 +62,7 @@ input, select {
   -webkit-border-radius: 0.2em;
   border-radius: 0.2em;
   max-width: 20em;
+  padding: 0.2em;
 }
 
 input:focus, select:focus { 
@@ -71,25 +72,29 @@ input:focus, select:focus {
 }
 
 .config-label {
-  max-width: 20em;
-  display: block;
+  display: flex;
+  padding-bottom: 0.8em;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 .focused-label {
   color: #FFF;
+  background-color: #444;
 }
 
-.input-spacing {
-  margin-bottom: 15px;
+.bottom-spacing {
+  padding-bottom: 0.8em;
 }
 
 .input-with-symbol {
-  width: calc(100% - 2em);
+  width: calc(100% - 2.4em);
 }
 
 .search-container {
   position: relative;
-  max-width: 400px;
+  max-width: 20em;
 }
 
 .delete-button {
@@ -123,7 +128,7 @@ input:focus, select:focus {
 .slider-container {
   vertical-align: middle;
   height: 2em;
-  max-width: 400px;
+  max-width: 20em;
 }
 
 .stack {
@@ -192,10 +197,13 @@ input:focus, select:focus {
 }
 
 .indent {
-  max-width: 400px;
   border: 1px dashed #666;
-  margin: 5px 8px 5px 8px;
+  margin: 0em 0em 0.8em 0em;
   padding: 5px 8px 5px 8px;
+}
+
+.one-line {
+  white-space: nowrap;
 }
 
 .disabled {
@@ -220,14 +228,35 @@ input:focus, select:focus {
   display: none;
 }
 
+/* checkbox shenanigans */
+.visual-checkbox {
+  text-align: center;
+  width: 100%;
+}
+
 input[type=checkbox]
 {
-  /* Double-sized Checkboxes */
-  -ms-transform: scale(2); /* IE */
-  -moz-transform: scale(2); /* FF */
-  -webkit-transform: scale(2); /* Safari and Chrome */
-  -o-transform: scale(2); /* Opera */
-  padding: 10px;
+  display: none;
+}
+
+input[type=checkbox] ~ .fa-square-o
+{
+  display: block;
+}
+
+input[type=checkbox] ~ .fa-check-square-o
+{
+  display: none;
+}
+
+input[type=checkbox]:checked ~ .fa-square-o
+{
+  display: none;
+}
+
+input[type=checkbox]:checked ~ .fa-check-square-o
+{
+  display: block;
 }
 
 /* slider appearance created with http://danielstern.ca/range.css/?ref=css-tricks#/ */

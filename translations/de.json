@@ -30,6 +30,8 @@
     "HELP": "Hilfe",
     "MENU": "Men&uuml;",
     "RESET": "Reset",
+    "NO_HEADER": "(keine ;Uumlberschrift)",
+    "NO_POSITION": "(unsichtbar)",
     "ADD_ENTRY": "Neuer Eintrag",
 
     "NO_MODULES_LOADED": "Keine Module geladen.",

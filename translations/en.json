@@ -30,6 +30,8 @@
     "HELP": "Show readme",
     "MENU": "Menu",
     "RESET": "Reset",
+    "NO_HEADER": "(no header)",
+    "NO_POSITION": "(invisible)",
     "ADD_ENTRY": "Add entry",
 
     "NO_MODULES_LOADED": "No module loaded.",

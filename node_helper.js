@@ -150,11 +150,9 @@ module.exports = NodeHelper.create({
 		}
 		if (query.data === "config")
 		{
-			this.callAfterUpdate(function () {
-				var text = JSON.stringify(self.configOnHd);
-				res.contentType("application/json");
-				res.send(text);
-			});
+			var text = JSON.stringify(self.configOnHd);
+			res.contentType("application/json");
+			res.send(text);
 		}
 		if (query.data === "modules")
 		{
