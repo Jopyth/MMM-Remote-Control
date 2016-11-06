@@ -52,16 +52,15 @@ a {
 }
 
 input, select {
+  flex: 10 0 auto;
   background: #000;
   color: #999;
   font-size: inherit;
   font: inherit;
-  width: calc(100% - 4px);
   border: 2px solid #999;
   -moz-border-radius: 0.2em;
   -webkit-border-radius: 0.2em;
   border-radius: 0.2em;
-  max-width: 20em;
   padding: 0.2em;
 }
 
@@ -73,15 +72,31 @@ input:focus, select:focus {
 
 .config-label {
   display: flex;
-  padding-bottom: 0.8em;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: baseline;
+  align-content: space-around;
+  margin-bottom: 0.8em;
+}
+
+.label-name {
+  flex: 1 0 auto;
+  white-space: nowrap;
+}
+
+.type-edit {
+  flex: 1 0 auto;
+  white-space: nowrap;
+  color: #666;
 }
 
 .focused-label {
   color: #FFF;
   background-color: #444;
+}
+
+.focused-label .type-edit {
+  color: #999;
 }
 
 .bottom-spacing {
@@ -200,10 +215,6 @@ input:focus, select:focus {
   border: 1px dashed #666;
   margin: 0em 0em 0.8em 0em;
   padding: 5px 8px 5px 8px;
-}
-
-.one-line {
-  white-space: nowrap;
 }
 
 .disabled {

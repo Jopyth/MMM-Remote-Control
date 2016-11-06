@@ -1,6 +1,7 @@
 // main javascript file for the remote control page
 
 var Remote = {
+    types: ["string", "number", "boolean", "array", "object"],
     validPositions: [
         "",
         "top_bar", "top_left", "top_center", "top_right",
@@ -395,7 +396,35 @@ var Remote = {
         return wrapper
     },
 
+    createTypeEditSelection: function (type, oldElement) {
+        var select = document.createElement("select")
+        for (var i = 0; i < this.types.length; i++) {
+            var option = document.createElement("option");
+            option.innerHTML = this.formatName(this.types[i]);
+            option.value = this.types[i];
+            if (this.types[i] === type) {
+                option.selected = "selected";
+            }
+            select.appendChild(option);
+        }
+        select.addEventListener("change", function (event) {
+            var triggeringElement = event.currentTarget;
+            triggeringElement.parentNode.replaceChild(oldElement, triggeringElement);
+        }, false);
+        select.addEventListener("focusout", function (event) {
+            // var label = event.currentTarget.parentNode;
+            // label.className = label.className.replace(" focused-label", "");
+        }, false);
+        select.addEventListener("blur", function (event) {
+            // var label = event.currentTarget.parentNode;
+            // label.className = label.className.replace(" focused-label", "");
+        }, false);
+        return select
+    },
+
     createConfigLabel: function (key, name, type, forcedType, symbol) {
+        var self = this;
+
         if (symbol === undefined) {
             symbol = "fa-tag";
         }
@@ -407,19 +436,25 @@ var Remote = {
         label.htmlFor = key;
         label.className = "config-label";
         var desc = Remote.createSymbolText("fa fa-fw " + symbol, this.formatLabel(name), false, "span");
-        desc.className = "one-line";
+        desc.className = "label-name";
         label.appendChild(desc);
 
         if (!forcedType) {
-            var typeLabel = Remote.createSymbolText("fa fa-fw fa-pencil", this.formatName(type), false, "span");
-            typeLabel.className += " one-line";
+            var typeLabel = Remote.createSymbolText("fa fa-fw fa-pencil", this.formatName(type), function (event) {
+                var triggeringElement = event.currentTarget;
+                triggeringElement.parentNode.replaceChild(self.createTypeEditSelection(type, triggeringElement), triggeringElement);
+            }, "span");
+            typeLabel.className += " type-edit";
             label.appendChild(typeLabel);
         }
         return label;
     },
 
-    createConfigInput: function (key, value, omitValue) {
-        var input = document.createElement("input");
+    createConfigInput: function (key, value, omitValue, element) {
+        if (element === undefined) {
+            element = "input";
+        }
+        var input = document.createElement(element);
         input.className = "config-input";
         if (!omitValue) {
             input.value = value;
@@ -441,71 +476,72 @@ var Remote = {
         return input;
     },
 
-    createVisualCheckbox: function (wrapper, input, className, value) {
+    createVisualCheckbox: function (key, wrapper, input, className, value) {
         var visualCheckbox = document.createElement("span");
         visualCheckbox.className = "visual-checkbox fa fa-fw " + className;
+        visualCheckbox.addEventListener("click", function () {
+            var input = document.getElementById(key);
+            input.disabled = false;
+            input.checked = !input.checked;
+            input.disabled = true;
+        }, false);
         wrapper.appendChild(visualCheckbox);
     },
 
-    createConfigElement: {
-        string: function(wrapper, key, name, value, type, forcedType) {
-            var self = Remote;
+    createConfigElement: function (type) {
+        var self = this;
 
-            var label = self.createConfigLabel(key, name, type, forcedType);
-            wrapper.appendChild(label);
-            var input = self.createConfigInput(key, value);
-            input.type = "text";
-            input.size = 200;
-            label.appendChild(input);
-        },
-        number: function(wrapper, key, name, value, type, forcedType) {
-            var self = Remote;
-
-            var label = self.createConfigLabel(key, name, type, forcedType);
-            wrapper.appendChild(label);
-            var input = self.createConfigInput(key, value);
-            input.type = "number";
-            if (value % 1 !== 0) {
-                input.step = 0.01;
-            }
-            label.appendChild(input);
-        },
-        boolean: function(wrapper, key, name, value, type, forcedType) {
-            var self = Remote;
-
-            var label = self.createConfigLabel(key, name, type, forcedType);
-            wrapper.appendChild(label);
-
-            var input = self.createConfigInput(key, value, true);
-            input.type = "checkbox";
-            label.appendChild(input);
-
-            self.createVisualCheckbox(label, input, "fa-check-square-o", false);
-            self.createVisualCheckbox(label, input, "fa-square-o", true);
-        },
-        position: function(wrapper, key, name, value, type, forcedType) {
-            var self = Remote;
-
-            var label = self.createConfigLabel(key, name, type, forcedType);
-            wrapper.appendChild(label);
-            var select = document.createElement("select");
-            select.className = "config-input";
-            select.id = key;
-            for (var i = 0; i < self.validPositions.length; i++) {
-                var option = document.createElement("option");
-                option.value = self.validPositions[i];
-                if (self.validPositions[i]) {
-                    option.innerHTML = self.formatPosition(self.validPositions[i]);
-                } else {
-                    option.innerHTML = self.translate("NO_POSITION");
+        return {
+            string: function(wrapper, key, name, value, type, forcedType) {
+                var label = self.createConfigLabel(key, name, type, forcedType);
+                wrapper.appendChild(label);
+                var input = self.createConfigInput(key, value);
+                input.type = "text";
+                label.appendChild(input);
+            },
+            number: function(wrapper, key, name, value, type, forcedType) {
+                var label = self.createConfigLabel(key, name, type, forcedType);
+                wrapper.appendChild(label);
+                var input = self.createConfigInput(key, value);
+                input.type = "number";
+                if (value % 1 !== 0) {
+                    input.step = 0.01;
                 }
-                if (self.validPositions[i] === value) {
-                    option.selected = "selected";
+                label.appendChild(input);
+            },
+            boolean: function(wrapper, key, name, value, type, forcedType) {
+                var label = self.createConfigLabel(key, name, type, forcedType);
+                wrapper.appendChild(label);
+
+                var input = self.createConfigInput(key, value, true);
+                input.type = "checkbox";
+                label.appendChild(input);
+
+                self.createVisualCheckbox(key, label, input, "fa-check-square-o", false);
+                self.createVisualCheckbox(key, label, input, "fa-square-o", true);
+            },
+            position: function(wrapper, key, name, value, type, forcedType) {
+                var label = self.createConfigLabel(key, name, type, forcedType);
+                wrapper.appendChild(label);
+                var select = self.createConfigInput(key, value, false, "select");
+                select.className = "config-input";
+                select.id = key;
+                for (var i = 0; i < self.validPositions.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = self.validPositions[i];
+                    if (self.validPositions[i]) {
+                        option.innerHTML = self.formatPosition(self.validPositions[i]);
+                    } else {
+                        option.innerHTML = self.translate("NO_POSITION");
+                    }
+                    if (self.validPositions[i] === value) {
+                        option.selected = "selected";
+                    }
+                    select.appendChild(option);
                 }
-                select.appendChild(option);
+                label.appendChild(select);
             }
-            label.appendChild(select);
-        }
+        }[type]
     },
 
     getTypeAsString: function(dataToEdit, path) {
@@ -513,7 +549,7 @@ var Remote = {
         if (path === "<root>/position") {
             type = "position";
         }
-        if (this.createConfigElement[type]) {
+        if (this.createConfigElement(type)) {
             return type;
         }
         if (Array.isArray(dataToEdit)) {
@@ -529,9 +565,9 @@ var Remote = {
             // disable type editing in root layer
             forcedType = true;
         }
-        if (this.createConfigElement[type]) {
+        if (this.createConfigElement(type)) {
             // recursion stop
-            this.createConfigElement[type](outerWrapper, path, name, dataToEdit, type, forcedType);
+            this.createConfigElement(type)(outerWrapper, path, name, dataToEdit, type, forcedType);
             return;
         }
 
@@ -545,6 +581,7 @@ var Remote = {
         if (type === "array") {
             // array
             wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ol"));
+            wrapper.appendChild(add);
             for (var i = 0; i < dataToEdit.length; i++) {
                 var newName = "#" + i;
                 this.appendObjectGUI(wrapper, path + "/" + newName, newName, dataToEdit[i]);
