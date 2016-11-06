@@ -52,7 +52,7 @@ a {
 }
 
 input, select {
-  flex: 10 0 auto;
+  flex: 0 0 auto;
   background: #000;
   color: #999;
   font-size: inherit;
@@ -70,22 +70,26 @@ input:focus, select:focus {
   background-color: #444;
 }
 
+input:focus.input-error {
+  border: 2px solid #F44;
+}
+
 .config-label {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   align-content: space-around;
   margin-bottom: 0.8em;
 }
 
 .label-name {
-  flex: 1 0 auto;
+  flex: 0 0 auto;
   white-space: nowrap;
 }
 
 .type-edit {
-  flex: 1 0 auto;
+  flex: 0 0 auto;
   white-space: nowrap;
   color: #666;
 }
@@ -100,7 +104,7 @@ input:focus, select:focus {
 }
 
 .bottom-spacing {
-  padding-bottom: 0.8em;
+  margin-bottom: 0.8em;
 }
 
 .input-with-symbol {
@@ -114,8 +118,13 @@ input:focus, select:focus {
 
 .delete-button {
   position: absolute;
-  right: 0.35em;
-  top: 0.35em;
+  right: 0.5em;
+  top: 0.5em;
+}
+
+.popup .delete-button {
+  right: 0.1em;
+  top: 0.25em;
 }
 
 /* general toggle rules */
@@ -172,6 +181,10 @@ input:focus, select:focus {
 
 .outer-label {
   font-size: 1em;
+}
+
+.add-input-wrapper .fa-plus-square {
+  padding-left: 0.5em;
 }
 
 .slider {
@@ -242,12 +255,11 @@ input:focus, select:focus {
 /* checkbox shenanigans */
 .visual-checkbox {
   text-align: center;
-  width: 100%;
 }
 
 input[type=checkbox]
 {
-  display: none;
+  opacity: 0;
 }
 
 input[type=checkbox] ~ .fa-square-o
