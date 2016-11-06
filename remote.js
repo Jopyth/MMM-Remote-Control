@@ -595,7 +595,7 @@ var Remote = {
         if (type === "array") {
             // array
             var add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_ENTRY"));
-            add.className += " bottom-spacing";
+            add.className += " bottom-spacing button";
             wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ol"));
             wrapper.appendChild(add);
             for (var i = 0; i < dataToEdit.length; i++) {
