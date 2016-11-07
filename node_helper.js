@@ -12,6 +12,7 @@ const fs = require("fs");
 const exec = require("child_process").exec;
 const os = require("os");
 const simpleGit = require("simple-git");
+const bodyParser = require("body-parser");
 
 var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodules.js"));
 
@@ -77,6 +78,8 @@ module.exports = NodeHelper.create({
 	createRoutes: function() {
 		var self = this;
 
+		this.expressApp.use(bodyParser.json());
+
 		this.expressApp.get("/remote.html", function(req, res) {
 			if (self.template === "") {
 				res.send(503);
@@ -93,6 +96,13 @@ module.exports = NodeHelper.create({
 			var query = url.parse(req.url, true).query;
 
 			self.answerGet(query, res);
+		});
+		this.expressApp.post("/post", function(req, res) {
+			var query = url.parse(req.url, true).query;
+			console.log(req.body);
+			console.log(req.url);
+
+			// self.answerPost(query, res);
 		});
 
 		this.expressApp.get("/config-help.html", function(req, res) {

@@ -280,6 +280,22 @@ var Remote = {
         req.send(null);
     },
 
+    post: function(route, params, data, callback, timeout) {
+        var req = new XMLHttpRequest();
+        var url = route + "?" + params;
+        req.open("POST", url, true);
+        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        req.onreadystatechange = function () { 
+            if (req.readyState == 4 && req.status == 200) {
+                if (callback)
+                {
+                    callback(JSON.parse(req.responseText));
+                }
+            }
+        }
+        req.send(JSON.stringify(data));
+    },
+
     loadList: function(listname, dataId, callback) {
         var self = this;
 
@@ -1046,6 +1062,9 @@ var buttons = {
     // config menu buttons
     "add-module": function() {
         window.location.hash = "add-module-menu";
+    },
+    "save-config": function() {
+        Remote.post("post", "data=config", {data: "test"}, false);
     },
 
     // main menu

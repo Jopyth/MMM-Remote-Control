@@ -21,6 +21,7 @@
   },
   "homepage": "git+https://github.com/jopyth/MMM-Remote-Control#readme",
   "dependencies": {
-    "simple-git": "latest"
+    "simple-git": "latest",
+    "body-parser": "latest"
   }
 }
