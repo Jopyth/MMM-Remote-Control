@@ -30,10 +30,11 @@
     "HELP": "Hilfe",
     "MENU": "Men&uuml;",
     "RESET": "Reset",
-    "NO_HEADER": "(keine ;Uumlberschrift)",
+    "NO_HEADER": "(kein Header)",
     "NO_POSITION": "(unsichtbar)",
     "ADD_ENTRY": "Neuer Eintrag",
     "NEW_ENTRY_NAME": "(Name eintragen)",
+    "DELETE_ENTRY": "L&ouml;schen",
 
     "NO_MODULES_LOADED": "Keine Module geladen.",
     "SAVE": "Speichern",

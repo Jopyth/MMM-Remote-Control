@@ -12,6 +12,11 @@ a {
   color: white;
 }
 
+.symbol-text-padding {
+  padding-left: 0.2em;
+  padding-right: 0.5em;
+}
+
 .fill {
   height: 100%;
   display: flex;
@@ -21,6 +26,11 @@ a {
 .result-list {
   overflow-y: auto;
   height: 100%;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-element {
@@ -48,11 +58,21 @@ a {
 }
 
 .module-line {
-  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+#config-modules-results .module-line {
+  display: flex;
+  justify-content: space-between;  
+}
+
+#config-modules-results .module-line > span {
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 input, select {
-  flex: 0 0 auto;
+  flex: 3 0 auto;
   background: #000;
   color: #999;
   font-size: inherit;
@@ -84,8 +104,9 @@ input:focus.input-error {
 }
 
 .label-name {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   white-space: nowrap;
+  overflow-x: auto;
 }
 
 .type-edit {

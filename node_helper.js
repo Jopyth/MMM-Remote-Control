@@ -11,7 +11,18 @@ const url = require("url");
 const fs = require("fs");
 const exec = require("child_process").exec;
 const os = require("os");
-const simpleGit = require("simple-git")(path.resolve(__dirname + "/.."));
+const simpleGit = require("simple-git");
+const GithubMarkdown = require('markdown-to-html').GithubMarkdown;
+
+var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodules.js"));
+
+Module = {
+	configDefaults: {},
+	register: function (name, moduleDefinition) {
+		// console.log("Module config loaded: " + name);
+		Module.configDefaults[name] = moduleDefinition.defaults;
+	}
+};
 
 module.exports = NodeHelper.create({
 	// Subclass start method.
@@ -62,7 +73,6 @@ module.exports = NodeHelper.create({
 				this.configOnHd = defaults;
 			}
 		}
-		console.log(this.configOnHd);
 	},
 
 	createRoutes: function() {
@@ -86,6 +96,12 @@ module.exports = NodeHelper.create({
 			self.answerGet(query, res);
 		});
 
+		this.expressApp.get("/config-help.html", function(req, res) {
+			var query = url.parse(req.url, true).query;
+
+			self.answerConfigHelp(query, res);
+		});
+
 		this.expressApp.get("/remote", (req, res) => {
 			var query = url.parse(req.url, true).query;
 
@@ -100,11 +116,30 @@ module.exports = NodeHelper.create({
 		});
 	},
 
+	capitalizeFirst: function(string) {
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	},
+
 	readModuleData: function() {
 		var self = this;
 
 		fs.readFile(path.resolve(__dirname + "/modules.json"), function(err, data) {
 			self.modulesAvailable = JSON.parse(data.toString());
+
+			for (var i = 0; i < defaultModules.length; i++) {
+				self.modulesAvailable.push({
+					longname: defaultModules[i],
+					name: self.capitalizeFirst(defaultModules[i]),
+					installed: true,
+					author: "MichMich",
+					desc: "",
+					id: "MichMich/MagicMirror",
+					url: "https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules"
+				});
+				var module = self.modulesAvailable[self.modulesAvailable.length - 1];
+				var modulePath = path.resolve(__dirname + "/../default/" + defaultModules[i]);
+				self.loadModuleDefaultConfig(module, modulePath);
+			}
 
 			// now check for installed modules
 			fs.readdir(path.resolve(__dirname + "/.."), function(err, files) {
@@ -127,10 +162,64 @@ module.exports = NodeHelper.create({
 				for (var i = 0; i < self.modulesAvailable.length; i++) {
 					if (self.modulesAvailable[i].longname === module) {
 						self.modulesAvailable[i].installed = true;
+						self.loadModuleDefaultConfig(self.modulesAvailable[i], modulePath);
 					}
 				}
 			}
 		});
+	},
+
+	loadModuleDefaultConfig: function(module, modulePath) {
+		// function copied from MichMich (MIT)
+		var filename = path.resolve(modulePath + "/" + module.longname + ".js");
+		try {
+			fs.accessSync(filename, fs.F_OK);
+			var jsfile = require(filename);
+			module.configDefault = Module.configDefaults[module.longname];
+		} catch (e) {
+			if (e.code == "ENOENT") {
+				console.error("ERROR! Could not find main module js file.");
+			} else if (e instanceof ReferenceError || e instanceof SyntaxError) {
+				console.error("ERROR! Could not validate main module js file.");
+				console.error(e);
+			} else {
+				console.error("ERROR! Could not load main module js file. Error found: " + e);
+			}
+		}
+	},
+
+	answerConfigHelp: function(query, res) {
+		var modulePath = path.resolve(__dirname + "/../" + query.module);
+		var git = simpleGit(modulePath);
+		git.getRemotes(true, function (error, result) {
+			if (error) {
+				console.log(error);
+			}
+			var url = result[0].refs.fetch;
+			// replacements
+			url = url.replace(".git", "").replace("github.com:","github.com/")
+			// if cloned with ssh
+			url = url.replace("git@", "https://");
+			res.writeHead(302, {'Location': url});
+			res.end();
+		});
+	},
+
+	getConfig: function () {
+		var config = this.configOnHd;
+		// for (var i = 0; i < config.modules.length; i++) {
+		// 	var current = config.modules[i];
+		// 	var defaults = Module.configDefaults[current.module];
+		// 	if (! ("config" in current)) {
+		// 		current.config = {};
+		// 	}
+		// 	if (!defaults) {
+		// 		defaults = {};
+		// 	}
+		// 	var result = Object.assign(defaults, current.config);
+		// 	config.modules[i] = result;
+		// }
+		return config;
 	},
 
 	answerGet: function(query, res) {
@@ -138,6 +227,7 @@ module.exports = NodeHelper.create({
 
 		if (query.data === "modulesAvailable")
 		{
+			this.modulesAvailable.sort(function(a, b){return a.name.localeCompare(b.name);});
 			var text = JSON.stringify(this.modulesAvailable);
 			res.contentType("application/json");
 			res.send(text);
@@ -150,7 +240,13 @@ module.exports = NodeHelper.create({
 		}
 		if (query.data === "config")
 		{
-			var text = JSON.stringify(self.configOnHd);
+			var text = JSON.stringify(this.getConfig());
+			res.contentType("application/json");
+			res.send(text);
+		}
+		if (query.data === "defaultConfig")
+		{
+			var text = JSON.stringify(Module.configDefaults[query.module]);
 			res.contentType("application/json");
 			res.send(text);
 		}
@@ -269,7 +365,7 @@ module.exports = NodeHelper.create({
 
 		res.contentType("application/json");
 
-		simpleGit.clone(url, path.basename(url), function(error, result) {
+		simpleGit(path.resolve(__dirname + "/..")).clone(url, path.basename(url), function(error, result) {
 			if (error) {
 				console.log(error);
 				res.send({"status": "error"});

@@ -16,6 +16,7 @@ var Remote = {
     savedData: {},
     translations: {},
     currentConfig: {},
+    addModule: "",
 
     loadButtons: function(buttons) {
         for (var key in buttons) {
@@ -63,6 +64,13 @@ var Remote = {
     },
 
     filter: function(pattern) {
+        var filterInstalled = false;
+        if ("installed".indexOf(pattern) !== -1) {
+            filterInstalled = true;
+            pattern = pattern.replace("installed");
+        }
+        pattern = pattern.trim();
+
         var regex = new RegExp(pattern, "i");
         var searchIn = ["author", "desc", "longname", "name"];
 
@@ -71,16 +79,19 @@ var Remote = {
             var currentData = data[i];
             var id = "install-module-" + i;
             var element = document.getElementById(id);
-            if (pattern === "") {
+            if (pattern === "" || pattern === undefined) {
                 // cleared search input, show all
                 element.style.display = "";
                 continue;
             }
 
             var match = false;
+            if (filterInstalled && currentData.installed) {
+                match = true;
+            }
             for (var k = 0; k < searchIn.length; k++) {
                 var key = searchIn[k];
-                if (currentData[key] && currentData[key].match(regex)) {
+                if (match || (currentData[key] && currentData[key].match(regex))) {
                     match = true;
                     break;
                 }
@@ -278,7 +289,7 @@ var Remote = {
 
         this.get("get", "data=" + dataId, function (text) {
             document.getElementById(listname + "-loading").className = "hidden";
-            self.savedData[dataId] = [];
+            self.savedData[dataId] = false;
 
             try {
                 var data = JSON.parse(text);
@@ -389,7 +400,8 @@ var Remote = {
         symbolElement.className = symbol;
         wrapper.appendChild(symbolElement);
         var textElement = document.createElement("span");
-        textElement.innerHTML = " " + text;
+        textElement.innerHTML = text;
+        textElement.className = "symbol-text-padding";
         wrapper.appendChild(textElement);
         if (eventListener) {
             wrapper.addEventListener("click", eventListener, false);
@@ -467,6 +479,16 @@ var Remote = {
             }, "span");
             typeLabel.className += " type-edit";
             label.appendChild(typeLabel);
+
+            var remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function (event) {
+                var thisElement = event.currentTarget;
+                if (type === "array" || type === "object") {
+                    thisElement = thisElement.parentNode;
+                }
+                thisElement.parentNode.parentNode.removeChild(thisElement.parentNode);
+            }, "span");
+            remove.className += " type-edit";
+            label.appendChild(remove);
         }
         return label;
     },
@@ -591,7 +613,7 @@ var Remote = {
         // object and array
         var wrapper = document.createElement("div");
         wrapper.id = path;
-        wrapper.className = "indent";
+        wrapper.className = "indent config-input " + type;
         if (type === "array") {
             // array
             var add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_ENTRY"));
@@ -615,35 +637,48 @@ var Remote = {
         // object
         if (path !== "<root>") {
             wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ul"));
-        }
-        var addElement = self.createConfigLabel(path + "/<add>", this.translate("ADD_ENTRY"), type, true, "fa-plus");
-        addElement.className += " bottom-spacing";
-        var inputWrapper = document.createElement("div");
-        inputWrapper.className = "add-input-wrapper";
-        var input = self.createConfigInput(path + "/<add>", "");
-        input.type = "text";
-        input.placeholder = this.translate("NEW_ENTRY_NAME");
-        addElement.appendChild(inputWrapper);
-        inputWrapper.appendChild(input);
-        inputWrapper.appendChild(input);
-        inputWrapper.appendChild(self.createSymbolText("fa fa-fw fa-plus-square", " ", function () {
-                var existingKey = Object.keys(dataToEdit)[0];
-                var lastType = self.getTypeAsString(path + "/" + existingKey, dataToEdit[existingKey]);
-                var key = input.value;
-                if (key === "" || key in dataToEdit) {
-                    if (!self.hasClass(input, "input-error")) {
-                        input.className += " input-error";
+
+            var addElement = self.createConfigLabel(path + "/<add>", this.translate("ADD_ENTRY"), type, true, "fa-plus");
+            addElement.className += " bottom-spacing";
+            var inputWrapper = document.createElement("div");
+            inputWrapper.className = "add-input-wrapper";
+            var input = self.createConfigInput(path + "/<add>", "");
+            input.type = "text";
+            input.placeholder = this.translate("NEW_ENTRY_NAME");
+            addElement.appendChild(inputWrapper);
+            inputWrapper.appendChild(input);
+            var addFunction = function () {
+                    var existingKey = Object.keys(dataToEdit)[0];
+                    var lastType = self.getTypeAsString(path + "/" + existingKey, dataToEdit[existingKey]);
+                    var key = input.value;
+                    if (key === "" || document.getElementById(path + "/" + key)) {
+                        if (!self.hasClass(input, "input-error")) {
+                            input.className += " input-error";
+                        }
+                        return;
                     }
-                    return;
+                    input.className = input.className.replace(" input-error", "");
+                    dataToEdit[key] = self.values[self.types.indexOf(lastType)];
+                    var newElement = self.createObjectGUI(path + "/" + key, key, dataToEdit[key]);
+                    wrapper.insertBefore(newElement, addElement.nextSibling);
+                    input.value = "";
+            };
+            inputWrapper.appendChild(self.createSymbolText("fa fa-fw fa-plus-square", " ", addFunction, "span"));
+            input.onkeypress = function(e){
+                if (!e) e = window.event;
+                var keyCode = e.keyCode || e.which;
+                if (keyCode == '13'){
+                    addFunction();
                 }
-                input.className = input.className.replace(" input-error", "");
-                dataToEdit[key] = self.values[self.types.indexOf(lastType)];
-                var newElement = self.createObjectGUI(path + "/" + key, key, dataToEdit[key]);
-                wrapper.insertBefore(newElement, addElement.nextSibling);
-                input.value = "";
-        }, "span"));
-        wrapper.appendChild(addElement);
-        for (var key in dataToEdit) {
+            }
+            wrapper.appendChild(addElement);
+        }
+        var keys = Object.keys(dataToEdit);
+        if (path === "<root>") {
+            keys = ["module", "position", "header", "config"];
+        }
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
             if (dataToEdit.hasOwnProperty(key)) {
                 wrapper.appendChild(this.createObjectGUI(path + "/" + key, key, dataToEdit[key]));
             }
@@ -676,8 +711,7 @@ var Remote = {
         menuDiv.className = "fixed-size hidden config-menu";
 
         var help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), function (event) {
-            // load readme
-            console.log("ToDo Helplink");
+            window.open("config-help.html?module=" + self.currentConfig.module, "_blank");
         });
         menuDiv.appendChild(help);
         var undo = self.createSymbolText("fa fa-fw fa-undo", self.translate("RESET"), function (event) {
@@ -685,8 +719,8 @@ var Remote = {
         });
         menuDiv.appendChild(undo);
         var save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), function (event) {
-            // load readme
-            console.log("ToDo Save");
+            self.savedData["config"].modules[index] = self.getModuleConfigFromUI();
+            self.closePopup();
         });
         menuDiv.appendChild(save);
 
@@ -695,6 +729,51 @@ var Remote = {
         var line = document.createElement("header");
         line.className = "header";
         wrapper.appendChild(line);
+    },
+
+    getModuleConfigFromUI: function() {
+        var rootElement = {};
+        var elements = document.getElementsByClassName("config-input");
+        for (var i = 0; i < elements.length; i++) {
+            var path = elements[i].id;
+            var splitPath = path.split("/");
+            var parent = rootElement;
+            for (var k = 1; k < splitPath.length - 1; k++) {
+                parent = parent[splitPath[k]];
+            }
+            var name = splitPath[k];
+            if (name === "<add>") {
+                continue;
+            }
+            if (this.hasClass(elements[i], "array")) {
+                parent[name] = [];
+                continue;
+            }
+            if (this.hasClass(elements[i], "object")) {
+                parent[name] = {};
+                continue;
+            }
+
+            var value = elements[i].value;
+            if (path === "<root>/position" && value === "") {
+                continue;
+            }
+            if (elements[i].type === "checkbox")
+            {
+                value = elements[i].checked;
+            }
+            if (elements[i].type === "number")
+            {
+                value = parseFloat(value);
+            }
+
+            if (name.indexOf("#") !== -1) {
+                parent.push(value);
+            } else {
+                parent[name] = value;
+            }
+        }
+        return rootElement;
     },
 
     createConfigPopup: function(index) {
@@ -707,6 +786,12 @@ var Remote = {
         var data = moduleData[index];
 
         self.currentConfig = data;
+        if (!("header" in self.currentConfig)) {
+            self.currentConfig.header = "";
+        }
+        if (!("position" in self.currentConfig)) {
+            self.currentConfig.position = "";
+        }
 
         var wrapper = this.getPopupContent();
 
@@ -737,6 +822,30 @@ var Remote = {
         this.showPopup();
     },
 
+    appendModuleEditElements: function(wrapper, moduleData) {
+        var self = this;
+        for (var i = 0; i < moduleData.length; i++) {
+            var innerWrapper = document.createElement("div");
+            innerWrapper.className = "module-line";
+
+            var moduleBox = self.createSymbolText("fa fa-fw fa-pencil", self.formatName(moduleData[i].module), function(event) {
+                var i = event.currentTarget.id.replace("edit-module-", "");
+                self.createConfigPopup(i);
+            }, "span");
+            moduleBox.id = "edit-module-" + i;
+            innerWrapper.appendChild(moduleBox);
+
+            var remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function (event) {
+                var thisElement = event.currentTarget;
+                thisElement.parentNode.parentNode.removeChild(thisElement.parentNode);
+            }, "span");
+            remove.className += " type-edit";
+            innerWrapper.appendChild(remove);
+
+            wrapper.appendChild(innerWrapper);
+        }
+    },
+
     loadConfigModules: function() {
         var self = this;
 
@@ -744,14 +853,18 @@ var Remote = {
 
         this.loadList("config-modules", "config", function (parent, configData) {
             var moduleData = configData.modules;
-            for (var i = 0; i < moduleData.length; i++) {
-                var moduleBox = self.createSymbolText("fa fa-fw fa-pencil", self.formatName(moduleData[i].module), function(event) {
-                    var i = event.currentTarget.id.replace("edit-module-", "");
-                    self.createConfigPopup(i);
+            if (self.addModule) {
+                var name = self.addModule;
+                // we came here from adding a module
+                self.get("get", "data=defaultConfig&module=" + name, function(response) {
+                    var newData = JSON.parse(response);
+                    moduleData.push({module: name, config: newData});
+                    self.appendModuleEditElements(parent, moduleData);
+                    self.createConfigPopup(moduleData.length - 1);
                 });
-                moduleBox.className = "button module-line";
-                moduleBox.id = "edit-module-" + i;
-                parent.appendChild(moduleBox);
+                self.addModule = "";
+            } else {
+                self.appendModuleEditElements(parent, moduleData);
             }
         });
     },
@@ -785,7 +898,9 @@ var Remote = {
 
         if (data.installed) {
             var add = self.createSymbolText("fa fa-fw fa-plus", self.translate("ADD_THIS"), function (event) {
-                console.log("ToDo");
+                self.closePopup();
+                self.addModule = data.longname;
+                window.location.hash = "settings-menu";
             });
             footer.appendChild(add);
         }

@@ -34,6 +34,7 @@
     "NO_POSITION": "(invisible)",
     "ADD_ENTRY": "Add entry",
     "NEW_ENTRY_NAME": "(enter name of new entry)",
+    "DELETE_ENTRY": "Delete",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",
