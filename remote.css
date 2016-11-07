@@ -115,12 +115,12 @@ input:focus.input-error {
   color: #666;
 }
 
-.focused-label {
+.highlight {
   color: #FFF;
   background-color: #444;
 }
 
-.focused-label .type-edit {
+.highlight .type-edit {
   color: #999;
 }
 

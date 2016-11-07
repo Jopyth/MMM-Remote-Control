@@ -3,7 +3,7 @@
 
     "EDIT_MENU_NAME": "Edit view",
     "SHUTDOWN_MENU_NAME": "Power",
-    "CONFIGURE_MENU_NAME": "Settings",
+    "CONFIGURE_MENU_NAME": "Edit config.js",
     "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
 
     "BACK": "Back",
@@ -35,6 +35,7 @@
     "ADD_ENTRY": "Add entry",
     "NEW_ENTRY_NAME": "(enter name of new entry)",
     "DELETE_ENTRY": "Delete",
+    "UNSAVED_CHANGES": "Unsaved changes",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",

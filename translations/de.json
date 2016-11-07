@@ -35,6 +35,7 @@
     "ADD_ENTRY": "Neuer Eintrag",
     "NEW_ENTRY_NAME": "(Name eintragen)",
     "DELETE_ENTRY": "L&ouml;schen",
+    "UNSAVED_CHANGES": "Nicht gespeicherte &Auml;nderungen",
 
     "NO_MODULES_LOADED": "Keine Module geladen.",
     "SAVE": "Speichern",

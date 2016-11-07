@@ -17,6 +17,7 @@ var Remote = {
     translations: {},
     currentConfig: {},
     addModule: "",
+    changedModules: [],
 
     loadButtons: function(buttons) {
         for (var key in buttons) {
@@ -505,11 +506,11 @@ var Remote = {
         input.id = key;
         input.addEventListener("focus", function (event) {
             var label = event.currentTarget.parentNode;
-            label.className = label.className + " focused-label";
+            label.className = label.className + " highlight";
         }, false);
         input.addEventListener("blur", function (event) {
             var label = event.currentTarget.parentNode;
-            label.className = label.className.replace(" focused-label", "");
+            label.className = label.className.replace(" highlight", "");
         }, false);
 
         return input;
@@ -676,6 +677,9 @@ var Remote = {
             }
             wrapper.appendChild(addElement);
         }
+        if (dataToEdit === null) {
+            dataToEdit = {};
+        }
         var keys = Object.keys(dataToEdit);
         if (path === "<root>") {
             keys = ["module", "position", "header", "config"];
@@ -723,6 +727,11 @@ var Remote = {
         menuDiv.appendChild(undo);
         var save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), function (event) {
             self.savedData["config"].modules[index] = self.getModuleConfigFromUI();
+            self.changedModules.push(index);
+            var parent = document.getElementById("edit-module-" + index).parentNode;
+            if (parent.children.length === 2) {
+                parent.insertBefore(self.createChangedWarning(), parent.children[1]);               
+            }
             self.closePopup();
         });
         menuDiv.appendChild(save);
@@ -827,6 +836,15 @@ var Remote = {
         this.showPopup();
     },
 
+    createChangedWarning: function() {
+        var changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), function() {
+            var saveButton = document.getElementById("save-config");
+            saveButton.className += " highlight";
+        }, "span");
+        changed.className += " type-edit";
+        return changed;
+    },
+
     appendModuleEditElements: function(wrapper, moduleData) {
         var self = this;
         for (var i = 0; i < moduleData.length; i++) {
@@ -839,6 +857,10 @@ var Remote = {
             }, "span");
             moduleBox.id = "edit-module-" + i;
             innerWrapper.appendChild(moduleBox);
+
+            if (self.changedModules.indexOf(i) !== -1) {
+                innerWrapper.appendChild(self.createChangedWarning());
+            }
 
             var remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function (event) {
                 var thisElement = event.currentTarget;
@@ -864,8 +886,10 @@ var Remote = {
                 self.get("get", "data=defaultConfig&module=" + name, function(response) {
                     var newData = JSON.parse(response);
                     moduleData.push({module: name, config: newData});
+                    var index = moduleData.length - 1;
+                    self.changedModules.push(index);
                     self.appendModuleEditElements(parent, moduleData);
-                    self.createConfigPopup(moduleData.length - 1);
+                    self.createConfigPopup(index);
                 });
                 self.addModule = "";
             } else {
