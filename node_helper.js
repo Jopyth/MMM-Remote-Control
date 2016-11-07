@@ -12,7 +12,6 @@ const fs = require("fs");
 const exec = require("child_process").exec;
 const os = require("os");
 const simpleGit = require("simple-git");
-const GithubMarkdown = require('markdown-to-html').GithubMarkdown;
 
 var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodules.js"));
 

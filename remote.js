@@ -530,6 +530,9 @@ var Remote = {
                 var input = self.createConfigInput(key, value);
                 input.type = "text";
                 label.appendChild(input);
+                if (key === "<root>/header") {
+                    input.placeholder = self.translate("NO_HEADER");
+                }
                 return label;
             },
             number: function(key, name, value, type, forcedType) {
@@ -731,6 +734,22 @@ var Remote = {
         wrapper.appendChild(line);
     },
 
+    setValue: function(parent, name, value) {
+        if (name.indexOf("#") !== -1) {
+            parent.push(value);
+        } else {
+            parent[name] = value;
+        }
+    },
+
+    navigate: function(parent, name) {
+        if (name.indexOf("#") !== -1) {
+            return parent[parent.length - 1];
+        } else {
+            return parent[name];
+        }
+    },
+
     getModuleConfigFromUI: function() {
         var rootElement = {};
         var elements = document.getElementsByClassName("config-input");
@@ -739,23 +758,20 @@ var Remote = {
             var splitPath = path.split("/");
             var parent = rootElement;
             for (var k = 1; k < splitPath.length - 1; k++) {
-                parent = parent[splitPath[k]];
+                parent = this.navigate(parent, splitPath[k]);
             }
             var name = splitPath[k];
-            if (name === "<add>") {
-                continue;
-            }
             if (this.hasClass(elements[i], "array")) {
-                parent[name] = [];
+                this.setValue(parent, name, []);
                 continue;
             }
             if (this.hasClass(elements[i], "object")) {
-                parent[name] = {};
+                this.setValue(parent, name, {});
                 continue;
             }
 
             var value = elements[i].value;
-            if (path === "<root>/position" && value === "") {
+            if (name === "<add>" || (path === "<root>/position" && value === "")) {
                 continue;
             }
             if (elements[i].type === "checkbox")
@@ -766,12 +782,7 @@ var Remote = {
             {
                 value = parseFloat(value);
             }
-
-            if (name.indexOf("#") !== -1) {
-                parent.push(value);
-            } else {
-                parent[name] = value;
-            }
+            this.setValue(parent, name, value);
         }
         return rootElement;
     },
@@ -812,12 +823,6 @@ var Remote = {
         // disable input for module name
         document.getElementById("<root>/module").disabled = true;
         document.getElementById("<root>/module").className += " disabled";
-
-        // set header placeholder
-        var header = document.getElementById("<root>/header");
-        if (header) {
-            header.placeholder = self.translate("NO_HEADER");
-        }
 
         this.showPopup();
     },
