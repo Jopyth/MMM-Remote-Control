@@ -18,6 +18,7 @@ var Remote = {
     currentConfig: {},
     addModule: "",
     changedModules: [],
+    deletedModules: [],
 
     loadButtons: function(buttons) {
         for (var key in buttons) {
@@ -159,13 +160,13 @@ var Remote = {
 
     showMenu: function(newMenu) {
         if (newMenu === "add-module-menu") {
-            Remote.loadModulesToAdd();
+            this.loadModulesToAdd();
         }
         if (newMenu === "edit-menu") {
-            Remote.loadVisibleModules();
+            this.loadVisibleModules();
         }
         if (newMenu === "settings-menu") {
-            Remote.loadConfigModules();
+            this.loadConfigModules();
         }
 
         var allMenus = document.getElementsByClassName("menu-element");
@@ -854,9 +855,12 @@ var Remote = {
     },
 
     createChangedWarning: function() {
+        var self = this;
         var changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), function() {
             var saveButton = document.getElementById("save-config");
-            saveButton.className += " highlight";
+            if (!self.hasClass(saveButton, "highlight")) {
+                saveButton.className += " highlight";
+            }
         }, "span");
         changed.className += " type-edit";
         return changed;
@@ -880,6 +884,8 @@ var Remote = {
             }
 
             var remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function (event) {
+                var i = event.currentTarget.parentNode.firstChild.id.replace("edit-module-", "");
+                self.deletedModules.push(parseInt(i));
                 var thisElement = event.currentTarget;
                 thisElement.parentNode.parentNode.removeChild(thisElement.parentNode);
             }, "span");
@@ -994,6 +1000,39 @@ var Remote = {
                 parent.appendChild(moduleBox);
             }
         });
+    },
+
+    saveConfig: function() {
+        var self = this;
+
+        // prevent saving before current saving is finished
+        if (this.saving) {
+            return;
+        }
+        var saveButton = document.getElementById("save-config");
+        saveButton.className = saveButton.className.replace(" highlight", "");
+        this.saving = true;
+        this.setStatus("loading");
+        var configData = this.savedData["config"];
+        var remainingModules = [];
+        for (var i = 0; i < configData.modules.length; i++) {
+            if (this.deletedModules.indexOf(i) !== -1) {
+                continue;
+            } else {
+                remainingModules.push(configData.modules[i]);
+            }
+        }
+        configData.modules = remainingModules;
+        this.deletedModules = [];
+        this.post("post", "data=config", configData, function (result) {
+            if (result.status === "success") {
+                self.setStatus("success");
+            } else {
+                self.setStatus("error");
+            }
+            self.saving = false;
+            self.loadConfigModules();
+        });
     }
 };
 
@@ -1066,21 +1105,7 @@ var buttons = {
         window.location.hash = "add-module-menu";
     },
     "save-config": function() {
-        // prevent saving before current saving is finished
-        if (Remote.saving) {
-            return;
-        }
-        Remote.saving = true;
-        self.setStatus("loading");
-        Remote.post("post", "data=config", Remote.savedData["config"], function () {
-            Remote.saving = false;
-            var result = JSON.parse(response);
-            if (result.status === "success") {
-                self.setStatus("success");
-            } else {
-                self.setStatus("error");
-            }
-        });
+        Remote.saveConfig();
     },
 
     // main menu
