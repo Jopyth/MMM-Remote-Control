@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Menu to change the `config.js`
+    - Modules can be installed, added, removed, configured
+    - There will be backups of the five last versions of the `config.js` in the `config` folder
+
+### Changed
+- Smaller font sizes in lists
+- Menu structure
+    - Old "Edit" and "Settings" are now under "Edit view"
 
 ## [1.0.0] - 2016-10-24
 ### Added
