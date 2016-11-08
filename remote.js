@@ -303,6 +303,7 @@ var Remote = {
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
+        document.getElementById(listname + "-loading").className = "";
 
         this.get("get", "data=" + dataId, function (text) {
             document.getElementById(listname + "-loading").className = "hidden";
@@ -893,6 +894,7 @@ var Remote = {
         var self = this;
 
         console.log("Loading modules in config...");
+        this.changedModules = []
 
         this.loadList("config-modules", "config", function (parent, configData) {
             var moduleData = configData.modules;
@@ -1064,7 +1066,21 @@ var buttons = {
         window.location.hash = "add-module-menu";
     },
     "save-config": function() {
-        Remote.post("post", "data=config", {data: "test"}, false);
+        // prevent saving before current saving is finished
+        if (Remote.saving) {
+            return;
+        }
+        Remote.saving = true;
+        self.setStatus("loading");
+        Remote.post("post", "data=config", Remote.savedData["config"], function () {
+            Remote.saving = false;
+            var result = JSON.parse(response);
+            if (result.status === "success") {
+                self.setStatus("success");
+            } else {
+                self.setStatus("error");
+            }
+        });
     },
 
     // main menu

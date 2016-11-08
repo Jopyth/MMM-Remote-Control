@@ -63,7 +63,16 @@ a {
 
 #config-modules-results .module-line {
   display: flex;
-  justify-content: space-between;  
+  justify-content: space-between;
+  flex-wrap: wrap;  
+}
+
+.results > div:nth-child(even) {
+  background-color: #222;
+}
+
+#add-module-results > div {
+  background-color: #000;
 }
 
 #config-modules-results .module-line > span {
