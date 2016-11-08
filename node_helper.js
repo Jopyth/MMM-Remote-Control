@@ -109,7 +109,7 @@ module.exports = NodeHelper.create({
 			self.answerConfigHelp(query, res);
 		});
 
-		this.expressApp.get("/remote", (req, res) => {
+		this.expressApp.get("/remote", function (req, res) {
 			var query = url.parse(req.url, true).query;
 
 			if (query.action)
@@ -314,6 +314,15 @@ module.exports = NodeHelper.create({
 			res.contentType("application/json");
 			res.send(text);
 		}
+        if (query.data === "modulesInstalled")
+        {
+            var filterInstalled = function(value){
+                return self.modulesInstalled.indexOf(value.name) != -1;
+            };
+            var text = JSON.stringify(self.configData.moduleData.filter(filterInstalled));
+            res.contentType("application/json");
+            res.send(text);
+        }
 		if (query.data === "translations")
 		{
 			var text = JSON.stringify(this.translation);
@@ -365,7 +374,7 @@ module.exports = NodeHelper.create({
 				this.callback();
 			},
 			callback: callback
-		}
+		};
 
 		this.waiting.push(waitObject);
 		this.sendSocketNotification("UPDATE");
@@ -373,7 +382,7 @@ module.exports = NodeHelper.create({
 			waitObject.run();
 		}, timeout);
 	},
-	
+
 	executeQuery: function(query, res) {
 		var self = this;
 		var opts = {timeout: 8000};
@@ -390,7 +399,9 @@ module.exports = NodeHelper.create({
 		}
 		if (query.action === "RESTART")
 		{
-			exec("pm2 restart mm", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("/usr/local/bin/pm2 restart mm", opts, function(error, stdout, stderr){
+				self.sendSocketNotification('RESTART');
+				self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
 		if (query.action === "MONITORON")
@@ -439,6 +450,37 @@ module.exports = NodeHelper.create({
 			self.installModule(query.url, res);
 			return true;
 		}
+        if (query.action === "REFRESH")
+        {
+            if (res) { res.send({"status": "success"}); }
+            self.sendSocketNotification(query.action);
+            return true;
+        }
+        if (query.action === "HIDE_ALERT")
+        {
+            if (res) { res.send({"status": "success"}); }
+            self.sendSocketNotification(query.action);
+            return true;
+        }
+        if (query.action === "SHOW_ALERT")
+        {
+            if (res) { res.send({"status": "success"}); }
+
+            var type = query.type ? query.type : "alert";
+            var title = query.title ? query.title : "Note";
+            var message = query.message ? query.message : "Attention!";
+            var timer = query.timer ? query.timer : 4;
+
+            self.sendSocketNotification(query.action, {
+                type: type, title: title, message: message, timer: timer * 1000
+            });
+            return true;
+        }
+        if (query.action === "UPDATE")
+        {
+            self.updateModule(decodeURI(query.module), res);
+            return true;
+        }
 		return false;
 	},
 
@@ -467,8 +509,56 @@ module.exports = NodeHelper.create({
 			}
 		});
 	},
-	
+
+    updateModule: function(module, res) {
+        console.log("UPDATE "+module);
+
+        var self = this;
+
+        var path = __dirname + "/../../";
+        var name = "MM";
+
+        if (module) {
+            if(self.configData.moduleData){
+                for (var i = 0; i < self.configData.moduleData.length; i++) {
+                    if (self.configData.moduleData[i].name === module) {
+                        path = self.configData.moduleData[i].path;
+                        name = this.format(self.configData.moduleData[i].name);
+                        break;
+                    }
+                }
+            }
+        }
+
+        console.log("path:"+path+" name:"+name);
+
+        //todo replace with simple git?
+        exec("/usr/bin/git -C " + path + " pull ", function(error, stdout, stderr)
+        {
+            if (error)
+            {
+                console.log(error);
+                if (res) { res.send({"status": "error", "reason": "unknown", "info": error}); }
+            } else {
+
+                if (stdout.trim() != "Already up-to-date.")
+                {
+                    console.log('RESTART');
+
+                    exec("/usr/local/bin/pm2 restart mm", function(error, stdout, stderr){
+                        self.sendSocketNotification("RESTART");
+                        self.checkForExecError(error, stdout, stderr, res);
+                    });
+                }else{
+                    if (res) { res.send({"status": "success", "info": name + " " + stdout}); }
+                }
+            }
+        });
+    },
+
 	checkForExecError: function(error, stdout, stderr, res) {
+		console.log(stdout);
+		console.log(stderr);
 		if (error) {
 			console.log(error);
 			if (res) { res.send({"status": "error", "reason": "unknown", "info": error}); }
@@ -522,8 +612,11 @@ module.exports = NodeHelper.create({
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
-	fillTemplates: function(data) {
-		data = this.translate(data);
+    fillTemplates: function(data) {
+        return this.fillEditMenu(this.translate(data));
+    },
+
+	fillEditMenu: function(data) {
 
 		var brightness = 100;
 		if (this.configData) {
@@ -587,11 +680,11 @@ module.exports = NodeHelper.create({
 			// module started, answer with current ip addresses
 			self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
 		}
-		
+
 		if (notification === "REMOTE_ACTION")
 		{
 			this.executeQuery(payload);
 		}
-		
-	},
+
+	}
 });

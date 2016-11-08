@@ -168,7 +168,9 @@ var Remote = {
         if (newMenu === "settings-menu") {
             this.loadConfigModules();
         }
-
+        if (newMenu === "update-menu") {
+            Remote.loadModulesToUpdate();
+        }
         var allMenus = document.getElementsByClassName("menu-element");
 
         for (var i = 0; i < allMenus.length; i++) {
@@ -220,6 +222,10 @@ var Remote = {
                 var result = JSON.parse(response);
                 if (result.status === "success") {
                     self.setStatus("success");
+					//only for success because error gives false errors
+					if (result.info){
+						alert(result.info);
+					}
                 } else {
                     self.setStatus("error");
                 }
@@ -293,7 +299,7 @@ var Remote = {
                     callback(JSON.parse(req.responseText));
                 }
             }
-        }
+        };
         req.send(JSON.stringify(data));
     },
 
@@ -1002,6 +1008,25 @@ var Remote = {
         });
     },
 
+    loadModulesToUpdate: function() {
+        var self = this;
+
+        console.log("Loading modules to update...");
+
+        this.loadList("update-module", "modulesInstalled", function (parent, modules) {
+            for (var i = 0; i < modules.length; i++) {
+                var symbol = "fa fa-fw fa-toggle-up";
+                var moduleBox = self.createSymbolText(symbol, modules[i].name, function (event) {
+                    var module = event.currentTarget.id.replace("update-module-", "");
+                    self.getWithStatus("action=UPDATE&module=" + encodeURI(module));
+                });
+                moduleBox.className = "button module-line";
+                moduleBox.id = "update-module-" + modules[i].name;
+                parent.appendChild(moduleBox);
+            }
+        });
+    },
+
     saveConfig: function() {
         var self = this;
 
@@ -1057,6 +1082,12 @@ var buttons = {
         }
         window.location.hash = "main-menu";
     },
+    "update-button": function () {
+        window.location.hash = "update-menu";
+    },
+    "alert-button": function () {
+        window.location.hash = "alert-menu";
+    },
 
     // settings menu buttons
     "brightness-reset": function() {
@@ -1092,12 +1123,16 @@ var buttons = {
     },
     "restart-mm-button": function() {
         Remote.getWithStatus("action=RESTART");
+        setTimeout(function(){document.location.reload(); console.log('Delayed REFRESH');}, 60000);
     },
     "monitor-on-button": function() {
         Remote.getWithStatus("action=MONITORON");
     },
     "monitor-off-button": function() {
         Remote.getWithStatus("action=MONITOROFF");
+    },
+    'refresh-mm-button': function () {
+        Remote.getWithStatus("action=REFRESH");
     },
 
     // config menu buttons
@@ -1115,8 +1150,27 @@ var buttons = {
 
     "close-popup": function() {
         Remote.closePopup();
+    },
+
+    // update Menu
+    "update-mm-button": function () {
+        Remote.getWithStatus("action=UPDATE");
+    },
+
+    // alert menu
+    "send-alert-button": function () {
+        var kvpairs = [];
+        var form = document.getElementById('alert');
+        for ( var i = 0; i < form.elements.length; i++ ) {
+            var e = form.elements[i];
+            kvpairs.push(encodeURIComponent(e.name) + "=" + encodeURIComponent(e.value));
+        }
+        Remote.getWithStatus(kvpairs.join("&"));
+    },
+    "hide-alert-button": function () {
+        Remote.getWithStatus("action=HIDE_ALERT");
     }
-}
+};
 
 Remote.loadTranslations();
 Remote.loadButtons(buttons);
@@ -1136,7 +1190,7 @@ window.onhashchange = function() {
     } else {
         Remote.showMenu("main-menu");
     }
-}
+};
 
 // loading successful, remove error message
 var loadError = document.getElementById("load-error");

@@ -73,6 +73,10 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
 | SHOW | Show a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
+| REFRESH | Refresh mirror page |
+| SHOW_ALERT | Show Default Alert/Notification |
+| HIDE_ALERT | Hide Default Alert/Notification |
+| UPDATE | Update MagicMirror and any of it's modules |
 
 ### Format of module data response
 
