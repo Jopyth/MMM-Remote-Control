@@ -23,9 +23,29 @@ a {
   flex-direction: column;
 }
 
+.menu {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.sub-menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
 .result-list {
   overflow-y: auto;
   height: 100%;
+  border-top: 1px solid white;
+  margin-top: 7px;
+  padding-top: 7px;
+  width: 100%;
 }
 
 .results {
@@ -39,6 +59,11 @@ a {
 
 .button {
   cursor: pointer;
+  flex: 0 0 auto;
+  border: 1px solid #666;
+  border-radius: 0.2em;
+  padding: 0.1em;
+  margin: 0.1em;
 }
 
 .status-indicator {
@@ -93,6 +118,10 @@ input, select {
   padding: 0.2em;
 }
 
+select {
+  flex: 1 0 auto;
+}
+
 input:focus, select:focus { 
   color: #FFF;
   border: 2px solid #FFF;
@@ -131,6 +160,10 @@ input:focus.input-error {
 
 .highlight .type-edit {
   color: #999;
+}
+
+.highlight .button {
+  border: 1px solid #999;
 }
 
 .bottom-spacing {
@@ -181,8 +214,8 @@ input:focus.input-error {
 
 .slider-container {
   vertical-align: middle;
-  height: 2em;
-  max-width: 20em;
+  /*height: 2em;*/
+  /*max-width: 20em;*/
 }
 
 .stack {
@@ -213,10 +246,6 @@ input:focus.input-error {
   font-size: 1em;
 }
 
-.add-input-wrapper .fa-plus-square {
-  padding-left: 0.5em;
-}
-
 .slider {
   vertical-align: middle;
   border: 0px;
@@ -243,8 +272,9 @@ input:focus.input-error {
 }
 
 .title {
-  flex: 0 1 auto;
-  margin-right: 1.5em;
+  flex: 0 0 auto;
+  margin: 0.2em 1.5em 0.2em 0.5em;
+  text-align: center;
 }
 
 .subtitle {
@@ -275,7 +305,7 @@ input:focus.input-error {
 }
 
 .fixed-size {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
 }
 
 .hidden {
@@ -315,8 +345,8 @@ input[type=checkbox]:checked ~ .fa-check-square-o
 /* slider appearance created with http://danielstern.ca/range.css/?ref=css-tricks#/ */
 input[type=range] {
   -webkit-appearance: none;
-  width: 95%;
   margin: 15px 0;
+  min-width: 200px;
   background: #000000;
 }
 input[type=range]:focus {

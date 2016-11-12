@@ -685,7 +685,10 @@ var Remote = {
                     wrapper.insertBefore(newElement, addElement.nextSibling);
                     input.value = "";
             };
-            inputWrapper.appendChild(self.createSymbolText("fa fa-fw fa-plus-square", " ", addFunction, "span"));
+            var symbol = document.createElement("span");
+            symbol.className = "fa fa-fw fa-plus-square button";
+            symbol.addEventListener("click", addFunction, false);
+            inputWrapper.appendChild(symbol);
             input.onkeypress = function(e){
                 if (!e) e = window.event;
                 var keyCode = e.keyCode || e.which;
@@ -719,7 +722,7 @@ var Remote = {
         var self = this;
 
         var menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), function (event) {
-            var elements = document.getElementsByClassName("config-menu");
+            var elements = document.getElementsByClassName("sub-menu");
             for (var i = 0; i < elements.length; i++) {
                 var element = elements[i];
                 if (self.hasClass(element, "hidden")) {
@@ -733,7 +736,7 @@ var Remote = {
         wrapper.appendChild(menuElement);
 
         var menuDiv = document.createElement("div");
-        menuDiv.className = "fixed-size hidden config-menu";
+        menuDiv.className = "fixed-size sub-menu hidden";
 
         var help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), function (event) {
             window.open("config-help.html?module=" + self.currentConfig.module, "_blank");
@@ -834,14 +837,9 @@ var Remote = {
         var wrapper = this.getPopupContent();
 
         var name = document.createElement("div");
-        name.innerHTML = self.formatName(data.module);
+        name.innerHTML = self.formatName(data.module) + " (#" + (index + 1) + ")";
         name.className = "bright title medium";
         wrapper.appendChild(name);
-
-        var identifier = document.createElement("div");
-        identifier.innerHTML = "#" + (index + 1);
-        identifier.className = "dimmed subtitle xsmall";
-        wrapper.appendChild(identifier);
 
         self.appendConfigMenu(index, wrapper);
 
