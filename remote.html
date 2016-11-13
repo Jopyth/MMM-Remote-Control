@@ -19,7 +19,9 @@
         <div class="fill">
             <div class="menu fill">
                 <!-- general back button -->
-                <div id="back-button" class="menu-element button power-menu edit-menu settings-menu add-module-menu">
+                <div id="back-button"
+                     class="menu-element button power-menu edit-menu settings-menu add-module-menu update-menu alert-menu"
+                >
                     <span class="fa fa-fw fa-arrow-left" aria-hidden="true"></span>
                     <!-- <span class="text">%%TRANSLATE:BACK%%</span> -->
                 </div>
@@ -44,6 +46,58 @@
                     <span class="fa fa-fw fa-external-link " aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:VIEW_MIRROR%%</span>
                 </div>
+                <div id="update-button" class="menu-element button main-menu">
+                    <span class="fa fa-fw fa-toggle-up" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:UPDATE_MENU_NAME%%</span>
+                </div>
+                <div id="alert-button" class="menu-element button main-menu">
+                    <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:ALERT_MENU_NAME%%</span>
+                </div>
+
+                <!-- alert menu -->
+                <div class="menu-element alert-menu">
+                    <form id="alert" action="" method="GET">
+                        <input type="hidden" name="action" value="SHOW_ALERT">
+                        <div class="xsmall">Type:</div>
+                        <select name="type">
+                            <option value="alert">Alert</option>
+                            <option value="notification">Notification</option>
+                        </select>
+                        <div class="xsmall">Title:</div>
+                        <input type="text" name="title" value="">
+                        <div class="xsmall">Message:</div>
+                        <div>
+                            <textarea name="message" rows="4" cols="50"></textarea>
+                        </div>
+                        <div class="xsmall">Seconds:</div>
+                        <input type="number" name="timer" value="4">
+                    </form>
+                    <div id="send-alert-button" class="menu-element button alert-menu">
+                        <span class="fa fa-fw fa-send-o" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:SENDALERT%%</span>
+                    </div>
+                    <div id="hide-alert-button" class="menu-element button alert-menu">
+                        <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:HIDEALERT%%</span>
+                    </div>
+                </div>
+
+                <!-- settings menu -->
+                <div id="brightness-description" class="menu-element button settings-menu">
+                    <span class="stack fa-fw">
+                        <span class="fa fa-fw fa-sun-o outer-label fa-stack-1x" aria-hidden="true"></span>
+                        <span class="fa fa-fw fa-adjust inner-label fa-stack-1x" aria-hidden="true"></span>
+                    </span>
+                    <span class="text">%%TRANSLATE:BRIGHTNESS%%</span>
+                </div>
+                <div id="brightness-container" class="slider-container menu-element button settings-menu">
+                    <input id="brightness-slider" type="range" min="10" max="200" step="10" value="%%REPLACE::BRIGHTNESS%%" class="slider"/>
+                </div>
+                <div id="brightness-reset" class="menu-element button settings-menu">
+                    <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:RESET%%</span>
+                </div>
 
                 <!-- power menu -->
                 <div id="shut-down-button" class="menu-element button power-menu">
@@ -54,11 +108,15 @@
                     <span class="fa fa-fw fa-refresh" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:RESTART%%</span>
                 </div>
-                
+
                 <!-- MagicMirror menu -->
                 <div id="restart-mm-button" class="menu-element button power-menu">
                     <span class="fa fa-fw fa-recycle" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:RESTARTMM%%</span>
+                </div>
+                <div id="refresh-mm-button" class="menu-element button power-menu">
+                    <span class="fa fa-fw fa-globe" aria-hidden="true"></span>
+                    <span class="text">%%TRANSLATE:REFRESHMM%%</span>
                 </div>
                 <div id="monitor-on-button" class="menu-element button power-menu">
                     <span class="stack fa-fw">
@@ -158,6 +216,24 @@
                     </div>
                 </div>
 
+                <!-- update menu -->
+                <div id="update-module-container" class="result-list menu-element update-menu">
+                    <div id="update-mm-button" class="menu-element button update-menu">
+                        <span class="fa fa-fw fa-toggle-up" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:UPDATEMM%%</span>
+                    </div>
+                    <div id="update-module-loading">
+                        <span class="fa fa-fw fa-spinner fa-pulse"></span>
+                        <span class="text">%%TRANSLATE:LOADING%%</span>
+                    </div>
+                    <div id="update-module-empty" class="hidden">
+                        <span class="fa fa-fw fa-exclamation-circle"></span>
+                        <span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>
+                    </div>
+                    <div id="update-module-results" class="results small">
+                        <!-- elements are inserted here -->
+                    </div>
+                </div>
             </div>
             <div class="result">
                 <div id="loading" class="status-indicator">
