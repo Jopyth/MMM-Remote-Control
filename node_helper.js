@@ -40,16 +40,16 @@ module.exports = NodeHelper.create({
 		this.waiting = [];
 
 		this.template = "";
-		this.modulesAvailable = {};
+		this.modulesAvailable = [];
 		this.modulesInstalled = [];
 
 		fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
 			self.template = data.toString();
 		});
 
+		this.combineConfig();
 		this.readModuleData();
 		this.createRoutes();
-		this.combineConfig();
 	},
 
 	combineConfig: function() {
@@ -127,11 +127,28 @@ module.exports = NodeHelper.create({
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
+	formatName: function(string) {
+		string = string.replace(/MMM?-/ig, "").replace(/_/g, " ").replace(/-/g, " ");
+		string = string.replace(/([a-z])([A-Z])/g, function(txt){
+			// insert space into camel case
+			return txt.charAt(0) + " " + txt.charAt(1);
+		});
+		string = string.replace(/\w\S*/g, function(txt){
+			// make character after white space upper case
+			return txt.charAt(0).toUpperCase() + txt.substr(1);
+		});
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	},
+
 	readModuleData: function() {
 		var self = this;
 
 		fs.readFile(path.resolve(__dirname + "/modules.json"), function(err, data) {
 			self.modulesAvailable = JSON.parse(data.toString());
+
+			for (var i = 0; i < self.modulesAvailable.length; i++) {
+				self.modulesAvailable[i].name = self.formatName(self.modulesAvailable[i].longname);
+			}
 
 			for (var i = 0; i < defaultModules.length; i++) {
 				self.modulesAvailable.push({
@@ -144,7 +161,7 @@ module.exports = NodeHelper.create({
 					url: "https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules"
 				});
 				var module = self.modulesAvailable[self.modulesAvailable.length - 1];
-				var modulePath = path.resolve(__dirname + "/../default/" + defaultModules[i]);
+				var modulePath = self.configOnHd.paths.modules + "/default/" + defaultModules[i];
 				self.loadModuleDefaultConfig(module, modulePath);
 			}
 
@@ -159,18 +176,33 @@ module.exports = NodeHelper.create({
 		});
 	},
 
-	addModule: function(module) {
+	addModule: function(folderName) {
 		var self = this;
 
-		var modulePath = path.resolve(__dirname + "/../" + module);
+		var modulePath = this.configOnHd.paths.modules + "/" + folderName;
 		fs.stat(modulePath, function(err, stats) {
 			if (stats.isDirectory()) {
-				self.modulesInstalled.push(module);
+				var isInList = false;
+				self.modulesInstalled.push(folderName);
 				for (var i = 0; i < self.modulesAvailable.length; i++) {
-					if (self.modulesAvailable[i].longname === module) {
+					if (self.modulesAvailable[i].longname === folderName) {
+						isInList = true;
 						self.modulesAvailable[i].installed = true;
 						self.loadModuleDefaultConfig(self.modulesAvailable[i], modulePath);
 					}
+				}
+				if (!isInList) {
+					var newModule = {
+						longname: folderName,
+						name: self.formatName(folderName),
+						installed: true,
+						author: "unknown",
+						desc: "",
+						id: "local/" + folderName,
+						url: ""
+					};
+					self.loadModuleDefaultConfig(newModule, modulePath);
+					self.modulesAvailable.push(newModule);
 				}
 			}
 		});
@@ -182,7 +214,7 @@ module.exports = NodeHelper.create({
 		try {
 			fs.accessSync(filename, fs.F_OK);
 			var jsfile = require(filename);
-			module.configDefault = Module.configDefaults[module.longname];
+			// module.configDefault = Module.configDefaults[module.longname];
 		} catch (e) {
 			if (e.code == "ENOENT") {
 				console.error("ERROR! Could not find main module js file.");
@@ -209,7 +241,7 @@ module.exports = NodeHelper.create({
 			});
 			return;
 		}
-		var modulePath = path.resolve(__dirname + "/../" + query.module);
+		var modulePath = this.configOnHd.paths.modules + "/" + query.module;
 		var git = simpleGit(modulePath);
 		git.getRemotes(true, function (error, result) {
 			if (error) {
@@ -314,15 +346,15 @@ module.exports = NodeHelper.create({
 			res.contentType("application/json");
 			res.send(text);
 		}
-        if (query.data === "modulesInstalled")
-        {
-            var filterInstalled = function(value){
-                return self.modulesInstalled.indexOf(value.name) != -1;
-            };
-            var text = JSON.stringify(self.configData.moduleData.filter(filterInstalled));
-            res.contentType("application/json");
-            res.send(text);
-        }
+		if (query.data === "modulesInstalled")
+		{
+			var filterInstalled = function(value){
+				return self.modulesInstalled.indexOf(value.name) != -1;
+			};
+			var text = JSON.stringify(self.configData.moduleData.filter(filterInstalled));
+			res.contentType("application/json");
+			res.send(text);
+		}
 		if (query.data === "translations")
 		{
 			var text = JSON.stringify(this.translation);
@@ -337,9 +369,14 @@ module.exports = NodeHelper.create({
 		}
 		if (query.data === "defaultConfig")
 		{
-			var text = JSON.stringify(Module.configDefaults[query.module]);
-			res.contentType("application/json");
-			res.send(text);
+			if (!(query.module in Module.configDefaults)) {
+				res.contentType("application/json");
+				res.send({});
+			} else {
+				var text = JSON.stringify(Module.configDefaults[query.module]);
+				res.contentType("application/json");
+				res.send(text);
+			}
 		}
 		if (query.data === "modules")
 		{
@@ -450,37 +487,37 @@ module.exports = NodeHelper.create({
 			self.installModule(query.url, res);
 			return true;
 		}
-        if (query.action === "REFRESH")
-        {
-            if (res) { res.send({"status": "success"}); }
-            self.sendSocketNotification(query.action);
-            return true;
-        }
-        if (query.action === "HIDE_ALERT")
-        {
-            if (res) { res.send({"status": "success"}); }
-            self.sendSocketNotification(query.action);
-            return true;
-        }
-        if (query.action === "SHOW_ALERT")
-        {
-            if (res) { res.send({"status": "success"}); }
+		if (query.action === "REFRESH")
+		{
+			if (res) { res.send({"status": "success"}); }
+			self.sendSocketNotification(query.action);
+			return true;
+		}
+		if (query.action === "HIDE_ALERT")
+		{
+			if (res) { res.send({"status": "success"}); }
+			self.sendSocketNotification(query.action);
+			return true;
+		}
+		if (query.action === "SHOW_ALERT")
+		{
+			if (res) { res.send({"status": "success"}); }
 
-            var type = query.type ? query.type : "alert";
-            var title = query.title ? query.title : "Note";
-            var message = query.message ? query.message : "Attention!";
-            var timer = query.timer ? query.timer : 4;
+			var type = query.type ? query.type : "alert";
+			var title = query.title ? query.title : "Note";
+			var message = query.message ? query.message : "Attention!";
+			var timer = query.timer ? query.timer : 4;
 
-            self.sendSocketNotification(query.action, {
-                type: type, title: title, message: message, timer: timer * 1000
-            });
-            return true;
-        }
-        if (query.action === "UPDATE")
-        {
-            self.updateModule(decodeURI(query.module), res);
-            return true;
-        }
+			self.sendSocketNotification(query.action, {
+				type: type, title: title, message: message, timer: timer * 1000
+			});
+			return true;
+		}
+		if (query.action === "UPDATE")
+		{
+			self.updateModule(decodeURI(query.module), res);
+			return true;
+		}
 		return false;
 	},
 
@@ -510,51 +547,51 @@ module.exports = NodeHelper.create({
 		});
 	},
 
-    updateModule: function(module, res) {
-        console.log("UPDATE "+module);
+	updateModule: function(module, res) {
+		console.log("UPDATE "+module);
 
-        var self = this;
+		var self = this;
 
-        var path = __dirname + "/../../";
-        var name = "MM";
+		var path = __dirname + "/../../";
+		var name = "MM";
 
-        if (module) {
-            if(self.configData.moduleData){
-                for (var i = 0; i < self.configData.moduleData.length; i++) {
-                    if (self.configData.moduleData[i].name === module) {
-                        path = self.configData.moduleData[i].path;
-                        name = this.format(self.configData.moduleData[i].name);
-                        break;
-                    }
-                }
-            }
-        }
+		if (module) {
+			if(self.configData.moduleData){
+				for (var i = 0; i < self.configData.moduleData.length; i++) {
+					if (self.configData.moduleData[i].name === module) {
+						path = self.configData.moduleData[i].path;
+						name = this.format(self.configData.moduleData[i].name);
+						break;
+					}
+				}
+			}
+		}
 
-        console.log("path:"+path+" name:"+name);
+		console.log("path:"+path+" name:"+name);
 
-        //todo replace with simple git?
-        exec("/usr/bin/git -C " + path + " pull ", function(error, stdout, stderr)
-        {
-            if (error)
-            {
-                console.log(error);
-                if (res) { res.send({"status": "error", "reason": "unknown", "info": error}); }
-            } else {
+		//todo replace with simple git?
+		exec("/usr/bin/git -C " + path + " pull ", function(error, stdout, stderr)
+		{
+			if (error)
+			{
+				console.log(error);
+				if (res) { res.send({"status": "error", "reason": "unknown", "info": error}); }
+			} else {
 
-                if (stdout.trim() != "Already up-to-date.")
-                {
-                    console.log('RESTART');
+				if (stdout.trim() != "Already up-to-date.")
+				{
+					console.log('RESTART');
 
-                    exec("/usr/local/bin/pm2 restart mm", function(error, stdout, stderr){
-                        self.sendSocketNotification("RESTART");
-                        self.checkForExecError(error, stdout, stderr, res);
-                    });
-                }else{
-                    if (res) { res.send({"status": "success", "info": name + " " + stdout}); }
-                }
-            }
-        });
-    },
+					exec("/usr/local/bin/pm2 restart mm", function(error, stdout, stderr){
+						self.sendSocketNotification("RESTART");
+						self.checkForExecError(error, stdout, stderr, res);
+					});
+				}else{
+					if (res) { res.send({"status": "success", "info": name + " " + stdout}); }
+				}
+			}
+		});
+	},
 
 	checkForExecError: function(error, stdout, stderr, res) {
 		console.log(stdout);
@@ -612,9 +649,9 @@ module.exports = NodeHelper.create({
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
-    fillTemplates: function(data) {
-        return this.fillEditMenu(this.translate(data));
-    },
+	fillTemplates: function(data) {
+		return this.fillEditMenu(this.translate(data));
+	},
 
 	fillEditMenu: function(data) {
 

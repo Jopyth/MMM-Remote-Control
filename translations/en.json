@@ -16,8 +16,8 @@
     "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
     "SHUTDOWN": "Shutdown",
 
-    "SHOWALL": "Show all",
-    "HIDEALL": "Hide all",
+    "SHOWALL": "All",
+    "HIDEALL": "All",
 
     "ADD_MODULE": "Add module",
     "SEARCH": "Search &hellip;",

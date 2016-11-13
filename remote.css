@@ -12,6 +12,10 @@ a {
   color: white;
 }
 
+.menu-element {
+  flex: 0 0 auto;
+}
+
 .symbol-text-padding {
   padding-left: 0.2em;
   padding-right: 0.5em;
@@ -23,28 +27,37 @@ a {
   flex-direction: column;
 }
 
+.above-fold {
+  flex: 0 0 auto;
+}
+
+.below-fold {
+  border-top: 1px solid #999;
+  margin-top: 7px;
+  padding-top: 7px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
 .menu {
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
+  overflow-y: hidden;
 }
 
 .sub-menu {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
 }
 
 .result-list {
-  overflow-y: auto;
-  height: 100%;
-  border-top: 1px solid white;
-  margin-top: 7px;
-  padding-top: 7px;
   width: 100%;
 }
 
@@ -53,8 +66,12 @@ a {
   flex-direction: column;
 }
 
-.menu-element {
-  display: none;
+.one-line {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
 .button {
@@ -105,7 +122,7 @@ a {
   white-space: nowrap;
 }
 
-input, select {
+input, select, textarea {
   flex: 3 0 auto;
   background: #000;
   color: #999;
@@ -122,7 +139,7 @@ select {
   flex: 1 0 auto;
 }
 
-input:focus, select:focus { 
+input:focus, select:focus, textarea:focus { 
   color: #FFF;
   border: 2px solid #FFF;
   background-color: #444;
@@ -170,13 +187,8 @@ input:focus.input-error {
   margin-bottom: 0.8em;
 }
 
-.input-with-symbol {
-  width: calc(100% - 2.4em);
-}
-
 .search-container {
   position: relative;
-  max-width: 20em;
 }
 
 .delete-button {
@@ -213,9 +225,8 @@ input:focus.input-error {
 }
 
 .slider-container {
+  flex: 1 0 auto;  
   vertical-align: middle;
-  /*height: 2em;*/
-  /*max-width: 20em;*/
 }
 
 .stack {
@@ -247,7 +258,6 @@ input:focus.input-error {
 }
 
 .slider {
-  vertical-align: middle;
   border: 0px;
 }
 
@@ -308,6 +318,15 @@ input:focus.input-error {
   flex: 0 0 auto;
 }
 
+#load-error {
+  font-size: medium;
+  line-height: normal;
+}
+
+.inline-menu-element {
+  display: inline-block;
+}
+
 .hidden {
   display: none;
 }
@@ -345,9 +364,8 @@ input[type=checkbox]:checked ~ .fa-check-square-o
 /* slider appearance created with http://danielstern.ca/range.css/?ref=css-tricks#/ */
 input[type=range] {
   -webkit-appearance: none;
-  margin: 15px 0;
-  min-width: 200px;
   background: #000000;
+  width: calc(100% - 0.5em);
 }
 input[type=range]:focus {
   outline: none;

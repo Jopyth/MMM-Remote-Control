@@ -174,21 +174,19 @@ var Remote = {
         var allMenus = document.getElementsByClassName("menu-element");
 
         for (var i = 0; i < allMenus.length; i++) {
-            var button = allMenus[i];
+            var element = allMenus[i];
 
-            button.style.display = 'none';
+            if (!this.hasClass(element, "hidden")) {
+                element.className += " hidden";
+            }
         }
 
         var currentMenu = document.getElementsByClassName(newMenu);
 
         for (var i = 0; i < currentMenu.length; i++) {
-            var button = currentMenu[i];
+            var element = currentMenu[i];
 
-            if (this.hasClass(button, "inline-menu-element")) {
-                button.style.display = 'inline-block';
-            } else {
-                button.style.display = 'block';
-            }
+            element.className = element.className.replace(" hidden", "");
         }
 
         this.setStatus('none');
@@ -843,8 +841,13 @@ var Remote = {
         var wrapper = this.getPopupContent();
 
         var name = document.createElement("div");
-        name.innerHTML = self.formatName(data.module) + " (#" + (index + 1) + ")";
+        name.innerHTML = self.formatName(data.module);
         name.className = "bright title medium";
+        wrapper.appendChild(name);
+
+        var name = document.createElement("div");
+        name.innerHTML = data.module + " (#" + (index + 1) + ")";
+        name.className = "subtitle xsmall dimmed";
         wrapper.appendChild(name);
 
         self.appendConfigMenu(index, wrapper);
@@ -942,7 +945,7 @@ var Remote = {
 
         var author = document.createElement("div");
         author.innerHTML = self.translate("BY") + " " + data.author;
-        author.className = "subtitle";
+        author.className = "subtitle small";
         wrapper.appendChild(author);
 
         var desc = document.createElement("div");
@@ -951,7 +954,7 @@ var Remote = {
         wrapper.appendChild(desc);
 
         var footer = document.createElement("div");
-        footer.className = "fixed-size";
+        footer.className = "fixed-size sub-menu";
 
         if (data.installed) {
             var add = self.createSymbolText("fa fa-fw fa-plus", self.translate("ADD_THIS"), function (event) {

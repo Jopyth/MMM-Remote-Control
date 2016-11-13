@@ -40,7 +40,8 @@ def parse(content):
         if (" by " in module_author):
             name, author = module_author.split(" by ")
 
-        short_name = makeConsistentName(name)
+        # name needs to be normalized later again anyway
+        # short_name = makeConsistentName(name)
 
         url = url.replace("bit.ly/MMM-Instagram", "github.com/kapsolas/MMM-Instagram")
         url = url.replace("bit.ly/MMM-Flickr", "github.com/kapsolas/MMM-Flickr")
@@ -52,14 +53,14 @@ def parse(content):
         module_data = {}
         module_data["id"] = identifier
         module_data["longname"] = name
-        module_data["name"] = short_name
+        # module_data["name"] = short_name
         module_data["author"] = author
         module_data["url"] = url
         module_data["desc"] = desc.strip()
 
         module_data_list.append(module_data)
 
-    module_data_list = sorted(module_data_list, key=lambda x: x["name"])
+    # module_data_list = sorted(module_data_list, key=lambda x: x["name"])
 
     print json.dumps(module_data_list, sort_keys=True, indent=4, separators=(',', ': '))
 
