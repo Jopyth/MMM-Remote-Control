@@ -84,11 +84,9 @@ module.exports = NodeHelper.create({
 			if (self.template === "") {
 				res.send(503);
 			} else {
-				self.callAfterUpdate(function () {
-					res.contentType("text/html");
-					var transformedData = self.fillTemplates(self.template);
-					res.send(transformedData);
-				});
+				res.contentType("text/html");
+				var transformedData = self.fillTemplates(self.template);
+				res.send(transformedData);
 			}
 		});
 
@@ -650,18 +648,7 @@ module.exports = NodeHelper.create({
 	},
 
 	fillTemplates: function(data) {
-		return this.fillEditMenu(this.translate(data));
-	},
-
-	fillEditMenu: function(data) {
-
-		var brightness = 100;
-		if (this.configData) {
-			brightness = this.configData.brightness;
-		}
-		data = data.replace("%%REPLACE:BRIGHTNESS%%", brightness);
-
-		return data;
+		return this.translate(data);
 	},
 
 	loadTranslation: function(language) {

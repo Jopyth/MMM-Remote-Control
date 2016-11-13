@@ -1,8 +1,8 @@
 // main javascript file for the remote control page
 
 var Remote = {
-    types: ["string", "number", "boolean", "array", "object"],
-    values: ["", 0.0, true, [], {}],
+    types: ["string", "number", "boolean", "array", "object", "null", "undefined"],
+    values: ["", 0.0, true, [], {}, null, undefined],
     validPositions: [
         "",
         "top_bar", "top_left", "top_center", "top_right",
@@ -574,9 +574,34 @@ var Remote = {
                 var input = self.createConfigInput(key, value, true);
                 input.type = "checkbox";
                 label.appendChild(input);
+                console.log(value);
+                if (value) {
+                    input.checked = true;
+                    console.log(input.checked);
+                }
 
                 self.createVisualCheckbox(key, label, input, "fa-check-square-o", false);
                 self.createVisualCheckbox(key, label, input, "fa-square-o", true);
+                return label;
+            },
+            undefined: function(key, name, value, type, forcedType) {
+                var label = self.createConfigLabel(key, name, type, forcedType);
+                var input = self.createConfigInput(key, value);
+                input.type = "text";
+                input.disabled = "disabled";
+                input.className += " disabled undefined";
+                input.placeholder = "undefined";
+                label.appendChild(input);
+                return label;
+            },
+            null: function(key, name, value, type, forcedType) {
+                var label = self.createConfigLabel(key, name, type, forcedType);
+                var input = self.createConfigInput(key, value);
+                input.type = "text";
+                input.disabled = "disabled";
+                input.className += " disabled null";
+                input.placeholder = "null";
+                label.appendChild(input);
                 return label;
             },
             position: function(key, name, value, type, forcedType) {
@@ -613,6 +638,12 @@ var Remote = {
         }
         if (Array.isArray(dataToEdit)) {
             return "array";
+        }
+        if (dataToEdit === null) {
+            return "null";
+        }
+        if (dataToEdit === undefined) {
+            return "undefined";
         }
         return "object";
     },
@@ -701,9 +732,6 @@ var Remote = {
                 }
             }
             wrapper.appendChild(addElement);
-        }
-        if (dataToEdit === null) {
-            dataToEdit = {};
         }
         var keys = Object.keys(dataToEdit);
         if (path === "<root>") {
@@ -795,6 +823,14 @@ var Remote = {
                 parent = this.navigate(parent, splitPath[k]);
             }
             var name = splitPath[k];
+            if (this.hasClass(elements[i], "null")) {
+                this.setValue(parent, name, null);
+                continue;
+            }
+            if (this.hasClass(elements[i], "undefined")) {
+                this.setValue(parent, name, undefined);
+                continue;
+            }
             if (this.hasClass(elements[i], "array")) {
                 this.setValue(parent, name, []);
                 continue;
