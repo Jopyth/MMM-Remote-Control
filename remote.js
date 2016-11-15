@@ -159,6 +159,16 @@ var Remote = {
     },
 
     showMenu: function(newMenu) {
+        var belowFold = document.getElementById("below-fold");
+        if (newMenu === "main-menu") {
+            if (!this.hasClass(belowFold, "hide-border")) {
+                belowFold.className += " hide-border";
+            }
+        } else {
+            if (this.hasClass(belowFold, "hide-border")) {
+                belowFold.className = belowFold.className.replace(" hide-border", "");
+            }
+        }
         if (newMenu === "add-module-menu") {
             this.loadModulesToAdd();
         }

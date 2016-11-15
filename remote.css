@@ -32,11 +32,25 @@ a {
 }
 
 .below-fold {
-  border-top: 1px solid #999;
+  border-top: 1px solid #666;
   margin-top: 7px;
   padding-top: 7px;
   flex: 1 1 auto;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.hide-border {
+  border-top: 0px;
+  margin-top: 0px;
+  padding-top: 0px;
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  min-height: min-content;
 }
 
 .menu {
@@ -44,7 +58,7 @@ a {
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: space-between;
   overflow-y: hidden;
 }
@@ -76,11 +90,25 @@ a {
 
 .button {
   cursor: pointer;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   border: 1px solid #666;
   border-radius: 0.2em;
   padding: 0.1em;
   margin: 0.1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.text {
+  margin-left: 0.2em;
+}
+
+.below-fold .fa-angle-right {
+  flex: 1 0 auto;
+  margin-right: 0.5em;
+  text-align: right;
 }
 
 .status-indicator {
@@ -115,6 +143,16 @@ a {
 
 #add-module-results > div {
   background-color: #000;
+}
+
+#alert input {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#alert textarea {
+  box-sizing: border-box;
+  width: 100%;
 }
 
 #config-modules-results .module-line > span {
@@ -316,6 +354,16 @@ input:focus.input-error {
 
 .fixed-size {
   flex: 0 0 auto;
+}
+
+.add-input-wrapper {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+.add-input-wrapper .fa-plus {
+  justify-content: space-around;
 }
 
 #load-error {
