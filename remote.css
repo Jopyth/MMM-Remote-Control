@@ -113,16 +113,14 @@ a {
 
 .status-indicator {
   display: none;
-}
-
-#error {
-  display: inline;
+  margin: 0.1em;
+  padding: 0.1em;
 }
 
 .result {
   position: absolute;
   right: 0px;
-  top: 0px;
+  top: -5px;
   line-height: 1em;
   font-size: 15px;
 }
@@ -142,6 +140,10 @@ a {
 }
 
 #add-module-results > div {
+  background-color: #000;
+}
+
+#visible-modules-results > div {
   background-color: #000;
 }
 
