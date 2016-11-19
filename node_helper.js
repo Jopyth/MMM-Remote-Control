@@ -73,6 +73,8 @@ module.exports = NodeHelper.create({
 				this.configOnHd = defaults;
 			}
 		}
+
+		this.loadTranslation(this.configOnHd.language);
 	},
 
 	createRoutes: function() {
@@ -146,12 +148,14 @@ module.exports = NodeHelper.create({
 
 			for (var i = 0; i < self.modulesAvailable.length; i++) {
 				self.modulesAvailable[i].name = self.formatName(self.modulesAvailable[i].longname);
+				self.modulesAvailable[i].isDefaultModule = false;
 			}
 
 			for (var i = 0; i < defaultModules.length; i++) {
 				self.modulesAvailable.push({
 					longname: defaultModules[i],
 					name: self.capitalizeFirst(defaultModules[i]),
+					isDefaultModule: true,
 					installed: true,
 					author: "MichMich",
 					desc: "",
@@ -193,6 +197,7 @@ module.exports = NodeHelper.create({
 					var newModule = {
 						longname: folderName,
 						name: self.formatName(folderName),
+						isDefaultModule: false,
 						installed: true,
 						author: "unknown",
 						desc: "",
@@ -390,9 +395,9 @@ module.exports = NodeHelper.create({
 		if (query.data === "modulesInstalled")
 		{
 			var filterInstalled = function(value){
-				return self.modulesInstalled.indexOf(value.name) != -1;
+				return value.installed && !value.isDefaultModule;
 			};
-			var text = JSON.stringify(self.configData.moduleData.filter(filterInstalled));
+			var text = JSON.stringify(self.modulesAvailable.filter(filterInstalled));
 			res.contentType("application/json");
 			res.send(text);
 		}
@@ -478,8 +483,9 @@ module.exports = NodeHelper.create({
 		if (query.action === "RESTART")
 		{
 			exec("/usr/local/bin/pm2 restart mm", opts, function(error, stdout, stderr){
-				self.sendSocketNotification('RESTART');
-				self.checkForExecError(error, stdout, stderr, res); });
+				self.sendSocketNotification("RESTART");
+				self.checkForExecError(error, stdout, stderr, res);
+			});
 			return true;
 		}
 		if (query.action === "MONITORON")
@@ -589,7 +595,7 @@ module.exports = NodeHelper.create({
 	},
 
 	updateModule: function(module, res) {
-		console.log("UPDATE "+module);
+		console.log("UPDATE "+ module);
 
 		var self = this;
 
@@ -597,38 +603,37 @@ module.exports = NodeHelper.create({
 		var name = "MM";
 
 		if (module) {
-			if(self.configData.moduleData){
-				for (var i = 0; i < self.configData.moduleData.length; i++) {
-					if (self.configData.moduleData[i].name === module) {
-						path = self.configData.moduleData[i].path;
-						name = this.format(self.configData.moduleData[i].name);
+			if(self.modulesAvailable) {
+				for (var i = 0; i < self.modulesAvailable.length; i++) {
+					if (self.modulesAvailable[i].longname === module) {
+						path = __dirname + "/../" + self.modulesAvailable[i].longname;
+						name = self.modulesAvailable[i].name;
 						break;
 					}
 				}
 			}
 		}
 
-		console.log("path:"+path+" name:"+name);
+		console.log("path: " + path + " name: " + name);
 
-		//todo replace with simple git?
-		exec("/usr/bin/git -C " + path + " pull ", function(error, stdout, stderr)
-		{
+		var git = simpleGit(path);
+		git.pull(function (error, result) {
 			if (error)
 			{
 				console.log(error);
-				if (res) { res.send({"status": "error", "reason": "unknown", "info": error}); }
+				if (res) {
+					res.send({"status": "error", "reason": "unknown", "info": error});
+				}
+				return;
+			}
+			if (result.summary.changes)
+			{
+				if (res) {
+					res.send({"status": "success", "info": "restart"});
+				}
 			} else {
-
-				if (stdout.trim() != "Already up-to-date.")
-				{
-					console.log('RESTART');
-
-					exec("/usr/local/bin/pm2 restart mm", function(error, stdout, stderr){
-						self.sendSocketNotification("RESTART");
-						self.checkForExecError(error, stdout, stderr, res);
-					});
-				}else{
-					if (res) { res.send({"status": "success", "info": name + " " + stdout}); }
+				if (res) {
+					res.send({"status": "success", "info": name + " already up to date."});
 				}
 			}
 		});
@@ -737,17 +742,12 @@ module.exports = NodeHelper.create({
 		}
 		if (notification === "REQUEST_DEFAULT_SETTINGS")
 		{
+			// module started, answer with current ip addresses
+			self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
+
 			// check if we have got saved default settings
 			self.loadDefaultSettings();
 		}
-		if (notification === "LANG")
-		{
-			self.loadTranslation(payload);
-
-			// module started, answer with current ip addresses
-			self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
-		}
-
 		if (notification === "REMOTE_ACTION")
 		{
 			this.executeQuery(payload);

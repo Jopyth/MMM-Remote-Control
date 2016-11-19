@@ -80,6 +80,10 @@ a {
   flex-direction: column;
 }
 
+.results:last-child {
+  margin-bottom: 2em;
+}
+
 .one-line {
   flex: 1 0 auto;
   display: flex;
@@ -90,23 +94,28 @@ a {
 
 .button {
   cursor: pointer;
-  flex: 0 1 auto;
   border: 1px solid #666;
   border-radius: 0.2em;
   padding: 0.1em;
   margin: 0.1em;
+
+  flex: 0 1 auto;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
 }
 
+.button > * {
+  flex: 0 0 auto;
+}
+
 .text {
+  flex: 1 1 auto;
   margin-left: 0.2em;
 }
 
-.below-fold .fa-angle-right {
-  flex: 1 0 auto;
+.fa-angle-right {
   margin-right: 0.5em;
   text-align: right;
 }
@@ -265,8 +274,8 @@ input:focus.input-error {
 }
 
 .slider-container {
-  flex: 1 0 auto;  
   vertical-align: middle;
+  width: calc(100% - 4em);
 }
 
 .stack {

@@ -22,7 +22,7 @@
                 <div id="back-button"
                      class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu alert-menu"
                 >
-                    <span class="fa fa-fw fa-arrow-left" aria-hidden="true"></span>
+                    <span class="fa fa-fw fa-angle-left" aria-hidden="true"></span>
                     <!-- <span class="text">%%TRANSLATE:BACK%%</span> -->
                 </div>
 
@@ -32,7 +32,7 @@
                     <span class="text">%%TRANSLATE:SENDALERT%%</span>
                 </div>
                 <div id="hide-alert-button" class="menu-element hidden button alert-menu">
-                    <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
+                    <span class="fa fa-fw fa-eye-slash" aria-hidden="true"></span>
                     <span class="text">%%TRANSLATE:HIDEALERT%%</span>
                 </div>
 
@@ -56,7 +56,7 @@
                         <span class="fa fa-fw fa-adjust inner-label fa-stack-1x" aria-hidden="true"></span>
                     </span>
                     <div id="brightness-container" class="slider-container menu-element hidden button edit-menu">
-                        <input id="brightness-slider" type="range" min="10" max="200" step="10" value="%%REPLACE:BRIGHTNESS%%" class="slider"/>
+                        <input id="brightness-slider" type="range" min="10" max="200" step="10" value="100" class="slider"/>
                     </div>
                     <span id="brightness-reset" class="inline-menu-element hidden button edit-menu">
                         <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
@@ -159,18 +159,18 @@
                 <!-- below fold part of alert menu -->
                 <form id="alert" action="" method="GET" class="menu-element hidden alert-menu">
                     <input type="hidden" name="action" value="SHOW_ALERT">
-                    <div class="xsmall">Type:</div>
+                    <div class="xsmall">%%TRANSLATE:FORM_TYPE%%</div>
                     <select name="type">
-                        <option value="alert">Alert</option>
-                        <option value="notification">Notification</option>
+                        <option value="alert">%%TRANSLATE:FORM_ALERT%%</option>
+                        <option value="notification">%%TRANSLATE:FORM_NOTIFICATION%%</option>
                     </select>
-                    <div class="xsmall">Title:</div>
-                    <input type="text" class="medium" placeholder="Enter title..." name="title">
-                    <div class="xsmall">Message:</div>
+                    <div class="xsmall">%%TRANSLATE:FORM_TITLE%%</div>
+                    <input type="text" class="medium" placeholder="%%TRANSLATE:FORM_TITLE_PLACEHOLDER%%" name="title">
+                    <div class="xsmall">%%TRANSLATE:FORM_MESSAGE%%</div>
                     <div>
-                        <textarea class="medium" placeholder="Enter message..." name="message"></textarea>
+                        <textarea class="medium" placeholder="%%TRANSLATE:FORM_MESSAGE_PLACEHOLDER%%" name="message"></textarea>
                     </div>
-                    <div class="xsmall">Seconds:</div>
+                    <div class="xsmall">%%TRANSLATE:FORM_SECONDS%%</div>
                     <input type="number" name="timer" value="4">
                 </form>
 

@@ -39,7 +39,6 @@ Module.register("MMM-Remote-Control", {
 			}
 		} else { 
 			if (notification === "DOM_OBJECTS_CREATED") {
-				this.sendSocketNotification("LANG", config.language);
 				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
 			}
 		}
@@ -86,16 +85,18 @@ Module.register("MMM-Remote-Control", {
 		if (notification === "BRIGHTNESS") {
 			this.setBrightness(parseInt(payload));
 		}
-		if (notification === "REFRESH" ){
+		if (notification === "REFRESH" ) {
             document.location.reload();
 		}
-		if (notification === "RESTART"){
-			setTimeout(function(){document.location.reload(); console.log('Delayed REFRESH');}, 60000);
+		if (notification === "RESTART") {
+			setTimeout(function() {
+				document.location.reload(); console.log('Delayed REFRESH');
+			}, 60000);
 		}
-		if (notification === "SHOW_ALERT"){
+		if (notification === "SHOW_ALERT") {
 			this.sendNotification(notification, payload);
 		}
-		if (notification === "HIDE_ALERT"){
+		if (notification === "HIDE_ALERT") {
 			this.sendNotification(notification);
 		}
 		if (notification === "HIDE" || notification === "SHOW") {

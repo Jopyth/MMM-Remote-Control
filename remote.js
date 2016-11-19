@@ -174,6 +174,7 @@ var Remote = {
         }
         if (newMenu === "edit-menu") {
             this.loadVisibleModules();
+            this.loadBrightness();
         }
         if (newMenu === "settings-menu") {
             this.loadConfigModules();
@@ -383,6 +384,18 @@ var Remote = {
         }
 
         parent.appendChild(outerSpan);
+    },
+
+    loadBrightness: function () {
+        var self = this;
+
+        console.log("Load brightness...");
+
+        this.get("get", "data=brightness", function (text) {
+            var slider = document.getElementById("brightness-slider");
+
+            slider.value = JSON.parse(text);
+        });
     },
 
     loadVisibleModules: function() {
@@ -1068,7 +1081,7 @@ var Remote = {
                     self.getWithStatus("action=UPDATE&module=" + encodeURI(module));
                 });
                 moduleBox.className = "button module-line";
-                moduleBox.id = "update-module-" + modules[i].name;
+                moduleBox.id = "update-module-" + modules[i].longname;
                 parent.appendChild(moduleBox);
             }
         });

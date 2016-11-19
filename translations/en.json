@@ -10,8 +10,10 @@
 
     "BRIGHTNESS": "Brightness",
 
+    "REFRESHMM" : "Refresh Browser",
     "MONITOROFF": "Turn monitor OFF",
     "MONITORON": "Turn monitor ON",
+    "MONITORTIMED": "Turn monitor ON briefly",
     "RESTART": "Restart",
     "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
     "SHUTDOWN": "Shutdown",
@@ -50,9 +52,15 @@
 	"UPDATE_MENU_NAME" : "Updates",
 	"UPDATEMM" : "Update MagicMirror<sup>2</sup>",
 
-	"REFRESHMM" : "Refresh Browser",
-
 	"ALERT_MENU_NAME" : "Alert",
-	"SENDALERT" : "SEND",
-	"HIDEALERT" : "HIDE"
+	"SENDALERT" : "Send",
+	"HIDEALERT" : "Hide",
+    "FORM_TYPE" : "Type:",
+    "FORM_ALERT" : "Alert",
+    "FORM_NOTIFICATION" : "Notification",
+    "FORM_TITLE" : "Title:",
+    "FORM_TITLE_PLACEHOLDER" : "Enter title...",
+    "FORM_MESSAGE" : "Message:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Enter message...",
+    "FORM_SECONDS" : "Seconds:"
 }

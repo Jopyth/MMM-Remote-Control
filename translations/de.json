@@ -10,8 +10,10 @@
 
     "BRIGHTNESS": "Helligkeit",
 
+    "REFRESHMM" : "Browser neu laden",
     "MONITOROFF": "Bildschirm ausschalten",
     "MONITORON": "Bildschirm einschalten",
+    "MONITORTIMED": "Bildschirm kurzzeitig einschalten",
     "RESTART": "Neu starten",
     "RESTARTMM": "Starte MagicMirror<sup>2</sup> neu",
     "SHUTDOWN": "Ausschalten",
@@ -53,6 +55,14 @@
     "REFRESHMM" : "Refresh Browser",
 
     "ALERT_MENU_NAME" : "Alert",
-    "SENDALERT" : "SEND",
-    "HIDEALERT" : "HIDE"
+    "SENDALERT" : "Senden",
+    "HIDEALERT" : "Verstecken",
+    "FORM_TYPE" : "Typ:",
+    "FORM_ALERT" : "Klein",
+    "FORM_NOTIFICATION" : "Groß",
+    "FORM_TITLE" : "Titel:",
+    "FORM_TITLE_PLACEHOLDER" : "Title eingeben...",
+    "FORM_MESSAGE" : "Nachricht:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Nachricht eingeben...",
+    "FORM_SECONDS" : "Sekunden:"
 }
