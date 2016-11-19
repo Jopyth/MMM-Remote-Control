@@ -583,11 +583,11 @@ module.exports = NodeHelper.create({
 				{
 					if (error) {
 						console.log(error);
-						res.send({"status": "error"});
+						res.send({"status": "error", "stdout": stdout, "stderr": stderr});
 					} else {
 						// success part
 						self.readModuleData();
-						res.send({"status": "success"});
+						res.send({"status": "success", "stdout": stdout});
 					}
 				});
 			}
@@ -629,11 +629,11 @@ module.exports = NodeHelper.create({
 			if (result.summary.changes)
 			{
 				if (res) {
-					res.send({"status": "success", "info": "restart"});
+					res.send({"status": "success", "code": "restart", "info": name + " updated."});
 				}
 			} else {
 				if (res) {
-					res.send({"status": "success", "info": name + " already up to date."});
+					res.send({"status": "success", "code": "up-to-date", "info": name + " already up to date."});
 				}
 			}
 		});

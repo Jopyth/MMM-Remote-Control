@@ -77,7 +77,7 @@
                 <div id="search-container" class="menu-element hidden add-module-menu search-container">
                     <span class="fa fa-fw fa-search" aria-hidden="true"></span>
                     <input class="input-with-symbol" id="add-module-search" type="text" placeholder="%%TRANSLATE:SEARCH%%" size="10"> </input>
-                    <span id="delete-search-input" class="fa fa-fw fa-times-circle delete-button" style="display:none;"></span>
+                    <span id="delete-search-input" class="fa fa-times-circle delete-button" style="display:none;"></span>
                 </div>
 
                 <!-- update menu -->
@@ -239,24 +239,20 @@
                 <a href="https://github.com/jopyth/MMM-Remote-Control/issues">%%TRANSLATE:ISSUE_LINK%%</a>
             </div>
         </div>
-        <div class="result">
-            <div id="loading" class="status-indicator">
-                <span class="fa fa-fw fa-spinner fa-pulse"></span>
-                <!-- <span class="text">%%TRANSLATE:LOADING%%</span> -->
+
+        <div id="result-overlay" class="overlay hidden"></div>
+        <div id="result" class="result hidden">
+            <div id="close-result">
+                <span class="fa fa-times-circle delete-button"></span>
             </div>
-            <div id="error" class="status-indicator button">
-                <span class="fa fa-fw fa-exclamation-circle"></span>
-                <!-- <span class="text">%%TRANSLATE:ERROR%%</span> -->
-            </div>
-            <div id="success" class="status-indicator">
-                <span class="fa fa-fw fa-check-circle"></span>
-                <!-- <span class="text">%%TRANSLATE:DONE%%</span> -->
+            <div id="result-contents">
+                <!-- content is inserted here -->
             </div>
         </div>
 
         <div id="popup-container" class="popup">
             <div id="close-popup">
-                <span class="fa fa-fw fa-times-circle delete-button"></span>
+                <span class="fa fa-times-circle delete-button"></span>
             </div>
             <div id="popup-contents" class="popup-contents">
                 <!-- content is inserted here -->

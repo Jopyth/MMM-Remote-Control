@@ -46,18 +46,28 @@ var Remote = {
         return (' ' + element.className + ' ').indexOf(' ' + name + ' ') > -1;
     },
 
+    hide: function(element) {
+        if (!this.hasClass(element, "hidden")) {
+            element.className += " hidden";
+        }
+    },
+
+    show: function(element) {
+        if (this.hasClass(element, "hidden")) {
+            element.className = element.className.replace(/ ?hidden/, "");
+        }
+    },
+
     loadToggleButton: function(element, toggleCallback) {
         var self = this;
 
         element.addEventListener("click", function (event) {
             if (self.hasClass(event.currentTarget, "toggled-off"))
             {
-                event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
                 if (toggleCallback) {
                     toggleCallback(true, event);
                 }
             } else {
-                event.currentTarget.className = event.currentTarget.className.replace("toggled-on", "toggled-off");
                 if (toggleCallback) {
                     toggleCallback(false, event);
                 }
@@ -185,39 +195,56 @@ var Remote = {
         var allMenus = document.getElementsByClassName("menu-element");
 
         for (var i = 0; i < allMenus.length; i++) {
-            var element = allMenus[i];
-
-            if (!this.hasClass(element, "hidden")) {
-                element.className += " hidden";
-            }
+            this.hide(allMenus[i]);
         }
 
         var currentMenu = document.getElementsByClassName(newMenu);
 
         for (var i = 0; i < currentMenu.length; i++) {
-            var element = currentMenu[i];
-
-            element.className = element.className.replace(" hidden", "");
+            this.show(currentMenu[i]);
         }
 
-        this.setStatus('none');
+        this.setStatus("none");
     },
 
-    setStatus: function(status) {
-        var allMenus = document.getElementsByClassName("status-indicator");
-
-        for (var i = 0; i < allMenus.length; i++) {
-            var button = allMenus[i];
-
-            button.style.display = 'none';
+    setStatus: function(status, message, customContent) {
+        var parent = document.getElementById("result-contents");
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
         }
 
-        var currentInfo = document.getElementById(status);
-
-        if (currentInfo)
-        {
-            currentInfo.style.display = 'block';
+        if (status === "none") {
+            this.hide(document.getElementById("result-overlay"));
+            this.hide(document.getElementById("result"));
+            return;
         }
+
+        if (customContent) {
+            parent.appendChild(customContent);
+            this.show(document.getElementById("result-overlay"));
+            this.show(document.getElementById("result"));
+            return;
+        }
+
+        if (status === "loading") {
+            symbol = "fa-spinner fa-pulse";
+            text = this.translate("LOADING");
+        }
+        if (status === "error") {
+            symbol = "fa-exclamation-circle";
+            text = this.translate("ERROR");
+        }
+        if (status === "success") {
+            symbol = "fa-check-circle";
+            text = this.translate("DONE");
+        }
+        if (message) {
+            text = message;
+        }
+        parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text, false));
+
+        this.show(document.getElementById("result-overlay"));
+        this.show(document.getElementById("result"));
     },
 
     getWithStatus: function(params, callback) {
@@ -230,11 +257,11 @@ var Remote = {
             } else {
                 var result = JSON.parse(response);
                 if (result.status === "success") {
-                    self.setStatus("success");
-					//only for success because error gives false errors
-					if (result.info){
-						alert(result.info);
-					}
+                    if (result.info){
+                        self.setStatus("success", result.info);
+                    } else {
+                        self.setStatus("success");
+                    }
                 } else {
                     self.setStatus("error");
                 }
@@ -315,28 +342,31 @@ var Remote = {
     loadList: function(listname, dataId, callback) {
         var self = this;
 
+        var loadingIndicator = document.getElementById(listname + "-loading");
+        var emptyIndicator = document.getElementById(listname + "-empty");
         var parent = document.getElementById(listname + "-results");
+
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
-        document.getElementById(listname + "-loading").className = "";
+        self.show(loadingIndicator);
 
         this.get("get", "data=" + dataId, function (text) {
-            document.getElementById(listname + "-loading").className = "hidden";
+            self.hide(loadingIndicator);
             self.savedData[dataId] = false;
 
             try {
                 var data = JSON.parse(text);
 
                 if (data.length === 0) {
-                    document.getElementById(listname + "-empty").className = "";
+                    self.show(emptyIndicator);
                 } else {
-                    document.getElementById(listname + "-empty").className = "hidden";
+                    self.hide(emptyIndicator);
                 }
                 self.savedData[dataId] = data;
                 callback(parent, data);
             } catch (e) {
-                document.getElementById(listname + "-empty").className = "";
+                self.show(emptyIndicator);
             }
         });
     },
@@ -364,7 +394,7 @@ var Remote = {
                 hiddenStatus += ' external-locked';
             }
         }
-        return hiddenStatus
+        return hiddenStatus;
     },
 
     addToggleElements: function(parent) {
@@ -425,8 +455,14 @@ var Remote = {
 
                 self.loadToggleButton(moduleBox, function (toggledOn, event) {
                     if (toggledOn) {
-                        self.showModule(event.currentTarget.id);
+                        if (self.hasClass(event.currentTarget, "external-locked")) {
+                            alert("Module locked!");
+                        } else {
+                            event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
+                            self.showModule(event.currentTarget.id);
+                        }
                     } else {
+                        event.currentTarget.className = event.currentTarget.className.replace("toggled-on", "toggled-off");
                         self.hideModule(event.currentTarget.id);
                     }
                 });
@@ -1068,6 +1104,32 @@ var Remote = {
         });
     },
 
+    updateModule: function(module) {
+        var self = this;
+
+        self.getWithStatus("action=UPDATE&module=" + module, function(response) {
+            var result = JSON.parse(response);
+            if (result.status === "success") {
+                if (result.code === "restart") {
+                    var wrapper = document.createElement("div");
+
+                    var info = document.createElement("span");
+                    info.innerHTML = result.info;
+                    wrapper.appendChild(info);
+
+                    var restart = self.createSymbolText("fa fa-fw fa-recycle", self.translate("RESTARTMM"), buttons["restart-mm-button"]);
+                    restart.children[1].className += " text";
+                    wrapper.appendChild(restart);
+                    self.setStatus("success", false, wrapper);
+                } else {
+                    self.setStatus("success", result.info);
+                }
+            } else {
+                self.setStatus("error");
+            }
+        });
+    },
+
     loadModulesToUpdate: function() {
         var self = this;
 
@@ -1078,7 +1140,7 @@ var Remote = {
                 var symbol = "fa fa-fw fa-toggle-up";
                 var moduleBox = self.createSymbolText(symbol, modules[i].name, function (event) {
                     var module = event.currentTarget.id.replace("update-module-", "");
-                    self.getWithStatus("action=UPDATE&module=" + encodeURI(module));
+                    self.updateModule(module);
                 });
                 moduleBox.className = "button module-line";
                 moduleBox.id = "update-module-" + modules[i].longname;
@@ -1207,9 +1269,11 @@ var buttons = {
     "save-button": function() {
         Remote.getWithStatus("action=SAVE");
     },
-
     "close-popup": function() {
         Remote.closePopup();
+    },
+    "close-result": function() {
+        Remote.setStatus("none");
     },
 
     // update Menu

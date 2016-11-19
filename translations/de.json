@@ -13,7 +13,6 @@
     "REFRESHMM" : "Browser neu laden",
     "MONITOROFF": "Bildschirm ausschalten",
     "MONITORON": "Bildschirm einschalten",
-    "MONITORTIMED": "Bildschirm kurzzeitig einschalten",
     "RESTART": "Neu starten",
     "RESTARTMM": "Starte MagicMirror<sup>2</sup> neu",
     "SHUTDOWN": "Ausschalten",
