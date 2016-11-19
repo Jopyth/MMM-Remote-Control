@@ -37,6 +37,8 @@
     "NEW_ENTRY_NAME": "(Name eintragen)",
     "DELETE_ENTRY": "L&ouml;schen",
     "UNSAVED_CHANGES": "Nicht gespeicherte &Auml;nderungen",
+    "OK": "Ok",
+    "DISCARD": "Verwerfen",
 
     "NO_MODULES_LOADED": "Keine Module geladen.",
     "SAVE": "Speichern",

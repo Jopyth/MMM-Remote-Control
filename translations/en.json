@@ -38,6 +38,8 @@
     "NEW_ENTRY_NAME": "(enter name of new entry)",
     "DELETE_ENTRY": "Delete",
     "UNSAVED_CHANGES": "Unsaved changes",
+    "OK": "Ok",
+    "DISCARD": "Discard changes",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",

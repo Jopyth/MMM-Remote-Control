@@ -1,6 +1,7 @@
 // main javascript file for the remote control page
 
 var Remote = {
+    currentMenu: "main-menu",
     types: ["string", "number", "boolean", "array", "object", "null", "undefined"],
     values: ["", 0.0, true, [], {}, null, undefined],
     validPositions: [
@@ -169,6 +170,37 @@ var Remote = {
     },
 
     showMenu: function(newMenu) {
+        var self = this;
+        if (this.currentMenu === "settings-menu") {
+            // check for unsaved changes
+            var changes = this.deletedModules.length + this.changedModules.length;
+            if (changes > 0) {
+                var wrapper = document.createElement("div");
+                var text = document.createElement("span");
+                text.innerHTML = this.translate("UNSAVED_CHANGES");
+                wrapper.appendChild(text);
+
+                var ok = self.createSymbolText("fa fa-check-circle", this.translate("OK"), function () {
+                    self.setStatus("none");
+                });
+                wrapper.appendChild(ok);
+
+                var discard = self.createSymbolText("fa fa-warning", this.translate("DISCARD"), function () {
+                    self.deletedModules = [];
+                    self.changedModules = [];
+                    window.location.hash = newMenu;
+                });
+                wrapper.appendChild(discard);
+
+                this.setStatus(false, false, wrapper);
+
+                this.skipHashChange = true;
+                window.location.hash = this.currentMenu;
+
+                return;
+            }
+        }
+
         var belowFold = document.getElementById("below-fold");
         if (newMenu === "main-menu") {
             if (!this.hasClass(belowFold, "hide-border")) {
@@ -190,7 +222,7 @@ var Remote = {
             this.loadConfigModules();
         }
         if (newMenu === "update-menu") {
-            Remote.loadModulesToUpdate();
+            this.loadModulesToUpdate();
         }
         var allMenus = document.getElementsByClassName("menu-element");
 
@@ -205,6 +237,8 @@ var Remote = {
         }
 
         this.setStatus("none");
+
+        this.currentMenu = newMenu;
     },
 
     setStatus: function(status, message, customContent) {
@@ -1125,6 +1159,19 @@ var Remote = {
         });
     },
 
+    offerRestart: function(message) {
+        var wrapper = document.createElement("div");
+
+        var info = document.createElement("span");
+        info.innerHTML = message;
+        wrapper.appendChild(info);
+
+        var restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
+        restart.children[1].className += " text";
+        wrapper.appendChild(restart);
+        this.setStatus("success", false, wrapper);
+    },
+
     updateModule: function(module) {
         var self = this;
 
@@ -1132,16 +1179,7 @@ var Remote = {
             var result = JSON.parse(response);
             if (result.status === "success") {
                 if (result.code === "restart") {
-                    var wrapper = document.createElement("div");
-
-                    var info = document.createElement("span");
-                    info.innerHTML = result.info;
-                    wrapper.appendChild(info);
-
-                    var restart = self.createSymbolText("fa fa-fw fa-recycle", self.translate("RESTARTMM"), buttons["restart-mm-button"]);
-                    restart.children[1].className += " text";
-                    wrapper.appendChild(restart);
-                    self.setStatus("success", false, wrapper);
+                    self.offerRestart(result.info);
                 } else {
                     self.setStatus("success", result.info);
                 }
@@ -1194,7 +1232,7 @@ var Remote = {
         this.deletedModules = [];
         this.post("post", "data=config", configData, function (result) {
             if (result.status === "success") {
-                self.setStatus("success");
+                self.offerRestart(self.translate("DONE"));
             } else {
                 self.setStatus("error");
             }
@@ -1330,6 +1368,10 @@ if (window.location.hash) {
 }
 
 window.onhashchange = function() {
+    if (Remote.skipHashChange) {
+        Remote.skipHashChange = false;
+        return;
+    }
     if (window.location.hash) {
         Remote.showMenu(window.location.hash.substring(1));
     } else {
