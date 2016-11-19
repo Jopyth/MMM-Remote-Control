@@ -269,8 +269,12 @@ var Remote = {
         });
     },
 
-    showModule: function(id) {
-        this.getWithStatus("action=SHOW&module=" + id);
+    showModule: function(id, force) {
+        if (force) {
+            this.getWithStatus("action=SHOW&force=true&module=" + id);
+        } else {
+            this.getWithStatus("action=SHOW&module=" + id);
+        }
     },
 
     hideModule: function(id) {
@@ -456,7 +460,24 @@ var Remote = {
                 self.loadToggleButton(moduleBox, function (toggledOn, event) {
                     if (toggledOn) {
                         if (self.hasClass(event.currentTarget, "external-locked")) {
-                            alert("Module locked!");
+                            var wrapper = document.createElement("div");
+                            var warning = document.createElement("span");
+                            warning.innerHTML = "This module was hidden by another module, it can not be shown.";
+                            wrapper.appendChild(warning);
+
+                            var ok = self.createSymbolText("fa fa-check-circle", "Ok.", function () {
+                                self.setStatus("none");
+                            });
+                            wrapper.appendChild(ok);
+
+                            var id = event.currentTarget.id;
+                            var force = self.createSymbolText("fa fa-warning", "Do it anyway.", function () {
+                                self.showModule(id, true);
+                                self.setStatus("none");
+                            });
+                            wrapper.appendChild(force);
+
+                            self.setStatus("error", false, wrapper);
                         } else {
                             event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
                             self.showModule(event.currentTarget.id);

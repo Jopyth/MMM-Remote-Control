@@ -105,11 +105,11 @@ Module.register("MMM-Remote-Control", {
 			for (var i = 0; i < modules.length; i++) {
 				if (modules[i].identifier === payload.module) {
 					if (notification === "HIDE") {
+						modules[i].hide(1000, options);
+					} else {
 						if (payload.force) {
 							options.force = true;
 						}
-						modules[i].hide(1000, options);
-					} else {
 						modules[i].show(1000, options);
 					}
 				}

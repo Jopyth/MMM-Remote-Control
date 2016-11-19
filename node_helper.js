@@ -501,7 +501,7 @@ module.exports = NodeHelper.create({
 		if (query.action === "HIDE" || query.action === "SHOW")
 		{
 			if (res) { res.send({"status": "success"}); }
-			var payload = { module: query.module, useLockStrings: query.useLockStrings };
+			var payload = { module: query.module};
 			if (query.action === "SHOW" && query.force === "true") {
 				payload.force = true;
 			}
