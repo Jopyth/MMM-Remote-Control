@@ -44,7 +44,7 @@ var Remote = {
     },
 
     hasClass: function(element, name) {
-        return (' ' + element.className + ' ').indexOf(' ' + name + ' ') > -1;
+        return (" " + element.className + " ").indexOf(" " + name + " ") > -1;
     },
 
     hide: function(element) {
@@ -268,26 +268,24 @@ var Remote = {
         if (status === "loading") {
             symbol = "fa-spinner fa-pulse";
             text = this.translate("LOADING");
-            close = false;
+            onClick = false;
         }
         if (status === "error") {
             symbol = "fa-exclamation-circle";
             text = this.translate("ERROR");
+            onClick = false;
         }
         if (status === "success") {
             symbol = "fa-check-circle";
             text = this.translate("DONE");
+            onClick = function() {
+                self.setStatus("none");
+            };
         }
         if (message) {
             text = message;
         }
-        if (close) {
-            parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text, function() {
-                self.setStatus("none");
-            }));
-        } else {
-            parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text));
-        }
+        parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text, onClick));
 
         this.show(document.getElementById("result-overlay"));
         this.show(document.getElementById("result"));
@@ -445,11 +443,11 @@ var Remote = {
     },
 
     getHiddenStatus: function(data) {
-        var hiddenStatus = 'toggled-on';
+        var hiddenStatus = "toggled-on";
         if (data.hidden) {
-            hiddenStatus = 'toggled-off';
+            hiddenStatus = "toggled-off";
             if (data.lockStrings && data.lockStrings.length > 0) {
-                hiddenStatus += ' external-locked';
+                hiddenStatus += " external-locked";
             }
         }
         return hiddenStatus;
@@ -524,11 +522,13 @@ var Remote = {
                             });
                             wrapper.appendChild(ok);
 
-                            var id = event.currentTarget.id;
-                            var force = self.createSymbolText("fa fa-warning", "Do it anyway.", function () {
-                                self.showModule(id, true);
-                                self.setStatus("none");
-                            });
+                            var force = self.createSymbolText("fa fa-warning", "Do it anyway.", function(target) {
+                                return function () {
+                                    target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
+                                    self.showModule(target.id, true);
+                                    self.setStatus("none");
+                                }
+                            }(event.currentTarget));
                             wrapper.appendChild(force);
 
                             self.setStatus("error", false, wrapper);
@@ -861,7 +861,7 @@ var Remote = {
             input.onkeypress = function(e){
                 if (!e) e = window.event;
                 var keyCode = e.keyCode || e.which;
-                if (keyCode == '13'){
+                if (keyCode == "13"){
                     addFunction();
                 }
             }
@@ -1332,6 +1332,9 @@ var buttons = {
         var parent = document.getElementById("visible-modules-results");
         var buttons = parent.children;
         for (var i = 0; i < buttons.length; i++) {
+            if (Remote.hasClass(buttons[i], "external-locked")) {
+                continue;
+            }
             buttons[i].className = buttons[i].className.replace("toggled-off", "toggled-on");
             Remote.showModule(buttons[i].id);
         }
@@ -1354,7 +1357,7 @@ var buttons = {
     },
     "restart-mm-button": function() {
         Remote.getWithStatus("action=RESTART");
-        setTimeout(function(){document.location.reload(); console.log('Delayed REFRESH');}, 60000);
+        setTimeout(function(){document.location.reload(); console.log("Delayed REFRESH");}, 60000);
     },
     "monitor-on-button": function() {
         Remote.getWithStatus("action=MONITORON");
@@ -1362,7 +1365,7 @@ var buttons = {
     "monitor-off-button": function() {
         Remote.getWithStatus("action=MONITOROFF");
     },
-    'refresh-mm-button': function () {
+    "refresh-mm-button": function () {
         Remote.getWithStatus("action=REFRESH");
     },
 
@@ -1393,7 +1396,7 @@ var buttons = {
     // alert menu
     "send-alert-button": function () {
         var kvpairs = [];
-        var form = document.getElementById('alert');
+        var form = document.getElementById("alert");
         for ( var i = 0; i < form.elements.length; i++ ) {
             var e = form.elements[i];
             kvpairs.push(encodeURIComponent(e.name) + "=" + encodeURIComponent(e.value));
