@@ -242,6 +242,8 @@ var Remote = {
     },
 
     setStatus: function(status, message, customContent) {
+        var self = this;
+
         var parent = document.getElementById("result-contents");
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
@@ -260,9 +262,13 @@ var Remote = {
             return;
         }
 
+        var symbol;
+        var text;
+        var close = true;
         if (status === "loading") {
             symbol = "fa-spinner fa-pulse";
             text = this.translate("LOADING");
+            close = false;
         }
         if (status === "error") {
             symbol = "fa-exclamation-circle";
@@ -275,7 +281,13 @@ var Remote = {
         if (message) {
             text = message;
         }
-        parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text, false));
+        if (close) {
+            parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text, function() {
+                self.setStatus("none");
+            }));
+        } else {
+            parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text));
+        }
 
         this.show(document.getElementById("result-overlay"));
         this.show(document.getElementById("result"));
@@ -410,7 +422,15 @@ var Remote = {
     },
 
     formatName: function(string) {
-        string = string.replace(/MMM-/ig, "");
+        string = string.replace(/MMM?-/ig, "").replace(/_/g, " ").replace(/-/g, " ");
+        string = string.replace(/([a-z])([A-Z])/g, function(txt){
+            // insert space into camel case
+            return txt.charAt(0) + " " + txt.charAt(1);
+        });
+        string = string.replace(/\w\S*/g, function(txt){
+            // make character after white space upper case
+            return txt.charAt(0).toUpperCase() + txt.substr(1);
+        });
         return string.charAt(0).toUpperCase() + string.slice(1);
     },
 
@@ -488,7 +508,7 @@ var Remote = {
                 text.className = "text";
                 text.innerHTML = " " + self.formatName(moduleData[i].name);
                 moduleBox.appendChild(text);
-                
+
                 parent.appendChild(moduleBox);
 
                 self.loadToggleButton(moduleBox, function (toggledOn, event) {
@@ -1194,16 +1214,46 @@ var Remote = {
 
         console.log("Loading modules to update...");
 
+        // also update mm info notification
+        this.get("get", "data=mmUpdateAvailable", function(result) {
+            if (window.location.hash.substring(1) == "update-menu")
+            {
+                var updateAvailable = JSON.parse(result);
+                var element = document.getElementById("update-mm-status");
+                var updateButton = document.getElementById("update-mm-button");
+                if (updateAvailable) {
+                    self.show(element);
+                    updateButton.className += " bright";
+                } else {
+                    self.hide(element);
+                    updateButton.className = updateButton.className.replace(" bright", "");
+                }
+            }
+        });
+
         this.loadList("update-module", "modulesInstalled", function (parent, modules) {
             for (var i = 0; i < modules.length; i++) {
                 var symbol = "fa fa-fw fa-toggle-up";
+                var innerWrapper = document.createElement("div");
+                innerWrapper.className = "module-line";
+
                 var moduleBox = self.createSymbolText(symbol, modules[i].name, function (event) {
                     var module = event.currentTarget.id.replace("update-module-", "");
                     self.updateModule(module);
                 });
-                moduleBox.className = "button module-line";
+                moduleBox.className = "button";
+                if (modules[i].updateAvailable) {
+                    moduleBox.className += " bright";
+                }
                 moduleBox.id = "update-module-" + modules[i].longname;
-                parent.appendChild(moduleBox);
+                innerWrapper.appendChild(moduleBox);
+
+                if (modules[i].updateAvailable) {
+                    var moduleBox = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
+                    innerWrapper.appendChild(moduleBox);
+                }
+
+                parent.appendChild(innerWrapper);
             }
         });
     },

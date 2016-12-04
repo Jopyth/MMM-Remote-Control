@@ -92,6 +92,14 @@ a {
   align-items: center;
 }
 
+.flex-like-button {
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .button {
   cursor: pointer;
   border: 1px solid #666;
@@ -104,6 +112,10 @@ a {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+}
+
+.button.bright {
+  border: 1px solid #999;
 }
 
 .button > * {
@@ -159,6 +171,24 @@ a {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;  
+  align-items: center;
+}
+
+#config-modules-results .module-line > span {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+#update-module-results .module-line {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#update-module-results .module-line > span {
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .results > div:nth-child(even) {
@@ -181,11 +211,6 @@ a {
 #alert textarea {
   box-sizing: border-box;
   width: 100%;
-}
-
-#config-modules-results .module-line > span {
-  overflow-x: auto;
-  white-space: nowrap;
 }
 
 input, select, textarea {
@@ -258,6 +283,7 @@ input:focus.input-error {
 }
 
 .delete-button {
+  cursor: pointer; 
   position: absolute;
   right: 0.5em;
   top: 0.5em;

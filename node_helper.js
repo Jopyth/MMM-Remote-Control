@@ -59,7 +59,7 @@ module.exports = NodeHelper.create({
 		try {
 			fs.accessSync(configFilename, fs.F_OK);
 			var c = require(configFilename);
-			var config = Object.assign(defaults, c);
+			var config = Object.assign({}, defaults, c);
 			this.configOnHd = config;
 		} catch (e) {
 			if (e.code == "ENOENT") {
@@ -185,12 +185,13 @@ module.exports = NodeHelper.create({
 		fs.stat(modulePath, function(err, stats) {
 			if (stats.isDirectory()) {
 				var isInList = false;
+				var currentModule;
 				self.modulesInstalled.push(folderName);
 				for (var i = 0; i < self.modulesAvailable.length; i++) {
 					if (self.modulesAvailable[i].longname === folderName) {
 						isInList = true;
 						self.modulesAvailable[i].installed = true;
-						self.loadModuleDefaultConfig(self.modulesAvailable[i], modulePath);
+						currentModule = self.modulesAvailable[i];
 					}
 				}
 				if (!isInList) {
@@ -204,8 +205,42 @@ module.exports = NodeHelper.create({
 						id: "local/" + folderName,
 						url: ""
 					};
-					self.loadModuleDefaultConfig(newModule, modulePath);
 					self.modulesAvailable.push(newModule);
+					currentModule = newModule;
+				}
+				self.loadModuleDefaultConfig(currentModule, modulePath);
+				
+				// check for available updates
+				var stat;
+				try {
+					stat = fs.statSync(path.join(modulePath, '.git'));
+				} catch(err) {
+					// Error when directory .git doesn't exist
+					// This module is not managed with git, skip
+					return;
+				}
+
+				var sg = simpleGit(modulePath);
+				sg.fetch().status(function(err, data) {
+					if (!err) {
+						if (data.behind > 0)
+						{
+							currentModule.updateAvailable = true;
+						}
+					}
+				});
+				if (!isInList)
+				{
+					sg.getRemotes(true, function (error, result) {
+						if (error) {
+							console.log(error);
+						}
+						var baseUrl = result[0].refs.fetch;
+						// replacements
+						baseUrl = baseUrl.replace(".git", "").replace("github.com:","github.com/")
+						// if cloned with ssh
+						currentModule.url = baseUrl.replace("git@", "https://");
+					});
 				}
 			}
 		});
@@ -397,7 +432,11 @@ module.exports = NodeHelper.create({
 			var filterInstalled = function(value){
 				return value.installed && !value.isDefaultModule;
 			};
-			var text = JSON.stringify(self.modulesAvailable.filter(filterInstalled));
+			var installed = self.modulesAvailable.filter(filterInstalled);
+			installed.sort(function(a, b) {
+				return a.name.localeCompare(b.name);
+			});
+			var text = JSON.stringify(installed);
 			res.contentType("application/json");
 			res.send(text);
 		}
@@ -406,6 +445,22 @@ module.exports = NodeHelper.create({
 			var text = JSON.stringify(this.translation);
 			res.contentType("application/json");
 			res.send(text);
+		}
+		if (query.data === "mmUpdateAvailable")
+		{
+			var sg = simpleGit(__dirname + "/..");
+			sg.fetch().status(function(err, data) {
+				if (!err) {
+					if (data.behind > 0)
+					{
+						res.contentType("application/json");
+						res.send(JSON.stringify(true));
+						return;
+					}
+				}
+				res.contentType("application/json");
+				res.send(JSON.stringify(false));
+			});
 		}
 		if (query.data === "config")
 		{
@@ -688,11 +743,6 @@ module.exports = NodeHelper.create({
 				self.sendSocketNotification("DEFAULT_SETTINGS", data);
 			}
 		});
-	},
-
-	format: function(string) {
-		string = string.replace(/MMM-/ig, "");
-		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
 	fillTemplates: function(data) {
