@@ -572,7 +572,7 @@ module.exports = NodeHelper.create({
 		}
 		if (query.action === "RESTART")
 		{
-			exec("/usr/local/bin/pm2 restart mm", opts, function(error, stdout, stderr){
+			exec("pm2 restart mm", opts, function(error, stdout, stderr){
 				self.sendSocketNotification("RESTART");
 				self.checkForExecError(error, stdout, stderr, res);
 			});
@@ -580,12 +580,12 @@ module.exports = NodeHelper.create({
 		}
 		if (query.action === "MONITORON")
 		{
-			exec("/opt/vc/bin/tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
 		if (query.action === "MONITOROFF")
 		{
-			exec("/opt/vc/bin/tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			exec("tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
 		if (query.action === "HIDE" || query.action === "SHOW")
