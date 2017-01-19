@@ -115,6 +115,9 @@ Module.register("MMM-Remote-Control", {
 				}
 			}
 		}
+		if (notification === "NOTIFICATION") {
+			this.sendNotification(payload.notification, payload.payload);
+		}
 	},
 
 	buildCssContent: function(brightness) {

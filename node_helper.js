@@ -655,6 +655,25 @@ module.exports = NodeHelper.create({
 			self.updateModule(decodeURI(query.module), res);
 			return true;
 		}
+		if (query.action === 'NOTIFICATION')
+		{
+			try {
+				var payload = {}; // Assume empty JSON-object if no payload is provided
+				if (typeof query.payload === 'undefined') {
+					payload = query.payload;
+				} else {
+					payload = JSON.parse(query.payload);
+				}
+
+				this.sendSocketNotification(query.action, {'notification': query.notification, 'payload': payload});
+				res.send({'status': 'success'});
+				return true;
+			} catch(err) {
+				console.log("ERROR: ", err);
+				res.send({'status': err.message});
+				return true;
+			}
+		}
 		return false;
 	},
 
@@ -833,6 +852,7 @@ module.exports = NodeHelper.create({
 			// check if we have got saved default settings
 			self.loadDefaultSettings();
 		}
+
 		if (notification === "REMOTE_ACTION")
 		{
 			this.executeQuery(payload);
