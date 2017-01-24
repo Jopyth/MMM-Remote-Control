@@ -20,6 +20,8 @@ var Remote = {
     addModule: "",
     changedModules: [],
     deletedModules: [],
+	autoHideTimer: undefined,
+	autoHideDelay: 1000, // ms
 
     loadButtons: function(buttons) {
         for (var key in buttons) {
@@ -244,6 +246,10 @@ var Remote = {
     setStatus: function(status, message, customContent) {
         var self = this;
 
+		if (this.autoHideTimer !== undefined) {
+			clearTimeout(this.autoHideTimer);
+		}
+
         var parent = document.getElementById("result-contents");
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
@@ -281,6 +287,9 @@ var Remote = {
             onClick = function() {
                 self.setStatus("none");
             };
+			this.autoHideTimer = setTimeout(function() {
+				self.setStatus("none");
+			}, this.autoHideDelay);
         }
         if (message) {
             text = message;
