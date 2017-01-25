@@ -77,6 +77,7 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | SHOW_ALERT | Show Default Alert/Notification |
 | HIDE_ALERT | Hide Default Alert/Notification |
 | UPDATE | Update MagicMirror and any of it's modules |
+| NOTIFICATION | Send a notification to all modules (see [Notification Request](#notification-request)). |
 
 ### Format of module data response
 
@@ -92,6 +93,27 @@ The response will be in the JSON format, here is an example:
 "brightness":40,
 "settingsVersion":1
 }
+```
+
+### Notification Request
+
+To send a notification to all modules, send the following GET-parameters.
+
+| key | value |
+| --- | ----- |
+| action | `NOTIFICATION`<br>**Required** |
+| notification | The notification to send, e.g. `ARTICLE_MORE_DETAILS`, `SHOW_ALERT` or `HIDE_ALERT`.<br>**Required** |
+| payload | A stringified JSON object with the payload for the notification.<br>**Optional** if absent, an empty payload (`{}`) is assumed. |
+
+Examples:
+
+```
+?action=NOTIFICATION&notification=ARTICLE_MORE_DETAILS
+
+?action=NOTIFICATION&notification=SHOW_ALERT&payload={%22title%22:%22Alert%22,%22message%22:%22This%20is%an%20alert.%22}
+(Payload is URL-encoded form of {"title":"Alert","message":"This is an alert."})
+
+?action=NOTIFICATION&notification=HIDE_ALERT
 ```
 
 ## License
