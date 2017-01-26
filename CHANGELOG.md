@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First version of installer script
 - Menu to send Alerts and/or Notifications to your mirror
+- Menu to update your MagicMirror installation and your modules (through `git pull`)
 - Menu to change the `config.js`
     - Modules can be installed, added, removed, configured
     - There will be backups of the five last versions of the `config.js` in the `config` folder
