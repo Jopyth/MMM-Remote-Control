@@ -15,7 +15,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 
 If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer:
 ```
-curl -sL https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh | bash
+cd /tmp && wget -q https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/develop/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh
 ```
 
 ### Manual install
