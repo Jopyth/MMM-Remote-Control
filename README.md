@@ -15,7 +15,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 
 If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer:
 ```
-cd /tmp && wget -q https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/develop/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh; cd ~
+cd /tmp && wget -q https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh; cd ~
 ```
 
 ### Manual install
@@ -45,7 +45,9 @@ Note: If your user does not have `sudo` rights, the shutdown does not work (it *
 
 Update this module by navigating into its folder on the command line and executing this command: `git pull`.
 Alternatively you can run the `installer.sh` script again:
-```~/MagicMirror/modules/MMM-Remote-Control/installer.sh```
+```
+~/MagicMirror/modules/MMM-Remote-Control/installer.sh
+```
 
 ## Call methods from other modules
 
