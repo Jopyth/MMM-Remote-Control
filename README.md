@@ -3,13 +3,22 @@
 This module for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
 Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug everytime, am I right?
-Additionally you can hide and show modules on your mirror.
+Additionally you can hide and show modules on your mirror and do other cool stuff.
 
 ![The Main Menu](.github/main.png)
 ![The Power Menu](.github/power.png)
 ![Hide and Show a Module](.github/hide_show_module.gif)
 
 ## Installation
+
+### Quick install
+
+If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer:
+```
+curl -sL https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh | bash
+```
+
+### Manual install
 
 - (1) Clone this repository in your `MagicMirror/modules` folder:
 ```bash
@@ -26,13 +35,17 @@ git clone https://github.com/Jopyth/MMM-Remote-Control.git
 },
 ```
 
-- (3) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html).
+- (3) Add the IP addresses of devices you want to use to access the Remote Control to the `ipWhiteList` in your `config.js`.
 
-- (4) If you are not running with `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
+- (4) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html).
+
+Note: If your user does not have `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
 
 ## Update
 
 Update this module by navigating into its folder on the command line and executing this command: `git pull`.
+Alternatively you can run the `installer.sh` script again:
+```~/MagicMirror/modules/MMM-Remote-Control/installer.sh```
 
 ## Call methods from other modules
 

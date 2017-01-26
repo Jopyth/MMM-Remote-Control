@@ -9,7 +9,7 @@
 
 Module.register("MMM-Remote-Control", {
 
-	requiresVersion: "2.0.0",
+	requiresVersion: "2.1.0",
 
 	// Default module config.
 	defaults: {
@@ -232,16 +232,21 @@ Module.register("MMM-Remote-Control", {
 	sendCurrentData: function() {
 		var modules = MM.getModules();
 		var currentModuleData = [];
-		console.log(modules[0]);
+		var skipped = 0;
 		for (var i = 0; i < modules.length; i++) {
+			if (modules[i] === undefined) {
+				skipped++;
+				continue;
+			}
+			index = i - skipped;
 			currentModuleData.push({});
-			currentModuleData[i]["hidden"] = modules[i].hidden;
-			currentModuleData[i]["lockStrings"] = this.removeOwnLockString(modules[i].lockStrings);
-			currentModuleData[i]["name"] = modules[i].name;
-			currentModuleData[i]["identifier"] = modules[i].identifier;
-			currentModuleData[i]["position"] = modules[i].data.position;
-			currentModuleData[i]["config"] = modules[i].config;
-            currentModuleData[i]["path"] = modules[i].data.path;
+			currentModuleData[index]["hidden"] = modules[i].hidden;
+			currentModuleData[index]["lockStrings"] = this.removeOwnLockString(modules[i].lockStrings);
+			currentModuleData[index]["name"] = modules[i].name;
+			currentModuleData[index]["identifier"] = modules[i].identifier;
+			currentModuleData[index]["position"] = modules[i].data.position;
+			currentModuleData[index]["config"] = modules[i].config;
+            currentModuleData[index]["path"] = modules[i].data.path;
 		}
 		var configData = {
 			moduleData: currentModuleData,

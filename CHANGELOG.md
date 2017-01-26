@@ -6,15 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- First version of installer script
+- Menu to send Alerts and/or Notifications to your mirror
 - Menu to change the `config.js`
     - Modules can be installed, added, removed, configured
     - There will be backups of the five last versions of the `config.js` in the `config` folder
+    - Some of these parts are hidden behind an "exprimental" warning, do **not** ignore that warning
 - NOTIFICATION action, see [README.md](README.md#notification-request) for details
 
 ### Changed
-- Smaller font sizes in lists
 - Menu structure
     - Old "Edit" and "Settings" are now under "Edit view"
+- Smaller font sizes in lists
+
+### Fixed
+- Issues coming from disabled modules since MM version 2.1.0
 
 ## [1.0.0] - 2016-10-24
 ### Added

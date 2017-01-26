@@ -878,7 +878,7 @@ var Remote = {
         }
         var keys = Object.keys(dataToEdit);
         if (path === "<root>") {
-            keys = ["module", "position", "header", "config"];
+            keys = ["module", "disabled", "position", "header", "config"];
         }
         for (var i = 0; i < keys.length; i++) {
             var key = keys[i];
@@ -1310,7 +1310,24 @@ var buttons = {
         window.location.hash = "edit-menu";
     },
     "settings-button": function() {
-        window.location.hash = "settings-menu";
+        var self = Remote;
+
+        var wrapper = document.createElement("div");
+        var text = document.createElement("span");
+        text.innerHTML = self.translate("EXPERIMENTAL");
+        wrapper.appendChild(text);
+
+        var panic = self.createSymbolText("fa fa-life-ring", self.translate("PANIC"), function () {
+            self.setStatus("none");
+        });
+        wrapper.appendChild(panic);
+
+        var danger = self.createSymbolText("fa fa-warning", self.translate("NO_RISK_NO_FUN"), function () {
+            window.location.hash = "settings-menu";
+        });
+        wrapper.appendChild(danger);
+
+        self.setStatus(false, false, wrapper);
     },
     "mirror-link-button": function() {
         window.open("/", "_blank");
