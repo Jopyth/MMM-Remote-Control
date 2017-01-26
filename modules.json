@@ -1,5 +1,12 @@
 [
     {
+        "author": "Jopyth",
+        "desc": "Display a candle burning down towards a specific date (e.g. an advent candle).",
+        "id": "Jopyth/MMM-Advent",
+        "longname": "MMM-Advent",
+        "url": "https://github.com/Jopyth/MMM-Advent"
+    },
+    {
         "author": "CFenner",
         "desc": "Display the air quality index a for a certain location.",
         "id": "CFenner/MagicMirror-AirQuality-Module",
@@ -12,6 +19,13 @@
         "id": "sakirtemel/MMM-alexa",
         "longname": "MMM-Alexa",
         "url": "https://github.com/sakirtemel/MMM-alexa"
+    },
+    {
+        "author": "stuloh",
+        "desc": "Display aviation weather (METAR) and FAA delay data for continental U.S. airports.",
+        "id": "stuloh/MMM-aviationwx",
+        "longname": "MMM-aviationwx",
+        "url": "https://github.com/stuloh/MMM-aviationwx"
     },
     {
         "author": "valmassoi",
@@ -56,11 +70,32 @@
         "url": "https://github.com/barnabycolby/MMM-Carousel"
     },
     {
+        "author": "ian",
+        "desc": "A module that displays random Clash Royale decks.",
+        "id": "ianperrin/MMM-Clash-Royale",
+        "longname": "MMM-Clash-Royale",
+        "url": "https://github.com/ianperrin/MMM-Clash-Royale"
+    },
+    {
+        "author": "Arthur Garza",
+        "desc": "A module that displays the verse of the day from www.biblegateway.com.",
+        "id": "arthurgarzajr/MMM-DailyBibleVerse.git",
+        "longname": "MMM-DailyBibleVerse",
+        "url": "https://github.com/arthurgarzajr/MMM-DailyBibleVerse.git"
+    },
+    {
         "author": "Blastitt",
         "desc": "Displays the daily XKCD web comic.",
         "id": "Blastitt/DailyXKCD",
         "longname": "DailyXKCD",
         "url": "https://github.com/Blastitt/DailyXKCD"
+    },
+    {
+        "author": "LukeSkywalker92",
+        "desc": "Displays weather warnings for Germany.",
+        "id": "LukeSkywalker92/MMM-DWD-WarnWeather",
+        "longname": "MMM-DWD-WarnWeather",
+        "url": "https://github.com/LukeSkywalker92/MMM-DWD-WarnWeather"
     },
     {
         "author": "ronny3050",
@@ -140,6 +175,20 @@
         "url": "https://github.com/fewieden/MMM-Fuel"
     },
     {
+        "author": "LukeSkywalker92",
+        "desc": "Displays live image of our planet.",
+        "id": "LukeSkywalker92/MMM-Globe",
+        "longname": "MMM-Globe",
+        "url": "https://github.com/LukeSkywalker92/MMM-Globe"
+    },
+    {
+        "author": "sp4ceman",
+        "desc": "Displays a google map of an origin and destination",
+        "id": "sp4ceman/MMM-googlemaps",
+        "longname": "MMM-googlemaps",
+        "url": "https://github.com/sp4ceman/MMM-googlemaps"
+    },
+    {
         "author": "mochman",
         "desc": "Display weather from a self-updated GPS Location.",
         "id": "mochman/MMM-GPSWeather",
@@ -161,6 +210,13 @@
         "url": "https://github.com/masters1222/mm-hide-all"
     },
     {
+        "author": "MMM-horoscope",
+        "desc": "Displays Daily Horoscope.",
+        "id": "morozgrafix/MMM-horoscope",
+        "longname": "MMM-horoscope",
+        "url": "https://github.com/morozgrafix/MMM-horoscope"
+    },
+    {
         "author": "Eunanibus",
         "desc": "Display XML data from a HTTP response.",
         "id": "Eunanibus/MMM-HTTPRequestDisplay",
@@ -180,6 +236,13 @@
         "id": "bitte-ein-bit/MMM-iCloud-Client",
         "longname": "MMM-iCloud-Client",
         "url": "https://github.com/bitte-ein-bit/MMM-iCloud-Client"
+    },
+    {
+        "author": "basti0001",
+        "desc": "Visulizes your places where you have been traveled..or intend to go.......or or or.",
+        "id": "basti0001/MMM-iHaveBeenThere",
+        "longname": "MMM-iHaveBeenThere",
+        "url": "https://github.com/basti0001/MMM-iHaveBeenThere"
     },
     {
         "author": "desertblade",
@@ -245,6 +308,13 @@
         "url": "https://github.com/Bangee44/MMM-meteoblueCurrent"
     },
     {
+        "author": "joanaz",
+        "desc": "Alexa voice control to show/hide modules and display text/images on the mirror.",
+        "id": "joanaz/MMM-MirrorMirrorOnTheWall",
+        "longname": "MMM-MirrorMirrorOnTheWall",
+        "url": "https://github.com/joanaz/MMM-MirrorMirrorOnTheWall"
+    },
+    {
         "author": "ianperrin",
         "desc": "Create schedules to control when other modules are shown, hidden or dimmed and to send notifications to other modules.",
         "id": "ianperrin/MMM-ModuleScheduler",
@@ -271,6 +341,13 @@
         "id": "masters1222/mm-music-player",
         "longname": "mm-music-player",
         "url": "https://github.com/masters1222/mm-music-player"
+    },
+    {
+        "author": "qistoph",
+        "desc": "A Magic Mirror Module for Nagios.",
+        "id": "qistoph/MMM-nagios",
+        "longname": "MMM-nagios",
+        "url": "https://github.com/qistoph/MMM-nagios"
     },
     {
         "author": "Mochman",
@@ -308,6 +385,13 @@
         "url": "https://github.com/fewieden/MMM-NFL"
     },
     {
+        "author": "qistoph",
+        "desc": "Shows informantion on trains departuring a configurable Dutch trainstation.",
+        "id": "qistoph/MMM-nstreinen",
+        "longname": "MMM-nstreinen",
+        "url": "https://github.com/qistoph/MMM-nstreinen"
+    },
+    {
         "author": "ghlasse",
         "desc": "A module that displays the medals for the current summer olympics.",
         "id": "GHLasse/MagicMirror-Olympia-Module",
@@ -334,6 +418,13 @@
         "id": "RedNax67/MMM-OpenTherm",
         "longname": "MMM-OpenTherm",
         "url": "https://github.com/RedNax67/MMM-OpenTherm"
+    },
+    {
+        "author": "SheyaBernstein",
+        "desc": "Display stats from Pi-Hole DNS ad blocking.",
+        "id": "sheyabernstein/MMM-pihole-stats",
+        "longname": "MMM-pihole-stats",
+        "url": "https://github.com/sheyabernstein/MMM-pihole-stats"
     },
     {
         "author": "ronny3050",
@@ -427,6 +518,20 @@
         "url": "https://github.com/Tuxdiver/MMM-Rest"
     },
     {
+        "author": "yawns",
+        "desc": "Monitor a given station in the RNV traffic network",
+        "id": "yawnsde/MMM-RNV",
+        "longname": "MMM-RNV",
+        "url": "https://github.com/yawnsde/MMM-RNV"
+    },
+    {
+        "author": "taolanoz",
+        "desc": "Display any RSS feed",
+        "id": "Taolanoz/MMM-RSS-FEED",
+        "longname": "MMM-RSS-FEED",
+        "url": "https://github.com/Taolanoz/MMM-RSS-FEED"
+    },
+    {
         "author": "CatoAntonsen",
         "desc": "Display public transport information for Oslo and Akershus in Norway",
         "id": "CatoAntonsen/MMM-Ruter",
@@ -448,6 +553,13 @@
         "url": "https://github.com/PtrBld/MMM-Scrobbler"
     },
     {
+        "author": "SheyaBernstein",
+        "desc": "Display shabbat times for the current week and optionally hide all modules.",
+        "id": "sheyabernstein/MMM-shabbat",
+        "longname": "MMM-shabbat",
+        "url": "https://github.com/sheyabernstein/MMM-shabbat"
+    },
+    {
         "author": "fewieden",
         "desc": "Display your shipment tracking status.",
         "id": "fewieden/MMM-ShipmentTracking",
@@ -467,6 +579,13 @@
         "id": "fewieden/MMM-soccer",
         "longname": "MMM-soccer",
         "url": "https://github.com/fewieden/MMM-soccer"
+    },
+    {
+        "author": "LukeSkywalker92",
+        "desc": "A module that displays live scores of your favorite soccer leagues/competitions.",
+        "id": "LukeSkywalker92/MMM-SoccerLiveScore",
+        "longname": "MMM-SoccerLiveScore",
+        "url": "https://github.com/LukeSkywalker92/MMM-SoccerLiveScore"
     },
     {
         "author": "CFenner",
@@ -495,6 +614,13 @@
         "id": "alexyak/stocks",
         "longname": "stocks",
         "url": "https://github.com/alexyak/stocks"
+    },
+    {
+        "author": "hakanmhmd",
+        "desc": "Displays current stock prices of companies using YAHHO FINANCE API...",
+        "id": "hakanmhmd/MMM-Stock",
+        "longname": "MMM-Stock",
+        "url": "https://github.com/hakanmhmd/MMM-Stock"
     },
     {
         "author": "ian",
@@ -588,6 +714,13 @@
         "url": "https://github.com/Blastitt/twitControl"
     },
     {
+        "author": "erikmohn",
+        "desc": "Display weather data from weather stations available at vindsiden.no(Norway)...",
+        "id": "erikmohn/MMM-Vindsiden",
+        "longname": "MMM-Vindsiden",
+        "url": "https://github.com/erikmohn/MMM-Vindsiden"
+    },
+    {
         "author": "whyjustin",
         "desc": "Voice control based on based on Sphinx and Alexa.",
         "id": "whyjustin/magic-mirror-voice",
@@ -644,6 +777,13 @@
         "url": "https://github.com/SVendittelli/MMM-wordnik"
     },
     {
+        "author": "yawns",
+        "desc": "Displays low and high water time predictions for a given tide station, derived from worldtides.info",
+        "id": "yawnsde/MMM-WorldTides",
+        "longname": "MMM-WorldTides",
+        "url": "https://github.com/yawnsde/MMM-WorldTides"
+    },
+    {
         "author": "MattLugar",
         "desc": "Weather Underground Forecast Module Retrieves forecast from Weather Underground. Also adds a percentage probability of precipitation to forecast display.",
         "id": "MattLugar/wuforecast",
@@ -665,17 +805,24 @@
         "url": "https://github.com/paviro/MMM-Wunderlist"
     },
     {
-        "author": "hakanmhmd",
-        "desc": "Displays current stock prices of companies using YAHHO FINANCE API...",
-        "id": "hakanmhmd/MMM-Stock",
-        "longname": "MMM-Stock",
-        "url": "https://github.com/hakanmhmd/MMM-Stock"
+        "author": "frdteknikelektro",
+        "desc": "Simply displays logo with local image file path or url.",
+        "id": "frdteknikelektro/MMM-SimpleLogo",
+        "longname": "MMM-SimpleLogo",
+        "url": "https://github.com/frdteknikelektro/MMM-SimpleLogo"
     },
     {
-        "author": "erikmohn",
-        "desc": "Display weather data from weather stations available at vindsiden.no(Norway)...",
-        "id": "erikmohn/MMM-Vindsiden",
-        "longname": "MMM-Vindsiden",
-        "url": "https://github.com/erikmohn/MMM-Vindsiden"
+        "author": "da4throux",
+        "desc": "time to the next train & buses leaving a list stations for Paris (RATP)",
+        "id": "da4throux/MMM-Paris-RATP-PG",
+        "longname": "MMM-Paris-RATP-PG",
+        "url": "https://github.com/da4throux/MMM-Paris-RATP-PG"
+    },
+    {
+        "author": "AdamMoses-GitHub",
+        "desc": "Displays the Twitter Trending Topics for a given place or city, as well as showing the tweet volume for each topic.",
+        "id": "AdamMoses-GitHub/MMM-TwitterTrendsByPlace",
+        "longname": "MMM-TwitterTrendsByPlace",
+        "url": "https://github.com/AdamMoses-GitHub/MMM-TwitterTrendsByPlace"
     }
 ]
