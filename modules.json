@@ -1,0 +1,681 @@
+[
+    {
+        "author": "CFenner",
+        "desc": "Display the air quality index a for a certain location.",
+        "id": "CFenner/MagicMirror-AirQuality-Module",
+        "longname": "MMM-AirQuality",
+        "url": "https://github.com/CFenner/MagicMirror-AirQuality-Module"
+    },
+    {
+        "author": "sakirtemel",
+        "desc": "Amazon Alexa integration with using Javascript only.",
+        "id": "sakirtemel/MMM-alexa",
+        "longname": "MMM-Alexa",
+        "url": "https://github.com/sakirtemel/MMM-alexa"
+    },
+    {
+        "author": "valmassoi",
+        "desc": "Display bitcoin ticker price.",
+        "id": "valmassoi/MMM-bitcoin",
+        "longname": "MMM-bitcoin",
+        "url": "https://github.com/valmassoi/MMM-bitcoin"
+    },
+    {
+        "author": "PtrBld",
+        "desc": "Use a button to hide or show different modules via a broadcast message.",
+        "id": "ptrbld/MMM-Button",
+        "longname": "MMM-Button",
+        "url": "https://github.com/ptrbld/MMM-Button"
+    },
+    {
+        "author": "KirAsh4",
+        "desc": "Display a compact monthly calendar view.",
+        "id": "KirAsh4/calendar_monthly",
+        "longname": "calendar_monthly",
+        "url": "https://github.com/KirAsh4/calendar_monthly"
+    },
+    {
+        "author": "PaViRo",
+        "desc": "Extension for [MMM-FRITZ-Box-Callmonitor](https://github.com/paviro/MMM-FRITZ-Box-Callmonitor) (Displays the currently active call)",
+        "id": "paviro/MMM-Callmonitor-Current-Call",
+        "longname": "MMM-Callmonitor-Current-Call",
+        "url": "https://github.com/paviro/MMM-Callmonitor-Current-Call"
+    },
+    {
+        "author": "alexyak",
+        "desc": "Display a webcamera video feed.",
+        "id": "alexyak/camera",
+        "longname": "camera",
+        "url": "https://github.com/alexyak/camera"
+    },
+    {
+        "author": "barnabycolby",
+        "desc": "Rotate modules, to save space on screen.",
+        "id": "barnabycolby/MMM-Carousel",
+        "longname": "MMM-Carousel",
+        "url": "https://github.com/barnabycolby/MMM-Carousel"
+    },
+    {
+        "author": "Blastitt",
+        "desc": "Displays the daily XKCD web comic.",
+        "id": "Blastitt/DailyXKCD",
+        "longname": "DailyXKCD",
+        "url": "https://github.com/Blastitt/DailyXKCD"
+    },
+    {
+        "author": "ronny3050",
+        "desc": "Display incoming emails.",
+        "id": "ronny3050/email-mirror",
+        "longname": "email-mirror",
+        "url": "https://github.com/ronny3050/email-mirror"
+    },
+    {
+        "author": "nigel-daniels",
+        "desc": "Display information published by the FAA on delays and weather conditions at some US airports.",
+        "id": "nigel-daniels/MMM-FAA-Delay",
+        "longname": "MMM-FAA-Delay",
+        "url": "https://github.com/nigel-daniels/MMM-FAA-Delay"
+    },
+    {
+        "author": "PaViRo",
+        "desc": "Facial recognition and module swapping based on the current user ...",
+        "id": "paviro/MMM-Facial-Recognition",
+        "longname": "MMM-Facial-Recognition",
+        "url": "https://github.com/paviro/MMM-Facial-Recognition"
+    },
+    {
+        "author": "BenRoe",
+        "desc": "Display Readings/Values from your FHEM device like temperature or humidity.",
+        "id": "BenRoe/MMM-FHEM",
+        "longname": "MMM-FHEM",
+        "url": "https://github.com/BenRoe/MMM-FHEM"
+    },
+    {
+        "author": "SVendittelli",
+        "desc": "Display your Fitbit statistics.",
+        "id": "SVendittelli/MMM-fitbit",
+        "longname": "MMM-fitbit",
+        "url": "https://github.com/SVendittelli/MMM-fitbit"
+    },
+    {
+        "author": "kapsolas",
+        "desc": "A module to load last 20 images posted to user's Flickr photostream to mirror and animate them; with the need of an API_KEY",
+        "id": "kapsolas/MMM-Flickr",
+        "longname": "MMM-Flickr",
+        "url": "https://github.com/kapsolas/MMM-Flickr"
+    },
+    {
+        "author": "dmcinnes",
+        "desc": "Display weather based on forecast API.",
+        "id": "dmcinnes/MMM-forecast-io",
+        "longname": "MMM-forecast-io",
+        "url": "https://github.com/dmcinnes/MMM-forecast-io"
+    },
+    {
+        "author": "ian",
+        "desc": "A module that displays the driver standings from the current Formula 1 season.",
+        "id": "ianperrin/MMM-Formula1",
+        "longname": "MMM-Formula1",
+        "url": "https://github.com/ianperrin/MMM-Formula1"
+    },
+    {
+        "author": "tataille",
+        "desc": "Display data from your FreeBox v6 server (Revolution) from the french ISP free.",
+        "id": "tataille/MMM-FreeBox-Monitor",
+        "longname": "MMM-FreeBox-Monitor",
+        "url": "https://github.com/tataille/MMM-FreeBox-Monitor"
+    },
+    {
+        "author": "PaViRo",
+        "desc": "FRITZ!Box Callmonitor (Display an alert when someone is calling and offers a call history...)",
+        "id": "paviro/MMM-FRITZ-Box-Callmonitor",
+        "longname": "MMM-FRITZ-Box-Callmonitor",
+        "url": "https://github.com/paviro/MMM-FRITZ-Box-Callmonitor"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display Gas Station prices.",
+        "id": "fewieden/MMM-Fuel",
+        "longname": "MMM-Fuel",
+        "url": "https://github.com/fewieden/MMM-Fuel"
+    },
+    {
+        "author": "mochman",
+        "desc": "Display weather from a self-updated GPS Location.",
+        "id": "mochman/MMM-GPSWeather",
+        "longname": "MMM-GPSWeather",
+        "url": "https://github.com/mochman/MMM-GPSWeather"
+    },
+    {
+        "author": "georg90",
+        "desc": "Display local transport in Hamburg/Germany.",
+        "id": "georg90/MMM-HH-LocalTransport",
+        "longname": "MMM-HH-LocalTransport",
+        "url": "https://github.com/georg90/MMM-HH-LocalTransport"
+    },
+    {
+        "author": "masters1222",
+        "desc": "Hide all modules on your screen.",
+        "id": "masters1222/mm-hide-all",
+        "longname": "mm-hide-all",
+        "url": "https://github.com/masters1222/mm-hide-all"
+    },
+    {
+        "author": "Eunanibus",
+        "desc": "Display XML data from a HTTP response.",
+        "id": "Eunanibus/MMM-HTTPRequestDisplay",
+        "longname": "MMM-HTTPRequestDisplay",
+        "url": "https://github.com/Eunanibus/MMM-HTTPRequestDisplay"
+    },
+    {
+        "author": "MitchSS",
+        "desc": "Display the status of groups or lights in your Philips Hue setup.",
+        "id": "MitchSS/MMM-Hue",
+        "longname": "MMM-Hue",
+        "url": "https://github.com/MitchSS/MMM-Hue"
+    },
+    {
+        "author": "Bitte-ein-Bit",
+        "desc": "Load iCloud addressbook and provide birthday iCal feed for calendar module and addressbook for [MMM-FRITZ-Box-Callmonitor](https://github.com/paviro/MMM-FRITZ-Box-Callmonitor).",
+        "id": "bitte-ein-bit/MMM-iCloud-Client",
+        "longname": "MMM-iCloud-Client",
+        "url": "https://github.com/bitte-ein-bit/MMM-iCloud-Client"
+    },
+    {
+        "author": "desertblade",
+        "desc": "A simple way to add an iFrame of any web content to your MagicMirror.",
+        "id": "desertblade/iFrame",
+        "longname": "iFrame",
+        "url": "https://github.com/desertblade/iFrame"
+    },
+    {
+        "author": "kapsolas",
+        "desc": "A module load the images from a users Instagram feed. The images are displayed on the mirror and animated; it requires an API_KEY",
+        "id": "kapsolas/MMM-Instagram",
+        "longname": "MMM-Instagram",
+        "url": "https://github.com/kapsolas/MMM-Instagram"
+    },
+    {
+        "author": "ronny3050",
+        "desc": "Display internet statistics such as strength and speed information.",
+        "id": "ronny3050/internet-monitor",
+        "longname": "internet-monitor",
+        "url": "https://github.com/ronny3050/internet-monitor"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display IPv4/IPv6 Network Address.",
+        "id": "fewieden/MMM-ip",
+        "longname": "MMM-ip",
+        "url": "https://github.com/fewieden/MMM-ip"
+    },
+    {
+        "author": "RedNax67",
+        "desc": "Display ipcam feed on MagicMirror.",
+        "id": "RedNax67/MMM-IPCam",
+        "longname": "MMM-IPCam",
+        "url": "https://github.com/RedNax67/MMM-IPCam"
+    },
+    {
+        "author": "pvyParts",
+        "desc": "A module to load random jokes from the web.",
+        "id": "pvyParts/MMM-jokes",
+        "longname": "MMM-jokes",
+        "url": "https://github.com/pvyParts/MMM-jokes"
+    },
+    {
+        "author": "yo-less",
+        "desc": "Station monitor for the Karlsruhe/Germany local transport (KVV) bus, tram and train system.",
+        "id": "yo-less/MMM-KVV",
+        "longname": "MMM-KVV",
+        "url": "https://github.com/yo-less/MMM-KVV"
+    },
+    {
+        "author": "CFenner",
+        "desc": "Display the next public transport connections for a certain route.",
+        "id": "CFenner/MagicMirror-LocalTransport-Module",
+        "longname": "MMM-LocalTransport",
+        "url": "https://github.com/CFenner/MagicMirror-LocalTransport-Module"
+    },
+    {
+        "author": "Bangee44",
+        "desc": "Display current weather based on the Meteoblue.com API.",
+        "id": "Bangee44/MMM-meteoblueCurrent",
+        "longname": "MMM-meteoblueCurrent",
+        "url": "https://github.com/Bangee44/MMM-meteoblueCurrent"
+    },
+    {
+        "author": "ianperrin",
+        "desc": "Create schedules to control when other modules are shown, hidden or dimmed and to send notifications to other modules.",
+        "id": "ianperrin/MMM-ModuleScheduler",
+        "longname": "MMM-ModuleScheduler",
+        "url": "https://github.com/ianperrin/MMM-ModuleScheduler"
+    },
+    {
+        "author": "alexyak",
+        "desc": "Camera based motion detector.",
+        "id": "alexyak/motiondetector",
+        "longname": "motiondetector",
+        "url": "https://github.com/alexyak/motiondetector"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display information about upcoming movies (title, cover, genre, rating, plot).",
+        "id": "fewieden/MMM-MovieInfo",
+        "longname": "MMM-MovieInfo",
+        "url": "https://github.com/fewieden/MMM-MovieInfo"
+    },
+    {
+        "author": "masters1222",
+        "desc": "Simple player to play your music.",
+        "id": "masters1222/mm-music-player",
+        "longname": "mm-music-player",
+        "url": "https://github.com/masters1222/mm-music-player"
+    },
+    {
+        "author": "Mochman",
+        "desc": "A Magic Mirror Module for the Nest Thermostat.",
+        "id": "mochman/MMM-Nest",
+        "longname": "MMM-Nest",
+        "url": "https://github.com/mochman/MMM-Nest"
+    },
+    {
+        "author": "CFenner",
+        "desc": "Display your Netatmo in/outdoor weather station data on your MagicMirror.",
+        "id": "CFenner/MagicMirror-Netatmo-Module",
+        "longname": "MMM-Netatmo",
+        "url": "https://github.com/CFenner/MagicMirror-Netatmo-Module"
+    },
+    {
+        "author": "ianperrin",
+        "desc": "Display the status of devices on the network based on their MAC address",
+        "id": "ianperrin/MMM-NetworkScanner",
+        "longname": "MMM-NetworkScanner",
+        "url": "https://github.com/ianperrin/MMM-NetworkScanner"
+    },
+    {
+        "author": "yo-less",
+        "desc": "Station monitor for the nextbike bike-sharing network.",
+        "id": "yo-less/MMM-nextbike",
+        "longname": "MMM-nextbike",
+        "url": "https://github.com/yo-less/MMM-nextbike"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display scores of National Football League.",
+        "id": "fewieden/MMM-NFL",
+        "longname": "MMM-NFL",
+        "url": "https://github.com/fewieden/MMM-NFL"
+    },
+    {
+        "author": "ghlasse",
+        "desc": "A module that displays the medals for the current summer olympics.",
+        "id": "GHLasse/MagicMirror-Olympia-Module",
+        "longname": "MMM-Olympia",
+        "url": "https://github.com/GHLasse/MagicMirror-Olympia-Module"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Displays the medals for olympic games in Rio.",
+        "id": "fewieden/MMM-OlympicGames",
+        "longname": "MMM-OlympicGames",
+        "url": "https://github.com/fewieden/MMM-OlympicGames"
+    },
+    {
+        "author": "paphko",
+        "desc": "Show lights and window states on a floorplan of an openhab server.",
+        "id": "paphko/mmm-openhabfloorplan",
+        "longname": "MMM-openhabfloorplan",
+        "url": "https://github.com/paphko/mmm-openhabfloorplan"
+    },
+    {
+        "author": "RedNax67",
+        "desc": "Display information from your OpenTherm gateway.",
+        "id": "RedNax67/MMM-OpenTherm",
+        "longname": "MMM-OpenTherm",
+        "url": "https://github.com/RedNax67/MMM-OpenTherm"
+    },
+    {
+        "author": "ronny3050",
+        "desc": "Displays and alerts mirror users on new phone notifications.",
+        "id": "ronny3050/phone-notification-mirror",
+        "longname": "phone-notification-mirror",
+        "url": "https://github.com/ronny3050/phone-notification-mirror"
+    },
+    {
+        "author": "CFenner",
+        "desc": "Display the mirrors connection status.",
+        "id": "CFenner/MagicMirror-Ping-Module",
+        "longname": "MMM-Ping",
+        "url": "https://github.com/CFenner/MagicMirror-Ping-Module"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display status from website/ip's.",
+        "id": "fewieden/MMM-ping",
+        "longname": "MMM-ping",
+        "url": "https://github.com/fewieden/MMM-ping"
+    },
+    {
+        "author": "PaViRo",
+        "desc": "This module can monitor a PIR motion sensor and put your mirror to sleep if nobody uses it.",
+        "id": "paviro/MMM-PIR-Sensor",
+        "longname": "MMM-PIR-Sensor",
+        "url": "https://github.com/paviro/MMM-PIR-Sensor"
+    },
+    {
+        "author": "croxis",
+        "desc": "Display the rise and set times of the planets.",
+        "id": "croxis/planetrise",
+        "longname": "planetrise",
+        "url": "https://github.com/croxis/planetrise"
+    },
+    {
+        "author": "croxis",
+        "desc": "Display the next time on a clear morning or evening that you can go outside and experience the brightness of high noon on Pluto.",
+        "id": "croxis/PlutoTime",
+        "longname": "PlutoTime",
+        "url": "https://github.com/croxis/PlutoTime"
+    },
+    {
+        "author": "PtrBld",
+        "desc": "This module can show/hide a video downloaded from a Podcast or a private server (needs static file path). At the moment you can only display the video by clicking a button (use the MMM-Button module).",
+        "id": "ptrbld/MMM-Podcast",
+        "longname": "MMM-Podcast",
+        "url": "https://github.com/ptrbld/MMM-Podcast"
+    },
+    {
+        "author": "deg0nz",
+        "desc": "Display departures for public transport in Berlin and Brandenburg (Covers VBB Area).",
+        "id": "deg0nz/MMM-PublicTransportBerlin",
+        "longname": "MMM-PublicTransportBerlin",
+        "url": "https://github.com/deg0nz/MMM-PublicTransportBerlin"
+    },
+    {
+        "author": "diego-vieira",
+        "desc": "A module that will load a random photo from an URL.",
+        "id": "diego-vieira/MMM-RandomPhoto",
+        "longname": "MMM-RandomPhoto",
+        "url": "https://github.com/diego-vieira/MMM-RandomPhoto"
+    },
+    {
+        "author": "KirAsh4",
+        "desc": "Display random quotes from brainyquote.",
+        "id": "KirAsh4/random_quotes",
+        "longname": "random_quotes",
+        "url": "https://github.com/KirAsh4/random_quotes"
+    },
+    {
+        "author": "Jopyth",
+        "desc": "Cleanly shutdown (or reboot) your mirror, edit which modules are shown on your mirror and turn your monitor off and on from a simple website, i.e. from your smartphone.",
+        "id": "Jopyth/MMM-Remote-Control",
+        "longname": "MMM-Remote-Control",
+        "url": "https://github.com/Jopyth/MMM-Remote-Control"
+    },
+    {
+        "author": "archerydwd",
+        "desc": "Display Realtime Irish Rail data for a targeted station.",
+        "id": "archerydwd/DWD-RealtimeIrishRail",
+        "longname": "DWD-RealtimeIrishRail",
+        "url": "https://github.com/archerydwd/DWD-RealtimeIrishRail"
+    },
+    {
+        "author": "Tuxdiver",
+        "desc": "Fetching REST data and display them on the mirror.",
+        "id": "Tuxdiver/MMM-Rest",
+        "longname": "MMM-Rest",
+        "url": "https://github.com/Tuxdiver/MMM-Rest"
+    },
+    {
+        "author": "CatoAntonsen",
+        "desc": "Display public transport information for Oslo and Akershus in Norway",
+        "id": "CatoAntonsen/MMM-Ruter",
+        "longname": "MMM-Ruter",
+        "url": "https://github.com/CatoAntonsen/MMM-Ruter"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display scottish premiere league standings.",
+        "id": "fewieden/MMM-ScottishPremierLeague",
+        "longname": "MMM-ScottishPremierLeague",
+        "url": "https://github.com/fewieden/MMM-ScottishPremierLeague"
+    },
+    {
+        "author": "PtrBld",
+        "desc": "Display the current playing song from Spotify, ITunes and Co.",
+        "id": "PtrBld/MMM-Scrobbler",
+        "longname": "MMM-Scrobbler",
+        "url": "https://github.com/PtrBld/MMM-Scrobbler"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display your shipment tracking status.",
+        "id": "fewieden/MMM-ShipmentTracking",
+        "longname": "MMM-ShipmentTracking",
+        "url": "https://github.com/fewieden/MMM-ShipmentTracking"
+    },
+    {
+        "author": "nhubbard",
+        "desc": "Get your festive on. Put snow in the background for winter or anti burn-in purposes... your family won't know the difference.",
+        "id": "nhubbard/MagicPlugins",
+        "longname": "Snow",
+        "url": "https://github.com/nhubbard/MagicPlugins"
+    },
+    {
+        "author": "fewieden",
+        "desc": "A module that displays standings from European Soccer (Football) leagues.",
+        "id": "fewieden/MMM-soccer",
+        "longname": "MMM-soccer",
+        "url": "https://github.com/fewieden/MMM-soccer"
+    },
+    {
+        "author": "CFenner",
+        "desc": "Display the currently playing track of your Sonos system.",
+        "id": "CFenner/MagicMirror-Sonos-Module",
+        "longname": "MMM-Sonos",
+        "url": "https://github.com/CFenner/MagicMirror-Sonos-Module"
+    },
+    {
+        "author": "CatoAntonsen",
+        "desc": "Display information from Spotify Connect e.g. cover, artist and track information.",
+        "id": "CatoAntonsen/MMM-SpotifyConnectUI",
+        "longname": "MMM-SpotifyConnectUI",
+        "url": "https://github.com/CatoAntonsen/MMM-SpotifyConnectUI"
+    },
+    {
+        "author": "danito",
+        "desc": "Display the next transports for any given STIB (Brussel/Belgium) station.",
+        "id": "danito/MMM-stib",
+        "longname": "MMM-stib",
+        "url": "https://github.com/danito/MMM-stib"
+    },
+    {
+        "author": "alexyak",
+        "desc": "Display a scrolling stocks ticker.",
+        "id": "alexyak/stocks",
+        "longname": "stocks",
+        "url": "https://github.com/alexyak/stocks"
+    },
+    {
+        "author": "ian",
+        "desc": "A module that displays your activity data from [Strava.com](https://www.strava.com).",
+        "id": "ianperrin/MMM-Strava",
+        "longname": "MMM-Strava",
+        "url": "https://github.com/ianperrin/MMM-Strava"
+    },
+    {
+        "author": "mochman",
+        "desc": "Uses 2 HC-SR04 ultrasonic sensors to determing hand position to produce a \"Swipe Left\", \"Swipe Right\", or \"Press\".",
+        "id": "mochman/MMM-Swipe",
+        "longname": "MMM-Swipe",
+        "url": "https://github.com/mochman/MMM-Swipe"
+    },
+    {
+        "author": "Bangee44",
+        "desc": "Display train departures from your favourit trainstation.",
+        "id": "Bangee44/MMM-swisstransport",
+        "longname": "MMM-swisstransport",
+        "url": "https://github.com/Bangee44/MMM-swisstransport"
+    },
+    {
+        "author": "paviro",
+        "desc": "API for sending notifications to your mirror.",
+        "id": "paviro/MMM-syslog",
+        "longname": "MMM-syslog",
+        "url": "https://github.com/paviro/MMM-syslog"
+    },
+    {
+        "author": "BenRoe",
+        "desc": "Shows Raspberry Pi system stats like CPU temperature, free Ram and System load",
+        "id": "BenRoe/MMM-SystemStats",
+        "longname": "MMM-SystemStats",
+        "url": "https://github.com/BenRoe/MMM-SystemStats"
+    },
+    {
+        "author": "MichMich",
+        "desc": "Display your Raspberry Pi's processor temperature on your MagicMirror.",
+        "id": "MichMich/mmm-systemtemperature",
+        "longname": "MMM-SystemTemperature",
+        "url": "https://github.com/MichMich/mmm-systemtemperature"
+    },
+    {
+        "author": "CBrooker",
+        "desc": "Displays your todos from Todoist on  your MagicMirror.",
+        "id": "cbrooker/MMM-Todoist",
+        "longname": "MMM-Todoist",
+        "url": "https://github.com/cbrooker/MMM-Todoist"
+    },
+    {
+        "author": "MichMich",
+        "desc": "A Magic Mirror Module for the Toon Thermostat.",
+        "id": "MichMich/MMM-Toon",
+        "longname": "MMM-Toon",
+        "url": "https://github.com/MichMich/MMM-Toon"
+    },
+    {
+        "author": "SamLewis0602",
+        "desc": "Display commute travel time with current traffic conditions factored in. Can be used for driving, biking, walking, and public transit.",
+        "id": "SamLewis0602/MMM-Traffic",
+        "longname": "MMM-Traffic",
+        "url": "https://github.com/SamLewis0602/MMM-Traffic"
+    },
+    {
+        "author": "Bangee44",
+        "desc": "Display trains from your favourit departure station to any destination in Europe.",
+        "id": "Bangee44/MMM-TrainConnections",
+        "longname": "MMM-TrainConnections",
+        "url": "https://github.com/Bangee44/MMM-TrainConnections"
+    },
+    {
+        "author": "Jopyth",
+        "desc": "This module can show [Trello](https://trello.com/) cards on your mirror.",
+        "id": "Jopyth/MMM-Trello",
+        "longname": "MMM-Trello",
+        "url": "https://github.com/Jopyth/MMM-Trello"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Offline Text-To-Speech based on festival.",
+        "id": "fewieden/MMM-TTS",
+        "longname": "MMM-TTS",
+        "url": "https://github.com/fewieden/MMM-TTS"
+    },
+    {
+        "author": "Blastitt",
+        "desc": "Display your Twitter feed.",
+        "id": "Blastitt/twitControl",
+        "longname": "twitControl",
+        "url": "https://github.com/Blastitt/twitControl"
+    },
+    {
+        "author": "whyjustin",
+        "desc": "Voice control based on based on Sphinx and Alexa.",
+        "id": "whyjustin/magic-mirror-voice",
+        "longname": "magic-mirror-voice",
+        "url": "https://github.com/whyjustin/magic-mirror-voice"
+    },
+    {
+        "author": "alexyak",
+        "desc": "Voice control based on snowboy.",
+        "id": "alexyak/voicecontrol",
+        "longname": "voicecontrol",
+        "url": "https://github.com/alexyak/voicecontrol"
+    },
+    {
+        "author": "dr4ke616",
+        "desc": "Voice control based on annyang.",
+        "id": "dr4ke616/MMM-Voice-Control",
+        "longname": "MMM-Voice-Control",
+        "url": "https://github.com/dr4ke616/MMM-Voice-Control"
+    },
+    {
+        "author": "MichMich",
+        "desc": "Keeps an eye on your UI and quits app in case the UI crashes. If you combine this with the PM2 process manager, MM2 will automaticly restart after a UI failure.",
+        "id": "MichMich/MMM-WatchDog",
+        "longname": "MMM-WatchDog",
+        "url": "https://github.com/MichMich/MMM-WatchDog"
+    },
+    {
+        "author": "paphko",
+        "desc": "Display a weather diagram provided by yr.no.",
+        "id": "paphko/mmm-weatherchart",
+        "longname": "MMM-weatherchart",
+        "url": "https://github.com/paphko/mmm-weatherchart"
+    },
+    {
+        "author": "fewieden",
+        "desc": "Display Public Transport timetable of Vienna/Austria.",
+        "id": "fewieden/MMM-WienerLinien",
+        "longname": "MMM-WienerLinien",
+        "url": "https://github.com/fewieden/MMM-WienerLinien"
+    },
+    {
+        "author": "CFenner",
+        "desc": "Display the wind forecast for a location, important for surfers & sailors.",
+        "id": "CFenner/MagicMirror-Windfinder-Module",
+        "longname": "MMM-Windfinder",
+        "url": "https://github.com/CFenner/MagicMirror-Windfinder-Module"
+    },
+    {
+        "author": "Vendittelli",
+        "desc": "Get the word of the day, its definition, and origin ...",
+        "id": "SVendittelli/MMM-wordnik",
+        "longname": "MMM-wordnik",
+        "url": "https://github.com/SVendittelli/MMM-wordnik"
+    },
+    {
+        "author": "MattLugar",
+        "desc": "Weather Underground Forecast Module Retrieves forecast from Weather Underground. Also adds a percentage probability of precipitation to forecast display.",
+        "id": "MattLugar/wuforecast",
+        "longname": "wuforecast",
+        "url": "https://github.com/MattLugar/wuforecast"
+    },
+    {
+        "author": "RedNax67",
+        "desc": "Display weather based on wunderground API.",
+        "id": "RedNax67/MMM-WunderGround",
+        "longname": "MMM-WunderGround",
+        "url": "https://github.com/RedNax67/MMM-WunderGround"
+    },
+    {
+        "author": "PaViRo",
+        "desc": "Displays your Wunderlist todos on your mirror ...",
+        "id": "paviro/MMM-Wunderlist",
+        "longname": "MMM-Wunderlist",
+        "url": "https://github.com/paviro/MMM-Wunderlist"
+    },
+    {
+        "author": "hakanmhmd",
+        "desc": "Displays current stock prices of companies using YAHHO FINANCE API...",
+        "id": "hakanmhmd/MMM-Stock",
+        "longname": "MMM-Stock",
+        "url": "https://github.com/hakanmhmd/MMM-Stock"
+    },
+    {
+        "author": "erikmohn",
+        "desc": "Display weather data from weather stations available at vindsiden.no(Norway)...",
+        "id": "erikmohn/MMM-Vindsiden",
+        "longname": "MMM-Vindsiden",
+        "url": "https://github.com/erikmohn/MMM-Vindsiden"
+    }
+]

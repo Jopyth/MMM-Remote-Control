@@ -9,7 +9,7 @@
 
 Module.register("MMM-Remote-Control", {
 
-	requiresVersion: "2.0.0",
+	requiresVersion: "2.1.0",
 
 	// Default module config.
 	defaults: {
@@ -39,7 +39,6 @@ Module.register("MMM-Remote-Control", {
 			}
 		} else { 
 			if (notification === "DOM_OBJECTS_CREATED") {
-				this.sendSocketNotification("LANG", config.language);
 				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
 			}
 		}
@@ -86,21 +85,38 @@ Module.register("MMM-Remote-Control", {
 		if (notification === "BRIGHTNESS") {
 			this.setBrightness(parseInt(payload));
 		}
+		if (notification === "REFRESH" ) {
+            document.location.reload();
+		}
+		if (notification === "RESTART") {
+			setTimeout(function() {
+				document.location.reload(); console.log('Delayed REFRESH');
+			}, 60000);
+		}
+		if (notification === "SHOW_ALERT") {
+			this.sendNotification(notification, payload);
+		}
+		if (notification === "HIDE_ALERT") {
+			this.sendNotification(notification);
+		}
 		if (notification === "HIDE" || notification === "SHOW") {
 			var options = {lockString: this.identifier};
 			var modules = MM.getModules();
 			for (var i = 0; i < modules.length; i++) {
 				if (modules[i].identifier === payload.module) {
 					if (notification === "HIDE") {
+						modules[i].hide(1000, options);
+					} else {
 						if (payload.force) {
 							options.force = true;
 						}
-						modules[i].hide(1000, options);
-					} else {
 						modules[i].show(1000, options);
 					}
 				}
 			}
+		}
+		if (notification === "NOTIFICATION") {
+			this.sendNotification(payload.notification, payload.payload);
 		}
 	},
 
@@ -113,7 +129,7 @@ Module.register("MMM-Remote-Control", {
 			".dimmed": parseInt("66", 16),
 			".normal": parseInt("99", 16),
 			".bright": parseInt("ff", 16)
-		}
+		};
 
 		for (var key in defaults) {
 			var value = defaults[key] / 100 * brightness;
@@ -206,7 +222,7 @@ Module.register("MMM-Remote-Control", {
 		}
 		var newLockStrings = [];
 		for (var i = 0; i < lockStrings.length; i++) {
-			if (lockStrings[i] !== this.id) {
+			if (lockStrings[i] !== this.identifier) {
 				newLockStrings.push(lockStrings[i]);
 			}
 		}
@@ -216,13 +232,21 @@ Module.register("MMM-Remote-Control", {
 	sendCurrentData: function() {
 		var modules = MM.getModules();
 		var currentModuleData = [];
+		var skipped = 0;
 		for (var i = 0; i < modules.length; i++) {
+			if (modules[i] === undefined) {
+				skipped++;
+				continue;
+			}
+			index = i - skipped;
 			currentModuleData.push({});
-			currentModuleData[i]["hidden"] = modules[i].hidden;
-			currentModuleData[i]["lockStrings"] = this.removeOwnLockString(modules[i].lockStrings);
-			currentModuleData[i]["name"] = modules[i].name;
-			currentModuleData[i]["identifier"] = modules[i].identifier;
-			currentModuleData[i]["position"] = modules[i].data.position;
+			currentModuleData[index]["hidden"] = modules[i].hidden;
+			currentModuleData[index]["lockStrings"] = this.removeOwnLockString(modules[i].lockStrings);
+			currentModuleData[index]["name"] = modules[i].name;
+			currentModuleData[index]["identifier"] = modules[i].identifier;
+			currentModuleData[index]["position"] = modules[i].data.position;
+			currentModuleData[index]["config"] = modules[i].config;
+            currentModuleData[index]["path"] = modules[i].data.path;
 		}
 		var configData = {
 			moduleData: currentModuleData,
@@ -230,5 +254,5 @@ Module.register("MMM-Remote-Control", {
 			settingsVersion: this.settingsVersion
 		};
 		this.sendSocketNotification("CURRENT_STATUS", configData);
-	},
+	}
 });

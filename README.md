@@ -3,13 +3,22 @@
 This module for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
 Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug everytime, am I right?
-Additionally you can hide and show modules on your mirror.
+Additionally you can hide and show modules on your mirror and do other cool stuff.
 
 ![The Main Menu](.github/main.png)
 ![The Power Menu](.github/power.png)
 ![Hide and Show a Module](.github/hide_show_module.gif)
 
 ## Installation
+
+### Quick install
+
+If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer:
+```
+cd /tmp && wget -q https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/develop/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh; cd ~
+```
+
+### Manual install
 
 - (1) Clone this repository in your `MagicMirror/modules` folder:
 ```bash
@@ -26,13 +35,17 @@ git clone https://github.com/Jopyth/MMM-Remote-Control.git
 },
 ```
 
-- (3) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html).
+- (3) Add the IP addresses of devices you want to use to access the Remote Control to the `ipWhiteList` in your `config.js`.
 
-- (4) If you are not running with `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
+- (4) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html).
+
+Note: If your user does not have `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
 
 ## Update
 
 Update this module by navigating into its folder on the command line and executing this command: `git pull`.
+Alternatively you can run the `installer.sh` script again:
+```~/MagicMirror/modules/MMM-Remote-Control/installer.sh```
 
 ## Call methods from other modules
 
@@ -73,6 +86,11 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
 | SHOW | Show a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
+| REFRESH | Refresh mirror page |
+| SHOW_ALERT | Show Default Alert/Notification |
+| HIDE_ALERT | Hide Default Alert/Notification |
+| UPDATE | Update MagicMirror and any of it's modules |
+| NOTIFICATION | Send a notification to all modules (see [Notification Request](#notification-request)). |
 
 ### Format of module data response
 
@@ -88,6 +106,27 @@ The response will be in the JSON format, here is an example:
 "brightness":40,
 "settingsVersion":1
 }
+```
+
+### Notification Request
+
+To send a notification to all modules, send the following GET-parameters.
+
+| key | value |
+| --- | ----- |
+| action | `NOTIFICATION`<br>**Required** |
+| notification | The notification to send, e.g. `ARTICLE_MORE_DETAILS`, `SHOW_ALERT` or `HIDE_ALERT`.<br>**Required** |
+| payload | A stringified JSON object with the payload for the notification.<br>**Optional** if absent, an empty payload (`{}`) is assumed. |
+
+Examples:
+
+```
+?action=NOTIFICATION&notification=ARTICLE_MORE_DETAILS
+
+?action=NOTIFICATION&notification=SHOW_ALERT&payload={%22title%22:%22Alert%22,%22message%22:%22This%20is%an%20alert.%22}
+(Payload is URL-encoded form of {"title":"Alert","message":"This is an alert."})
+
+?action=NOTIFICATION&notification=HIDE_ALERT
 ```
 
 ## License
