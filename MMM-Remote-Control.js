@@ -71,15 +71,19 @@ Module.register("MMM-Remote-Control", {
 
 			var moduleData = payload.moduleData;
 			var modules = MM.getModules();
+
+			var options = {lockString: this.identifier};
+
 			for (var k = 0; k < moduleData.length; k++) {
-				for (var i = 0; i < modules.length; i++) {
-					if (modules[i].identifier === moduleData[k].identifier) {
+				modules.enumerate(function(module) {
+					if (module.identifier === moduleData[k].identifier) {
 						if (moduleData[k].hidden) {
-							modules[i].hide();
+							module.hide(0, options);
 						}
 					}
-				}
+				});
 			}
+
 			this.setBrightness(payload.brightness);
 		}
 		if (notification === "BRIGHTNESS") {
@@ -230,24 +234,22 @@ Module.register("MMM-Remote-Control", {
 	},
 
 	sendCurrentData: function() {
+		var self = this;
+
 		var modules = MM.getModules();
 		var currentModuleData = [];
-		var skipped = 0;
-		for (var i = 0; i < modules.length; i++) {
-			if (modules[i] === undefined) {
-				skipped++;
-				continue;
-			}
-			index = i - skipped;
+		var index = 0;
+		modules.enumerate(function(module) {
 			currentModuleData.push({});
-			currentModuleData[index]["hidden"] = modules[i].hidden;
-			currentModuleData[index]["lockStrings"] = this.removeOwnLockString(modules[i].lockStrings);
-			currentModuleData[index]["name"] = modules[i].name;
-			currentModuleData[index]["identifier"] = modules[i].identifier;
-			currentModuleData[index]["position"] = modules[i].data.position;
-			currentModuleData[index]["config"] = modules[i].config;
-            currentModuleData[index]["path"] = modules[i].data.path;
-		}
+			currentModuleData[index]["hidden"] = module.hidden;
+			currentModuleData[index]["lockStrings"] = self.removeOwnLockString(module.lockStrings);
+			currentModuleData[index]["name"] = module.name;
+			currentModuleData[index]["identifier"] = module.identifier;
+			currentModuleData[index]["position"] = module.data.position;
+			currentModuleData[index]["config"] = module.config;
+            currentModuleData[index]["path"] = module.data.path;
+            index++;
+		});
 		var configData = {
 			moduleData: currentModuleData,
 			brightness: this.brightness,

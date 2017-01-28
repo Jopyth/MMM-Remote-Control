@@ -174,6 +174,6 @@ echo ""
 echo "   Github : https://github.com/Jopyth/MMM-Remote-Control"
 echo "   Forum  : http://forum.magicmirror.builders"
 echo ""
-echo "Installer script finished."
+echo "Do not forget to restart your MagicMirror2 to activate the module! Installed finished."
 echo ""
 exit 0

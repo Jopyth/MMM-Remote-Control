@@ -13,20 +13,24 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 
 ### Quick install
 
-If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer:
-```
+If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer.
+The following command will download the installer into your `/tmp` folder, and execute itself:
+```bash
 cd /tmp && wget -q https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh; cd ~
 ```
 
 ### Manual install
 
-- (1) Clone this repository in your `MagicMirror/modules` folder:
+- (1) Clone this repository in your `modules` folder, and install dependencies:
 ```bash
+cd ~/MagicMirror/modules # adapt directory if you are using a different one
 git clone https://github.com/Jopyth/MMM-Remote-Control.git
+cd MMM-Remote-Control
+npm install
 ```
 
 - (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
-```javascript
+```js
 {
     module: 'MMM-Remote-Control'
     // uncomment the following line to show the URL of the remote control on the mirror
@@ -37,17 +41,51 @@ git clone https://github.com/Jopyth/MMM-Remote-Control.git
 
 - (3) Add the IP addresses of devices you want to use to access the Remote Control to the `ipWhiteList` in your `config.js`.
 
-- (4) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html).
+- (4) Restart your Magic Mirror² (i.e. `pm2 restart mm`).
+
+- (5) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
 
 Note: If your user does not have `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
 
-## Update
+### Update
 
-Update this module by navigating into its folder on the command line and executing this command: `git pull`.
-Alternatively you can run the `installer.sh` script again:
+Update this module by navigating into its folder on the command line and using `git pull`:
+
+```bash
+cd ~/MagicMirror/modules/MMM-Remote-Control # adapt directory if you are using a different one
+git pull
+npm install # install (new) dependencies
 ```
+
+Alternatively you can run the `installer.sh` script again:
+```bash
 ~/MagicMirror/modules/MMM-Remote-Control/installer.sh
 ```
+
+### Select version manually
+
+You can check out specific versions in the following way.
+First look at which versions are available:
+```bash
+cd MagicMirror/modules/MMM-Remote-Control # or wherever you installed the Mirror and the module
+git fetch # fetch all tags
+git tags # display them
+```
+
+The output should look similar to this:
+```
+v1.0.0
+v1.1.0
+v1.1.1
+v1.1.2
+```
+Then you can checkout that version with, for example `git checkout v1.0.0`, or use `git checkout master` to checkout the most recent version.
+
+## Known limitations
+
+Whenever you change the order of modules in `config.js` or add/remove modules, the indices of the modules change.
+Therefore the hidden/shown status of modules might not be correctly applied.
+If this happens, simply reconfigure and save it again.
 
 ## Call methods from other modules
 
@@ -133,8 +171,7 @@ Examples:
 
 ## License
 
-The MIT License (MIT)
-=====================
+### The MIT License (MIT)
 
 Copyright © 2016 Joseph Bethge
 
