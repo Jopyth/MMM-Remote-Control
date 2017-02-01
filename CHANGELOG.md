@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 **Note:** Since version 1.1.0 this module uses (new) dependencies, check the [Updating section in the README.md](README.md#Update).
 
+### Added
+- Swedish translation
+
 ### Changed
 - Installation process updated in [README.md](README.md#Installation)
 - Automatic installer/updater includes hint to restart [Magic Mirror²](https://github.com/MichMich/MagicMirror)
@@ -17,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Issues where lockstrings were missing
 - Modules sometimes did not show correctly in the UI as hidden or shown:
     - This is due to a bug in [Magic Mirror²](https://github.com/MichMich/MagicMirror)
-    - PR [#659](https://github.com/MichMich/MagicMirror/pull/659) to fix this was made in the project
+    - PR [#659](https://github.com/MichMich/MagicMirror/pull/659) to fix this was made in the project, will be released in the next version
 
 ## [1.1.1] - 2017-01-26
 ### Changed
