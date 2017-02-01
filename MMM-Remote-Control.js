@@ -247,8 +247,8 @@ Module.register("MMM-Remote-Control", {
 			currentModuleData[index]["identifier"] = module.identifier;
 			currentModuleData[index]["position"] = module.data.position;
 			currentModuleData[index]["config"] = module.config;
-            currentModuleData[index]["path"] = module.data.path;
-            index++;
+			currentModuleData[index]["path"] = module.data.path;
+			index++;
 		});
 		var configData = {
 			moduleData: currentModuleData,
