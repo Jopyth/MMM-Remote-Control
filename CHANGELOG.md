@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.1.2] - Unreleased
 
-**Note:** Since version 1.1.0 this module uses (new) dependencies, check the [Updating section in the README.md](README.md#Update).
+**Note:** Since version 1.1.0 this module uses (new) dependencies, check the [Updating section in the README.md](README.md#update).
 
 ### Added
 - Swedish translation
