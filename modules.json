@@ -824,5 +824,19 @@
         "id": "AdamMoses-GitHub/MMM-TwitterTrendsByPlace",
         "longname": "MMM-TwitterTrendsByPlace",
         "url": "https://github.com/AdamMoses-GitHub/MMM-TwitterTrendsByPlace"
+    },
+    {
+        "author": "Slamet PS",
+        "desc": "Displays Quran Ayah/Verse randomly",
+        "id": "slametps/MMM-RandomQuranAyah",
+        "longname": "MMM-RandomQuranAyah",
+        "url": "https://github.com/slametps/MMM-RandomQuranAyah"
+    },
+    {
+        "author": "Slamet PS",
+        "desc": "Displays prayer time (in local time) and also recite Adzan/Adhan.",
+        "id": "slametps/MMM-PrayerTime",
+        "longname": "MMM-PrayerTime",
+        "url": "https://github.com/slametps/MMM-PrayerTime"
     }
 ]
