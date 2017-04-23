@@ -1,0 +1,73 @@
+{
+    "TITLE": "Menu Magic Mirror",
+
+    "EDIT_MENU_NAME": "Sunting tampilan",
+    "SHUTDOWN_MENU_NAME": "Power",
+    "CONFIGURE_MENU_NAME": "Sunting config.js",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+
+    "BACK": "Kembali",
+
+    "BRIGHTNESS": "Kecerahan",
+
+    "REFRESHMM" : "Refresh Browser",
+    "MONITOROFF": "Matikan monitor",
+    "MONITORON": "Nyalakan monitor",
+    "MONITORTIMED": "Nyalakan monitor sebentar",
+    "RESTART": "Restart",
+    "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
+    "SHUTDOWN": "Matikan",
+
+    "SHOWALL": "Semua",
+    "HIDEALL": "Semua",
+
+    "ADD_MODULE": "Tambah modul",
+    "SEARCH": "Cari &hellip;",
+    "INSTALLED": "Terinstal",
+    "DOWNLOAD": "Unduh",
+    "DOWNLOADING": "Sedang mengunduh &hellip;",
+    "CODE_LINK": "Lihat kode",
+    "BY": "oleh",
+    "ADD_THIS": "Tambahkan modul ini",
+    "HELP": "Lihat readme",
+    "MENU": "Menu",
+    "RESET": "Reset",
+    "NO_HEADER": "(tidak ada judul)",
+    "NO_POSITION": "(tersembunyi)",
+    "ADD_ENTRY": "Tambah entri",
+    "NEW_ENTRY_NAME": "(masukkan nama entri baru)",
+    "DELETE_ENTRY": "Hapus",
+    "UNSAVED_CHANGES": "Perubahan tidak tersimpan",
+    "OK": "Ok",
+    "DISCARD": "Abaikan perubahan",
+
+    "NO_MODULES_LOADED": "Tidak ada modul yang dimuat.",
+    "SAVE": "Simpan",
+
+    "EXPERIMENTAL": "Ini adalah fitur percobaan, dapat merusak file config Anda. Backup config Anda terlebih dahulu, untuk berjaga-jaga!<br>Yakin untuk lanjut?",
+    "PANIC": "Gak usah dipikirin.",
+    "NO_RISK_NO_FUN": "Tanpa resiko tidak ada kesenangan!",
+
+    "LOAD_ERROR": "Jika Anda melihat pesan ini, telah terjadi kesalahan ketika memuat file javascript. Silakan kunjungi link berikut dan cek masalah ini di browser Anda:",
+    "ISSUE_LINK": "Halaman isu Github",
+
+    "DONE": "Selesai.",
+    "ERROR": "Error!",
+    "LOADING": "Memuat &hellip;",
+
+	"UPDATE_MENU_NAME" : "Pembaharuan",
+	"UPDATEMM" : "Perbarui MagicMirror<sup>2</sup>",
+    "UPDATE_AVAILABLE" : "Pembaharuan tersedia",
+
+	"ALERT_MENU_NAME" : "Peringatan",
+	"SENDALERT" : "Kirim",
+	"HIDEALERT" : "Sembunyikan",
+    "FORM_TYPE" : "Tipe:",
+    "FORM_ALERT" : "Peringatan",
+    "FORM_NOTIFICATION" : "Pemberitahuan",
+    "FORM_TITLE" : "Judul:",
+    "FORM_TITLE_PLACEHOLDER" : "Tuliskan judul...",
+    "FORM_MESSAGE" : "Pesan:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Tuliskan pesan...",
+    "FORM_SECONDS" : "Detik:"
+}
