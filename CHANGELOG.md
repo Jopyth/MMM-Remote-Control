@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.1.3] - 2017-04-23
 
 ### Added
 - Portuguese translation
+- Indonesian translation
+- Support for iOS Icon and Webapp
+
+### Changed
+- Installation no longer needs a temporary file
+
+### Fixed
+- Icon paths adapted to changes in [Magic Mirror²](https://github.com/MichMich/MagicMirror) 2.1.0
 
 ## [1.1.2] - 2017-02-01
 
