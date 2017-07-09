@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Dutch translation
+
 ## [1.1.3] - 2017-04-23
 
 ### Added
