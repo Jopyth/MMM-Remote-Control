@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Dutch translation
+- Updating a module tries to install dependencies with `npm install`
+
+### Fixed
+- Internal save file format and mistakenly hiding modules which were hidden by other modules
 
 ## [1.1.3] - 2017-04-23
 
