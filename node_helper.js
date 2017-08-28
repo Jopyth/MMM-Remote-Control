@@ -558,7 +558,7 @@ module.exports = NodeHelper.create({
 
 	executeQuery: function(query, res) {
 		var self = this;
-		var opts = {timeout: 8000};
+		var opts = {timeout: 15000};
 
 		if (query.action === "SHUTDOWN")
 		{
@@ -572,9 +572,23 @@ module.exports = NodeHelper.create({
 		}
 		if (query.action === "RESTART")
 		{
-			exec("pm2 restart mm", opts, function(error, stdout, stderr){
-				self.sendSocketNotification("RESTART");
-				self.checkForExecError(error, stdout, stderr, res);
+			exec("pm2 ls", opts, function(error, stdout, stderr) {
+				if (stdout.indexOf(" MagicMirror ") > -1)
+				{
+					exec("pm2 restart MagicMirror", opts, function(error, stdout, stderr) {
+						self.sendSocketNotification("RESTART");
+						self.checkForExecError(error, stdout, stderr, res);
+					});
+					return;
+				}
+				if (stdout.indexOf(" mm ") > -1)
+				{
+					exec("pm2 restart MagicMirror", opts, function(error, stdout, stderr) {
+						self.sendSocketNotification("RESTART");
+						self.checkForExecError(error, stdout, stderr, res);
+					});
+					return;
+				}
 			});
 			return true;
 		}
