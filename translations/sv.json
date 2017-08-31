@@ -48,6 +48,9 @@
     "PANIC": "Nej, strunta i det.",
     "NO_RISK_NO_FUN": "Ja, kör på! Ingen risk, inget kul!",
 
+    "CONFIRM_SHUTDOWN": "Systemet stängs av.",
+    "CONFIRM_RESTART": "Systemet startas om.",
+
     "LOAD_ERROR": "Om du ser detta meddelande så har något gott fel när javascriptfilen laddades. Vänligen gå till följande länk och se om det är ett känt problem med din Webbläsare:",
     "ISSUE_LINK": "Githubs ärendesida",
 

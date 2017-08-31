@@ -48,6 +48,9 @@
     "PANIC": "Gak usah dipikirin.",
     "NO_RISK_NO_FUN": "Tanpa resiko tidak ada kesenangan!",
 
+    "CONFIRM_SHUTDOWN": "Sistem akan matikan.",
+    "CONFIRM_RESTART": "Sistem akan restart.",
+
     "LOAD_ERROR": "Jika Anda melihat pesan ini, telah terjadi kesalahan ketika memuat file javascript. Silakan kunjungi link berikut dan cek masalah ini di browser Anda:",
     "ISSUE_LINK": "Halaman isu Github",
 
