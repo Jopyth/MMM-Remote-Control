@@ -40,6 +40,7 @@
     "UNSAVED_CHANGES": "Perubahan tidak tersimpan",
     "OK": "Ok",
     "DISCARD": "Abaikan perubahan",
+    "CANCEL": "Membatalkan",
 
     "NO_MODULES_LOADED": "Tidak ada modul yang dimuat.",
     "SAVE": "Simpan",

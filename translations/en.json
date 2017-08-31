@@ -40,6 +40,7 @@
     "UNSAVED_CHANGES": "Unsaved changes",
     "OK": "Ok",
     "DISCARD": "Discard changes",
+    "CANCEL": "Cancel",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",
