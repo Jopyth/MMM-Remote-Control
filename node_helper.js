@@ -255,7 +255,7 @@ module.exports = NodeHelper.create({
 			// module.configDefault = Module.configDefaults[module.longname];
 		} catch (e) {
 			if (e.code == "ENOENT") {
-				console.error("ERROR! Could not find main module js file.");
+				console.error("ERROR! Could not find main module js file for " + module.longname);
 			} else if (e instanceof ReferenceError || e instanceof SyntaxError) {
 				console.error("ERROR! Could not validate main module js file.");
 				console.error(e);
@@ -558,7 +558,7 @@ module.exports = NodeHelper.create({
 
 	executeQuery: function(query, res) {
 		var self = this;
-		var opts = {timeout: 8000};
+		var opts = {timeout: 15000};
 
 		if (query.action === "SHUTDOWN")
 		{
@@ -572,9 +572,23 @@ module.exports = NodeHelper.create({
 		}
 		if (query.action === "RESTART")
 		{
-			exec("pm2 restart mm", opts, function(error, stdout, stderr){
-				self.sendSocketNotification("RESTART");
-				self.checkForExecError(error, stdout, stderr, res);
+			exec("pm2 ls", opts, function(error, stdout, stderr) {
+				if (stdout.indexOf(" MagicMirror ") > -1)
+				{
+					exec("pm2 restart MagicMirror", opts, function(error, stdout, stderr) {
+						self.sendSocketNotification("RESTART");
+						self.checkForExecError(error, stdout, stderr, res);
+					});
+					return;
+				}
+				if (stdout.indexOf(" mm ") > -1)
+				{
+					exec("pm2 restart MagicMirror", opts, function(error, stdout, stderr) {
+						self.sendSocketNotification("RESTART");
+						self.checkForExecError(error, stdout, stderr, res);
+					});
+					return;
+				}
 			});
 			return true;
 		}
@@ -740,13 +754,19 @@ module.exports = NodeHelper.create({
 			}
 			if (result.summary.changes)
 			{
-				if (res) {
-					res.send({"status": "success", "code": "restart", "info": name + " updated."});
-				}
+				exec("npm install", {cwd: path, timeout: 120000}, function(error, stdout, stderr)
+				{
+					if (error) {
+						console.log(error);
+						if (res) { res.send({"status": "error", "stdout": stdout, "stderr": stderr}); }
+					} else {
+						// success part
+						self.readModuleData();
+						if (res) { res.send({"status": "success", "code": "restart", "info": name + " updated."}); }
+					}
+				});
 			} else {
-				if (res) {
-					res.send({"status": "success", "code": "up-to-date", "info": name + " already up to date."});
-				}
+				if (res) { res.send({"status": "success", "code": "up-to-date", "info": name + " already up to date."}); }
 			}
 		});
 	},
@@ -773,7 +793,20 @@ module.exports = NodeHelper.create({
 	},
 
 	saveDefaultSettings: function() {
-		var text = JSON.stringify(this.configData);
+		var moduleData = this.configData.moduleData;
+		var simpleModuleData = [];
+		for (var k = 0; k < moduleData.length; k++) {
+			simpleModuleData.push({});
+			simpleModuleData[k].identifier = moduleData[k].identifier;
+			simpleModuleData[k].hidden = moduleData[k].hidden;
+			simpleModuleData[k].lockStrings = moduleData[k].lockStrings;
+		}
+
+		var text = JSON.stringify({
+			moduleData: simpleModuleData,
+			brightness: this.configData.brightness,
+			settingsVersion: this.configData.settingsVersion
+		});
 
 		fs.writeFile(path.resolve(__dirname + "/settings.json"), text, function(err) {
 			if (err) {

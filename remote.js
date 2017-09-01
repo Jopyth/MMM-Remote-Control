@@ -455,8 +455,13 @@ var Remote = {
         var hiddenStatus = "toggled-on";
         if (data.hidden) {
             hiddenStatus = "toggled-off";
-            if (data.lockStrings && data.lockStrings.length > 0) {
+            for (var i = 0; i < data.lockStrings.length; i++) {
+                if (data.lockStrings[i].indexOf("MMM-Remote-Control") >= 0)
+                {
+                    continue;
+                }
                 hiddenStatus += " external-locked";
+                break;
             }
         }
         return hiddenStatus;
