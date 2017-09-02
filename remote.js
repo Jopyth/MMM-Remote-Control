@@ -451,20 +451,24 @@ var Remote = {
         return string.replace("_", " ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     },
 
-    getHiddenStatus: function(data) {
-        var hiddenStatus = "toggled-on";
+    getVisibilityStatus: function(data) {
+        var status = "toggled-on";
+        var modules = [];
         if (data.hidden) {
-            hiddenStatus = "toggled-off";
+            status = "toggled-off";
             for (var i = 0; i < data.lockStrings.length; i++) {
                 if (data.lockStrings[i].indexOf("MMM-Remote-Control") >= 0)
                 {
                     continue;
                 }
-                hiddenStatus += " external-locked";
-                break;
+                modules.push(data.lockStrings[i]);
+                if (modules.length == 1)
+                {
+                    status += " external-locked";
+                }
             }
         }
-        return hiddenStatus;
+        return {status: status, modules: modules.join(", ")};
     },
 
     addToggleElements: function(parent) {
@@ -509,9 +513,10 @@ var Remote = {
                     // skip invisible modules
                     continue;
                 }
+                var visibilityStatus = self.getVisibilityStatus(moduleData[i]);
 
                 var moduleBox = document.createElement("div");
-                moduleBox.className = "button module-line " + self.getHiddenStatus(moduleData[i]);
+                moduleBox.className = "button module-line " + visibilityStatus.status;
                 moduleBox.id = moduleData[i].identifier;
 
                 self.addToggleElements(moduleBox);
@@ -528,15 +533,15 @@ var Remote = {
                         if (self.hasClass(event.currentTarget, "external-locked")) {
                             var wrapper = document.createElement("div");
                             var warning = document.createElement("span");
-                            warning.innerHTML = "This module was hidden by another module, it can not be shown.";
+                            warning.innerHTML = self.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
                             wrapper.appendChild(warning);
 
-                            var ok = self.createSymbolText("fa fa-check-circle", "Ok.", function () {
+                            var ok = self.createSymbolText("fa fa-check-circle", self.translate("OK"), function () {
                                 self.setStatus("none");
                             });
                             wrapper.appendChild(ok);
 
-                            var force = self.createSymbolText("fa fa-warning", "Do it anyway.", function(target) {
+                            var force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), function(target) {
                                 return function () {
                                     target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
                                     self.showModule(target.id, true);
