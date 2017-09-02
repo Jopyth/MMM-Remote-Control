@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Dutch translation
 - Updating a module tries to install dependencies with `npm install`
+- Module identifier is shown if a module is locked with lock strings
 
 ### Fixed
 - Internal save file format and mistakenly hiding modules which were hidden by other modules
+
+### Changed
+- German translation for power menu changed from "Ausschalten" to "Energieoptionen"
 
 ## [1.1.3] - 2017-04-23
 
