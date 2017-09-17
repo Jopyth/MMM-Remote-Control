@@ -502,6 +502,44 @@ var Remote = {
         });
     },
 
+    makeToggleButton: function(moduleBox, visibilityStatus)
+    {
+        var self = this;
+
+        self.loadToggleButton(moduleBox, function (toggledOn, event) {
+            if (toggledOn) {
+                if (self.hasClass(event.currentTarget, "external-locked")) {
+                    var wrapper = document.createElement("div");
+                    var warning = document.createElement("span");
+                    warning.innerHTML = self.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
+                    wrapper.appendChild(warning);
+
+                    var ok = self.createSymbolText("fa fa-check-circle", self.translate("OK"), function () {
+                        self.setStatus("none");
+                    });
+                    wrapper.appendChild(ok);
+
+                    var force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), function(target) {
+                        return function () {
+                            target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
+                            self.showModule(target.id, true);
+                            self.setStatus("none");
+                        }
+                    }(event.currentTarget));
+                    wrapper.appendChild(force);
+
+                    self.setStatus("error", false, wrapper);
+                } else {
+                    event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
+                    self.showModule(event.currentTarget.id);
+                }
+            } else {
+                event.currentTarget.className = event.currentTarget.className.replace("toggled-on", "toggled-off");
+                self.hideModule(event.currentTarget.id);
+            }
+        });
+    },
+
     loadVisibleModules: function() {
         var self = this;
 
@@ -528,38 +566,7 @@ var Remote = {
 
                 parent.appendChild(moduleBox);
 
-                self.loadToggleButton(moduleBox, function (toggledOn, event) {
-                    if (toggledOn) {
-                        if (self.hasClass(event.currentTarget, "external-locked")) {
-                            var wrapper = document.createElement("div");
-                            var warning = document.createElement("span");
-                            warning.innerHTML = self.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
-                            wrapper.appendChild(warning);
-
-                            var ok = self.createSymbolText("fa fa-check-circle", self.translate("OK"), function () {
-                                self.setStatus("none");
-                            });
-                            wrapper.appendChild(ok);
-
-                            var force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), function(target) {
-                                return function () {
-                                    target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
-                                    self.showModule(target.id, true);
-                                    self.setStatus("none");
-                                }
-                            }(event.currentTarget));
-                            wrapper.appendChild(force);
-
-                            self.setStatus("error", false, wrapper);
-                        } else {
-                            event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
-                            self.showModule(event.currentTarget.id);
-                        }
-                    } else {
-                        event.currentTarget.className = event.currentTarget.className.replace("toggled-on", "toggled-off");
-                        self.hideModule(event.currentTarget.id);
-                    }
-                });
+                self.makeToggleButton(moduleBox, visibilityStatus);
             }
         });
     },
