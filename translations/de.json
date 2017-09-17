@@ -39,6 +39,7 @@
     "UNSAVED_CHANGES": "Nicht gespeicherte &Auml;nderungen",
     "OK": "Ok",
     "DISCARD": "Verwerfen",
+    "CANCEL": "Abbrechen",
 
     "NO_MODULES_LOADED": "Keine Module geladen.",
     "SAVE": "Speichern",
@@ -46,6 +47,9 @@
     "EXPERIMENTAL": "Dies ist ein experimentelles Feature, es k&ouml;nnte Probleme verursachen. Mache ein Backup von deiner config!<br>Weiter machen?",
     "PANIC": "Lieber nicht.",
     "NO_RISK_NO_FUN": "Ich liebe das Risiko!",
+
+    "CONFIRM_SHUTDOWN": "Das System wird ausgeschaltet.",
+    "CONFIRM_RESTART": "Das System wird neu starten.",
 
     "LOAD_ERROR": "Wenn du diese Nachricht lesen kannst, konnte die javascript Datei nicht korrekt geladen werden. Bitte folge dem Link, und sehe nach, ob dies ein bekanntes Problem mit deinem Browser ist:",
     "ISSUE_LINK": "Github Issue Seite",

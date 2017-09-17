@@ -1386,10 +1386,44 @@ var buttons = {
 
     // power menu buttons
     "shut-down-button": function() {
-        Remote.getWithStatus("action=SHUTDOWN");
+        var self = Remote;
+
+        var wrapper = document.createElement("div");
+        var text = document.createElement("span");
+        text.innerHTML = self.translate("CONFIRM_SHUTDOWN");
+        wrapper.appendChild(text);
+
+        var ok = self.createSymbolText("fa fa-power-off", self.translate("SHUTDOWN"), function () {
+            Remote.getWithStatus("action=SHUTDOWN");
+        });
+        wrapper.appendChild(ok);
+
+        var cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), function () {
+            self.setStatus("none");
+        });
+        wrapper.appendChild(cancel);
+
+        self.setStatus(false, false, wrapper);
     },
     "restart-button": function() {
-        Remote.getWithStatus("action=REBOOT");
+        var self = Remote;
+
+        var wrapper = document.createElement("div");
+        var text = document.createElement("span");
+        text.innerHTML = self.translate("CONFIRM_RESTART");
+        wrapper.appendChild(text);
+
+        var ok = self.createSymbolText("fa fa-refresh", self.translate("RESTART"), function () {
+                Remote.getWithStatus("action=REBOOT");
+        });
+        wrapper.appendChild(ok);
+
+        var cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), function () {
+            self.setStatus("none");
+        });
+        wrapper.appendChild(cancel);
+
+        self.setStatus(false, false, wrapper);
     },
     "restart-mm-button": function() {
         Remote.getWithStatus("action=RESTART");

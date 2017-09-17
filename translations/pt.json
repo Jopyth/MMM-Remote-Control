@@ -40,6 +40,7 @@
     "UNSAVED_CHANGES": "Alterações não guardadas",
     "OK": "Ok",
     "DISCARD": "Cancelar alterações",
+    "CANCEL": "Cancelar",
 
     "NO_MODULES_LOADED": "Nenhum módulo carregado.",
     "SAVE": "Guardar",
@@ -47,6 +48,9 @@
     "EXPERIMENTAL": "Esta é uma função experimental e pode corromper o seu ficheiro de configuração. Faça backup da sua configuração por precaução!<br>Deseja continuar?",
     "PANIC": "Deixa lá.",
     "NO_RISK_NO_FUN": "Quem não arrisca, não petisca!",
+
+    "CONFIRM_SHUTDOWN": "O sistema irá desligar.",
+    "CONFIRM_RESTART": "O sistema irá reiniciar.",
 
     "LOAD_ERROR": "Ocorreu um erro ao ler o seu ficheiro. Por favor, visite este website e veja se o caso aplica-se a si.",
     "ISSUE_LINK": "Página do problema no Github",

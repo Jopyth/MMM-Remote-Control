@@ -40,6 +40,7 @@
     "UNSAVED_CHANGES": "Onopgeslagen wijzigingen",
     "OK": "Ok",
     "DISCARD": "Wijzigingen ongedaan maken",
+    "CANCEL": "Annuleren",
 
     "NO_MODULES_LOADED": "Geen module geladen.",
     "SAVE": "Opslaan",
@@ -47,6 +48,9 @@
     "EXPERIMENTAL": "Dit is een experimentele feature, het kan je configuratie bestand onleesbaar maken. Sla voor de zekerheid eerst je configuratie op!<br>Weet je zeker dat je wilt doorgaan?",
     "PANIC": "Laat maar.",
     "NO_RISK_NO_FUN": "No guts, no glory!",
+
+    "CONFIRM_SHUTDOWN": "Het systeem wordt uitgeschakeld.",
+    "CONFIRM_RESTART": "Het systeem wordt opnieuw gestart.",
 
     "LOAD_ERROR": "Wanneer je dit bericht ziet, dan is er een fout opgetreden bij het laden van het javascript bestand. Ga naar de volgende link en controlleer of dit een bekend probleem is het de browser die je gebruikt:",
     "ISSUE_LINK": "Github issue pagina",

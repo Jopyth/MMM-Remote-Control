@@ -40,6 +40,7 @@
     "UNSAVED_CHANGES": "Osparade ändringar",
     "OK": "Ok",
     "DISCARD": "Spara inte ändringar",
+    "CANCEL": "Avbryt",
 
     "NO_MODULES_LOADED": "Ingen modul laddad.",
     "SAVE": "Spara",
@@ -47,6 +48,9 @@
     "EXPERIMENTAL": "Detta är en experimentell funktion, den skulle kunna förstöra din konfigfil. Se till du har en kopia på din konfigfil innan du går vidare, för att vara på säkra sidan!<br>Vill du fortsätta?",
     "PANIC": "Nej, strunta i det.",
     "NO_RISK_NO_FUN": "Ja, kör på! Ingen risk, inget kul!",
+
+    "CONFIRM_SHUTDOWN": "Systemet stängs av.",
+    "CONFIRM_RESTART": "Systemet startas om.",
 
     "LOAD_ERROR": "Om du ser detta meddelande så har något gott fel när javascriptfilen laddades. Vänligen gå till följande länk och se om det är ett känt problem med din Webbläsare:",
     "ISSUE_LINK": "Githubs ärendesida",

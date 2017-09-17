@@ -40,6 +40,7 @@
     "UNSAVED_CHANGES": "Unsaved changes",
     "OK": "Ok",
     "DISCARD": "Discard changes",
+    "CANCEL": "Cancel",
 
     "NO_MODULES_LOADED": "No module loaded.",
     "SAVE": "Save",
@@ -47,6 +48,9 @@
     "EXPERIMENTAL": "This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!<br>Do you want to continue?",
     "PANIC": "Never mind.",
     "NO_RISK_NO_FUN": "No risk no fun!",
+
+    "CONFIRM_SHUTDOWN": "The system will shut down.",
+    "CONFIRM_RESTART": "The system will restart.",
 
     "LOAD_ERROR": "If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
     "ISSUE_LINK": "Github issue page",
