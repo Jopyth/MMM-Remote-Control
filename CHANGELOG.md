@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Dutch translation
 - Updating a module tries to install dependencies with `npm install`
 - Module identifier is shown if a module is locked with lock strings
-- Confirmation Window before restart and shutdown
+- Confirmation dialog before restart and shutdown
 
 ### Fixed
 - Internal save file format and mistakenly hiding modules which were hidden by other modules
