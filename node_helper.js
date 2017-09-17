@@ -847,7 +847,7 @@ module.exports = NodeHelper.create({
 				return;
 			}
 			else {
-				self.translation = JSON.parse(data.toString());
+				self.translation = Object.assign({}, self.translation, JSON.parse(data.toString()));
 			}
 		});
 	},
