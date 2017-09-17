@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.1.4] - 2017-09-17
 
 ### Added
 - Dutch translation
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Internal save file format and mistakenly hiding modules which were hidden by other modules
+- Restart should work for new installations
 
 ### Changed
 - German translation for power menu changed from "Ausschalten" to "Energieoptionen"

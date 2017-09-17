@@ -579,18 +579,18 @@ module.exports = NodeHelper.create({
 						self.sendSocketNotification("RESTART");
 						self.checkForExecError(error, stdout, stderr, res);
 					});
-					return;
+					return true;
 				}
 				if (stdout.indexOf(" mm ") > -1)
 				{
-					exec("pm2 restart MagicMirror", opts, function(error, stdout, stderr) {
+					exec("pm2 restart mm", opts, function(error, stdout, stderr) {
 						self.sendSocketNotification("RESTART");
 						self.checkForExecError(error, stdout, stderr, res);
 					});
-					return;
+					return true;
 				}
+				return false;
 			});
-			return true;
 		}
 		if (query.action === "MONITORON")
 		{
