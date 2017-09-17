@@ -579,7 +579,7 @@ module.exports = NodeHelper.create({
 						self.sendSocketNotification("RESTART");
 						self.checkForExecError(error, stdout, stderr, res);
 					});
-					return true;
+					return;
 				}
 				if (stdout.indexOf(" mm ") > -1)
 				{
@@ -587,10 +587,11 @@ module.exports = NodeHelper.create({
 						self.sendSocketNotification("RESTART");
 						self.checkForExecError(error, stdout, stderr, res);
 					});
-					return true;
+					return;
 				}
-				return false;
+				if (res) { res.send({"status": "error", "reason": "unknown", "info": error}); }
 			});
+			return true;
 		}
 		if (query.action === "MONITORON")
 		{
