@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Available modules getting from Repository([MagicMirror Wiki page](https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules))
+
 ## [1.1.4] - 2017-09-17
 
 ### Added
