@@ -170,7 +170,6 @@ module.exports = NodeHelper.create({
 					}
 					modules.push(module);
 				}
-				console.log("AAA", modules.length)
 				callback(null, modules);
 			})
 		}).on("error", function(e) {
