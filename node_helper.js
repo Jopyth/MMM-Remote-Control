@@ -14,6 +14,9 @@ const os = require("os");
 const simpleGit = require("simple-git");
 const bodyParser = require("body-parser");
 
+const https = require("https");
+const repository = "https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules"
+
 var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodules.js"));
 
 Module = {
@@ -140,12 +143,45 @@ module.exports = NodeHelper.create({
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
+	/*
+	 * readModulesFromRepository
+	 * Read modules from https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules
+	 * added by eouia
+	 *
+	 */
+	readModulesFromRepository: function(callback) {
+		var modules = [];
+		var body = "";
+		https.get(repository, function(res) {
+			res.setEncoding("utf8");
+			res.on("data", function(chunk) {
+				body += chunk;
+			});
+			res.on("end", function() {
+				var pattern = /<tr>\s<td.*><a href="(.*)">(.*)<\/a><\/td>\s<td.*>(.*)<\/td>\s<td[^>]*>(.*)<\/td>\s<\/tr>/gm;
+				var result;
+				while ((result = pattern.exec(body)) !== null) {
+					var module = {
+						url: result[1],
+						longname: result[2],
+						author: result[3],
+						desc: result[4],
+						id: result[3] + "/" + result[2],
+					}
+					modules.push(module);
+				}
+				callback(null, modules);
+			})
+		}).on("error", function(e) {
+			console.log("Repository reading error: " + e.message);
+			callback(e);
+		});
+	 },
+
 	readModuleData: function() {
 		var self = this;
-
-		fs.readFile(path.resolve(__dirname + "/modules.json"), function(err, data) {
-			self.modulesAvailable = JSON.parse(data.toString());
-
+		this.readModulesFromRepository(function(err, data) {
+			self.modulesAvailable = data;
 			for (var i = 0; i < self.modulesAvailable.length; i++) {
 				self.modulesAvailable[i].name = self.formatName(self.modulesAvailable[i].longname);
 				self.modulesAvailable[i].isDefaultModule = false;
@@ -209,7 +245,7 @@ module.exports = NodeHelper.create({
 					currentModule = newModule;
 				}
 				self.loadModuleDefaultConfig(currentModule, modulePath);
-				
+
 				// check for available updates
 				var stat;
 				try {
@@ -434,7 +470,7 @@ module.exports = NodeHelper.create({
 					if (!simpleIdentifier.test(prop)) {
 						leftHand = "\"" + prop + "\"";
 					}
-					string.push(leftHand + ": " + this.convertToText(obj[prop], indentation + 1));      
+					string.push(leftHand + ": " + this.convertToText(obj[prop], indentation + 1));
 				}
 			};
 			return "{" + inl + string.join("," + inl) + nl + "}";
