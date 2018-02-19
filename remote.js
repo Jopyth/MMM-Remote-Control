@@ -1467,7 +1467,7 @@ var buttons = {
 
     // update Menu
     "update-mm-button": function () {
-        Remote.getWithStatus("action=UPDATE");
+        Remote.updateModule(undefined);
     },
 
     // alert menu
