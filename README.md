@@ -132,7 +132,7 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | UPDATE | Update MagicMirror and any of it's modules |
 | NOTIFICATION | Send a notification to all modules (see [Notification Request](#notification-request)). |
 | GLANCE_ON | Activate a glance for a module or alias with the identifier specified by `module` and an optional `time` (requires [MMM-Glance](https://github.com/eouia/MMM-Glance))|
-| GLANCE_OFF | Deactivate all glances and shows the default screen (requires [MMM-Glance](https://github.com/eouia/MMM-Glance))|
+| GLANCE_OFF | Deactivate all glances and show the default screen (requires [MMM-Glance](https://github.com/eouia/MMM-Glance))|
 
 ### Format of module data response
 
