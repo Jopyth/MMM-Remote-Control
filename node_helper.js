@@ -614,7 +614,7 @@ module.exports = NodeHelper.create({
 		}
 		if (query.action === "GLANCE_ON" || query.action === "GLANCE_OFF")
 		{
-			var payload = { name: query.name, time: query.time || 10000};
+			var payload = { name: query.module, time: query.time || 10000};
 			self.sendSocketNotification(query.action, payload);
 			if (res) { res.send({"status": "success"}); }
 			return true;
