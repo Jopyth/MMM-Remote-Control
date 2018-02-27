@@ -209,7 +209,6 @@ module.exports = NodeHelper.create({
 					currentModule = newModule;
 				}
 				self.loadModuleDefaultConfig(currentModule, modulePath);
-				
 				// check for available updates
 				var stat;
 				try {
@@ -434,7 +433,7 @@ module.exports = NodeHelper.create({
 					if (!simpleIdentifier.test(prop)) {
 						leftHand = "\"" + prop + "\"";
 					}
-					string.push(leftHand + ": " + this.convertToText(obj[prop], indentation + 1));      
+					string.push(leftHand + ": " + this.convertToText(obj[prop], indentation + 1));
 				}
 			};
 			return "{" + inl + string.join("," + inl) + nl + "}";
@@ -611,6 +610,13 @@ module.exports = NodeHelper.create({
 				payload.force = true;
 			}
 			self.sendSocketNotification(query.action, payload);
+			return true;
+		}
+		if (query.action === "GLANCE_ON" || query.action === "GLANCE_OFF")
+		{
+			var payload = { name: query.name, time: query.time || 10000};
+			self.sendSocketNotification(query.action, payload);
+			if (res) { res.send({"status": "success"}); }
 			return true;
 		}
 		if (query.action === "BRIGHTNESS")

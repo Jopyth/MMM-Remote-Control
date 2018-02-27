@@ -35,9 +35,9 @@ Module.register("MMM-Remote-Control", {
 		if (sender) {
 			Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
 			if (notification === "REMOTE_ACTION") {
-				this.sendSocketNotification(notification, payload);	
+				this.sendSocketNotification(notification, payload);
 			}
-		} else { 
+		} else {
 			if (notification === "DOM_OBJECTS_CREATED") {
 				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
 			}
@@ -128,6 +128,9 @@ Module.register("MMM-Remote-Control", {
 		}
 		if (notification === "NOTIFICATION") {
 			this.sendNotification(payload.notification, payload.payload);
+		}
+		if (notification === "GLANCE_ON" || notification === "GLANCE_OFF") {
+			this.sendNotification(notification, payload);
 		}
 	},
 
