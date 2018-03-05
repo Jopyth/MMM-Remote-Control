@@ -1,0 +1,80 @@
+{
+    "TITLE": "Magic Mirror Menu",
+
+    "EDIT_MENU_NAME": "Edit view",
+    "SHUTDOWN_MENU_NAME": "Power",
+    "CONFIGURE_MENU_NAME": "Edit config.js",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+
+    "BACK": "Back",
+
+    "BRIGHTNESS": "Luminositer",
+
+    "REFRESHMM" : "Recharger l'affichage",
+    "MONITOROFF": "Eteindre le miroire",
+    "MONITORON": "Allumer le mirroire",
+    "MONITORTIMED": "Turn monitor ON briefly",
+    "RESTART": "Redemarrer",
+    "RESTARTMM": "Redemarrer MagicMirror<sup>2</sup>",
+    "SHUTDOWN": "Eteindre",
+
+    "SHOWALL": "Tour voir",
+    "HIDEALL": "Tout cacher",
+
+    "ADD_MODULE": "Ajouter un module",
+    "SEARCH": "Rechercher &hellip;",
+    "INSTALLED": "Installer",
+    "DOWNLOAD": "Telecharger",
+    "DOWNLOADING": "Telechargements &hellip;",
+    "CODE_LINK": "Voir le code",
+    "BY": "par",
+    "ADD_THIS": "Ajouter ce module",
+    "HELP": "Voir le readme",
+    "MENU": "Menu",
+    "RESET": "Reinitialiser",
+    "NO_HEADER": "(no header)",
+    "NO_POSITION": "(invisible)",
+    "ADD_ENTRY": "Ajouter une entrée",
+    "NEW_ENTRY_NAME": "(enter name of new entry)",
+    "DELETE_ENTRY": "Supprimer",
+    "UNSAVED_CHANGES": "Changements non sauvegarder",
+    "OK": "Ok",
+    "DISCARD": "Ignorer les changements",
+    "CANCEL": "Annuler",
+
+    "NO_MODULES_LOADED": "Aucun module charger.",
+    "SAVE": "Enregistrer",
+
+    "EXPERIMENTAL": "This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!<br>Do you want to continue?",
+    "PANIC": "Never mind.",
+    "NO_RISK_NO_FUN": "No risk no fun!",
+
+    "CONFIRM_SHUTDOWN": "The system will shut down.",
+    "CONFIRM_RESTART": "The system will restart.",
+
+    "LOAD_ERROR": "If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
+    "ISSUE_LINK": "Github issue page",
+
+    "DONE": "Fait.",
+    "ERROR": "Erreur!",
+    "LOADING": "Chargement &hellip;",
+
+    "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
+    "FORCE_SHOW": "Do it anyway.",
+
+    "UPDATE_MENU_NAME" : "Updates",
+    "UPDATEMM" : "Update MagicMirror<sup>2</sup>",
+    "UPDATE_AVAILABLE" : "Update available",
+
+    "ALERT_MENU_NAME" : "Alert",
+    "SENDALERT" : "Send",
+    "HIDEALERT" : "Hide",
+    "FORM_TYPE" : "Type:",
+    "FORM_ALERT" : "Alert",
+    "FORM_NOTIFICATION" : "Notification",
+    "FORM_TITLE" : "Title:",
+    "FORM_TITLE_PLACEHOLDER" : "Enter title...",
+    "FORM_MESSAGE" : "Message:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Enter message...",
+    "FORM_SECONDS" : "Seconds:"
+}
