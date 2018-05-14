@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - French translation
 
 ### Fixed
+- Updated documentation to new MagicMirror version
 - Fix error on updating MagicMirror
 
 ## [1.1.4] - 2017-09-17

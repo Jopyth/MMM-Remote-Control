@@ -39,9 +39,20 @@ npm install
 },
 ```
 
-- (3) Add the IP addresses of devices you want to use to access the Remote Control to the `ipWhiteList` in your `config.js`.
+- (3) For security reasons, the MagicMirror (and therefore the Remote Control) is *not* reachable externally.
+To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MichMich/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
+For example change `address` to `0.0.0.0` and add two allowed devices with IP-Adresses `192.168.0.42` and `192.168.0.50`:
+```
+    address : '0.0.0.0',
+    port: 8080,
+    ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.42", "::ffff:192.168.0.50"],"
+```
+You can also add multiple devices in an IP range (e.g. all devices with `192.168.0.X`):
+```
+    ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.1/120", "192.168.0.1/24"],
+```
 
-- (4) Restart your Magic Mirror² (i.e. `pm2 restart mm`).
+- (4) Restart your Magic Mirror² (i.e. `pm2 restart MagicMirror`).
 
 - (5) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
 
