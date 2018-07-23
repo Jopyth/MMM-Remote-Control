@@ -593,13 +593,30 @@ module.exports = NodeHelper.create({
 			});
 			return true;
 		}
+		if (query.action === "USER_PRESENCE")
+		{						
+			//Add AgP
+            this.sendSocketNotification("USER_PRESENCE", query.value);
+    //        console.log("User presence true");
+           
+			return true;
+		}
 		if (query.action === "MONITORON")
-		{
+		{						
+			//Add AgP
+            this.sendSocketNotification("USER_PRESENCE", true);
+    //        console.log("User presence true");
+            
 			exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
 		if (query.action === "MONITOROFF")
 		{
+						
+			//Add AgP
+            this.sendSocketNotification("USER_PRESENCE", false);
+    //        console.log("User presence false");
+            
 			exec("tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
@@ -615,8 +632,12 @@ module.exports = NodeHelper.create({
 		}
 		if (query.action === "BRIGHTNESS")
 		{
-			res.send({"status": "success"});
+			//Modif AgP
+			//res.send({"status": "success"});
+			if (res) {res.send({"status": "success"}); }
+			
 			self.sendSocketNotification(query.action, query.value);
+
 			return true;
 		}
 		if (query.action === "SAVE")
