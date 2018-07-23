@@ -43,6 +43,7 @@ Module.register("MMM-Remote-Control", {
 			}
 		}
 	},
+	
 
 	// Override socket notification handler.
 	socketNotificationReceived: function(notification, payload) {
@@ -55,6 +56,11 @@ Module.register("MMM-Remote-Control", {
 			{
 				this.updateDom();
 			}
+		}
+		//AgP42 --> add the management of User_Presence
+		if (notification === "USER_PRESENCE"){
+			Log.log("Hello, user_presence from remote envoyé à tout le monde, état : " + payload);
+			this.sendNotification(notification, payload);
 		}
 		if (notification === "DEFAULT_SETTINGS") {
 			var settingsVersion = payload.settingsVersion;
