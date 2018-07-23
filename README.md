@@ -101,7 +101,7 @@ If this happens, simply reconfigure and save it again.
 ## Call methods from other modules
 
 You can call any of the methods provided in the UI directly through a GET request, or a module notification.
-For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems.
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button. 
 
 ### Examples
 
@@ -117,6 +117,30 @@ notification_schedule: [
     {notification: 'REMOTE_ACTION', schedule: '30 18 * * *', payload: {action: 'MONITORON'}}
 ]
 ```
+Or to automatically change the monitor brightness :
+```javascript
+ notification_schedule: [
+    // TURN THE SCREEN BRIGHTNESS "DAY" AT 07:30 EVERY DAY
+	{notification: 'REMOTE_ACTION', schedule: '30 7 * * *', payload: {action: "BRIGHTNESS", value: "100"}},
+	// TURN THE MSCREEN BRIGHTNESS "NIGHT" AT 22:30 EVERY DAY
+	{notification: 'REMOTE_ACTION', schedule: '30 22 * * *', payload: {action: "BRIGHTNESS", value: "50"}}
+]
+```     
+
+- Example to trigger Remote Actions from [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) :
+```
+Action: [
+	{notification: "REMOTE_ACTION", payload: {action: "USER_PRESENCE", value: true}}, //Send notification "USER_PRESENCE" to true to all other modules
+	[{notification: "REMOTE_ACTION", payload: {action: "MONITOROFF"}},{notification: "REMOTE_ACTION", payload: {action: "MONITORON"}}],
+	{notification: "REMOTE_ACTION", payload: {action: "BRIGHTNESS", value: "50"}},
+	{notification: "REMOTE_ACTION", payload: {action: "BRIGHTNESS", value: "200"}},
+	[{notification: "REMOTE_ACTION", payload: {action: "HIDE", module: "module_2_updatenotification"}},{notification: "REMOTE_ACTION", payload: {action: "SHOW", module: "module_2_updatenotification"}}],//Hide or show the module Update_Notification. Warning : the "identifier" of the module must be used.						
+	{notification: "REMOTE_ACTION", payload: {action: "REFRESH"}},
+	{notification: "REMOTE_ACTION", payload: {action: "RESTART"}},
+	{notification: "REMOTE_ACTION", payload: {action: "REBOOT"}},
+	{notification: "REMOTE_ACTION", payload: {action: "SHUTDOWN"}}
+],
+```
 
 - Example to trigger a RaspberryPi restart in your module:
 ```
@@ -130,8 +154,9 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | SHUTDOWN | Shutdown your RaspberryPi |
 | REBOOT | Restart your RaspberryPi |
 | RESTART | Restart your MagicMirror |
-| MONITORON | Switch your display on |
-| MONITOROFF | Switch your display off |
+| MONITORON | Switch your display on. Will also send a notification "USER_PRESENCE" = true to all other modules. |
+| MONITOROFF | Switch your display off. Will also send a notification "USER_PRESENCE" = false to all other modules. |
+| USER_PRESENCE | Will send a notification "USER_PRESENCE" = true or false (according to "value" to all other modules. See examples above|
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 | HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
