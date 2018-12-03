@@ -132,6 +132,8 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 | RESTART | Restart your MagicMirror |
 | MONITORON | Switch your display on |
 | MONITOROFF | Switch your display off |
+| MONITORON2 | Switch your display on via vcgencmd |
+| MONITOROFF2 | Switch your display off via vcgencmd |
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 | HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |

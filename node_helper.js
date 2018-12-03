@@ -603,6 +603,16 @@ module.exports = NodeHelper.create({
 			exec("tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
+		if (query.action === "MONITORON2")
+		{
+			exec("vcgencmd display_power 1", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			return true;
+		}
+		if (query.action === "MONITOROFF2")
+		{
+			exec("vcgencmd display_power 0", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+			return true;
+		}
 		if (query.action === "HIDE" || query.action === "SHOW")
 		{
 			if (res) { res.send({"status": "success"}); }
