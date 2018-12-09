@@ -212,7 +212,7 @@ module.exports = NodeHelper.create({
     readModuleData: function() {
         var self = this;
 
-        fs.readFile(path.resolve(__dirname + "/modules.json"), function(err, data) {
+        fs.readFile(path.resolve(__dirname + "/modules.json"), (err, data) => {
             self.modulesAvailable = JSON.parse(data.toString());
 
             for (var i = 0; i < self.modulesAvailable.length; i++) {
@@ -251,7 +251,7 @@ module.exports = NodeHelper.create({
         var self = this;
 
         var modulePath = this.configOnHd.paths.modules + "/" + folderName;
-        fs.stat(modulePath, function(err, stats) {
+        fs.stat(modulePath, (err, stats) => {
             if (stats.isDirectory()) {
                 var isInList = false;
                 var currentModule;
@@ -790,25 +790,25 @@ module.exports = NodeHelper.create({
         console.log("path: " + path + " name: " + name);
 
         var git = simpleGit(path);
-        git.pull(function(error, result) {
+        git.pull((error, result) => {
             if (error) {
                 console.log(error);
-                this.sendResponse(res, error);
+                self.sendResponse(res, error);
                 return;
             }
             if (result.summary.changes) {
                 exec("npm install", { cwd: path, timeout: 120000 }, (error, stdout, stderr) => {
                     if (error) {
                         console.log(error);
-                        this.sendResponse(res, error, { stdout: stdout, stderr: stderr });
+                        self.sendResponse(res, error, { stdout: stdout, stderr: stderr });
                     } else {
                         // success part
                         self.readModuleData();
-                        this.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
+                        self.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
                     }
                 });
             } else {
-                this.sendResponse(res, undefined, { code: "up-to-date", info: name + " already up to date." });
+                self.sendResponse(res, undefined, { code: "up-to-date", info: name + " already up to date." });
             }
         });
     },
