@@ -1,6 +1,7 @@
 // main javascript file for the remote control page
 
 var Remote = {
+    name: "MMM-Remote-Control",
     currentMenu: "main-menu",
     types: ["string", "number", "boolean", "array", "object", "null", "undefined"],
     values: ["", 0.0, true, [], {}, null, undefined],
@@ -22,6 +23,43 @@ var Remote = {
     deletedModules: [],
 	autoHideTimer: undefined,
 	autoHideDelay: 1000, // ms
+
+    /* socket()
+     * Returns a socket object. If it doesn"t exist, it"s created.
+     * It also registers the notification callback.
+     */
+    socket: function () {
+        if (typeof this._socket === "undefined") {
+            this._socket = this._socket = new MMSocket(this.name);
+        }
+
+        var self = this;
+        this._socket.setNotificationCallback(function (notification, payload) {
+            self.socketNotificationReceived(notification, payload);
+        });
+
+        return this._socket;
+    },
+
+    /* sendSocketNotification(notification, payload)
+     * Send a socket notification to the node helper.
+     *
+     * argument notification string - The identifier of the notification.
+     * argument payload mixed - The payload of the notification.
+     */
+    sendSocketNotification: function (notification, payload) {
+        this.socket().sendNotification(notification, payload);
+    },  
+
+    /* socketNotificationReceived(notification, payload)
+     * This method is called when a socket notification arrives.
+     *
+     * argument notification string - The identifier of the notification.
+     * argument payload mixed - The payload of the notification.
+     */
+    socketNotificationReceived: function (notification, payload) {
+        // console.log(this.name + " received a socket notification: " + notification + " - Payload: " + payload);
+    },
 
     loadButtons: function(buttons) {
         for (var key in buttons) {
@@ -324,14 +362,14 @@ var Remote = {
 
     showModule: function(id, force) {
         if (force) {
-            this.getWithStatus("action=SHOW&force=true&module=" + id);
+            this.sendSocketNotification("REMOTE_ACTION", { action: "SHOW", force: true, module: id });
         } else {
-            this.getWithStatus("action=SHOW&module=" + id);
+            this.sendSocketNotification("REMOTE_ACTION", { action: "SHOW", module: id });
         }
     },
 
     hideModule: function(id) {
-        this.getWithStatus("action=HIDE&module=" + id);
+        this.sendSocketNotification("REMOTE_ACTION", { action: "HIDE", module: id });    
     },
 
     install: function(url, index) {
@@ -1488,6 +1526,9 @@ var buttons = {
 Remote.loadTranslations();
 Remote.loadButtons(buttons);
 Remote.loadOtherElements();
+
+// Initialize socket connection
+Remote.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
 
 Remote.setStatus("none");
 

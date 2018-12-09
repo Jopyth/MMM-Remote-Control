@@ -894,6 +894,10 @@ module.exports = NodeHelper.create({
 		{
 			this.executeQuery(payload);
 		}
-
+		
+		if (notification === "REMOTE_CLIENT_CONNECTED")
+		{
+			this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
+		}
 	}
 });
