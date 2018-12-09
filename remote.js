@@ -187,7 +187,7 @@ var Remote = {
 
         var slider = document.getElementById("brightness-slider");
         slider.addEventListener("change", function(event) {
-            self.getWithStatus("action=BRIGHTNESS&value=" + slider.value);
+            self.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: slider.value });
         }, false);
 
         var input = document.getElementById("add-module-search");
@@ -1257,20 +1257,7 @@ var Remote = {
     },
 
     updateModule: function(module) {
-        var self = this;
-
-        self.getWithStatus("action=UPDATE&module=" + module, function(response) {
-            var result = JSON.parse(response);
-            if (result.status === "success") {
-                if (result.code === "restart") {
-                    self.offerRestart(result.info);
-                } else {
-                    self.setStatus("success", result.info);
-                }
-            } else {
-                self.setStatus("error");
-            }
-        });
+        this.sendSocketNotification("REMOTE_ACTION", { action: "UPDATE", module: module});
     },
 
     loadModulesToUpdate: function() {
@@ -1405,7 +1392,7 @@ var buttons = {
     "brightness-reset": function() {
         var element = document.getElementById("brightness-slider");
         element.value = 100;
-        Remote.getWithStatus("action=BRIGHTNESS&value=100");
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: 100 });
     },
 
     // edit menu buttons
@@ -1439,7 +1426,7 @@ var buttons = {
         wrapper.appendChild(text);
 
         var ok = self.createSymbolText("fa fa-power-off", self.translate("SHUTDOWN"), function () {
-            Remote.getWithStatus("action=SHUTDOWN");
+            Remote.sendSocketNotification("REMOTE_ACTION", { action: "SHUTDOWN" });
         });
         wrapper.appendChild(ok);
 
@@ -1459,7 +1446,7 @@ var buttons = {
         wrapper.appendChild(text);
 
         var ok = self.createSymbolText("fa fa-refresh", self.translate("RESTART"), function () {
-                Remote.getWithStatus("action=REBOOT");
+                Remote.sendSocketNotification("REMOTE_ACTION", { action: "REBOOT" });
         });
         wrapper.appendChild(ok);
 
@@ -1471,17 +1458,17 @@ var buttons = {
         self.setStatus(false, false, wrapper);
     },
     "restart-mm-button": function() {
-        Remote.getWithStatus("action=RESTART");
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "RESTART" });
         setTimeout(function(){document.location.reload(); console.log("Delayed REFRESH");}, 60000);
     },
     "monitor-on-button": function() {
-        Remote.getWithStatus("action=MONITORON");
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "MONITORON" });
     },
     "monitor-off-button": function() {
-        Remote.getWithStatus("action=MONITOROFF");
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "MONITOROFF" });
     },
     "refresh-mm-button": function () {
-        Remote.getWithStatus("action=REFRESH");
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "REFRESH" });
     },
 
     // config menu buttons
@@ -1494,7 +1481,7 @@ var buttons = {
 
     // main menu
     "save-button": function() {
-        Remote.getWithStatus("action=SAVE");
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "SAVE" });
     },
     "close-popup": function() {
         Remote.closePopup();
@@ -1510,16 +1497,16 @@ var buttons = {
 
     // alert menu
     "send-alert-button": function () {
-        var kvpairs = [];
+        var kvpairs = {};
         var form = document.getElementById("alert");
         for ( var i = 0; i < form.elements.length; i++ ) {
             var e = form.elements[i];
-            kvpairs.push(encodeURIComponent(e.name) + "=" + encodeURIComponent(e.value));
+            kvpairs[encodeURIComponent(e.name)] = encodeURIComponent(e.value);
         }
-        Remote.getWithStatus(kvpairs.join("&"));
+        Remote.sendSocketNotification("REMOTE_ACTION", kvpairs);
     },
     "hide-alert-button": function () {
-        Remote.getWithStatus("action=HIDE_ALERT");
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "HIDE_ALERT" });
     }
 };
 
