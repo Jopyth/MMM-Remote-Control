@@ -1501,7 +1501,7 @@ var buttons = {
         var form = document.getElementById("alert");
         for ( var i = 0; i < form.elements.length; i++ ) {
             var e = form.elements[i];
-            kvpairs[encodeURIComponent(e.name)] = encodeURIComponent(e.value);
+            kvpairs[e.name] = e.value;
         }
         Remote.sendSocketNotification("REMOTE_ACTION", kvpairs);
     },
