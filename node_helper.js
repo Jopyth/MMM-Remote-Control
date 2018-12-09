@@ -173,10 +173,17 @@ module.exports = NodeHelper.create({
                 res.json({ success: true });
             });
 
-        this.expressRouter.route(['/modules', '/modulesInstalled', '/modulesAvailable'])
-            .get((req, res) => {
-                self.answerGet({ data: req.path.substring(1) }, res);
-            });
+        this.expressRouter.route(['/modules',
+            '/modulesInstalled',
+            '/modulesAvailable',
+            '/brightness',
+            '/translations',
+            '/mmUpdateAvailable',
+            '/config',
+            '/defaultConfig'
+        ]).get((req, res) => {
+            self.answerGet({ data: req.path.substring(1) }, res);
+        });
 
         this.expressRouter.route('/modules/:moduleName')
             .get((req, res) => {
@@ -187,6 +194,11 @@ module.exports = NodeHelper.create({
             .get((req, res) => {
                 var actionName = req.params.action.toUpperCase();
                 this.executeQuery({ action: `MONITOR${actionName}` }, res);
+            });
+
+        this.expressRouter.route('/brightness/:setting(\\d+)')
+            .get((req, res) => {
+                this.executeQuery({ action: `BRIGHTNESS`, value: req.params.setting }, res);
             });
 
         this.expressApp.use('/api', this.expressRouter);
