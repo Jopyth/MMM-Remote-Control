@@ -58,7 +58,7 @@ module.exports = NodeHelper.create({
     combineConfig: function() {
         // function copied from MichMich (MIT)
         var defaults = require(__dirname + "/../../js/defaults.js");
-        var configFilename = path.resolve(__dirname + "/../../config/config.js");
+        var configFilename = global.configuration_file;
         try {
             fs.accessSync(configFilename, fs.F_OK);
             var c = require(configFilename);
@@ -173,7 +173,8 @@ module.exports = NodeHelper.create({
                 res.json({ success: true });
             });
 
-        this.expressRouter.route(['/modules',
+        this.expressRouter.route([
+            '/modules',
             '/modulesInstalled',
             '/modulesAvailable',
             '/brightness',
@@ -188,6 +189,23 @@ module.exports = NodeHelper.create({
         this.expressRouter.route('/modules/:moduleName')
             .get((req, res) => {
                 res.json({ success: false, message: "API not yet implemented" });
+            });
+
+        this.expressRouter.route('/modules/:moduleName/:action')
+            .get((req, res) => {
+                let actionName = req.params.action.toUpperCase();
+                if (["SHOW", "HIDE", "FORCE"].indexOf(actionName) !== -1) {
+                    let query = { module: req.params.moduleName };
+                    if (actionName === "FORCE") {
+                        query.action = "SHOW";
+                        query.force = true;
+                    } else {
+                        query.action = actionName;
+                    }
+                    this.executeQuery(query, res);
+                } else {
+                    res.json({ success: false, info: "Invalid Action!" });
+                }
             });
 
         this.expressRouter.route('/monitor/:action')
@@ -673,12 +691,8 @@ module.exports = NodeHelper.create({
             return true;
         }
         if (query.action === "HIDE" || query.action === "SHOW") {
+            self.sendSocketNotification(query.action, query);
             self.sendResponse(res);
-            var payload = { module: query.module };
-            if (query.action === "SHOW" && query.force === "true") {
-                payload.force = true;
-            }
-            self.sendSocketNotification(query.action, payload);
             return true;
         }
         if (query.action === "BRIGHTNESS") {
