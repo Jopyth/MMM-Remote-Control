@@ -52,6 +52,8 @@ module.exports = NodeHelper.create({
         this.combineConfig();
         this.readModuleData();
         this.createRoutes();
+
+        this.externalApiRoutes = {};
         this.createApiRoutes();
     },
 
@@ -207,6 +209,27 @@ module.exports = NodeHelper.create({
                     res.json({ success: false, info: "Invalid Action!" });
                 }
             });
+
+        // TODO: Finish implementing external modules' APIs
+        /* Expects:
+                payload = {
+                    module: "MMM-ModuleName", // Actual Name of the Module (e.g. this.name)
+                    path: "modulename", // Path to use, added to /api/module/modulename
+                    // type is "" "GET_PARAM", "GET_QUERY" Param or Query--Return a parameter or query string back, merged with ObjectToSend
+                    actions: {          // List of valid actions
+                        actionName: { type: "GET", notification: "NOTIFICATION_TO_SEND", payload: ObjectToSend },
+                        anotherActionName: { type: "POST", notification: "NOTIFICATION_TO_SEND", payload: ObjectToSend }
+                    }
+                };
+        */
+        this.expressRouter.route('/module/:moduleName/:p?')
+            .get((req, res) => {
+                console.log(req.params.p);
+            })
+            .post((req, res) => {
+                console.log(req.body);
+            });
+
 
         this.expressRouter.route('/monitor/:action')
             .get((req, res) => {
@@ -948,14 +971,18 @@ module.exports = NodeHelper.create({
             // check if we have got saved default settings
             self.loadDefaultSettings();
         }
-
         if (notification === "REMOTE_ACTION") {
             payload.isSocket = true;
             this.executeQuery(payload);
         }
-
         if (notification === "REMOTE_CLIENT_CONNECTED") {
             this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
+        }
+        if (notification === "REGISTER_API") {
+            if ("module" in payload &&
+                Object.keys(this.externalApiRoutes).indexOf(payload.modules) === -1) {
+                this.externalApiRoutes[payload.module] = payload;
+            }
         }
     }
 });
