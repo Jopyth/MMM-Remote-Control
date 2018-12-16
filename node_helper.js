@@ -54,6 +54,7 @@ module.exports = NodeHelper.create({
         this.createRoutes();
 
         this.externalApiRoutes = {};
+        this.getExternalApiByGuessing();
         this.createApiRoutes();
     },
 
@@ -197,39 +198,32 @@ module.exports = NodeHelper.create({
             .get((req, res) => {
                 let actionName = req.params.action.toUpperCase();
                 if (["SHOW", "HIDE", "FORCE"].indexOf(actionName) !== -1) {
-                    let query = { module: req.params.moduleName };
-                    if (actionName === "FORCE") {
-                        query.action = "SHOW";
-                        query.force = true;
+                    let moduleIdent = this.getModuleName(req.params.moduleName, true);
+                    if (typeof moduleIdent !== "undefined") {
+                        let query = { module: moduleIdent };
+                        if (actionName === "FORCE") {
+                            query.action = "SHOW";
+                            query.force = true;
+                        } else {
+                            query.action = actionName;
+                        }
+                        this.executeQuery(query, res);
                     } else {
-                        query.action = actionName;
+                        res.json({ success: false, info: "Invalid Module Name/Identifier!" });
                     }
-                    this.executeQuery(query, res);
                 } else {
                     res.json({ success: false, info: "Invalid Action!" });
                 }
             });
 
-        // TODO: Finish implementing external modules' APIs
-        /* Expects:
-                payload = {
-                    module: "MMM-ModuleName", // Actual Name of the Module (e.g. this.name)
-                    path: "modulename", // Path to use, added to /api/module/modulename
-                    // type is "" "GET_PARAM", "GET_QUERY" Param or Query--Return a parameter or query string back, merged with ObjectToSend
-                    actions: {          // List of valid actions
-                        actionName: { type: "GET", notification: "NOTIFICATION_TO_SEND", payload: ObjectToSend },
-                        anotherActionName: { type: "POST", notification: "NOTIFICATION_TO_SEND", payload: ObjectToSend }
-                    }
-                };
-        */
-        this.expressRouter.route('/module/:moduleName/:p?')
+        // Add routes to be extended by other modules.
+        this.expressRouter.route('/module/:moduleName/:action/:p?')
             .get((req, res) => {
-                console.log(req.params.p);
+                this.answerExternalApi(req, res);
             })
             .post((req, res) => {
-                console.log(req.body);
+                this.answerExternalApi(req, res);
             });
-
 
         this.expressRouter.route('/monitor/:action')
             .get((req, res) => {
@@ -243,6 +237,89 @@ module.exports = NodeHelper.create({
             });
 
         this.expressApp.use('/api', this.expressRouter);
+    },
+
+    /* getExternalApiByGuessing()
+     * This method is called when an API call is made to /module or /modules
+     * It checks if a string is a Module Name or an Instance Name and returns
+     * the actual Module Name
+     *
+     * @updates this.externalApiRoutes
+     */
+    // TODO: Merge in function from MMM-API to guess actions for each module.
+    getExternalApiByGuessing: function() {
+        return undefined;
+    },
+
+    /* answerExternalApi(req, res)
+     * This method is called when an API call is made to /module/:moduleName...
+     * It provides a method for responding to external api calls (calls for other modules).
+     * External API calls can be registered from another module by sending this module a
+     * notification upon startup.
+     *
+     * Notificaiton: "", Payload:
+     *  payload = {
+     *      // Actual Name of the Module (e.g. this.name)
+     *      module: "MMM-ModuleName", 
+     *      // Path to use, added to /api/module/{modulename}
+     *      path: "modulename", 
+     *      // Object List of valid actions
+     *      // Parameter and/or query string is sent back in payload, merged with ObjectToSend (optional)
+     *      actions: {   
+     *          actionName: { method: "GET", notification: "NOTIFICATION_TO_SEND", payload: ObjectToSend },
+     *          anotherActionName: { method: "POST", notification: "NOTIFICATION_TO_SEND" }
+     *      }
+     *   };
+     *
+     * @param {object} req - Express Request Object
+     * @param {object} res - Express Response Object
+     */
+    answerExternalApi: function(req, res) {
+        let moduleApiKey = Object.keys(this.externalApiRoutes).find(rte => rte === req.params.moduleName);
+        if (!moduleApiKey) { res.json({ success: false, info: `No API routes found for ${req.params.moduleName}.` }); return; }
+
+        let moduleApi = this.externalApiRoutes[moduleApiKey];
+        if (!(req.params.action in moduleApi.actions)) {
+            res.json({ success: false, info: `Action ${req.params.action} is not a valid action for ${moduleName}.` });
+            return;
+        }
+        let action = moduleApi.actions[req.params.action];
+        if ((!("method" in action) && req.method !== "GET") || action.method !== req.method) {
+            res.json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
+            return;
+        }
+
+        delete req.query.apiKey;
+        let payload = Object.assign({ param: req.params.p }, req.query);
+        if (action.payload) { payload = Object.assign({}, payload, action.payload); }
+
+        this.sendSocketNotification("NOTIFICATION", { 'notification': action.notification, 'payload': payload });
+        res.json({ success: true });
+        return;
+    },
+
+    /* getModuleName(name)
+     * This method is called when an API call is made to /module or /modules
+     * It checks if a string is a Module Name or an Instance Name and returns
+     * the actual Module Name
+     *
+     * @param {string} name - The name string to check
+     * @param {boolean} returnIdentifier - Optional, if true, return ID instead of name
+     *
+     * @return {string} actualName - Actual Module Name or {undefined} if not found.
+     */
+    getModuleName: function(name, returnIdentifier) {
+        if (!this.configData || !("moduleData" in this.configData)) { return name; }
+
+        let mod = this.configData.find(n => {
+            if (n.name === name) { return true; } else if (n.identifier === name) { return true; } else { return false; }
+        });
+
+        if (typeof mod !== "undefined") {
+            return undefined;
+        }
+
+        return (returnIdentifier) ? mod.identifier : mod.name;
     },
 
     capitalizeFirst: function(string) {
@@ -981,7 +1058,7 @@ module.exports = NodeHelper.create({
         if (notification === "REGISTER_API") {
             if ("module" in payload &&
                 Object.keys(this.externalApiRoutes).indexOf(payload.modules) === -1) {
-                this.externalApiRoutes[payload.module] = payload;
+                this.externalApiRoutes[payload.path] = payload;
             }
         }
     }
