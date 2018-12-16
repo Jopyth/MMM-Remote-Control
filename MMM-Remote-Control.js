@@ -7,6 +7,8 @@
  * MIT Licensed.
  */
 
+/* jshint esversion:6 */
+
 Module.register("MMM-Remote-Control", {
 
     requiresVersion: "2.1.0",
@@ -38,6 +40,7 @@ Module.register("MMM-Remote-Control", {
             this.sendCurrentData();
         }
         if (notification === "REMOTE_ACTION") {
+            console.log(payload);
             this.sendSocketNotification(notification, payload);
         }
         if (notification === "REGISTER_API") {
@@ -57,7 +60,7 @@ Module.register("MMM-Remote-Control", {
             }
         }
         if (notification === "DEFAULT_SETTINGS") {
-            var settingsVersion = payload.settingsVersion;
+            let settingsVersion = payload.settingsVersion;
 
             if (settingsVersion === undefined) {
                 settingsVersion = 0;
@@ -69,10 +72,10 @@ Module.register("MMM-Remote-Control", {
                 }
             }
 
-            var moduleData = payload.moduleData;
-            var hideModules = {};
-            for (var i = 0; i < moduleData.length; i++) {
-                for (var k = 0; k < moduleData[i].lockStrings.length; k++) {
+            let moduleData = payload.moduleData;
+            let hideModules = {};
+            for (let i = 0; i < moduleData.length; i++) {
+                for (let k = 0; k < moduleData[i].lockStrings.length; k++) {
                     if (moduleData[i].lockStrings[k].indexOf("MMM-Remote-Control") >= 0) {
                         hideModules[moduleData[i].identifier] = true;
                         break;
@@ -80,9 +83,9 @@ Module.register("MMM-Remote-Control", {
                 }
             }
 
-            var modules = MM.getModules();
+            let modules = MM.getModules();
 
-            var options = { lockString: this.identifier };
+            let options = { lockString: this.identifier };
 
             modules.enumerate(function(module) {
                 if (hideModules.hasOwnProperty(module.identifier)) {
@@ -111,10 +114,11 @@ Module.register("MMM-Remote-Control", {
             this.sendNotification(notification);
         }
         if (notification === "HIDE" || notification === "SHOW") {
-            var options = { lockString: this.identifier };
-            var modules = MM.getModules();
+            let options = { lockString: this.identifier };
+            let modules = MM.getModules();
+            console.log(payload);
             modules.enumerate(function(module) {
-                if (module.identifier === payload.module) {
+                if (module.identifier === payload.module || module.name === payload.module) {
                     if (notification === "HIDE") {
                         module.hide(1000, options);
                     } else {
@@ -153,7 +157,7 @@ Module.register("MMM-Remote-Control", {
             }
             var extra = "";
             if (key === "header") {
-                extra = "border-bottom: 1px solid #" + value + value + value + ";"
+                extra = "border-bottom: 1px solid #" + value + value + value + ";";
             }
             css += key + " { color: #" + value + value + value + "; " + extra + "} ";
         }
@@ -199,7 +203,7 @@ Module.register("MMM-Remote-Control", {
         var overlay = document.getElementById('remote-control-overlay');
         if (!overlay) {
             // if not existing, create overlay
-            var overlay = document.createElement("div");
+            overlay = document.createElement("div");
             overlay.id = "remote-control-overlay";
             var parent = document.body;
             parent.insertBefore(overlay, parent.firstChild);
@@ -231,17 +235,12 @@ Module.register("MMM-Remote-Control", {
 
         var modules = MM.getModules();
         var currentModuleData = [];
-        var index = 0;
         modules.enumerate(function(module) {
-            currentModuleData.push({});
-            currentModuleData[index].hidden = module.hidden;
-            currentModuleData[index].lockStrings = module.lockStrings;
-            currentModuleData[index].name = module.name;
-            currentModuleData[index].identifier = module.identifier;
-            currentModuleData[index].position = module.data.position;
-            currentModuleData[index].config = module.config;
-            currentModuleData[index].path = module.data.path;
-            index++;
+            let modData = Object.assign({}, module.data);
+            modData.hidden = module.hidden;
+            modData.lockStrings = module.lockStrings;
+            modData.config = module.config;
+            currentModuleData.push(modData);
         });
         var configData = {
             moduleData: currentModuleData,

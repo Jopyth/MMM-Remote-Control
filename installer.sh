@@ -145,7 +145,7 @@ else
 fi
 
 # Get an UUID to use as an API key
-APIKEY=$(/usr/local/bin/node -e 'console.log(require("uuid/v4")());');
+APIKEY=$(/usr/local/bin/node -e 'console.log(require("uuid/v4")().replace(/-/g, ''));');
 
 echo ""
 if check_no "Do you want to view instructions on how to configure the module?"; then

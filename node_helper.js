@@ -31,6 +31,7 @@ module.exports = NodeHelper.create({
     start: function() {
         var self = this;
 
+        this.initialized = false;
         console.log("Starting node helper for: " + self.name);
 
         // load fall back translation
@@ -54,7 +55,6 @@ module.exports = NodeHelper.create({
         this.createRoutes();
 
         this.externalApiRoutes = {};
-        this.getExternalApiByGuessing();
         this.createApiRoutes();
     },
 
@@ -189,40 +189,23 @@ module.exports = NodeHelper.create({
             self.answerGet({ data: req.path.substring(1) }, res);
         });
 
-        this.expressRouter.route('/modules/:moduleName')
+        this.expressRouter.route('/modules/:moduleName/:action?')
             .get((req, res) => {
-                res.json({ success: false, message: "API not yet implemented" });
-            });
-
-        this.expressRouter.route('/modules/:moduleName/:action')
-            .get((req, res) => {
-                let actionName = req.params.action.toUpperCase();
-                if (["SHOW", "HIDE", "FORCE"].indexOf(actionName) !== -1) {
-                    let moduleIdent = this.getModuleName(req.params.moduleName, true);
-                    if (typeof moduleIdent !== "undefined") {
-                        let query = { module: moduleIdent };
-                        if (actionName === "FORCE") {
-                            query.action = "SHOW";
-                            query.force = true;
-                        } else {
-                            query.action = actionName;
-                        }
-                        this.executeQuery(query, res);
-                    } else {
-                        res.json({ success: false, info: "Invalid Module Name/Identifier!" });
-                    }
-                } else {
-                    res.json({ success: false, info: "Invalid Action!" });
-                }
+                this.answerModuleApi(req, res);
             });
 
         // Add routes to be extended by other modules.
-        this.expressRouter.route('/module/:moduleName/:action/:p?')
+        this.expressRouter.route('/module/:moduleName?/:action?/:p?')
             .get((req, res) => {
                 this.answerExternalApi(req, res);
             })
             .post((req, res) => {
-                this.answerExternalApi(req, res);
+                if (!req.is('application/json')) {
+                    res.status(400).json({ success: false, message: "Incorrect content-type, must be 'application/json'" });
+                    return;
+                } else {
+                    this.answerExternalApi(req, res);
+                }
             });
 
         this.expressRouter.route('/monitor/:action')
@@ -239,6 +222,44 @@ module.exports = NodeHelper.create({
         this.expressApp.use('/api', this.expressRouter);
     },
 
+    answerModuleApi: function(req, res) {
+        if (!this.configData) {
+            res.json({ success: false, message: "API not yet implemented" });
+            return;
+        }
+        let modData = this.configData.moduleData.filter(m => m.name === req.params.moduleName || m.identifier === req.params.moduleName);
+        if (!modData) {
+            res.json({ success: false, message: "Module Name or Identifier Not Found!" });
+            return;
+        }
+        if (!req.params.action) {
+            res.json({ success: true, data: modData });
+            return;
+        }
+
+        let actionName = req.params.action.toUpperCase();
+
+        try {
+            modData.forEach(mod => {
+                if (["SHOW", "HIDE", "FORCE"].indexOf(actionName) !== -1) {
+                    let query = { module: mod.identifier };
+                    if (actionName === "FORCE") {
+                        query.action = "SHOW";
+                        query.force = true;
+                    } else {
+                        query.action = actionName;
+                    }
+                    this.executeQuery(query, res);
+                } else {
+                    throw "Invalid Action!";
+                }
+            });
+        } catch (err) {
+            res.json({ success: false, message: e.message });
+            return;
+        }
+    },
+
     /* getExternalApiByGuessing()
      * This method is called when an API call is made to /module or /modules
      * It checks if a string is a Module Name or an Instance Name and returns
@@ -246,10 +267,59 @@ module.exports = NodeHelper.create({
      *
      * @updates this.externalApiRoutes
      */
-    // TODO: Merge in function from MMM-API to guess actions for each module.
     getExternalApiByGuessing: function() {
-        return undefined;
+        if (!this.configData) { return undefined; }
+
+        let getActions = function(content) {
+            let re = /notification \=\=\=? "([A-Z_]+)"|case '([A-Z_]+)'/g;
+            let m;
+            let availabeActions = [];
+
+            if (re.test(content)) {
+                content.match(re).forEach((match) => {
+                    let n = match.replace(re, '$1');
+                    if (['ALL_MODULES_STARTED', 'DOM_OBJECTS_CREATED'].indexOf(n) < 0) {
+                        availabeActions.push(n);
+                    }
+                });
+            }
+
+            return availabeActions;
+        };
+
+        let skippedModules = ['clock', 'MMM-Remote-Control'];
+        this.configData.moduleData.filter(mod => skippedModules.indexOf(mod.name) === -1).forEach(mod => {
+            try {
+                let modFile = fs.readFileSync(path.resolve(`${__dirname}/../../${mod.path}${mod.file}`), 'utf8');
+                let modActions = getActions(modFile);
+
+                if (modActions.length > 0) {
+                    let pathGuess = mod.name.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase();
+
+                    // Generate formatted actions object
+                    let actionsGuess = {};
+
+                    modActions.forEach(a => {
+                        actionsGuess[a.replace(/[-_]/g, '').toLowerCase()] = { notification: a };
+                    });
+
+                    if (pathGuess in this.externalApiRoutes) {
+                        this.externalApiRoutes[pathGuess].actions = Object.assign({}, actionsGuess, this.externalApiRoutes[pathGuess].actions);
+                    } else {
+                        this.externalApiRoutes[pathGuess] = {
+                            module: mod.name,
+                            path: mod.name.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase(),
+                            actions: actionsGuess,
+                            guessed: true
+                        };
+                    }
+                }
+            } catch (err) {
+                console.warn(`getExternalApiByGuessing failed for ${mod.name}: ${err.message}`);
+            }
+        });
     },
+
 
     /* answerExternalApi(req, res)
      * This method is called when an API call is made to /module/:moduleName...
@@ -275,51 +345,63 @@ module.exports = NodeHelper.create({
      * @param {object} res - Express Response Object
      */
     answerExternalApi: function(req, res) {
-        let moduleApiKey = Object.keys(this.externalApiRoutes).find(rte => rte === req.params.moduleName);
-        if (!moduleApiKey) { res.json({ success: false, info: `No API routes found for ${req.params.moduleName}.` }); return; }
+        if (!req.params.moduleName) {
+            res.json(Object.assign({ success: true }, this.externalApiRoutes));
+            return;
+        }
 
-        let moduleApi = this.externalApiRoutes[moduleApiKey];
+        if (!(req.params.moduleName in this.externalApiRoutes)) {
+            res.json({ success: false, info: `No API routes found for ${req.params.moduleName}.` });
+            return;
+        }
+
+        let moduleApi = this.externalApiRoutes[req.params.moduleName];
+        if (!req.params.action) {
+            res.json(Object.assign({ success: true }, moduleApi));
+            return;
+        }
+
         if (!(req.params.action in moduleApi.actions)) {
-            res.json({ success: false, info: `Action ${req.params.action} is not a valid action for ${moduleName}.` });
+            res.json({ success: false, info: `Action ${req.params.action} is not a valid action for ${moduleApi.module}.` });
             return;
         }
         let action = moduleApi.actions[req.params.action];
-        if ((!("method" in action) && req.method !== "GET") || action.method !== req.method) {
+        if ("method" in action && action.method !== req.method) {
             res.json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
             return;
         }
 
+        // Build the payload to send with our notification.
+        // If only a URL Parameter is passed, it will be sent as a string
+        // If we have either a query string or a payload already provided w the action,
+        //  then the paramteter will be inside the payload.param property.
         delete req.query.apiKey;
-        let payload = Object.assign({ param: req.params.p }, req.query);
-        if (action.payload) { payload = Object.assign({}, payload, action.payload); }
-
-        this.sendSocketNotification("NOTIFICATION", { 'notification': action.notification, 'payload': payload });
-        res.json({ success: true });
-        return;
-    },
-
-    /* getModuleName(name)
-     * This method is called when an API call is made to /module or /modules
-     * It checks if a string is a Module Name or an Instance Name and returns
-     * the actual Module Name
-     *
-     * @param {string} name - The name string to check
-     * @param {boolean} returnIdentifier - Optional, if true, return ID instead of name
-     *
-     * @return {string} actualName - Actual Module Name or {undefined} if not found.
-     */
-    getModuleName: function(name, returnIdentifier) {
-        if (!this.configData || !("moduleData" in this.configData)) { return name; }
-
-        let mod = this.configData.find(n => {
-            if (n.name === name) { return true; } else if (n.identifier === name) { return true; } else { return false; }
-        });
-
-        if (typeof mod !== "undefined") {
-            return undefined;
+        let payload = {};
+        if (Object.keys(req.query).length === 0 && typeof req.params.p !== "undefined") {
+            payload = req.params.p;
+        } else if (Object.keys(req.query).length !== 0 && typeof req.params.p !== "undefined") {
+            payload = Object.assign({ param: req.params.p }, req.query);
+        } else {
+            payload = req.query;
+        }        
+        if (req.method === "POST" && typeof req.body !== "undefined") {
+            if (typeof payload === "object") {
+                payload = Object.assign({}, payload, req.body);
+            } else {
+                payload = Object.assign({}, { param: payload }, req.body);
+            }
+        }
+        if (action.payload) {
+            if (typeof payload === "object") {
+                payload = Object.assign({}, payload, action.payload);
+            } else {
+                payload = Object.assign({}, { param: payload }, action.payload);
+            }
         }
 
-        return (returnIdentifier) ? mod.identifier : mod.name;
+        this.sendSocketNotification("NOTIFICATION", { notification: action.notification, payload: payload });
+        res.json({ success: true, notification: action.notification, payload: payload });
+        return;
     },
 
     capitalizeFirst: function(string) {
@@ -345,12 +427,12 @@ module.exports = NodeHelper.create({
         fs.readFile(path.resolve(__dirname + "/modules.json"), (err, data) => {
             self.modulesAvailable = JSON.parse(data.toString());
 
-            for (var i = 0; i < self.modulesAvailable.length; i++) {
+            for (let i = 0; i < self.modulesAvailable.length; i++) {
                 self.modulesAvailable[i].name = self.formatName(self.modulesAvailable[i].longname);
                 self.modulesAvailable[i].isDefaultModule = false;
             }
 
-            for (var i = 0; i < defaultModules.length; i++) {
+            for (let i = 0; i < defaultModules.length; i++) {
                 self.modulesAvailable.push({
                     longname: defaultModules[i],
                     name: self.capitalizeFirst(defaultModules[i]),
@@ -434,7 +516,7 @@ module.exports = NodeHelper.create({
                         }
                         var baseUrl = result[0].refs.fetch;
                         // replacements
-                        baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/")
+                        baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
                         // if cloned with ssh
                         currentModule.url = baseUrl.replace("git@", "https://");
                     });
@@ -466,7 +548,7 @@ module.exports = NodeHelper.create({
         if (defaultModules.indexOf(query.module) !== -1) {
             // default module
             var dir = path.resolve(__dirname + "/..");
-            var git = simpleGit(dir);
+            let git = simpleGit(dir);
             git.revparse(["HEAD"], function(error, result) {
                 if (error) {
                     console.log(error);
@@ -477,14 +559,14 @@ module.exports = NodeHelper.create({
             return;
         }
         var modulePath = this.configOnHd.paths.modules + "/" + query.module;
-        var git = simpleGit(modulePath);
+        let git = simpleGit(modulePath);
         git.getRemotes(true, function(error, result) {
             if (error) {
                 console.log(error);
             }
             var baseUrl = result[0].refs.fetch;
             // replacements
-            baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/")
+            baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
             // if cloned with ssh
             baseUrl = baseUrl.replace("git@", "https://");
             git.revparse(["HEAD"], function(error, result) {
@@ -499,7 +581,7 @@ module.exports = NodeHelper.create({
 
     getConfig: function() {
         var config = this.configOnHd;
-        for (var i = 0; i < config.modules.length; i++) {
+        for (let i = 0; i < config.modules.length; i++) {
             var current = config.modules[i];
             var def = Module.configDefaults[current.module];
             if (!("config" in current)) {
@@ -523,19 +605,19 @@ module.exports = NodeHelper.create({
         // then reload default config
         var defaultConfig = require(__dirname + "/../../js/defaults.js");
 
-        for (var key in defaultConfig) {
+        for (let key in defaultConfig) {
             if (defaultConfig.hasOwnProperty(key) && config.hasOwnProperty(key) && defaultConfig[key] === config[key]) {
                 delete config[key];
             }
         }
 
-        for (var i = 0; i < config.modules.length; i++) {
+        for (let i = 0; i < config.modules.length; i++) {
             var current = config.modules[i];
             var def = Module.configDefaults[current.module];
             if (!def) {
                 def = {};
             }
-            for (var key in def) {
+            for (let key in def) {
                 if (def.hasOwnProperty(key) && current.config.hasOwnProperty(key) && def[key] === current.config[key]) {
                     delete current.config[key];
                 }
@@ -561,7 +643,7 @@ module.exports = NodeHelper.create({
             var best = -1;
             var bestTime = null;
             for (var i = backupHistorySize - 1; i > 0; i--) {
-                var backupPath = path.resolve("config/config.js.backup" + i);
+                let backupPath = path.resolve("config/config.js.backup" + i);
                 try {
                     var stats = fs.statSync(backupPath);
                     if (best === -1 || stats.mtime < bestTime) {
@@ -581,7 +663,7 @@ module.exports = NodeHelper.create({
                 console.log("MMM-Remote-Control Error! Backing up config failed, not saving!");
                 return;
             }
-            var backupPath = path.resolve("config/config.js.backup" + best);
+            let backupPath = path.resolve("config/config.js.backup" + best);
 
             var source = fs.createReadStream(configPath);
             var destination = fs.createWriteStream(backupPath);
@@ -623,7 +705,7 @@ module.exports = NodeHelper.create({
         if (obj == undefined) {
             return String(obj);
         } else if (typeof(obj) == "object" && !(Array.isArray(obj))) {
-            for (prop in obj) {
+            for (let prop in obj) {
                 if (obj.hasOwnProperty(prop)) {
                     var leftHand = prop;
                     if (!simpleIdentifier.test(prop)) {
@@ -631,17 +713,17 @@ module.exports = NodeHelper.create({
                     }
                     string.push(leftHand + ": " + this.convertToText(obj[prop], indentation + 1));
                 }
-            };
+            }
             return "{" + inl + string.join("," + inl) + nl + "}";
         } else if (typeof(obj) == "object" && Array.isArray(obj)) {
-            for (prop in obj) {
+            for (let prop in obj) {
                 string.push(this.convertToText(obj[prop], indentation + 1));
             }
             return "[" + inl + string.join("," + inl) + nl + "]";
         } else if (typeof(obj) == "function") {
-            string.push(obj.toString())
+            string.push(obj.toString());
         } else {
-            string.push(JSON.stringify(obj))
+            string.push(JSON.stringify(obj));
         }
 
         return string.join("," + nl);
@@ -690,18 +772,36 @@ module.exports = NodeHelper.create({
             }
         }
         if (query.data === "modules") {
+            if (!this.checkInititialized(res)) { return; }
             this.callAfterUpdate(function() {
                 res.json(self.configData.moduleData);
             });
         }
         if (query.data === "brightness") {
+            if (!this.checkInititialized(res)) { return; }
             this.callAfterUpdate(function() {
                 res.json(self.configData.brightness);
             });
         }
     },
 
+    checkInititialized: function(res) {
+        if (!this.initialized) {
+            res.json({
+                success: false,
+                message: "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?"
+            });
+            return false;
+        }
+        return true;
+    },
+
     callAfterUpdate: function(callback, timeout) {
+        if (!this.initialized) {
+            res.json({ success: false, message: "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?" });
+            return;
+        }
+
         if (timeout === undefined) {
             timeout = 3000;
         }
@@ -992,7 +1092,7 @@ module.exports = NodeHelper.create({
                 }
                 console.log(err);
             } else {
-                var data = JSON.parse(data.toString());
+                data = JSON.parse(data.toString());
                 self.sendSocketNotification("DEFAULT_SETTINGS", data);
             }
         });
@@ -1034,12 +1134,14 @@ module.exports = NodeHelper.create({
 
         if (notification === "CURRENT_STATUS") {
             this.configData = payload;
-            for (var i = 0; i < this.waiting.length; i++) {
-                var waitObject = this.waiting[i];
-
-                waitObject.run();
+            if (!this.initialized) {
+                this.getExternalApiByGuessing();
+                // Do anything else required to initialize
+                this.initialized = true;
+            } else {
+                this.waiting.forEach(o => { o.run(); });
+                this.waiting = [];
             }
-            this.waiting = [];
         }
         if (notification === "REQUEST_DEFAULT_SETTINGS") {
             // module started, answer with current ip addresses
