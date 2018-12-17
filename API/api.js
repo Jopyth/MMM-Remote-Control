@@ -19,7 +19,6 @@ module.exports = {
      * Only checks for an API key if one is defined in the module's config section.
      */
     getApiKey: function() {
-        console.log("getApiKey called.");
         let thisConfig = this.configOnHd.modules.find(x => x.module === "MMM-Remote-Control");
         if (typeof "thisConfig" !== "undefined" &&
             "config" in thisConfig &&
@@ -106,7 +105,7 @@ module.exports = {
         // or can be passed in the url ?apiKey=YOURAPIKEY
         this.expressRouter.use((req, res, next) => {
             if (typeof this.apiKey !== "undefined") {
-                if (!("authorization" in req.headers) && req.headers.authorization.indexOf("apiKey") !== 0) {
+                if (!("authorization" in req.headers) || req.headers.authorization.indexOf("apiKey") === -1) {
                     // API Key was not provided as a header. Check the URL.
                     var query = url.parse(req.url, true).query;
                     if ("apiKey" in query) {
@@ -132,15 +131,16 @@ module.exports = {
 
         this.expressRouter.route([
             '/modules',
-            '/modulesInstalled',
-            '/modulesAvailable',
+            '/modules/installed',
+            '/modules/available',
             '/brightness',
             '/translations',
             '/mmUpdateAvailable',
-            '/config',
-            '/defaultConfig'
+            '/config'
         ]).get((req, res) => {
-            self.answerGet({ data: req.path.substring(1) }, res);
+            let r = req.path.substring(1);
+            r = r.replace(/\/([a-z])/, function(v) { return v.substring(1).toUpperCase(); });
+            self.answerGet({ data: r }, res);
         });
 
         this.expressRouter.route('/modules/:moduleName/:action?')
@@ -162,8 +162,9 @@ module.exports = {
                 }
             });
 
-        this.expressRouter.route('/monitor/:action')
+        this.expressRouter.route('/monitor/:action?')
             .get((req, res) => {
+                if (!req.params.action) { req.params.action = "STATUS"; }
                 var actionName = req.params.action.toUpperCase();
                 this.executeQuery({ action: `MONITOR${actionName}` }, res);
             });
@@ -177,13 +178,10 @@ module.exports = {
     },
 
     answerModuleApi: function(req, res) {
-        if (!this.configData) {
-            res.json({ success: false, message: "API not yet implemented" });
-            return;
-        }
+        if (!this.checkInititialized(res)) { return; }
         let modData = this.configData.moduleData.filter(m => m.name === req.params.moduleName || m.identifier === req.params.moduleName);
         if (!modData) {
-            res.json({ success: false, message: "Module Name or Identifier Not Found!" });
+            res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
             return;
         }
         if (!req.params.action) {
@@ -204,12 +202,14 @@ module.exports = {
                         query.action = actionName;
                     }
                     this.executeQuery(query, res);
+                } else if (actionName === "DEFAULTS") {
+                    this.answerGet({ data: "defaultConfig", module: mod.name }, res);
                 } else {
-                    throw "Invalid Action!";
+                    throw `Action: ${actionName} is not a valid action.` ;
                 }
             });
         } catch (err) {
-            res.json({ success: false, message: e.message });
+            res.status(400).json({ success: false, message: err.message });
             return;
         }
     },
@@ -230,7 +230,7 @@ module.exports = {
         }
 
         if (!(req.params.moduleName in this.externalApiRoutes)) {
-            res.json({ success: false, info: `No API routes found for ${req.params.moduleName}.` });
+            res.status(400).json({ success: false, info: `No API routes found for ${req.params.moduleName}.` });
             return;
         }
 
@@ -241,12 +241,12 @@ module.exports = {
         }
 
         if (!(req.params.action in moduleApi.actions)) {
-            res.json({ success: false, info: `Action ${req.params.action} is not a valid action for ${moduleApi.module}.` });
+            res.status(400).json({ success: false, info: `Action ${req.params.action} is not a valid action for ${moduleApi.module}.` });
             return;
         }
         let action = moduleApi.actions[req.params.action];
         if ("method" in action && action.method !== req.method) {
-            res.json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
+            res.status(400).json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
             return;
         }
 
@@ -285,7 +285,7 @@ module.exports = {
 
     checkInititialized: function(res) {
         if (!this.initialized) {
-            res.json({
+            res.status(400).json({
                 success: false,
                 message: "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?"
             });

@@ -70,13 +70,13 @@ module.exports = NodeHelper.create(Object.assign({
             this.configOnHd = config;
         } catch (e) {
             if (e.code == "ENOENT") {
-                console.error("WARNING! Could not find config file. Please create one. Starting with default configuration.");
+                console.error("MMM-Remote-Control WARNING! Could not find config file. Please create one. Starting with default configuration.");
                 this.configOnHd = defaults;
             } else if (e instanceof ReferenceError || e instanceof SyntaxError) {
-                console.error("WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
+                console.error("MMM-Remote-Control WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
                 this.configOnHd = defaults;
             } else {
-                console.error("WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
+                console.error("MMM-Remote-Control WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
                 this.configOnHd = defaults;
             }
         }
@@ -126,7 +126,7 @@ module.exports = NodeHelper.create(Object.assign({
             res.send({ "status": "error", "reason": "unknown_command", "info": "original input: " + JSON.stringify(query) });
         });
     },
-    
+
     capitalizeFirst: function(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     },
@@ -458,6 +458,7 @@ module.exports = NodeHelper.create(Object.assign({
         if (query.data === "modulesAvailable") {
             this.modulesAvailable.sort(function(a, b) { return a.name.localeCompare(b.name); });
             res.json(this.modulesAvailable);
+            return;
         }
         if (query.data === "modulesInstalled") {
             var filterInstalled = function(value) {
@@ -468,9 +469,11 @@ module.exports = NodeHelper.create(Object.assign({
                 return a.name.localeCompare(b.name);
             });
             res.json(installed);
+            return;
         }
         if (query.data === "translations") {
             res.json(this.translation);
+            return;
         }
         if (query.data === "mmUpdateAvailable") {
             var sg = simpleGit(__dirname + "/..");
@@ -483,9 +486,11 @@ module.exports = NodeHelper.create(Object.assign({
                 }
                 res.json(false);
             });
+            return;
         }
         if (query.data === "config") {
             res.json(this.getConfig());
+            return;
         }
         if (query.data === "defaultConfig") {
             if (!(query.module in Module.configDefaults)) {
@@ -493,19 +498,24 @@ module.exports = NodeHelper.create(Object.assign({
             } else {
                 res.json(Module.configDefaults[query.module]);
             }
+            return;
         }
         if (query.data === "modules") {
             if (!this.checkInititialized(res)) { return; }
             this.callAfterUpdate(function() {
                 res.json(self.configData.moduleData);
             });
+            return;
         }
         if (query.data === "brightness") {
             if (!this.checkInititialized(res)) { return; }
             this.callAfterUpdate(function() {
                 res.json(self.configData.brightness);
             });
+            return;
         }
+        // Unknown Command, Return Error
+        this.sendResponse(res, "Unknown or Bad Command.", query);
     },
 
     callAfterUpdate: function(callback, timeout) {
@@ -534,11 +544,13 @@ module.exports = NodeHelper.create(Object.assign({
 
     sendResponse: function(res, error, data) {
         let response = { success: true };
+        let status = 200;
+        let result = true;
         if (error) {
             console.log(error);
-            if (res) {
-                response = { success: false, status: "error", reason: "unknown", info: error };
-            }
+            response = { success: false, status: "error", reason: "unknown", info: error };
+            status = 400;
+            result = false;
         }
         if (data) {
             response = Object.assign({}, response, data);
@@ -547,8 +559,45 @@ module.exports = NodeHelper.create(Object.assign({
             if ("isSocket" in res && res.isSocket) {
                 this.sendSocketNotification("REMOTE_ACTION_RESULT", response);
             } else {
-                res.json(response);
+                res.status(status).json(response);
             }
+        }
+        return result;
+    },
+
+    monitorControl: function(action, opts, res) {
+        let status = "unknown";
+        if (["MONITORTOGGLE", "MONITORSTATUS"].indexOf(action) !== -1) {
+            screenStatus = exec("tvservice --status", opts, (error, stdout, stderr) => {
+                if (stdout.indexOf("TV is off") !== -1) {
+                    // Screen is OFF, turn it ON
+                    status = "off";
+                    if (action === "MONITORTOGGLE") {
+                        this.monitorControl("MONITORON", opts, res);
+                        return;
+                    }
+                } else if (stdout.indexOf("HDMI") !== -1) {
+                    // Screen is ON, turn it OFF
+                    status = "on";
+                    if (action === "MONITORTOGGLE") {
+                        this.monitorControl("MONITOROFF", opts, res);
+                        return;
+                    }
+                }
+                this.checkForExecError(error, stdout, stderr, res, { monitor: status });
+                return;
+            });
+        }
+        if (action === "MONITORON") {
+            exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, (error, stdout, stderr) => {
+                this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
+            });
+            return;
+        } else if (action === "MONITOROFF") {
+            exec("tvservice -o", (error, stdout, stderr) => {
+                this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
+            });
+            return;
         }
     },
 
@@ -589,12 +638,8 @@ module.exports = NodeHelper.create(Object.assign({
             });
             return true;
         }
-        if (query.action === "MONITORON") {
-            exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
-            return true;
-        }
-        if (query.action === "MONITOROFF") {
-            exec("tvservice -o", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
+        if (["MONITORON", "MONITOROFF", "MONITORTOGGLE", "MONITORSTATUS"].indexOf(query.action) !== -1) {
+            this.monitorControl(query.action, opts, res);
             return true;
         }
         if (query.action === "HIDE" || query.action === "SHOW") {
@@ -746,10 +791,10 @@ module.exports = NodeHelper.create(Object.assign({
         });
     },
 
-    checkForExecError: function(error, stdout, stderr, res) {
+    checkForExecError: function(error, stdout, stderr, res, data) {
         console.log(stdout);
         console.log(stderr);
-        this.sendResponse(res, error);
+        this.sendResponse(res, error, data);
     },
 
     translate: function(data) {
@@ -872,4 +917,4 @@ module.exports = NodeHelper.create(Object.assign({
             }
         }
     }
-}, require('./API/node_helper.js')));
+}, require('./API/api.js')));
