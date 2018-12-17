@@ -70,9 +70,10 @@ $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
 There are three general categories of API commands:
 
 **1. MMM-Remote-Control Internal Commands** -- these are used to call the existing commands that MMM-Remote-Control already exposes.  For example, to turn off the monitor ("MONITOROFF"):
-            ```bash
+
+```bash
             $ curl -X GET http://magicmirrorip:8080/api/monitor/off
-            ```
+```
 
 **2. External APIs (Guessed)** -- when this module first loads, it parses all of the installed modules source code and checks for any custom notifications that are used.  From this basic search, it tries to "guess" notification actions that may be valid, without them being explicitly defined anywhere else.  For example, the "alert" command examples above are not defined within this module, the 'alert' module just looks for a notification, "SHOW_ALERT"--this is exposed as a `/module/alert/showalert` action in the External API processor.  Full credit to this idea goes to `juzim` from the MMM-Api module.
 
@@ -134,7 +135,7 @@ $ curl -X GET http://magicmirrorip:8080/api/module/newsfeed
 ```
 
 | Parameter | Description |
-| -- | -- |
+| :-: | -- |
 | `"success"` | Result of the GET call
 | `"module"` | Module name
 | `"path"` | API path to use.  All lower case, with "MMM-" and "-"s removed (e.g. MMM-Remote-Control's path if it had one would be `/api/module/remotecontrol/`). Can be customized for explicit External APIs.
@@ -143,3 +144,46 @@ $ curl -X GET http://magicmirrorip:8080/api/module/newsfeed
 
 ### 3. External APIs (Explicit) - Extending Another Module with this API
 
+For module developers, you can extend the API to accomodate your needs by sending a "REGISTER_API" module notification. Below is an example and details.
+
+If correctly formated, any details sent here will override the "guessed" action by #2 above.
+
+```js
+let payload = {
+  module: this.name, 
+  path: "modulename", 
+  actions: {   
+    actionName: { 
+        method: "GET", 
+        notification: "NOTIFICATION_TO_SEND", 
+        payload: ObjectToSend 
+    },
+    anotherActionName: { 
+        method: "POST", 
+        notification: "NOTIFICATION_TO_SEND"
+    }
+  }
+};
+this.sendNotification("REGISTER_API", payload);
+```
+
+| Parameter | Description |
+| :-: | - |
+| `module` | Actual Name of your Module (e.g. "MMM-Your-Module-Name, or just use `this.name`)
+| `path` | Path to use in the API (e.g. `path: "mymodulename"`) translates to `/api/module/mymodulename`
+| `actions` | An `Object` defining the actions you want to expose. See below for details.
+| `actionName` | The name for your action (e.g. called from `/api/module/mymodulename/actionName`).
+| `method` | *Optional:* The HTTP Method to use.<br>Valid options are: `"GET"` or `"POST"`. If `method` is not provided in an action, then both `"GET"` or `"POST"` methods will be treated as valid.
+| `notification` | The notification to send to your module. When the API receives a valid action, it passes a Module Notification to your module. It is your responsibility to do something with that notification to make the action work.
+| `payload` | *Optional:* If you always want the module to send the same `payload`, you can provide an `Object` here. It will be merged into the `payload` sent with the notification, which will also include:<br>1. URL Parameter, if used. See notes on `payload` Object below.<br>2. Query String, if used. API key will be removed.<br>3. Request body, if `POST` method is used and a body sent.<br>4. Finally, this parameter.
+
+#### About the `payload` Object 
+
+Your module will be sent a `payload` with the notification, depending on the request details, and if you provided a `payload` Object to send. It is a merged object, containing one or more of the following inputs.
+
+1. URL Parameter. (e.g. `/api/module/mymodulename/action/:p`, where `:p` is the parameter). If nothing else below is passed or provided, this will be returned as a string. If anything else below is sent, this will be provided at `payload.param` in the notification's `payload` Object.
+2. Query String. Anything passed to the query string, except the API Key (if used) will be passed through `payload`. For example, `/api/module/mymodulename/action?param1=Something&param2=Else` will be passed in `payload` as `{ param1: "Something", param2: "Else" }`
+3. `POST` Body. Same as query string above.
+4. Custom Payload. Any `Object` provided with the `payload:` key when you send the initial "REGISTER_API" notification.
+
+The response sent by the API will include the `payload` Object it sent to your module in the response body for debugging purposes.
