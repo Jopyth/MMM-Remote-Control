@@ -110,14 +110,20 @@ module.exports = {
                     var query = url.parse(req.url, true).query;
                     if ("apiKey" in query) {
                         if (query.apiKey !== this.apiKey) {
-                            return res.status(401).end();
+                            return res.status(401).json({ success: false, message: "Unauthorized: Wrong API Key Provided!" });
                         }
                     } else {
-                        return res.status(403).end();
+                        return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided!" });
                     }
                 } else if (req.headers.authorization.split(" ")[1] !== this.apiKey) {
-                    return res.status(401).end();
+                    return res.status(401).json({ success: false, message: "Unauthorized: Wrong API Key Provided!" });
                 }
+            }
+
+            // Check for correct Content-Type header:
+            if (req.method === "POST" && !req.is('application/json')) {
+                res.status(400).json({ success: false, message: "Incorrect content-type, must be 'application/json'" });
+                return;
             }
 
             next(); // make sure we go to the next routes and don't stop here
@@ -143,6 +149,42 @@ module.exports = {
             self.answerGet({ data: r }, res);
         });
 
+        this.expressRouter.route([
+            '/refresh',
+            '/save',
+            '/shutdown',
+            '/reboot',
+            '/restart'
+        ]).get((req, res) => {
+            let r = req.path.substring(1).toUpperCase();
+            self.answerGet({ action: r }, res);
+        });
+
+        this.expressRouter.route('/update/:moduleName')
+            .get((req, res)=> {
+                this.updateModule(req.params.moduleName, res);
+            });
+
+        this.expressRouter.route('/install')
+            .get((req, res) => {
+                res.status(400).json({ success: false, message: "Invalid method, use PUT" });
+            })
+            .post((req, res) => {
+                if (typeof req.body !== 'undefined' && "url" in req.body) {
+                    this.installModule(req.body.url, res);
+                } else {
+                    res.status(400).json({ success: false, message: "Invalid URL provide in request body"});
+                }  
+            });
+
+        this.expressRouter.route('/notification/:notification/:p?')
+            .get((req, res) => {
+                this.answerNotifyApi(req, res);
+            })
+            .post((req, res) => {
+                this.answerNotifyApi(req, res);
+            });
+
         this.expressRouter.route('/modules/:moduleName/:action?')
             .get((req, res) => {
                 this.answerModuleApi(req, res);
@@ -154,12 +196,7 @@ module.exports = {
                 this.answerExternalApi(req, res);
             })
             .post((req, res) => {
-                if (!req.is('application/json')) {
-                    res.status(400).json({ success: false, message: "Incorrect content-type, must be 'application/json'" });
-                    return;
-                } else {
-                    this.answerExternalApi(req, res);
-                }
+                this.answerExternalApi(req, res);
             });
 
         this.expressRouter.route('/monitor/:action?')
@@ -175,6 +212,44 @@ module.exports = {
             });
 
         this.expressApp.use('/api', this.expressRouter);
+    },
+
+    answerNotifyApi: function(req, res, action) {
+        // Build the payload to send with our notification.
+        let n = "";
+        if (action) { n = action.notification; } else if ("notification" in req.params) {
+            n = decodeURI(req.params.notification);
+        }
+        // If only a URL Parameter is passed, it will be sent as a string
+        // If we have either a query string or a payload already provided w the action,
+        //  then the paramteter will be inside the payload.param property.
+        delete req.query.apiKey;
+        let payload = {};
+        if (Object.keys(req.query).length === 0 && typeof req.params.p !== "undefined") {
+            payload = req.params.p;
+        } else if (Object.keys(req.query).length !== 0 && typeof req.params.p !== "undefined") {
+            payload = Object.assign({ param: req.params.p }, req.query);
+        } else {
+            payload = req.query;
+        }
+        if (req.method === "POST" && typeof req.body !== "undefined") {
+            if (typeof payload === "object") {
+                payload = Object.assign({}, payload, req.body);
+            } else {
+                payload = Object.assign({}, { param: payload }, req.body);
+            }
+        }
+        if (action && action.payload) {
+            if (typeof payload === "object") {
+                payload = Object.assign({}, payload, action.payload);
+            } else {
+                payload = Object.assign({}, { param: payload }, action.payload);
+            }
+        }
+
+        this.sendSocketNotification("NOTIFICATION", { notification: n, payload: payload });
+        res.json({ success: true, notification: n, payload: payload });
+        return;
     },
 
     answerModuleApi: function(req, res) {
@@ -205,7 +280,7 @@ module.exports = {
                 } else if (actionName === "DEFAULTS") {
                     this.answerGet({ data: "defaultConfig", module: mod.name }, res);
                 } else {
-                    throw `Action: ${actionName} is not a valid action.` ;
+                    throw `Action: ${actionName} is not a valid action.`;
                 }
             });
         } catch (err) {
@@ -250,37 +325,7 @@ module.exports = {
             return;
         }
 
-        // Build the payload to send with our notification.
-        // If only a URL Parameter is passed, it will be sent as a string
-        // If we have either a query string or a payload already provided w the action,
-        //  then the paramteter will be inside the payload.param property.
-        delete req.query.apiKey;
-        let payload = {};
-        if (Object.keys(req.query).length === 0 && typeof req.params.p !== "undefined") {
-            payload = req.params.p;
-        } else if (Object.keys(req.query).length !== 0 && typeof req.params.p !== "undefined") {
-            payload = Object.assign({ param: req.params.p }, req.query);
-        } else {
-            payload = req.query;
-        }
-        if (req.method === "POST" && typeof req.body !== "undefined") {
-            if (typeof payload === "object") {
-                payload = Object.assign({}, payload, req.body);
-            } else {
-                payload = Object.assign({}, { param: payload }, req.body);
-            }
-        }
-        if (action.payload) {
-            if (typeof payload === "object") {
-                payload = Object.assign({}, payload, action.payload);
-            } else {
-                payload = Object.assign({}, { param: payload }, action.payload);
-            }
-        }
-
-        this.sendSocketNotification("NOTIFICATION", { notification: action.notification, payload: payload });
-        res.json({ success: true, notification: action.notification, payload: payload });
-        return;
+        this.answerNotifyApi(req, res, action);
     },
 
     checkInititialized: function(res) {

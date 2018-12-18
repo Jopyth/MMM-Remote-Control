@@ -28,6 +28,21 @@ $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
     }'
 ```
 
+### Basic examples of sending a Module Notification
+
+```bash
+$ curl -X GET http://magicmirrorip:8080/api/notification/HELLO_WORLD
+```
+
+```bash
+$ curl -X POST http://magicmirrorip:8080/api/notification/HELLO_WORLD \
+  -H 'content-type: application/json' \
+  -d '{ 
+    "mypayload": "Hello World!", 
+    "somthingelse": "Wooo!"
+    }'
+```
+
 ## Authentication
 
 Providing an API key is recommended; however, remains optional. If you wish to use an API key to authenticate, add an `apiKey:` option to the config section for this module.

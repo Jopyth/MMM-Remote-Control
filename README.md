@@ -1,4 +1,4 @@
-# Magic Mirror Module: Remote Control
+# Magic Mirror Module: Remote Control w/ RESTful API
 
 This module for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
@@ -8,6 +8,8 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 ![The Main Menu](.github/main.png)
 ![The Power Menu](.github/power.png)
 ![Hide and Show a Module](.github/hide_show_module.gif)
+
+**New in Version 1.1.0:** The module now includes a more RESTful API for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
 
 ## Installation
 
@@ -105,9 +107,9 @@ For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders
 
 ### Examples
 
-- Example for a GET request to trigger a RaspberryPi restart:
+- Example for a REST API GET request to trigger a RaspberryPi restart:
 ```
-http://192.168.xxx.xxx:8080/remote?action=RESTART
+http://192.168.xxx.xxx:8080/api/restart
 ```
 
 - Example for a notification schedule for [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically switch your monitor on and off with :
@@ -124,24 +126,38 @@ this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 ```
 
 ### List of actions
-
-| action | description |
-| ------------- | ------------- |
+System Control:
+| Action | Description |
+| :-: | ------------- |
 | SHUTDOWN | Shutdown your RaspberryPi |
 | REBOOT | Restart your RaspberryPi |
-| RESTART | Restart your MagicMirror |
 | MONITORON | Switch your display on |
 | MONITOROFF | Switch your display off |
+| MONITORTOGGLE | Toggle the display on or off |
+| MONITORSTATUS | Report back the monitor status (on or off) |
+
+MagicMirror Control:
+| Action | Description |
+| :-: | ------------- |
+| RESTART | Restart your MagicMirror |
+| REFRESH | Refresh mirror page |
+| UPDATE | Update MagicMirror and any of it's modules |
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
-| HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
-| SHOW | Show a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
+
+Module Control:
+| Action | Description |
+| :-: | ------------- |
+| HIDE | Hide a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
+| SHOW | Show a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
-| REFRESH | Refresh mirror page |
+
+Alerts and Notifications:
+| Action | Description |
+| :-: | ------------- |
 | SHOW_ALERT | Show Default Alert/Notification |
 | HIDE_ALERT | Hide Default Alert/Notification |
-| UPDATE | Update MagicMirror and any of it's modules |
-| NOTIFICATION | Send a notification to all modules (see [Notification Request](#notification-request)). |
+| NOTIFICATION | To send a notification to all modules, see the example in the [API README](API/README.md) |
 
 ### Format of module data response
 
@@ -157,27 +173,6 @@ The response will be in the JSON format, here is an example:
 "brightness":40,
 "settingsVersion":1
 }
-```
-
-### Notification Request
-
-To send a notification to all modules, send the following GET-parameters.
-
-| key | value |
-| --- | ----- |
-| action | `NOTIFICATION`<br>**Required** |
-| notification | The notification to send, e.g. `ARTICLE_MORE_DETAILS`, `SHOW_ALERT` or `HIDE_ALERT`.<br>**Required** |
-| payload | A stringified JSON object with the payload for the notification.<br>**Optional** if absent, an empty payload (`{}`) is assumed. |
-
-Examples:
-
-```
-?action=NOTIFICATION&notification=ARTICLE_MORE_DETAILS
-
-?action=NOTIFICATION&notification=SHOW_ALERT&payload={%22title%22:%22Alert%22,%22message%22:%22This%20is%an%20alert.%22}
-(Payload is URL-encoded form of {"title":"Alert","message":"This is an alert."})
-
-?action=NOTIFICATION&notification=HIDE_ALERT
 ```
 
 ## License

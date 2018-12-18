@@ -745,14 +745,14 @@ module.exports = NodeHelper.create(Object.assign({
     },
 
     updateModule: function(module, res) {
-        console.log("UPDATE " + module);
+        console.log("UPDATE " + (module || "MagicMirror"));
 
         var self = this;
 
         var path = __dirname + "/../../";
         var name = "MM";
 
-        if (module !== undefined && module !== 'undefined') {
+        if (typeof module !== 'undefined' && module !== 'undefined') {
             if (self.modulesAvailable) {
                 var modData = self.modulesAvailable.find(m => m.longname === module);
                 if (modData === undefined) {
