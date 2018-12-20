@@ -51,7 +51,7 @@ module.exports = NodeHelper.create(Object.assign({
         });
 
         this.combineConfig();
-        this.updateModuleList(true);
+        this.updateModuleList();
         this.createRoutes();
 
         /* API EXTENSION - Added v1.1.0 */
