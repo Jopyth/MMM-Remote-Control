@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0] - 2018-12-20
+
+## Added
+
+- Live updates of `modules.json` from the MagicMirror wiki, based on principles from [MMM-Remote-Control-Repository](https://github.com/eouia/MMM-Remote-Control-Repository).  Modules file will be updated at most once per day.
+
 ## [1.1.5] - 2018-05-14
 
 ### Added

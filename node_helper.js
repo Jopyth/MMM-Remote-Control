@@ -51,7 +51,7 @@ module.exports = NodeHelper.create(Object.assign({
         });
 
         this.combineConfig();
-        this.readModuleData();
+        this.updateModuleList(true);
         this.createRoutes();
 
         /* API EXTENSION - Added v1.1.0 */
@@ -142,6 +142,18 @@ module.exports = NodeHelper.create(Object.assign({
             return txt.charAt(0).toUpperCase() + txt.substr(1);
         });
         return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+
+    updateModuleList: function(force) {
+        var self = this;
+        var downloadModules = require('./scripts/download_modules');
+        downloadModules({
+            force: force,
+            callback: (result) => {
+                if (result && result.startsWith("ERROR")) { console.error(result); }
+                this.readModuleData();
+            }
+        });
     },
 
     readModuleData: function() {
