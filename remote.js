@@ -60,13 +60,35 @@ var Remote = {
      */
     socketNotificationReceived: function(notification, payload) {
         if (notification === "REMOTE_ACTION_RESULT") {
-            // console.log("Reuslt received:", JSON.stringify(payload, undefined, 4));
+            // console.log("Result received:", JSON.stringify(payload, undefined, 4));
+            if ("action" in payload && payload.action === "INSTALL") {
+                this.installCallback(payload);
+                return;
+            }
+            if ("data" in payload && payload.data === "config") {
+                this.saveConfigCallback(payload);
+                return;
+            }
             if ("code" in payload && payload.code === "restart") {
                 this.offerRestart(payload.info);
-            } else if ("success" in payload) {
+                return;
+            } 
+            if ("success" in payload) {
                 if (!("status" in payload)) { payload.status = (payload.success) ? "success" : "error"; }
                 this.setStatus(payload.status, payload.info);
             }
+        }
+        if (notification === "RECEIVED_TRANSLATIONS") {
+            this.translations = payload;
+        }        
+        if (notification === "REFRESH") {
+            document.location.reload();
+        }
+        if (notification === "RESTART") {
+            setTimeout(function() {
+                document.location.reload();
+                console.log('Delayed REFRESH');
+            }, 60000);
         }
     },
 
@@ -274,13 +296,13 @@ var Remote = {
         }
         var allMenus = document.getElementsByClassName("menu-element");
 
-        for (var i = 0; i < allMenus.length; i++) {
+        for (let i = 0; i < allMenus.length; i++) {
             this.hide(allMenus[i]);
         }
 
         var currentMenu = document.getElementsByClassName(newMenu);
 
-        for (var i = 0; i < currentMenu.length; i++) {
+        for (let i = 0; i < currentMenu.length; i++) {
             this.show(currentMenu[i]);
         }
 
@@ -389,18 +411,19 @@ var Remote = {
         symbol.className = "fa fa-fw fa-spinner fa-pulse";
         text.innerHTML = " " + self.translate("DOWNLOADING");
 
-        self.get("remote", "action=INSTALL&url=" + url, function(response) {
-            var result = JSON.parse(response);
-            if (result.status === "success") {
-                var bgElement = document.getElementById("install-module-" + index);
-                bgElement.firstChild.className = "fa fa-fw fa-check-circle";
-                self.savedData.modulesAvailable[index].installed = true;
-                self.createAddingPopup(index);
-            } else {
-                symbol.className = "fa fa-fw fa-exclamation-circle";
-                text.innerHTML = " " + self.translate("ERROR");
-            }
-        });
+        this.sendSocketNotification("REMOTE_ACTION", { action: "INSTALL", url: url, index: index });
+    },
+
+    installCallback: function(result) {
+        if (result.success) {
+            var bgElement = document.getElementById("install-module-" + result.index);
+            bgElement.firstChild.className = "fa fa-fw fa-check-circle";
+            this.savedData.modulesAvailable[result.index].installed = true;
+            this.createAddingPopup(result.index);
+        } else {
+            symbol.className = "fa fa-fw fa-exclamation-circle";
+            text.innerHTML = " " + this.translate("ERROR");
+        }
     },
 
     get: function(route, params, callback, timeout) {
@@ -1331,15 +1354,19 @@ var Remote = {
         }
         configData.modules = remainingModules;
         this.deletedModules = [];
-        this.post("post", "data=config", configData, function(result) {
-            if (result.success) {
-                self.offerRestart(self.translate("DONE"));
-            } else {
-                self.setStatus("error");
-            }
-            self.saving = false;
-            self.loadConfigModules();
-        });
+        this.sendSocketNotification("NEW_CONFIG", configData);
+    },
+
+    saveConfigCallback: function(result) {
+        var self = this;
+
+        if (result.success) {
+            self.offerRestart(self.translate("DONE"));
+        } else {
+            self.setStatus("error");
+        }
+        self.saving = false;
+        self.loadConfigModules();
     }
 };
 
@@ -1459,8 +1486,10 @@ var buttons = {
     },
     "restart-mm-button": function() {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "RESTART" });
-        setTimeout(function() { document.location.reload();
-            console.log("Delayed REFRESH"); }, 60000);
+        setTimeout(function() {
+            document.location.reload();
+            console.log("Delayed REFRESH");
+        }, 60000);
     },
     "monitor-on-button": function() {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "MONITORON" });
