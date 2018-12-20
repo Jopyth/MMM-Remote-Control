@@ -47,9 +47,9 @@ module.exports = NodeHelper.create({
 			self.template = data.toString();
 		});
 
-		this.combineConfig();
-		this.readModuleData();
-		this.createRoutes();
+        this.combineConfig();
+        this.updateModuleList(true);
+        this.createRoutes();
 	},
 
 	combineConfig: function() {
@@ -140,8 +140,20 @@ module.exports = NodeHelper.create({
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
-	readModuleData: function() {
-		var self = this;
+    updateModuleList: function(force) {
+        var self = this;
+        var downloadModules = require('./scripts/download_modules');
+        downloadModules({
+            force: force,
+            callback: (result) => {
+                if (result && result.startsWith("ERROR")) { console.error(result); }
+                this.readModuleData();
+            }
+        });
+    },
+
+    readModuleData: function() {
+        var self = this;
 
 		fs.readFile(path.resolve(__dirname + "/modules.json"), function(err, data) {
 			self.modulesAvailable = JSON.parse(data.toString());
