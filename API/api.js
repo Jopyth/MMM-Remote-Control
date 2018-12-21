@@ -164,17 +164,17 @@ module.exports = {
         });
 
         this.expressRouter.route('/userpresence/:value')
-        .get((req, res)  => {
-            if (req.params.value) {
-                if (req.params.value === "true" || req.params.value === "false") {
-                    self.executeQuery({ action: "USER_PRESENCE", value: (req.params.value === "true") });
+            .get((req, res) => {
+                if (req.params.value) {
+                    if (req.params.value === "true" || req.params.value === "false") {
+                        self.executeQuery({ action: "USER_PRESENCE", value: (req.params.value === "true") });
+                    } else {
+                        res.status(400).json({ success: false, message: `Invalid value ${req.params.value} provided in request. Must be true or false.` });
+                    }
                 } else {
-                     res.status(400).json({ success: false, message: `Invalid value ${req.params.value} provided in request. Must be true or false.` });
+                    self.answerGet({ data: "userPresence" }, res);
                 }
-            } else {
-                self.answerGet({ data: "userPresence" }, res);
-            }
-        });
+            });
 
         this.expressRouter.route('/update/:moduleName')
             .get((req, res) => {
@@ -269,20 +269,35 @@ module.exports = {
     },
 
     answerModuleApi: function(req, res) {
-        if (!this.checkInititialized(res)) { return; }
-        let modData = this.configData.moduleData.filter(m => m.name === req.params.moduleName || m.identifier === req.params.moduleName);
-        if (!modData) {
-            res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
-            return;
-        }
-        if (!req.params.action) {
-            res.json({ success: true, data: modData });
-            return;
-        }
-
-        let actionName = req.params.action.toUpperCase();
-
         try {
+            if (!this.checkInititialized(res)) { return; }
+            let actionName = req.params.action.toUpperCase();
+
+            if (req.params.moduleName === "all") {
+                if (["SHOW", "HIDE", "FORCE", "TOGGLE"].indexOf(actionName) !== -1) {
+                    let query = { module: "all" };
+                    if (actionName === "FORCE") {
+                        query.action = "SHOW";
+                        query.force = true;
+                    } else {
+                        query.action = actionName;
+                    }
+                    this.executeQuery(query, res);
+                } else {
+                    throw `Action: ${actionName} is not a valid action.`;
+                }
+            }
+
+            let modData = this.configData.moduleData.filter(m => m.name === req.params.moduleName || m.identifier === req.params.moduleName);
+            if (!modData) {
+                res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
+                return;
+            }
+            if (!req.params.action) {
+                res.json({ success: true, data: modData });
+                return;
+            }
+
             modData.forEach(mod => {
                 if (["SHOW", "HIDE", "FORCE", "TOGGLE"].indexOf(actionName) !== -1) {
                     let query = { module: mod.identifier };

@@ -55,16 +55,15 @@ Module.register("MMM-Remote-Control", {
     socketNotificationReceived: function(notification, payload) {
         if (notification === "UPDATE") {
             this.sendCurrentData();
-        if (notification === "IP_ADDRESSES") {
-        }
+            if (notification === "IP_ADDRESSES") {}
             this.addresses = payload;
             if (this.data.position) {
                 this.updateDom();
             }
         }
-		if (notification === "USER_PRESENCE"){
-			this.sendNotification(notification, payload);
-		}
+        if (notification === "USER_PRESENCE") {
+            this.sendNotification(notification, payload);
+        }
         if (notification === "DEFAULT_SETTINGS") {
             let settingsVersion = payload.settingsVersion;
 
@@ -121,17 +120,19 @@ Module.register("MMM-Remote-Control", {
         }
         if (notification === "HIDE" || notification === "SHOW" || notification === "TOGGLE") {
             let options = { lockString: this.identifier };
-            let modules = MM.getModules().filter(m => {
-                return (m.identifier === payload.module || m.name === payload.module);
-            });
+            if (payload.force) { options.force = true; }
+            let modules = (payload.module === "all") ? MM.getModules() :
+                MM.getModules().filter(m => {
+                    return (m.identifier === payload.module || m.name === payload.module);
+                });
             if (typeof modules === "undefined") { return; }
             modules.forEach((mod) => {
                 if (notification === "HIDE" ||
                     (notification === "TOGGLE" && !mod.hidden)) {
-                    mod.hide(1000, { locmoduleString: "MMRC" });
+                    mod.hide(1000, options);
                 } else if (notification === "SHOW" ||
                     (notification === "TOGGLE" && mod.hidden)) {
-                    mod.show(1000, { lockString: "MMRC", force: payload.force });
+                    mod.show(1000, options);
                 }
             });
         }

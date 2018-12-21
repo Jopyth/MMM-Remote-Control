@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     + Future framework for following PM2 logs and more live update options.
 - General clean-up and standardization of status reporting for GET and POST calls, to original URLs and to new API URLs.
 - Updated to ES2015 (ES Version 6) function calls in most locations.
+- Added USER_PRESENCE controls from [AgP42](https://github.com/AgP42)
+- Added translations from [BKeyport](https://github.com/Bkeyport)
+- Added SHOW/HIDE/TOGGLE ALL modules option per request from [Rene1709](https://github.com/Rene1709)
 
 ### Upcoming Changes
 
