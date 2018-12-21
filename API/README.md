@@ -90,7 +90,7 @@ There are three general categories of API commands:
             $ curl -X GET http://magicmirrorip:8080/api/monitor/off
 ```
 
-**2. External APIs (Guessed)** -- when this module first loads, it parses all of the installed modules source code and checks for any custom notifications that are used.  From this basic search, it tries to "guess" notification actions that may be valid, without them being explicitly defined anywhere else.  For example, the "alert" command examples above are not defined within this module, the 'alert' module just looks for a notification, "SHOW_ALERT"--this is exposed as a `/module/alert/showalert` action in the External API processor.  Full credit to this idea goes to `juzim` from the MMM-Api module.
+**2. External APIs (Guessed)** -- when this module first loads, it parses all of the installed modules' source code and checks for any custom notifications that are used.  From this basic search, it tries to "guess" notification actions that may be valid, without them being explicitly defined anywhere else.  For example, the "alert" command examples above are not defined within this module, the 'alert' module just looks for a notification, "SHOW_ALERT"--this is exposed as a `/module/alert/showalert` action in the External API processor.  Full credit to this idea goes to `juzim` from the MMM-Api module.
 
 **3. External APIs (Explicit)** -- these commands are developed when a module loads and sends a "REGISTER_API" notification with command details to this module. These commands will overwrite any "guessed" commands and can provide a way for a module to define its own API, but still use the same routes already in place.
 
@@ -109,7 +109,7 @@ As discussed above, these methods are guessed based on your currently installed 
 | GET | /api/module | Return a list of all external API actions registered.
 | GET | /api/module/:moduleName | Returns registered API actions for a given module<br>`:moduleName`: Name or Identifier for an installed & activated module.
 
-- *NOTE:* Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want.  For the most part it works pretty well; however, at the moment, this also includes socket notifications (module internal notifications) as well, which won't do anything when called from the API.
+- *NOTE:* Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want. Consult each modules' README for details on what notifications can be used and how.
 
 #### Example:
 

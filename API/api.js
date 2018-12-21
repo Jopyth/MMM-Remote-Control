@@ -38,13 +38,12 @@ module.exports = {
      * @updates this.externalApiRoutes
      */
     getExternalApiByGuessing: function() {
-        if (!this.configData) { return undefined; }
+        if (!this.configOnHd) { return undefined; }
 
         let getActions = function(content) {
             let re = /notification \=\=\=? "([A-Z_]+)"|case '([A-Z_]+)'/g;
             let m;
             let availabeActions = [];
-
             if (re.test(content)) {
                 content.match(re).forEach((match) => {
                     let n = match.replace(re, '$1');
@@ -58,13 +57,13 @@ module.exports = {
         };
 
         let skippedModules = ['clock', 'MMM-Remote-Control'];
-        this.configData.moduleData.filter(mod => skippedModules.indexOf(mod.name) === -1).forEach(mod => {
+
+        this.configOnHd.modules.filter(mod => skippedModules.indexOf(mod.module) === -1).forEach(mod => {
             try {
-                let modFile = fs.readFileSync(path.resolve(`${__dirname}/../../../${mod.path}${mod.file}`), 'utf8');
-                let modActions = getActions(modFile);
+                let modActions = getActions(Module.notificationHandler[mod.module]);
 
                 if (modActions.length > 0) {
-                    let pathGuess = mod.name.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase();
+                    let pathGuess = mod.module.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase();
 
                     // Generate formatted actions object
                     let actionsGuess = {};
@@ -77,15 +76,15 @@ module.exports = {
                         this.externalApiRoutes[pathGuess].actions = Object.assign({}, actionsGuess, this.externalApiRoutes[pathGuess].actions);
                     } else {
                         this.externalApiRoutes[pathGuess] = {
-                            module: mod.name,
-                            path: mod.name.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase(),
+                            module: mod.module,
+                            path: mod.module.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase(),
                             actions: actionsGuess,
                             guessed: true
                         };
                     }
                 }
             } catch (err) {
-                console.warn(`getExternalApiByGuessing failed for ${mod.name}: ${err.message}`);
+                console.warn(`getExternalApiByGuessing failed for ${mod.module}: ${err.message}`);
             }
         });
     },
@@ -228,6 +227,8 @@ module.exports = {
             });
 
         this.expressApp.use('/api', this.expressRouter);
+
+        this.getExternalApiByGuessing();
     },
 
     answerNotifyApi: function(req, res, action) {

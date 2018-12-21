@@ -21,9 +21,12 @@ var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodule
 
 Module = {
     configDefaults: {},
+    notificationHandler: {},
     register: function(name, moduleDefinition) {
-        // console.log("Module config loaded: " + name);
         Module.configDefaults[name] = moduleDefinition.defaults;
+        /* API EXTENSION - Added v2.0.0 */
+        Module.notificationHandler[name] = ("notificationReceived" in moduleDefinition) ?
+            moduleDefinition.notificationReceived.toString() : "";
     }
 };
 
@@ -55,8 +58,13 @@ module.exports = NodeHelper.create(Object.assign({
             this.updateModuleList();
             this.createRoutes();
 
-            /* API EXTENSION - Added v1.1.0 */
+            /* API EXTENSION - Added v2.0.0 */
             this.externalApiRoutes = {};
+        },
+
+        onModulesLoaded: function() {
+            /* CALLED AFTER MODULES AND CONFIG DATA ARE LOADED */
+            /* API EXTENSION - Added v2.0.0 */
             this.createApiRoutes();
         },
 
@@ -195,6 +203,7 @@ module.exports = NodeHelper.create(Object.assign({
                             self.addModule(files[i]);
                         }
                     }
+                    self.onModulesLoaded();
                 });
             });
         },
@@ -270,8 +279,9 @@ module.exports = NodeHelper.create(Object.assign({
             var filename = path.resolve(modulePath + "/" + module.longname + ".js");
             try {
                 fs.accessSync(filename, fs.F_OK);
+                let window;
                 var jsfile = require(filename);
-                // module.configDefault = Module.configDefaults[module.longname];
+                /* Defaults are stored when Module.register is called during require(filename); */
             } catch (e) {
                 if (e.code == "ENOENT") {
                     console.error("ERROR! Could not find main module js file for " + module.longname);
@@ -912,7 +922,6 @@ module.exports = NodeHelper.create(Object.assign({
             if (notification === "CURRENT_STATUS") {
                 this.configData = payload;
                 if (!this.initialized) {
-                    this.getExternalApiByGuessing();
                     // Do anything else required to initialize
                     this.initialized = true;
                 } else {
