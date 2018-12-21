@@ -499,6 +499,10 @@ module.exports = NodeHelper.create(Object.assign({
                 });
                 return;
             }
+            if (query.data === "userPresence") {
+                this.sendResponse(res, undefined, { query: query, result: this.userPresence });
+                return;
+            }
             // Unknown Command, Return Error
             this.sendResponse(res, "Unknown or Bad Command.", query);
         },
@@ -552,16 +556,25 @@ module.exports = NodeHelper.create(Object.assign({
 
         monitorControl: function(action, opts, res) {
             let status = "unknown";
+            let monitorOnCommand = (this.initialized && "monitorOnCommand" in this.configData.remoteConfig.customCommand) ?
+                this.configData.remoteConfig.customCommand.monitorOnCommand :
+                "tvservice --preferred && sudo chvt 6 && sudo chvt 7";
+            let monitorOffCommand = (this.initialized && "monitorOffCommand" in this.configData.remoteConfig.customCommand) ?
+                this.configData.remoteConfig.customCommand.monitorOffCommand :
+                "tvservice -o";
+            let monitorStatusCommand = (this.initialized && "monitorStatusCommand" in this.configData.remoteConfig.customCommand) ?
+                this.configData.remoteConfig.customCommand.monitorStatusCommand :
+                "tvservice --status";
             if (["MONITORTOGGLE", "MONITORSTATUS"].indexOf(action) !== -1) {
-                screenStatus = exec("tvservice --status", opts, (error, stdout, stderr) => {
-                    if (stdout.indexOf("TV is off") !== -1) {
+                screenStatus = exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
+                    if (stdout.indexOf("TV is off") !== -1 || stdout.indexOf("false")) {
                         // Screen is OFF, turn it ON
                         status = "off";
                         if (action === "MONITORTOGGLE") {
                             this.monitorControl("MONITORON", opts, res);
                             return;
                         }
-                    } else if (stdout.indexOf("HDMI") !== -1) {
+                    } else if (stdout.indexOf("HDMI") !== -1 || stdout.indexOf("true")) {
                         // Screen is ON, turn it OFF
                         status = "on";
                         if (action === "MONITORTOGGLE") {
@@ -574,13 +587,13 @@ module.exports = NodeHelper.create(Object.assign({
                 });
             }
             if (action === "MONITORON") {
-                exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, (error, stdout, stderr) => {
+                exec(monitorOnCommand, opts, (error, stdout, stderr) => {
                     this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
                 });
                 this.sendSocketNotification("USER_PRESENCE", true);
                 return;
             } else if (action === "MONITOROFF") {
-                exec("tvservice -o", (error, stdout, stderr) => {
+                exec(monitorOffCommand, (error, stdout, stderr) => {
                     this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
                 });
                 this.sendSocketNotification("USER_PRESENCE", false);
@@ -627,6 +640,7 @@ module.exports = NodeHelper.create(Object.assign({
             }
             if (query.action === "USER_PRESENCE") {
                 this.sendSocketNotification("USER_PRESENCE", query.value);
+                this.userPresence = query.value;
                 this.sendResponse(res, undefined, query);
                 return true;
             }
@@ -928,6 +942,9 @@ module.exports = NodeHelper.create(Object.assign({
             }
             if (notification === "REMOTE_NOTIFICATION_ECHO_IN") {
                 this.sendSocketNotification("REMOTE_NOTIFICATION_ECHO_OUT", payload);
+            }
+            if (notification === "USER_PRESENCE") {
+                this.userPresence = payload;
             }
             /* API EXTENSION -- added v1.1.0 */
             if (notification === "REGISTER_API") {

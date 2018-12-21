@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Incorporated some features found in [MMM-OnScreenMenu](https://github.com/shbatm/MMM-OnScreenMenu) that were not originally in this module.
     + Monitor (Connected Screen) On-Off Status and Toggle
     + If using Electron: Open Dev Tools, Minimize, Toggle Fullscreen
+- Configuration Option to send custom shell commands to use. Currently, only custom monitor on/off/status commands are supported.
 
 ### Changed
 

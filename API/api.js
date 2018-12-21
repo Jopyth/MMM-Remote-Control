@@ -163,6 +163,19 @@ module.exports = {
             self.executeQuery({ action: r }, res);
         });
 
+        this.expressRouter.route('/userpresence/:value')
+        .get((req, res)  => {
+            if (req.params.value) {
+                if (req.params.value === "true" || req.params.value === "false") {
+                    self.executeQuery({ action: "USER_PRESENCE", value: (req.params.value === "true") });
+                } else {
+                     res.status(400).json({ success: false, message: `Invalid value ${req.params.value} provided in request. Must be true or false.` });
+                }
+            } else {
+                self.answerGet({ data: "userPresence" }, res);
+            }
+        });
+
         this.expressRouter.route('/update/:moduleName')
             .get((req, res) => {
                 this.updateModule(req.params.moduleName, res);
@@ -176,7 +189,7 @@ module.exports = {
                 if (typeof req.body !== 'undefined' && "url" in req.body) {
                     this.installModule(req.body.url, res);
                 } else {
-                    res.status(400).json({ success: false, message: "Invalid URL provide in request body" });
+                    res.status(400).json({ success: false, message: "Invalid URL provided in request body" });
                 }
             });
 

@@ -38,6 +38,10 @@ npm install
     // uncomment the following line to show the URL of the remote control on the mirror
     // , position: 'bottom_left'
     // you can hide this module afterwards from the remote control itself
+    config: {
+        customCommand: {},  // Optional, See below for details on how to use
+        apiKey: "",         // Optional, See API/README.md for details
+    }
 },
 ```
 
@@ -181,6 +185,18 @@ The response will be in the JSON format, here is an example:
 "brightness":40,
 "settingsVersion":1
 }
+```
+
+### Using Custom Commands
+
+Depending on your installation, some `shell` commands used by this module are not appropriate and can be overwritten by something that will work for you. To overwrite the commands, add a `customCommand` object to your config section.  The following commands are supported:
+
+```js
+    customCommand: {
+        monitorOnCommand: 'shell command to turn on your monitor',
+        monitorOffCommand: 'shell command to turn off your monitor',
+        monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'
+    }
 ```
 
 ## License

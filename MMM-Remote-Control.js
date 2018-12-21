@@ -11,11 +11,11 @@
 
 Module.register("MMM-Remote-Control", {
 
-    requiresVersion: "2.1.0",
+    requiresVersion: "2.4.0",
 
     // Default module config.
     defaults: {
-        // no config options at the moment
+        customCommand: {}
     },
 
     // Define start sequence.
@@ -46,6 +46,9 @@ Module.register("MMM-Remote-Control", {
         if (notification === "REGISTER_API") {
             this.sendSocketNotification(notification, payload);
         }
+        if (notification === "USER_PRESENCE") {
+            this.sendSocketNotification(notification, payload);
+        }
     },
 
     // Override socket notification handler.
@@ -60,7 +63,6 @@ Module.register("MMM-Remote-Control", {
             }
         }
 		if (notification === "USER_PRESENCE"){
-			Log.log("Hello, user_presence from remote envoyé à tout le monde, état : " + payload);
 			this.sendNotification(notification, payload);
 		}
         if (notification === "DEFAULT_SETTINGS") {
@@ -248,7 +250,8 @@ Module.register("MMM-Remote-Control", {
         var configData = {
             moduleData: currentModuleData,
             brightness: this.brightness,
-            settingsVersion: this.settingsVersion
+            settingsVersion: this.settingsVersion,
+            remoteConfig: this.config
         };
         this.sendSocketNotification("CURRENT_STATUS", configData);
     }
