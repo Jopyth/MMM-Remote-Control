@@ -158,8 +158,10 @@ See some specific examples for controlling your mirror from other modules and ad
 
 | Action | Description |
 | :-: | ------------- |
-| HIDE | Hide a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
-| SHOW | Show a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
+| HIDE | Hide a module, with the name (or identifier--see `MODULE_DATA` action) specified by `module` in the payload. You can also send `module: "all"` to hide all modules. |
+| SHOW | Show a module (see above for how to specify which one). |
+| TOGGLE | Toggle a module's visiblity (see above for how to specify which one). |
+| FORCE | Force a module to show (see above for how to specify which one). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
 
 #### Alerts and Notifications:
