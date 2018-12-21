@@ -6,9 +6,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.0] - 2018-12-20
 
-## Added
+### Added
 
-- Live updates of `modules.json` from the MagicMirror wiki, based on principles from [MMM-Remote-Control-Repository](https://github.com/eouia/MMM-Remote-Control-Repository).  Modules file will be updated at most once per day.
+- REST API interface for controlling all aspects of the MagicMirror from HTTP RESTful-style GET and POST calls, based on principles from [MMM-Api](https://github.com/juzim/MMM-Api)
+    + Full API Documentation at [API/README.md](API/README.md)
+- Live daily updates of `modules.json` from the MagicMirror wiki, based on principles from [MMM-Remote-Control-Repository](https://github.com/eouia/MMM-Remote-Control-Repository).  
+- Incorporated some features found in [MMM-OnScreenMenu](https://github.com/shbatm/MMM-OnScreenMenu) that were not originally in this module.
+    + Monitor (Connected Screen) On-Off Status and Toggle
+    + If using Electron: Open Dev Tools, Minimize, Toggle Fullscreen
+
+### Changed
+
+- Updates to `remote.html` and the `node_helper.js` to use direct SocketIO communication back and forth instead of separate HTTP calls.
+    + Future framework for following PM2 logs and more live update options.
+- General clean-up and standardization of status reporting for GET and POST calls, to original URLs and to new API URLs.
+- Updated to ES2015 (ES Version 6) function calls in most locations.
+
+### Upcoming Changes
+
+- Add additional MMM-OnScreenMenu features:
+    + Moving modules' positions
+    + Delayed notification calls
+- PM2 Log Follower / Terminal Window
+- Added Notification Echo option to config to echo all Module Notifications to the remote's DevTools console for debugging.
 
 ## [1.1.5] - 2018-05-14
 

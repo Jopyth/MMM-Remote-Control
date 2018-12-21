@@ -44,7 +44,7 @@ var downloadModules = {
                     id: url.replace(".git", "").replace(/.*\/(.*?\/.*?)$/, "$1").trim(),
                     url: url.replace(".git", "").trim(),
                     author: author.replace(/\[(.*)\]\(.*\)/, "$1").trim(),
-                    description: desc.replace(/\|/, "").trim()
+                    desc: desc.replace(/\|/, "").trim()
                 };
                 modules.push(modDetail);
             });
