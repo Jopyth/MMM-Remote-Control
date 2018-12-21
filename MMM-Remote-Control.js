@@ -113,20 +113,19 @@ Module.register("MMM-Remote-Control", {
         if (notification === "HIDE_ALERT") {
             this.sendNotification(notification);
         }
-        if (notification === "HIDE" || notification === "SHOW") {
+        if (notification === "HIDE" || notification === "SHOW" || notification === "TOGGLE") {
             let options = { lockString: this.identifier };
-            let modules = MM.getModules();
-            console.log(payload);
-            modules.enumerate(function(module) {
-                if (module.identifier === payload.module || module.name === payload.module) {
-                    if (notification === "HIDE") {
-                        module.hide(1000, options);
-                    } else {
-                        if (payload.force) {
-                            options.force = true;
-                        }
-                        module.show(1000, options);
-                    }
+            let modules = MM.getModules().filter(m => {
+                return (m.identifier === payload.module || m.name === payload.module);
+            });
+            if (typeof modules === "undefined") { return; }
+            modules.forEach((mod) => {
+                if (notification === "HIDE" ||
+                    (notification === "TOGGLE" && !mod.hidden)) {
+                    mod.hide(1000, { locmoduleString: "MMRC" });
+                } else if (notification === "SHOW" ||
+                    (notification === "TOGGLE" && mod.hidden)) {
+                    mod.show(1000, { lockString: "MMRC", force: payload.force });
                 }
             });
         }

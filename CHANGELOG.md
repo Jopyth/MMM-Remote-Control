@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Live daily updates of `modules.json` from the MagicMirror wiki, based on principles from [MMM-Remote-Control-Repository](https://github.com/eouia/MMM-Remote-Control-Repository).  
 - Incorporated some features found in [MMM-OnScreenMenu](https://github.com/shbatm/MMM-OnScreenMenu) that were not originally in this module.
     + Monitor (Connected Screen) On-Off Status and Toggle
+    + If using Electron: Open Dev Tools, Minimize, Toggle Fullscreen
 
 ### Changed
 

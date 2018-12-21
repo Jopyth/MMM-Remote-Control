@@ -2185,8 +2185,8 @@
   },
   {
     "longname": "MMM-YouLess2",
-    "id": "markus/MMM-YouLess2",
-    "url": "https://git.t3cube.de/markus/MMM-YouLess2",
+    "id": "eckonator/MMM-YouLess2",
+    "url": "https://github.com/eckonator/MMM-YouLess2",
     "author": "eckonator",
     "desc": "This module reads from a YouLess energy meter in your network to display a gauge of realtime energy usage information. It´s a optimized fork from QNimbus first module."
   },
@@ -2609,6 +2609,13 @@
     "url": "https://github.com/AdamMoses-GitHub/MMM-ImageSlideshow",
     "author": "AdamMoses-GitHub",
     "desc": "Displays images one-at-a-time from local folders."
+  },
+  {
+    "longname": "MMM-Inspirobot",
+    "id": "JonathanAndersonPE/MMM-inspirobot",
+    "url": "https://github.com/JonathanAndersonPE/MMM-inspirobot",
+    "author": "JonathanAndersonPE-GitHub",
+    "desc": "Displays AI generated inspirational images from Inspirobot.com."
   },
   {
     "longname": "MMM-Instagram",

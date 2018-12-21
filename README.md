@@ -9,7 +9,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 ![The Power Menu](.github/power.png)
 ![Hide and Show a Module](.github/hide_show_module.gif)
 
-**New in Version 1.1.0:** The module now includes a more RESTful API for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
+**New in Version 2.0.0:** The module now includes a more RESTful API for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
 
 ## Installation
 
@@ -144,6 +144,13 @@ MagicMirror Control:
 | UPDATE | Update MagicMirror and any of it's modules |
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
+
+MagicMirror Electron Browser Window Control:
+| Action | Description |
+| :-: | ------------- |
+| MINIMIZE | Minimize the browser window. |
+| TOGGLEFULLSCREEN | Toggle fullscreen mode on and off. |
+| DEVTOOLS | Open the DevTools console window. |
 
 Module Control:
 | Action | Description |

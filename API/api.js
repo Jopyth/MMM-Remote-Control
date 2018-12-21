@@ -154,10 +154,13 @@ module.exports = {
             '/save',
             '/shutdown',
             '/reboot',
-            '/restart'
+            '/restart',
+            '/minimize',
+            '/togglefullscreen',
+            '/devtools'
         ]).get((req, res) => {
             let r = req.path.substring(1).toUpperCase();
-            self.answerGet({ action: r }, res);
+            self.executeQuery({ action: r }, res);
         });
 
         this.expressRouter.route('/update/:moduleName')
@@ -268,7 +271,7 @@ module.exports = {
 
         try {
             modData.forEach(mod => {
-                if (["SHOW", "HIDE", "FORCE"].indexOf(actionName) !== -1) {
+                if (["SHOW", "HIDE", "FORCE", "TOGGLE"].indexOf(actionName) !== -1) {
                     let query = { module: mod.identifier };
                     if (actionName === "FORCE") {
                         query.action = "SHOW";
