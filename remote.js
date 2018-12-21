@@ -65,30 +65,41 @@ var Remote = {
                 this.installCallback(payload);
                 return;
             }
-            if ("data" in payload && payload.data === "config") {
-                this.saveConfigCallback(payload);
+            if ("data" in payload) {
+                if (payload.query.data === "config_update") {
+                    this.saveConfigCallback(payload);
+                } else if (payload.query.data === "mmUpdateAvailable") {
+                    this.mmUpdateCallback(payload.result);
+                } else if (payload.query.data === "brightness") {
+                    var slider = document.getElementById("brightness-slider");
+                    slider.value = payload.result;
+                } else if (payload.query.data === "translations") {
+                    this.translations = payload.data;
+                } else {
+                    this.loadListCallback(payload);
+                }
                 return;
             }
             if ("code" in payload && payload.code === "restart") {
                 this.offerRestart(payload.info);
                 return;
-            } 
+            }
             if ("success" in payload) {
                 if (!("status" in payload)) { payload.status = (payload.success) ? "success" : "error"; }
                 this.setStatus(payload.status, payload.info);
+                return;
             }
         }
-        if (notification === "RECEIVED_TRANSLATIONS") {
-            this.translations = payload;
-        }        
         if (notification === "REFRESH") {
-            document.location.reload();
+            setTimeout(function() { document.location.reload(); }, 2000);
+            return;
         }
         if (notification === "RESTART") {
             setTimeout(function() {
                 document.location.reload();
                 console.log('Delayed REFRESH');
-            }, 60000);
+            }, 62000);
+            return;
         }
     },
 
@@ -100,14 +111,8 @@ var Remote = {
                 element.addEventListener("click", buttons[key], false);
             }
         }
-    },
 
-    loadTranslations: function() {
-        var self = this;
-
-        this.get("get", "data=translations", function(text) {
-            self.translations = JSON.parse(text);
-        });
+        console.log("buttons loaded");
     },
 
     translate: function(pattern) {
@@ -237,6 +242,8 @@ var Remote = {
             self.filter(input.value);
             deleteButton.style.display = "none";
         }, false);
+
+        console.log("loadOtherElements loaded");
     },
 
     showMenu: function(newMenu) {
@@ -444,55 +451,48 @@ var Remote = {
                     callback(req.responseText);
                 }
             }
-        }
-        req.send(null);
-    },
-
-    post: function(route, params, data, callback, timeout) {
-        var req = new XMLHttpRequest();
-        var url = route + "?" + params;
-        req.open("POST", url, true);
-        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.onreadystatechange = function() {
-            if (req.readyState == 4 && req.status == 200) {
-                if (callback) {
-                    callback(JSON.parse(req.responseText));
-                }
-            }
         };
-        req.send(JSON.stringify(data));
+        req.send(null);
     },
 
     loadList: function(listname, dataId, callback) {
         var self = this;
 
         var loadingIndicator = document.getElementById(listname + "-loading");
-        var emptyIndicator = document.getElementById(listname + "-empty");
         var parent = document.getElementById(listname + "-results");
 
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
         self.show(loadingIndicator);
+        if (callback) { self.pendingCallback = callback; }
+        self.sendSocketNotification("REMOTE_ACTION", { data: dataId, listname: listname });
+    },
 
-        this.get("get", "data=" + dataId, function(text) {
-            self.hide(loadingIndicator);
-            self.savedData[dataId] = false;
+    loadListCallback: function(result) {
+        var self = this;
 
-            try {
-                var data = JSON.parse(text);
+        var loadingIndicator = document.getElementById(result.query.listname + "-loading");
+        var emptyIndicator = document.getElementById(result.query.listname + "-empty");
+        var parent = document.getElementById(result.query.listname + "-results");
 
-                if (data.length === 0) {
-                    self.show(emptyIndicator);
-                } else {
-                    self.hide(emptyIndicator);
-                }
-                self.savedData[dataId] = data;
-                callback(parent, data);
-            } catch (e) {
+        self.hide(loadingIndicator);
+        self.savedData[result.query.dataId] = false;
+
+        try {
+            if (result.data.length === 0) {
                 self.show(emptyIndicator);
+            } else {
+                self.hide(emptyIndicator);
             }
-        });
+            self.savedData[result.query.dataId] = result.data;
+            if (self.pendingCallback) {
+                self.pendingCallback(parent, result.data);
+                delete self.pendingCallback;
+            }
+        } catch (e) {
+            self.show(emptyIndicator);
+        }
     },
 
     formatName: function(string) {
@@ -559,12 +559,7 @@ var Remote = {
         var self = this;
 
         console.log("Load brightness...");
-
-        this.get("get", "data=brightness", function(text) {
-            var slider = document.getElementById("brightness-slider");
-
-            slider.value = JSON.parse(text);
-        });
+        this.sendSocketNotification("REMOTE_ACTION", { data: "brightness" });
     },
 
     makeToggleButton: function(moduleBox, visibilityStatus) {
@@ -1284,26 +1279,27 @@ var Remote = {
         this.sendSocketNotification("REMOTE_ACTION", { action: "UPDATE", module: module });
     },
 
+    mmUpdateCallback: function(result) {
+        if (window.location.hash.substring(1) == "update-menu") {
+            var element = document.getElementById("update-mm-status");
+            var updateButton = document.getElementById("update-mm-button");
+            if (result) {
+                self.show(element);
+                updateButton.className += " bright";
+            } else {
+                self.hide(element);
+                updateButton.className = updateButton.className.replace(" bright", "");
+            }
+        }
+    },
+
     loadModulesToUpdate: function() {
         var self = this;
 
         console.log("Loading modules to update...");
 
         // also update mm info notification
-        this.get("get", "data=mmUpdateAvailable", function(result) {
-            if (window.location.hash.substring(1) == "update-menu") {
-                var updateAvailable = JSON.parse(result);
-                var element = document.getElementById("update-mm-status");
-                var updateButton = document.getElementById("update-mm-button");
-                if (updateAvailable) {
-                    self.show(element);
-                    updateButton.className += " bright";
-                } else {
-                    self.hide(element);
-                    updateButton.className = updateButton.className.replace(" bright", "");
-                }
-            }
-        });
+        this.sendSocketNotification("REMOTE_ACTION", { data: "mmUpdateAvailable" });
 
         this.loadList("update-module", "modulesInstalled", function(parent, modules) {
             for (var i = 0; i < modules.length; i++) {
@@ -1540,12 +1536,11 @@ var buttons = {
     }
 };
 
-Remote.loadTranslations();
-Remote.loadButtons(buttons);
-Remote.loadOtherElements();
-
 // Initialize socket connection
 Remote.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
+Remote.sendSocketNotification("REMOTE_ACTION", { data: "translations" });
+Remote.loadButtons(buttons);
+Remote.loadOtherElements();
 
 Remote.setStatus("none");
 

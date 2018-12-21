@@ -376,11 +376,6 @@ module.exports = NodeHelper.create(Object.assign({
     answerPost: function(query, req, res) {
         var self = this;
 
-        // If the query came from a socket notification, send result on same
-        if ("isSocket" in query && query.isSocket && typeof res === "undefined") {
-            res = { isSocket: true };
-        }
-
         if (query.data === "config") {
             var backupHistorySize = 5;
             var configPath = path.resolve("config/config.js");
@@ -406,7 +401,7 @@ module.exports = NodeHelper.create(Object.assign({
             if (best === -1) {
                 // can not backup, panic!
                 console.error("MMM-Remote-Control Error! Backing up config failed, not saving!");
-                self.sendResponse(res, new Error("Backing up config failed, not saving!"), query);
+                self.sendResponse(res, new Error("Backing up config failed, not saving!"), { query: query });
                 return;
             }
             let backupPath = path.resolve("config/config.js.backup" + best);
@@ -429,12 +424,13 @@ module.exports = NodeHelper.create(Object.assign({
                         compact: false
                     }) + footer,
                     (error) => {
+                        query.data = "config_update";
                         if (error) {
-                            self.sendResponse(res, error, Object.assign(query, { backup: backupPath, config: self.configOnHd }));
+                            self.sendResponse(res, error, { query: query, backup: backupPath, config: self.configOnHd });
                         }
                         console.info("MMM-Remote-Control saved new config!");
                         console.info("Used backup: " + backupPath);
-                        self.sendResponse(res, undefined, Object.assign(query, { backup: backupPath, config: self.configOnHd }));
+                        self.sendResponse(res, undefined, { query: query, backup: backupPath, config: self.configOnHd });
                     }
                 );
             });
@@ -446,7 +442,7 @@ module.exports = NodeHelper.create(Object.assign({
 
         if (query.data === "modulesAvailable") {
             this.modulesAvailable.sort(function(a, b) { return a.name.localeCompare(b.name); });
-            res.json(this.modulesAvailable);
+            this.sendResponse(res, undefined, { query: query, data: this.modulesAvailable });
             return;
         }
         if (query.data === "modulesInstalled") {
@@ -457,49 +453,49 @@ module.exports = NodeHelper.create(Object.assign({
             installed.sort(function(a, b) {
                 return a.name.localeCompare(b.name);
             });
-            res.json(installed);
+            this.sendResponse(res, undefined, { query: query, data: installed });
             return;
         }
         if (query.data === "translations") {
-            res.json(this.translation);
+            this.sendResponse(res, undefined, { query: query, data: this.translation });
             return;
         }
         if (query.data === "mmUpdateAvailable") {
             var sg = simpleGit(__dirname + "/..");
-            sg.fetch().status(function(err, data) {
+            sg.fetch().status((err, data) => {
                 if (!err) {
                     if (data.behind > 0) {
-                        res.json(true);
+                        this.sendResponse(res, undefined, { query: query, result: true });
                         return;
                     }
                 }
-                res.json(false);
+                this.sendResponse(res, undefined, { query: query, result: false });
             });
             return;
         }
         if (query.data === "config") {
-            res.json(this.getConfig());
+            this.sendResponse(res, undefined, { query: query, data: this.getConfig() });
             return;
         }
         if (query.data === "defaultConfig") {
             if (!(query.module in Module.configDefaults)) {
-                res.json({});
+                this.sendResponse(res, undefined, { query: query, data: {} });
             } else {
-                res.json(Module.configDefaults[query.module]);
+                this.sendResponse(res, undefined, { query: query, data: Module.configDefaults[query.module] });
             }
             return;
         }
         if (query.data === "modules") {
             if (!this.checkInititialized(res)) { return; }
-            this.callAfterUpdate(function() {
-                res.json(self.configData.moduleData);
+            this.callAfterUpdate(() => {
+                this.sendResponse(res, undefined, { query: query, data: self.configData.moduleData });
             });
             return;
         }
         if (query.data === "brightness") {
             if (!this.checkInititialized(res)) { return; }
-            this.callAfterUpdate(function() {
-                res.json(self.configData.brightness);
+            this.callAfterUpdate(() => {
+                this.sendResponse(res, undefined, { query: query, result: self.configData.brightness });
             });
             return;
         }
@@ -890,17 +886,20 @@ module.exports = NodeHelper.create(Object.assign({
             self.loadDefaultSettings();
         }
         if (notification === "REMOTE_ACTION") {
-            payload.isSocket = true;
-            this.executeQuery(payload);
+            if ("action" in payload) {
+                this.executeQuery(payload, { isSocket: true });
+            } else if ("data" in payload) {
+                this.answerGet(payload, { isSocket: true });
+            }
         }
         if (notification === "NEW_CONFIG") {
-            this.answerPost({ data: "config", isSocket: true }, { body: payload });
+            this.answerPost({ data: "config" }, { body: payload }, { isSocket: true });
         }
         if (notification === "REMOTE_CLIENT_CONNECTED") {
             this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
         }
-        if (notification === "REQUEST_TRANSLATIONS") {
-            this.sendSocketNotification("RECEIVED_TRANSLATIONS", this.translations);
+        if (notification === "REMOTE_NOTIFICATION_ECHO_IN") {
+            this.sendSocketNotification("REMOTE_NOTIFICATION_ECHO_OUT", payload);
         }
         /* API EXTENSION -- added v1.1.0 */
         if (notification === "REGISTER_API") {

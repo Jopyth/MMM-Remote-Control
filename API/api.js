@@ -161,7 +161,7 @@ module.exports = {
         });
 
         this.expressRouter.route('/update/:moduleName')
-            .get((req, res)=> {
+            .get((req, res) => {
                 this.updateModule(req.params.moduleName, res);
             });
 
@@ -173,8 +173,8 @@ module.exports = {
                 if (typeof req.body !== 'undefined' && "url" in req.body) {
                     this.installModule(req.body.url, res);
                 } else {
-                    res.status(400).json({ success: false, message: "Invalid URL provide in request body"});
-                }  
+                    res.status(400).json({ success: false, message: "Invalid URL provide in request body" });
+                }
             });
 
         this.expressRouter.route('/notification/:notification/:p?')
@@ -330,10 +330,7 @@ module.exports = {
 
     checkInititialized: function(res) {
         if (!this.initialized) {
-            res.status(400).json({
-                success: false,
-                message: "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?"
-            });
+            this.sendResponse(res, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?");
             return false;
         }
         return true;
