@@ -86,7 +86,9 @@ var Remote = {
             }
             if ("success" in payload) {
                 if (!("status" in payload)) { payload.status = (payload.success) ? "success" : "error"; }
-                this.setStatus(payload.status, payload.info);
+                let message = (payload.status === "error") ? this.translate("RESPONSE_ERROR") +
+                    ": <br><pre><code>" + JSON.stringify(payload, undefined, 3) + "</code></pre>" : payload.info;
+                this.setStatus(payload.status, message);
                 return;
             }
         }
@@ -367,7 +369,7 @@ var Remote = {
             }, this.autoHideDelay);
         }
         if (message) {
-            text = message;
+            text = (typeof message === "object") ? JSON.stringify(message, undefined, 3) : message;
         }
         parent.appendChild(this.createSymbolText("fa fa-fw " + symbol, text, onClick));
 
@@ -1495,6 +1497,15 @@ var buttons = {
     },
     "refresh-mm-button": function() {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "REFRESH" });
+    },
+    "fullscreen-button": function() {
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "TOGGLEFULLSCREEN" });
+    },
+    "minimize-button": function() {
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "MINIMIZE" });
+    },
+    "devtools-button": function() {
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "DEVTOOLS" });
     },
 
     // config menu buttons

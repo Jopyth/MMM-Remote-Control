@@ -17,6 +17,9 @@
     "RESTART": "Restart",
     "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
     "SHUTDOWN": "Shutdown",
+    "FULLSCREEN": "Toggle Fullscreen",
+    "MINIMIZE": "Minimize Browser",
+    "DEVTOOLS": "Open DevTools",
 
     "SHOWALL": "All",
     "HIDEALL": "All",
@@ -57,6 +60,7 @@
 
     "DONE": "Done.",
     "ERROR": "Error!",
+    "RESPONSE_ERROR": "Well that didn't work. Check the MM logs for more details",
     "LOADING": "Loading &hellip;",
 
     "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",

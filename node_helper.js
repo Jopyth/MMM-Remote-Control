@@ -718,6 +718,8 @@ module.exports = NodeHelper.create(Object.assign({
                     var payload = {}; // Assume empty JSON-object if no payload is provided
                     if (typeof query.payload === 'undefined') {
                         payload = query.payload;
+                    } else if (typeof query.payload === 'object') {
+                        payload = query.payload;
                     } else {
                         payload = JSON.parse(query.payload);
                     }
@@ -733,8 +735,9 @@ module.exports = NodeHelper.create(Object.assign({
             }
             if (["MINIMIZE", "TOGGLEFULLSCREEN", "DEVTOOLS"].indexOf(query.action) !== -1) {
                 try {
-                    win = require("electron").BrowserWindow.getFocusedWindow();
-                    if (!win) { throw new Error("Could not get Electron window instance."); }
+                    let electron = require("electron").BrowserWindow;
+                    if (!electron) { throw "Could not get Electron window instance."; }
+                    let win = electron.getFocusedWindow();
                     switch (query.action) {
                         case "MINIMIZE":
                             win.minimize();
@@ -751,6 +754,7 @@ module.exports = NodeHelper.create(Object.assign({
                 } catch (err) {
                     this.sendResponse(res, err);
                 }
+                return;
             }
             self.sendResponse(res, new Error(`Invalid Option: ${ query.action }`));
             return false;
