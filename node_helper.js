@@ -577,11 +577,13 @@ module.exports = NodeHelper.create(Object.assign({
                 exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, (error, stdout, stderr) => {
                     this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
                 });
+                this.sendSocketNotification("USER_PRESENCE", true);
                 return;
             } else if (action === "MONITOROFF") {
                 exec("tvservice -o", (error, stdout, stderr) => {
                     this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
                 });
+                this.sendSocketNotification("USER_PRESENCE", false);
                 return;
             }
         },
@@ -621,6 +623,11 @@ module.exports = NodeHelper.create(Object.assign({
                     }
                     self.sendResponse(res, error);
                 });
+                return true;
+            }
+            if (query.action === "USER_PRESENCE") {
+                this.sendSocketNotification("USER_PRESENCE", query.value);
+                this.sendResponse(res, undefined, query);
                 return true;
             }
             if (["MONITORON", "MONITOROFF", "MONITORTOGGLE", "MONITORSTATUS"].indexOf(query.action) !== -1) {

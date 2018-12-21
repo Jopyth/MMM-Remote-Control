@@ -52,13 +52,17 @@ Module.register("MMM-Remote-Control", {
     socketNotificationReceived: function(notification, payload) {
         if (notification === "UPDATE") {
             this.sendCurrentData();
-        }
         if (notification === "IP_ADDRESSES") {
+        }
             this.addresses = payload;
             if (this.data.position) {
                 this.updateDom();
             }
         }
+		if (notification === "USER_PRESENCE"){
+			Log.log("Hello, user_presence from remote envoyé à tout le monde, état : " + payload);
+			this.sendNotification(notification, payload);
+		}
         if (notification === "DEFAULT_SETTINGS") {
             let settingsVersion = payload.settingsVersion;
 

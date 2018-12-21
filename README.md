@@ -103,7 +103,7 @@ If this happens, simply reconfigure and save it again.
 ## Call methods from other modules
 
 You can call any of the methods provided in the UI directly through a GET request, or a module notification.
-For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems.
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button. 
 
 ### Examples
 
@@ -112,31 +112,28 @@ For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders
 http://192.168.xxx.xxx:8080/api/restart
 ```
 
-- Example for a notification schedule for [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically switch your monitor on and off with :
-```javascript
-notification_schedule: [
-    {notification: 'REMOTE_ACTION', schedule: '30 9 * * *', payload: {action: 'MONITOROFF'}},
-    {notification: 'REMOTE_ACTION', schedule: '30 18 * * *', payload: {action: 'MONITORON'}}
-]
-```
-
 - Example to trigger a RaspberryPi restart in your module:
 ```
 this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 ```
 
+See some specific examples for controlling your mirror from other modules and add your own examples [in the Wiki page here](https://github.com/shbatm/MMM-Remote-Control/wiki/Examples-for-Controlling-from-Another-Module)
+
 ### List of actions
-System Control:
+
+#### System Control:
+
 | Action | Description |
 | :-: | ------------- |
 | SHUTDOWN | Shutdown your RaspberryPi |
 | REBOOT | Restart your RaspberryPi |
-| MONITORON | Switch your display on |
-| MONITOROFF | Switch your display off |
-| MONITORTOGGLE | Toggle the display on or off |
+| MONITORON | Switch your display on. Also sends a `"USER_PRESENCE": true` notification. |
+| MONITOROFF | Switch your display off. Also sends a `"USER_PRESENCE": false` notification. |
+| MONITORTOGGLE | Toggle the display on or off (with respective `"USER_PRESENCE"` notification. |
 | MONITORSTATUS | Report back the monitor status (on or off) |
 
-MagicMirror Control:
+#### MagicMirror Control:
+
 | Action | Description |
 | :-: | ------------- |
 | RESTART | Restart your MagicMirror |
@@ -145,25 +142,29 @@ MagicMirror Control:
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 
-MagicMirror Electron Browser Window Control:
+#### MagicMirror Electron Browser Window Control:
+
 | Action | Description |
 | :-: | ------------- |
 | MINIMIZE | Minimize the browser window. |
 | TOGGLEFULLSCREEN | Toggle fullscreen mode on and off. |
 | DEVTOOLS | Open the DevTools console window. |
 
-Module Control:
+#### Module Control:
+
 | Action | Description |
 | :-: | ------------- |
 | HIDE | Hide a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
 | SHOW | Show a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
 
-Alerts and Notifications:
+#### Alerts and Notifications:
+
 | Action | Description |
 | :-: | ------------- |
 | SHOW_ALERT | Show Default Alert/Notification |
 | HIDE_ALERT | Hide Default Alert/Notification |
+| USER_PRESENCE | Will send a notification "USER_PRESENCE" = true or false (according to "value" to all other modules. See examples above|
 | NOTIFICATION | To send a notification to all modules, see the example in the [API README](API/README.md) |
 
 ### Format of module data response
