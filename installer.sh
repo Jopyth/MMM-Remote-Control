@@ -35,7 +35,7 @@ fi
 # assume default install location
 MM_HOME=$HOME/MagicMirror
 MODULE_NAME=MMM-Remote-Control
-AUTHOR=juzim
+FORK=Jopyth
 
 # check if we are correct by searching for https://github.com/MichMich/MagicMirror in package.json
 TEST_STRING="\"url\": \"git+https://github.com/MichMich/MagicMirror.git\""
@@ -121,7 +121,7 @@ else
             echo ""
             echo "Cloning the repository on $BRANCH branch..."
             echo ""
-            git clone https://github.com/Jopyth/$MODULE_NAME.git -b $BRANCH
+            git clone https://github.com/$FORK/$MODULE_NAME.git -b $BRANCH
             if [ $? -ne 0 ]; then
                 echo "Failed. Do you have an internet connection?"
                 exit 1;
@@ -194,7 +194,7 @@ else
 fi
 echo "Have fun with the module, if you have any problems, please search for help on github or in the forum:"
 echo ""
-echo "   Github : https://github.com/Jopyth/$MODULE_NAME"
+echo "   Github : https://github.com/$FORK/$MODULE_NAME"
 echo "   Forum  : http://forum.magicmirror.builders"
 echo ""
 echo "Do not forget to restart your MagicMirror2 to activate the module! Installation finished."
