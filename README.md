@@ -172,6 +172,7 @@ See some specific examples for controlling your mirror from other modules and ad
 | HIDE_ALERT | Hide Default Alert/Notification |
 | USER_PRESENCE | Will send a notification "USER_PRESENCE" = true or false (according to "value" to all other modules. See examples above|
 | NOTIFICATION | To send a notification to all modules, see the example in the [API README](API/README.md) |
+| DELAYED | Send any of the above nested inside a "DELAYED" call to delay the action. Default is 10s. See Delayed Actions below. |
 
 ### Format of module data response
 
@@ -188,6 +189,25 @@ The response will be in the JSON format, here is an example:
 "settingsVersion":1
 }
 ```
+
+### Delayed Actions
+
+You can delay an action by sending the notification nested inside of a `"DELAYED"` notification. Below is an example of turning off the monitor in 60s.
+
+```js
+this.sendSocketNotification("REMOTE_ACTION",
+    {
+        action: "DELAYED",
+        did: "SOME_UNIQUE_ID", // Optional; Some string, in case you want to cancel later.
+        timeout: 60,  // Optional; Default 10s
+        abort: false, // Optional; send true to cancel an existing timer
+        query: {
+            action: "MONITOROFF"
+        }
+    });
+```
+
+Can also be used with the [API](https://documenter.getpostman.com/view/6167403/Rzfni66c) by adding `/delay?timeout=10s&did=something` to some routes.
 
 ### Using Custom Commands
 

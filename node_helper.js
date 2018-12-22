@@ -50,6 +50,8 @@ module.exports = NodeHelper.create(Object.assign({
             this.modulesAvailable = [];
             this.modulesInstalled = [];
 
+            this.delayedQueryTimers = {};
+
             fs.readFile(path.resolve(__dirname + "/remote.html"), function(err, data) {
                 self.template = data.toString();
             });
@@ -60,6 +62,13 @@ module.exports = NodeHelper.create(Object.assign({
 
             /* API EXTENSION - Added v2.0.0 */
             this.externalApiRoutes = {};
+        },
+
+        stop: function() {
+            // Clear all timeouts for clean shutdown
+            Object.keys(this.delayedQueryTimers).forEach(t => {
+                clearTimeout(this.delayedQueryTimers[t]);
+            });
         },
 
         onModulesLoaded: function() {
@@ -541,6 +550,21 @@ module.exports = NodeHelper.create(Object.assign({
             }, timeout);
         },
 
+        delayedQuery: function(query, res) {
+            if (query.did in this.delayedQueryTimers) {
+                clearTimeout(this.delayedQueryTimers[query.did]);
+                delete this.delayedQueryTimers[query.did];
+            }
+            if (!query.abort) {
+                this.delayedQueryTimers[query.did] = setTimeout(() => {
+                    this.executeQuery(query.query);
+                    delete this.delayedQueryTimers[query.did];
+                }, (("timeout" in query) ? query.timeout : 10) * 1000);
+            }
+            this.sendResponse(res, undefined, query);
+        },
+
+
         sendResponse: function(res, error, data) {
             let response = { success: true };
             let status = 200;
@@ -614,11 +638,6 @@ module.exports = NodeHelper.create(Object.assign({
         executeQuery: function(query, res) {
             var self = this;
             var opts = { timeout: 15000 };
-
-            // If the query came from a socket notification, send result on same
-            if ("isSocket" in query && query.isSocket && typeof res === "undefined") {
-                res = { isSocket: true };
-            }
 
             if (query.action === "SHUTDOWN") {
                 exec("sudo shutdown -h now", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
@@ -754,6 +773,24 @@ module.exports = NodeHelper.create(Object.assign({
                 } catch (err) {
                     this.sendResponse(res, err);
                 }
+                return;
+            }
+            if (query.action === "DELAYED") {
+                /* Expects a nested query object 
+                 *   {
+                 *       action: "DELAYED",
+                 *       did: "SOME_UNIQUE_ID",
+                 *       timeout: 10000,  // Optional; Default 10000ms
+                 *       abort: false, // Optional; send to cancel
+                 *       query: {
+                 *           action: "SHOW_ALERT",
+                 *           title: "Delayed Alert!",
+                 *           message: "This is a delayed alert test."
+                 *       }
+                 *   }
+                 * Resending with same ID resets delay, unless abort:true
+                 */
+                this.delayedQuery(query, res);
                 return;
             }
             self.sendResponse(res, new Error(`Invalid Option: ${ query.action }`));

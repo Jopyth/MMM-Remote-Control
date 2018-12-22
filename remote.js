@@ -106,14 +106,9 @@ var Remote = {
     },
 
     loadButtons: function(buttons) {
-        for (var key in buttons) {
-            if (buttons.hasOwnProperty(key)) {
-                var element = document.getElementById(key);
-
-                element.addEventListener("click", buttons[key], false);
-            }
-        }
-
+        Object.keys(buttons).forEach(key => {
+            document.getElementById(key).addEventListener("click", buttons[key], false);
+        });
         console.log("buttons loaded");
     },
 

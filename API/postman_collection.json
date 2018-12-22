@@ -516,6 +516,354 @@
 			]
 		},
 		{
+			"name": "/api/monitor/:action",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/monitor/:action",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"monitor",
+						":action"
+					],
+					"variable": [
+						{
+							"key": "action",
+							"value": "",
+							"description": "Valid actions are \"on\", \"off\", \"toggle\", or \"status\". If you don't pass an action, it assumes \"status\"."
+						}
+					]
+				},
+				"description": "Control the connected display, turning it on or off."
+			},
+			"response": [
+				{
+					"name": "/api/monitor",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/monitor/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"monitor",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "action",
+									"value": "",
+									"description": "Valid actions are \"on\", \"off\", \"toggle\", or \"status\". If you don't pass an action, it assumes \"status\"."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "149"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"95-+XkUiPbNJb2etHhTz4N3Be/e6IA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 07:27:02 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"monitor\": \"on\"\n}"
+				},
+				{
+					"name": "/api/monitor/on",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/monitor/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"monitor",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "action",
+									"value": "on",
+									"description": "Valid actions are \"on\" or \"off\""
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "162"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a2-Q4cZAgS8d8I9JfUnUV8CCmTsMTU\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 06:54:47 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n\t\"monitor\": \"on\"\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/reboot",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/reboot",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"reboot"
+					]
+				},
+				"description": "Reboot the Raspberry Pi"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/shutdown",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/shutdown",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"shutdown"
+					]
+				},
+				"description": "Reboot the Raspberry Pi"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/restart",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/restart",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"restart"
+					]
+				},
+				"description": "Restart your MagicMirror instance if using PM2 to control it."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/minimize",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/minimize",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"minimize"
+					]
+				},
+				"description": "(Electron only) Minimize the browser window."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/togglefullscreen",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/togglefullscreen",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"togglefullscreen"
+					]
+				},
+				"description": "(Electron only): Toggle Full Screen mode on/off"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/devtools",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/devtools",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"devtools"
+					]
+				},
+				"description": "(Electron only): Toggle Full Screen mode on/off"
+			},
+			"response": []
+		},
+		{
 			"name": "/api/translations",
 			"request": {
 				"method": "GET",
@@ -614,6 +962,56 @@
 					"body": "{\n    \"TITLE\": \"Magic Mirror Menu\",\n    \"EDIT_MENU_NAME\": \"Edit view\",\n    \"SHUTDOWN_MENU_NAME\": \"Power\",\n    \"CONFIGURE_MENU_NAME\": \"Edit config.js\",\n    \"VIEW_MIRROR\": \"MagicMirror<sup>2</sup>\",\n    \"BACK\": \"Back\",\n    \"BRIGHTNESS\": \"Brightness\",\n    \"REFRESHMM\": \"Refresh Browser\",\n    \"MONITOROFF\": \"Turn monitor OFF\",\n    \"MONITORON\": \"Turn monitor ON\",\n    \"MONITORTIMED\": \"Turn monitor ON briefly\",\n    \"RESTART\": \"Restart\",\n    \"RESTARTMM\": \"Restart MagicMirror<sup>2</sup>\",\n    \"SHUTDOWN\": \"Shutdown\",\n    \"SHOWALL\": \"All\",\n    \"HIDEALL\": \"All\",\n    \"ADD_MODULE\": \"Add module\",\n    \"SEARCH\": \"Search &hellip;\",\n    \"INSTALLED\": \"Installed\",\n    \"DOWNLOAD\": \"Download\",\n    \"DOWNLOADING\": \"Downloading &hellip;\",\n    \"CODE_LINK\": \"View code\",\n    \"BY\": \"by\",\n    \"ADD_THIS\": \"Add this module\",\n    \"HELP\": \"Show readme\",\n    \"MENU\": \"Menu\",\n    \"RESET\": \"Reset\",\n    \"NO_HEADER\": \"(no header)\",\n    \"NO_POSITION\": \"(invisible)\",\n    \"ADD_ENTRY\": \"Add entry\",\n    \"NEW_ENTRY_NAME\": \"(enter name of new entry)\",\n    \"DELETE_ENTRY\": \"Delete\",\n    \"UNSAVED_CHANGES\": \"Unsaved changes\",\n    \"OK\": \"Ok\",\n    \"DISCARD\": \"Discard changes\",\n    \"CANCEL\": \"Cancel\",\n    \"NO_MODULES_LOADED\": \"No module loaded.\",\n    \"SAVE\": \"Save\",\n    \"EXPERIMENTAL\": \"This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!<br>Do you want to continue?\",\n    \"PANIC\": \"Never mind.\",\n    \"NO_RISK_NO_FUN\": \"No risk no fun!\",\n    \"CONFIRM_SHUTDOWN\": \"The system will shut down.\",\n    \"CONFIRM_RESTART\": \"The system will restart.\",\n    \"LOAD_ERROR\": \"If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:\",\n    \"ISSUE_LINK\": \"Github issue page\",\n    \"DONE\": \"Done.\",\n    \"ERROR\": \"Error!\",\n    \"LOADING\": \"Loading &hellip;\",\n    \"LOCKSTRING_WARNING\": \"This module was hidden by LIST_OF_MODULES, it can not be shown.\",\n    \"FORCE_SHOW\": \"Do it anyway.\",\n    \"UPDATE_MENU_NAME\": \"Updates\",\n    \"UPDATEMM\": \"Update MagicMirror<sup>2</sup>\",\n    \"UPDATE_AVAILABLE\": \"Update available\",\n    \"ALERT_MENU_NAME\": \"Alert\",\n    \"SENDALERT\": \"Send\",\n    \"HIDEALERT\": \"Hide\",\n    \"FORM_TYPE\": \"Type:\",\n    \"FORM_ALERT\": \"Alert\",\n    \"FORM_NOTIFICATION\": \"Notification\",\n    \"FORM_TITLE\": \"Title:\",\n    \"FORM_TITLE_PLACEHOLDER\": \"Enter title...\",\n    \"FORM_MESSAGE\": \"Message:\",\n    \"FORM_MESSAGE_PLACEHOLDER\": \"Enter message...\",\n    \"FORM_SECONDS\": \"Seconds:\"\n}"
 				}
 			]
+		},
+		{
+			"name": "/api/refresh",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"refresh"
+					]
+				},
+				"description": "Refresh the screen of your MagicMirror instance. Note: this only refreshes the browser window, it will not restart the backend server."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/save",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"save"
+					]
+				},
+				"description": "Saves the MMM-Remote-Control defaults to a file."
+			},
+			"response": []
 		},
 		{
 			"name": "/api/brightness",
@@ -838,7 +1236,10 @@
 			]
 		},
 		{
-			"name": "/api/monitor/:action",
+			"name": "/api/userpresence/:value",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -847,7 +1248,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/monitor/:action",
+					"raw": "http://localhost:8080/api/userpresence/:value",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -855,185 +1256,20 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"monitor",
-						":action"
+						"userpresence",
+						":value"
 					],
 					"variable": [
 						{
-							"key": "action",
-							"value": "",
-							"description": "Valid actions are \"on\", \"off\", \"toggle\", or \"status\". If you don't pass an action, it assumes \"status\"."
+							"key": "value",
+							"value": "true",
+							"description": "Boolean (true or false) value to set the User Presence variable and send a notification to other modules. \nIf no value is passed, the current User Presence state is returned, if known."
 						}
 					]
 				},
-				"description": "Control the connected display, turning it on or off."
+				"description": "Get or Set the USER_PRESENCE status. If no `:value` is sent (just /api/userpresence is called), it will return the USER_PRESENCE state if known.  If `true` or `false` is sent (e.g. /api/userpresence/true), a `\"USER_PRESENCE\"` notification will be sent to all modules."
 			},
-			"response": [
-				{
-					"name": "/api/monitor",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/monitor/:action",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"monitor",
-								":action"
-							],
-							"variable": [
-								{
-									"key": "action",
-									"value": "",
-									"description": "Valid actions are \"on\", \"off\", \"toggle\", or \"status\". If you don't pass an action, it assumes \"status\"."
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "X-DNS-Prefetch-Control",
-							"value": "off"
-						},
-						{
-							"key": "X-Frame-Options",
-							"value": "SAMEORIGIN"
-						},
-						{
-							"key": "Strict-Transport-Security",
-							"value": "max-age=15552000; includeSubDomains"
-						},
-						{
-							"key": "X-Download-Options",
-							"value": "noopen"
-						},
-						{
-							"key": "X-Content-Type-Options",
-							"value": "nosniff"
-						},
-						{
-							"key": "X-XSS-Protection",
-							"value": "1; mode=block"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json; charset=utf-8"
-						},
-						{
-							"key": "Content-Length",
-							"value": "149"
-						},
-						{
-							"key": "ETag",
-							"value": "W/\"95-+XkUiPbNJb2etHhTz4N3Be/e6IA\""
-						},
-						{
-							"key": "Date",
-							"value": "Mon, 17 Dec 2018 07:27:02 GMT"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"success\": true,\n    \"monitor\": \"on\"\n}"
-				},
-				{
-					"name": "/api/monitor/on",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/monitor/:action",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"monitor",
-								":action"
-							],
-							"variable": [
-								{
-									"key": "action",
-									"value": "on",
-									"description": "Valid actions are \"on\" or \"off\""
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "X-DNS-Prefetch-Control",
-							"value": "off"
-						},
-						{
-							"key": "X-Frame-Options",
-							"value": "SAMEORIGIN"
-						},
-						{
-							"key": "Strict-Transport-Security",
-							"value": "max-age=15552000; includeSubDomains"
-						},
-						{
-							"key": "X-Download-Options",
-							"value": "noopen"
-						},
-						{
-							"key": "X-Content-Type-Options",
-							"value": "nosniff"
-						},
-						{
-							"key": "X-XSS-Protection",
-							"value": "1; mode=block"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json; charset=utf-8"
-						},
-						{
-							"key": "Content-Length",
-							"value": "162"
-						},
-						{
-							"key": "ETag",
-							"value": "W/\"a2-Q4cZAgS8d8I9JfUnUV8CCmTsMTU\""
-						},
-						{
-							"key": "Date",
-							"value": "Mon, 17 Dec 2018 06:54:47 GMT"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"success\": true,\n\t\"monitor\": \"on\"\n}"
-				}
-			]
+			"response": []
 		},
 		{
 			"name": "/api/modules",
@@ -1151,7 +1387,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/modules/:moduleName",
+					"raw": "http://localhost:8080/api/module/:moduleName/:action/:p?apiKey=testkey",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -1159,14 +1395,30 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"modules",
-						":moduleName"
+						"module",
+						":moduleName",
+						":action",
+						":p"
+					],
+					"query": [
+						{
+							"key": "apiKey",
+							"value": "testkey"
+						}
 					],
 					"variable": [
 						{
 							"key": "moduleName",
-							"value": "alert",
+							"value": "carousel",
 							"description": "Return details about a particular module.  Can be a Module Name or Unique Identifier."
+						},
+						{
+							"key": "action",
+							"value": "carouselgoto"
+						},
+						{
+							"key": "p",
+							"value": "1"
 						}
 					]
 				},
@@ -1286,18 +1538,59 @@
 						{
 							"key": "moduleName",
 							"value": "clock",
-							"description": "Module to act upon.  Can be a Module Name or Unique Identifier (e.g. `module_3_clock`)."
+							"description": "Module to act upon.  Can be a Module Name or Unique Identifier (e.g. `module_3_clock`).\n\nTo SHOW/HIDE/TOGGLE all modules, send \"all\" as :moduleName"
 						},
 						{
 							"key": "action",
 							"value": "defaults",
-							"description": "Action to take.  Valid options are \"show\", \"hide\", or \"force\" to force a module to be shown if it has a lockstring from another module.\n\"defaults\" will return the default configuration for a given module."
+							"description": "Action to take.  Valid options are \"show\", \"hide\", \"toggle\": or \"force\" to force a module to be shown if it has a lockstring from another module.\n\"defaults\" will return the default configuration for a given module."
 						}
 					]
 				},
 				"description": "List of all modules currently active."
 			},
 			"response": [
+				{
+					"name": "/api/modules/all/hide",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules/:moduleName/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules",
+								":moduleName",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "all",
+									"description": "Module to act upon.  Can be a Module Name or Unique Identifier (e.g. `module_3_clock`).\n\nTo SHOW/HIDE/TOGGLE all modules, send \"all\" as :moduleName"
+								},
+								{
+									"key": "action",
+									"value": "hide",
+									"description": "Action to take.  Valid options are \"show\", \"hide\", \"toggle\": or \"force\" to force a module to be shown if it has a lockstring from another module.\n\"defaults\" will return the default configuration for a given module."
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
 				{
 					"name": "/api/modules/clock/defaults",
 					"originalRequest": {
@@ -1787,6 +2080,39 @@
 			]
 		},
 		{
+			"name": "/api/update/:moduleName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/update/:moduleName",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"update",
+						":moduleName"
+					],
+					"variable": [
+						{
+							"key": "moduleName",
+							"value": "MMM-Remote-Control",
+							"description": "*Optional* Name of the module to update. If left blank, it will update the MagicMirror repo itself."
+						}
+					]
+				},
+				"description": "Check if there is an update available for MagicMirror."
+			},
+			"response": []
+		},
+		{
 			"name": "/api/module/:moduleName?/:action?/:p?",
 			"request": {
 				"method": "GET",
@@ -1822,23 +2148,23 @@
 					],
 					"variable": [
 						{
+							"description": "Module Name or Identifier upon which to act.",
 							"key": "moduleName",
-							"value": "",
-							"description": "Module Name or Identifier upon which to act."
+							"value": ""
 						},
 						{
+							"description": "*Optional* Action to send. If no action is sent, the module's available actions are returned.",
 							"key": "action",
-							"value": "",
-							"description": "*Optional* Action to send. If no action is sent, the module's available actions are returned."
+							"value": ""
 						},
 						{
+							"description": "*Optional* Parameter associated with the action. Refer to specific module for documentation.",
 							"key": "p",
-							"value": "",
-							"description": "*Optional* Parameter associated with the action. Refer to specific module for documentation."
+							"value": ""
 						}
 					]
 				},
-				"description": "# External API requests.\n\n**There is a difference between `/api/module` and `/api/modules`**\n1. `module` is for the External API (control of another module).\n2. `modules` is part of the internal Remote Control system functions.\n\n\nAs discussed in the [API README](https://github.com/shbatm/MMM-Remote-Control/tree/wip_api/API), these methods are guessed based on your currently installed modules. To see what actions are available on your particular installation:\n\n| Method | URL | Description |\n| ------ | --- | ------- |\n| GET | /api/module | Return a list of all external API actions registered.\n| GET | /api/module/:moduleName | Returns registered API actions for a given module<br>`:moduleName`: Name or Identifier for an installed & activated module.\n| GET | /api/module/:moduleName/:action/:p?a=b&c=d | Sends a notification `:action` to the module `:moduleName` with a payload `{ param: p, a: b, c: d }` \n\n*NOTE:* Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want.  For the most part it works pretty well; however, at the moment, this also includes socket notifications (module internal notifications) as well, which won't do anything when called from the API."
+				"description": "# External API requests.\n\n**There is a difference between `/api/module` and `/api/modules`**\n1. `module` is for the External API (control of another module).\n2. `modules` is part of the internal Remote Control system functions.\n\n\nAs discussed in the [API README](https://github.com/shbatm/MMM-Remote-Control/tree/wip_api/API), these methods are guessed based on your currently installed modules. To see what actions are available on your particular installation:\n\n| Method | URL | Description |\n| ------ | --- | ------- |\n| GET | /api/module | Return a list of all external API actions registered.\n| GET | /api/module/:moduleName | Returns registered API actions for a given module<br>`:moduleName`: Name or Identifier for an installed & activated module.\n| GET | /api/module/:moduleName/:action/:p?a=b&c=d | Sends a notification `:action` to the module `:moduleName` with a payload `{ param: p, a: b, c: d }` \n\n*NOTE:* Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want. Consult each modules' README for details on what notifications can be used and how."
 			},
 			"response": [
 				{
@@ -2082,7 +2408,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"success\": true,\n    \"alert\": {\n        \"module\": \"alert\",\n        \"path\": \"alert\",\n        \"actions\": {\n            \"showalert\": {\n                \"notification\": \"SHOW_ALERT\"\n            },\n            \"hidealert\": {\n                \"notification\": \"HIDE_ALERT\"\n            }\n        },\n        \"guessed\": true\n    },\n    \"updatenotification\": {\n        \"module\": \"updatenotification\",\n        \"path\": \"updatenotification\",\n        \"actions\": {\n            \"status\": {\n                \"notification\": \"STATUS\"\n            }\n        },\n        \"guessed\": true\n    },\n    \"calendar\": {\n        \"module\": \"calendar\",\n        \"path\": \"calendar\",\n        \"actions\": {\n            \"calendarevents\": {\n                \"notification\": \"CALENDAR_EVENTS\"\n            },\n            \"fetcherror\": {\n                \"notification\": \"FETCH_ERROR\"\n            },\n            \"incorrecturl\": {\n                \"notification\": \"INCORRECT_URL\"\n            }\n        },\n        \"guessed\": true\n    },\n    \"compliments\": {\n        \"module\": \"compliments\",\n        \"path\": \"compliments\",\n        \"actions\": {\n            \"currentweatherdata\": {\n                \"notification\": \"CURRENTWEATHER_DATA\"\n            }\n        },\n        \"guessed\": true\n    },\n    \"newsfeed\": {\n        \"module\": \"newsfeed\",\n        \"path\": \"newsfeed\",\n        \"actions\": {\n            \"newsitems\": {\n                \"notification\": \"NEWS_ITEMS\"\n            },\n            \"articlenext\": {\n                \"notification\": \"ARTICLE_NEXT\"\n            },\n            \"articleprevious\": {\n                \"notification\": \"ARTICLE_PREVIOUS\"\n            },\n            \"articlemoredetails\": {\n                \"notification\": \"ARTICLE_MORE_DETAILS\"\n            },\n            \"articlescrollup\": {\n                \"notification\": \"ARTICLE_SCROLL_UP\"\n            },\n            \"articlelessdetails\": {\n                \"notification\": \"ARTICLE_LESS_DETAILS\"\n            },\n            \"articletogglefull\": {\n                \"notification\": \"ARTICLE_TOGGLE_FULL\"\n            }\n        },\n        \"guessed\": true\n    }\n}"
+					"body": "{\r\n   \"success\": true,\r\n   \"alert\": {\r\n      \"module\": \"alert\",\r\n      \"path\": \"alert\",\r\n      \"actions\": {\r\n         \"showalert\": {\r\n            \"notification\": \"SHOW_ALERT\"\r\n         },\r\n         \"hidealert\": {\r\n            \"notification\": \"HIDE_ALERT\"\r\n         }\r\n      },\r\n      \"guessed\": true\r\n   },\r\n   \"compliments\": {\r\n      \"module\": \"compliments\",\r\n      \"path\": \"compliments\",\r\n      \"actions\": {\r\n         \"currentweatherdata\": {\r\n            \"notification\": \"CURRENTWEATHER_DATA\"\r\n         }\r\n      },\r\n      \"guessed\": true\r\n   },\r\n   \"newsfeed\": {\r\n      \"module\": \"newsfeed\",\r\n      \"path\": \"newsfeed\",\r\n      \"actions\": {\r\n         \"articlenext\": {\r\n            \"notification\": \"ARTICLE_NEXT\"\r\n         },\r\n         \"articleprevious\": {\r\n            \"notification\": \"ARTICLE_PREVIOUS\"\r\n         },\r\n         \"articlemoredetails\": {\r\n            \"notification\": \"ARTICLE_MORE_DETAILS\"\r\n         },\r\n         \"articlescrollup\": {\r\n            \"notification\": \"ARTICLE_SCROLL_UP\"\r\n         },\r\n         \"articlelessdetails\": {\r\n            \"notification\": \"ARTICLE_LESS_DETAILS\"\r\n         },\r\n         \"articletogglefull\": {\r\n            \"notification\": \"ARTICLE_TOGGLE_FULL\"\r\n         }\r\n      },\r\n      \"guessed\": true\r\n   }\r\n}"
 				}
 			]
 		},
@@ -2225,6 +2551,362 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"success\": true,\n    \"notification\": \"SHOW_ALERT\",\n    \"payload\": {\n        \"title\": \"Hello World!\",\n        \"message\": \"Alert Successfully Shown!\",\n        \"timer\": 2000\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/notification/:notification/:p?",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/notification/:notification/:p?a=something&b=somethingelse",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"notification",
+						":notification",
+						":p"
+					],
+					"query": [
+						{
+							"key": "a",
+							"value": "something",
+							"description": "Query String will be passed as the payload for the notificiation"
+						},
+						{
+							"key": "b",
+							"value": "somethingelse"
+						}
+					],
+					"variable": [
+						{
+							"key": "notification",
+							"value": "SHOW_ALERT",
+							"description": "Notification Text to Send"
+						},
+						{
+							"description": "*Optional* Parameter associated with the action. Refer to specific module for documentation.",
+							"key": "p",
+							"value": "HELLO"
+						}
+					]
+				},
+				"description": "# Generic Notification Requests\n\nSwiss army knife of the API (and MagicMirror in general) -- If you just want a simple way to send a module notification, this is it.  Payload is treated the same as `/api/module/:moduleName/:action` commands (because it is pretty much the same thing, just without any validation of if a module will recognize the notification)."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/notification/:notification",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "This header is required for any POST method.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/notification/:notification",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"notification",
+						":notification"
+					],
+					"variable": [
+						{
+							"key": "notification",
+							"value": "SHOW_ALERT",
+							"description": "Notification text to send. Payload sent in body."
+						}
+					]
+				},
+				"description": "`POST` version of the Notification API, more convenient for sending complex payloads via the post body."
+			},
+			"response": [
+				{
+					"name": "/api/notification/SHOW_ALERT",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "This header is required for any POST method.",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/module/:moduleName",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"module",
+								":moduleName"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "alert",
+									"description": "Module Name or Identifier upon which to act."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "130"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"82-NCVYaecz3FW1+kgtV5i9/jGIgzc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:20:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"notification\": \"SHOW_ALERT\",\n    \"payload\": {\n        \"title\": \"Hello World!\",\n        \"message\": \"Alert Successfully Shown!\",\n        \"timer\": 2000\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Delayed Functions (/:delayed)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"description": "This header is required for any POST method.",
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/notification/:notification/:delayed?timeout=5&did=myShowAlertTimer&abort=false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"notification",
+						":notification",
+						":delayed"
+					],
+					"query": [
+						{
+							"key": "timeout",
+							"value": "5",
+							"description": "Optional: Delay time in seconds"
+						},
+						{
+							"key": "did",
+							"value": "myShowAlertTimer",
+							"description": "Optional: (Delay ID) Some string to identify your timer, in case you want to cancel it later."
+						},
+						{
+							"key": "abort",
+							"value": "false",
+							"description": "Optional: Abort an existing timer. If you want to cancel a long running timer, pass it again with the same DID and abort=true."
+						}
+					],
+					"variable": [
+						{
+							"description": "Notification text to send. Payload sent in body.",
+							"key": "notification",
+							"value": "SHOW_ALERT"
+						},
+						{
+							"description": "Send \"/delay\" to delay an action",
+							"key": "delayed",
+							"value": "delay"
+						}
+					]
+				},
+				"description": "On the following routes, you can add a `/delay` to the end of the URL to delay the action until some time in the future.  The default is 10s, but this can be set in the query string or POST body.\n\nAvailable for:\n- /api/refresh\n- /api/shutdown\n- /api/reboot\n- /api/restart\n- /api/monitor/:action\n- /api/notification/:notification\n- /api/modules/:moduleName/:action\n- /api/module/:moduleName/:action\n\nActive timers can be viewed by calling `GET /api/timers`"
+			},
+			"response": [
+				{
+					"name": "Delayed Alert Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"description": "This header is required for any POST method.",
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/notification/:notification/:delayed?timeout=5&did=myShowAlertTimer&abort=false",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"notification",
+								":notification",
+								":delayed"
+							],
+							"query": [
+								{
+									"key": "timeout",
+									"value": "5",
+									"description": "Optional: Delay time in seconds"
+								},
+								{
+									"key": "did",
+									"value": "myShowAlertTimer",
+									"description": "Optional: (Delay ID) Some string to identify your timer, in case you want to cancel it later."
+								},
+								{
+									"key": "abort",
+									"value": "false",
+									"description": "Optional: Abort an existing timer. If you want to cancel a long running timer, pass it again with the same DID and abort=true."
+								}
+							],
+							"variable": [
+								{
+									"description": "Notification text to send. Payload sent in body.",
+									"key": "notification",
+									"value": "SHOW_ALERT"
+								},
+								{
+									"key": "delayed",
+									"value": "delay",
+									"description": "Send \"/delay\" to delay an action"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "236"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"ec-pcpNfeSfoc1WV+Sn0nLKUxM3HMo\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 22 Dec 2018 01:02:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"action\": \"DELAYED\",\n    \"did\": \"myShowAlertTimer\",\n    \"timeout\": \"5\",\n    \"abort\": false,\n    \"query\": {\n        \"notification\": \"SHOW_ALERT\",\n        \"payload\": {\n            \"title\": \"Hello World!\",\n            \"message\": \"Alert Successfully Shown!\",\n            \"timer\": 2000\n        },\n        \"action\": \"NOTIFICATION\"\n    }\n}"
 				}
 			]
 		}

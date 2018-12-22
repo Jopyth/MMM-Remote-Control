@@ -10,6 +10,7 @@ const path = require("path");
 const url = require("url");
 const fs = require("fs");
 const os = require("os");
+const uuid = require("uuid/v4");
 const bodyParser = require("body-parser");
 const express = require("express");
 
@@ -149,17 +150,18 @@ module.exports = {
         });
 
         this.expressRouter.route([
-            '/refresh',
+            '/refresh/:delayed?',
+            '/shutdown/:delayed?',
+            '/reboot/:delayed?',
+            '/restart/:delayed?',
             '/save',
-            '/shutdown',
-            '/reboot',
-            '/restart',
             '/minimize',
             '/togglefullscreen',
             '/devtools'
         ]).get((req, res) => {
             let r = req.path.substring(1).toUpperCase();
-            self.executeQuery({ action: r }, res);
+            console.log(req.path);
+            self.executeQuery(this.checkDelay({ action: r }, req), res);
         });
 
         this.expressRouter.route('/userpresence/:value')
@@ -192,7 +194,7 @@ module.exports = {
                 }
             });
 
-        this.expressRouter.route('/notification/:notification/:p?')
+        this.expressRouter.route('/notification/:notification/:p?/:delayed?')
             .get((req, res) => {
                 this.answerNotifyApi(req, res);
             })
@@ -200,13 +202,13 @@ module.exports = {
                 this.answerNotifyApi(req, res);
             });
 
-        this.expressRouter.route('/modules/:moduleName/:action?')
+        this.expressRouter.route('/modules/:moduleName/:action?/:delayed?')
             .get((req, res) => {
-                this.answerModuleApi(req, res);
+                this.answerModulesApi(req, res);
             });
 
         // Add routes to be extended by other modules.
-        this.expressRouter.route('/module/:moduleName?/:action?/:p?')
+        this.expressRouter.route('/module/:moduleName?/:action?/:p?/:delayed?')
             .get((req, res) => {
                 this.answerExternalApi(req, res);
             })
@@ -214,11 +216,11 @@ module.exports = {
                 this.answerExternalApi(req, res);
             });
 
-        this.expressRouter.route('/monitor/:action?')
+        this.expressRouter.route('/monitor/:action?/:delayed?')
             .get((req, res) => {
                 if (!req.params.action) { req.params.action = "STATUS"; }
                 var actionName = req.params.action.toUpperCase();
-                this.executeQuery({ action: `MONITOR${actionName}` }, res);
+                this.executeQuery(checkDelay({ action: `MONITOR${actionName}` }, req), res);
             });
 
         this.expressRouter.route('/brightness/:setting(\\d+)')
@@ -226,9 +228,28 @@ module.exports = {
                 this.executeQuery({ action: `BRIGHTNESS`, value: req.params.setting }, res);
             });
 
+        this.expressRouter.route('/timers').get((req, res) => { this.sendResponse(res, undefined, this.delayedQueryTimers); });
+
         this.expressApp.use('/api', this.expressRouter);
 
         this.getExternalApiByGuessing();
+    },
+
+    checkDelay: (query, req) => {
+        // expects .../delay?did=SOME_UNIQUE_ID&timeout=10&abort=false
+        // accepts .../delay
+        // defaults to a 10s delay with a random UUID as ID.
+        if (req.params && req.params.delayed && req.params.delayed === "delay") {
+            let dQuery = {
+                action: "DELAYED",
+                did: (req.query.did) ? req.query.did : (req.body.did) ? req.body.did : uuid().replace(/-/g, ''),
+                timeout: (req.query.timeout) ? req.query.timeout : (req.body.timeout) ? req.body.timeout : 10,
+                abort: (req.query.abort && req.query.abort === "true") ? true : (req.query.abort && req.query.abort === "true") ? true : false,
+                query: query
+            };
+            return dQuery;
+        }
+        return query;
     },
 
     answerNotifyApi: function(req, res, action) {
@@ -241,6 +262,20 @@ module.exports = {
         // If we have either a query string or a payload already provided w the action,
         //  then the paramteter will be inside the payload.param property.
         delete req.query.apiKey;
+        let query = { notification: n };
+        if (req.params.p && req.params.p === "delay") {
+            req.params.delayed = req.params.p;
+            delete req.params.p;
+        }
+        if (req.params.delayed && req.params.delayed === "delay") {
+            query = this.checkDelay(query, req);
+            if (req.query) {
+                delete req.query.did;
+                delete req.query.abort;
+                delete req.query.timeout;
+            }
+        }
+
         let payload = {};
         if (Object.keys(req.query).length === 0 && typeof req.params.p !== "undefined") {
             payload = req.params.p;
@@ -264,12 +299,19 @@ module.exports = {
             }
         }
 
-        this.sendSocketNotification("NOTIFICATION", { notification: n, payload: payload });
-        res.json({ success: true, notification: n, payload: payload });
+        if ("action" in query && query.action == "DELAYED") {
+            query.query.payload = payload;
+            query.query.action = "NOTIFICATION";
+            this.delayedQuery(query, res);
+        } else {
+            query.payload = payload;
+            this.sendSocketNotification("NOTIFICATION", query);
+            res.json(Object.assign({ success: true }, query));
+        }
         return;
     },
 
-    answerModuleApi: function(req, res) {
+    answerModulesApi: function(req, res) {
         try {
             if (!this.checkInititialized(res)) { return; }
             let actionName = req.params.action.toUpperCase();
@@ -283,7 +325,7 @@ module.exports = {
                     } else {
                         query.action = actionName;
                     }
-                    this.executeQuery(query, res);
+                    this.executeQuery(this.checkDelay(query, req), res);
                 } else {
                     throw `Action: ${actionName} is not a valid action.`;
                 }
@@ -308,7 +350,7 @@ module.exports = {
                     } else {
                         query.action = actionName;
                     }
-                    this.executeQuery(query, res);
+                    this.executeQuery(this.checkDelay(query, req), res);
                 } else if (actionName === "DEFAULTS") {
                     this.answerGet({ data: "defaultConfig", module: mod.name }, res);
                 } else {

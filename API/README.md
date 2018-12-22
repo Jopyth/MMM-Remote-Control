@@ -98,7 +98,9 @@ There are three general categories of API commands:
 
 The majority of MMM-Remote-Control's abilities are extended to the API (this is a fundamental reason for "extending" this module instead of creating a new one for the API).
 
-[Review the API documentation on Postmaster here](https://documenter.getpostman.com/view/6167403/Rzfni66c)
+[Review the API documentation on Postman here](https://documenter.getpostman.com/view/6167403/Rzfni66c)
+
+The Postman [collection file](API/postman_collection.json) is also included in the repo if you want to load it and test calls on your machine.
 
 ### 2. External APIs (Guessed)
 
