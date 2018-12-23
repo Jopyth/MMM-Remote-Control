@@ -85,11 +85,19 @@ module.exports = NodeHelper.create(Object.assign({
                 configFilename = global.configuration_file;
             }
 
+            this.thisConfig = {};
             try {
                 fs.accessSync(configFilename, fs.F_OK);
                 var c = require(configFilename);
                 var config = Object.assign({}, defaults, c);
                 this.configOnHd = config;
+                // Get the configuration for this module.
+                if ("modules" in this.configOnHd) {
+                    let thisModule = this.configOnHd.modules.find(m => m.module === 'MMM-Remote-Control');
+                    if (thisModule && "config" in thisModule) {
+                        this.thisConfig = thisModule.config;
+                    }
+                }
             } catch (e) {
                 if (e.code == "ENOENT") {
                     console.error("MMM-Remote-Control WARNING! Could not find config file. Please create one. Starting with default configuration.");
@@ -590,14 +598,14 @@ module.exports = NodeHelper.create(Object.assign({
 
         monitorControl: function(action, opts, res) {
             let status = "unknown";
-            let monitorOnCommand = (this.initialized && "monitorOnCommand" in this.configData.remoteConfig.customCommand) ?
-                this.configData.remoteConfig.customCommand.monitorOnCommand :
+            let monitorOnCommand = (this.initialized && "monitorOnCommand" in this.thisConfig.customCommand) ?
+                this.thisConfig.customCommand.monitorOnCommand :
                 "tvservice --preferred && sudo chvt 6 && sudo chvt 7";
-            let monitorOffCommand = (this.initialized && "monitorOffCommand" in this.configData.remoteConfig.customCommand) ?
-                this.configData.remoteConfig.customCommand.monitorOffCommand :
+            let monitorOffCommand = (this.initialized && "monitorOffCommand" in this.thisConfig.customCommand) ?
+                this.thisConfig.customCommand.monitorOffCommand :
                 "tvservice -o";
-            let monitorStatusCommand = (this.initialized && "monitorStatusCommand" in this.configData.remoteConfig.customCommand) ?
-                this.configData.remoteConfig.customCommand.monitorStatusCommand :
+            let monitorStatusCommand = (this.initialized && "monitorStatusCommand" in this.thisConfig.customCommand) ?
+                this.thisConfig.customCommand.monitorStatusCommand :
                 "tvservice --status";
             if (["MONITORTOGGLE", "MONITORSTATUS"].indexOf(action) !== -1) {
                 screenStatus = exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
@@ -942,6 +950,24 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
+        loadCustomMenus: function() {
+            if ("customMenu" in this.thisConfig) {
+                let menuPath = path.resolve(__dirname + "/../../config/" + this.thisConfig.customMenu);
+                if (!fs.existsSync(menuPath)) {
+                    console.log(`MMM-Remote-Control customMenu Requested, but file:${menuPath} was not found`);
+                    return;
+                }
+                fs.readFile(menuPath, (err, data) => {
+                    if (err) {
+                        return;
+                    } else {
+                        this.customMenu = Object.assign({}, this.customMenu, JSON.parse(this.translate(data.toString())));
+                        this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
+                    }
+                });
+            }
+        },
+
         getIpAddresses: function() {
             // module started, answer with current IP address
             var interfaces = os.networkInterfaces();
@@ -962,6 +988,7 @@ module.exports = NodeHelper.create(Object.assign({
 
             if (notification === "CURRENT_STATUS") {
                 this.configData = payload;
+                this.thisConfig = payload.remoteConfig;
                 if (!this.initialized) {
                     // Do anything else required to initialize
                     this.initialized = true;
@@ -989,6 +1016,7 @@ module.exports = NodeHelper.create(Object.assign({
             }
             if (notification === "REMOTE_CLIENT_CONNECTED") {
                 this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
+                this.loadCustomMenus();
             }
             if (notification === "REMOTE_NOTIFICATION_ECHO_IN") {
                 this.sendSocketNotification("REMOTE_NOTIFICATION_ECHO_OUT", payload);

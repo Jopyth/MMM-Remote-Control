@@ -1793,8 +1793,8 @@
   },
   {
     "longname": "MMM-NewsFeedTicker",
-    "id": "wiki/3rd-Party-Modules",
-    "url": "https://github.com/MichMich/MagicMirror/wiki/3rd-Party-Modules",
+    "id": "justjim1220/MMM-NewsFeedTicker",
+    "url": "https://github.com/justjim1220/MMM-NewsFeedTicker",
     "author": "justjim1220",
     "desc": "Mod of the default newsfeed module - shows the logo and scrolls the headlines and brief description across the screen like those seen on the news channels."
   },

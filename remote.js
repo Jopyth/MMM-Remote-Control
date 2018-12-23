@@ -75,6 +75,7 @@ var Remote = {
                     slider.value = payload.result;
                 } else if (payload.query.data === "translations") {
                     this.translations = payload.data;
+                    this.onTranslationsLoaded();
                 } else {
                     this.loadListCallback(payload);
                 }
@@ -102,6 +103,10 @@ var Remote = {
                 console.log('Delayed REFRESH');
             }, 62000);
             return;
+        }
+        if (notification === "REMOTE_CLIENT_CUSTOM_MENU") {
+            this.customMenu = payload;
+            this.createDynamicMenu(this.customMenu);
         }
     },
 
@@ -580,7 +585,7 @@ var Remote = {
                             target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
                             self.showModule(target.id, true);
                             self.setStatus("none");
-                        }
+                        };
                     }(event.currentTarget));
                     wrapper.appendChild(force);
 
@@ -603,7 +608,7 @@ var Remote = {
 
         this.loadList("visible-modules", "modules", function(parent, moduleData) {
             for (var i = 0; i < moduleData.length; i++) {
-                if (!moduleData[i]["position"]) {
+                if (!moduleData[i].position) {
                     // skip invisible modules
                     continue;
                 }
@@ -645,7 +650,7 @@ var Remote = {
         if (eventListener) {
             wrapper.addEventListener("click", eventListener, false);
         }
-        return wrapper
+        return wrapper;
     },
 
     recreateConfigElement: function(key, previousType, newType) {
@@ -670,7 +675,7 @@ var Remote = {
         var self = this;
 
         var previousType = oldElement.children[1].innerHTML.slice(1).toLowerCase();
-        var select = document.createElement("select")
+        var select = document.createElement("select");
         for (var i = 0; i < this.types.length; i++) {
             var option = document.createElement("option");
             option.innerHTML = this.formatName(this.types[i]);
@@ -691,7 +696,7 @@ var Remote = {
         select.addEventListener("blur", function(event) {
             parent.replaceChild(oldElement, select);
         }, false);
-        return select
+        return select;
     },
 
     createConfigLabel: function(key, name, type, forcedType, symbol) {
@@ -841,7 +846,7 @@ var Remote = {
                 label.appendChild(select);
                 return label;
             }
-        } [type]
+        } [type];
     },
 
     getTypeAsString: function(dataToEdit, path) {
@@ -946,14 +951,14 @@ var Remote = {
                 if (keyCode == "13") {
                     addFunction();
                 }
-            }
+            };
             wrapper.appendChild(addElement);
         }
         var keys = Object.keys(dataToEdit);
         if (path === "<root>") {
             keys = ["module", "disabled", "position", "header", "config"];
         }
-        for (var i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             var key = keys[i];
             if (dataToEdit.hasOwnProperty(key)) {
                 wrapper.appendChild(this.createObjectGUI(path + "/" + key, key, dataToEdit[key]));
@@ -995,7 +1000,7 @@ var Remote = {
         });
         menuDiv.appendChild(undo);
         var save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), function(event) {
-            self.savedData["config"].modules[index] = self.getModuleConfigFromUI();
+            self.savedData.config.modules[index] = self.getModuleConfigFromUI();
             self.changedModules.push(index);
             var parent = document.getElementById("edit-module-" + index).parentNode;
             if (parent.children.length === 2) {
@@ -1077,7 +1082,7 @@ var Remote = {
             index = parseInt(index);
         }
 
-        var moduleData = this.savedData["config"].modules;
+        var moduleData = this.savedData.config.modules;
         var data = moduleData[index];
 
         self.currentConfig = data;
@@ -1090,15 +1095,15 @@ var Remote = {
 
         var wrapper = this.getPopupContent();
 
-        var name = document.createElement("div");
+        let name = document.createElement("div");
         name.innerHTML = self.formatName(data.module);
         name.className = "bright title medium";
         wrapper.appendChild(name);
 
-        var name = document.createElement("div");
-        name.innerHTML = data.module + " (#" + (index + 1) + ")";
-        name.className = "subtitle xsmall dimmed";
-        wrapper.appendChild(name);
+        let n = document.createElement("div");
+        n.innerHTML = data.module + " (#" + (index + 1) + ")";
+        n.className = "subtitle xsmall dimmed";
+        wrapper.appendChild(n);
 
         self.appendConfigMenu(index, wrapper);
 
@@ -1157,7 +1162,7 @@ var Remote = {
         var self = this;
 
         console.log("Loading modules in config...");
-        this.changedModules = []
+        this.changedModules = [];
 
         this.loadList("config-modules", "config", function(parent, configData) {
             var moduleData = configData.modules;
@@ -1185,7 +1190,7 @@ var Remote = {
             index = parseInt(index);
         }
 
-        var data = this.savedData["modulesAvailable"][index];
+        var data = this.savedData.modulesAvailable[index];
         var wrapper = this.getPopupContent();
 
         var name = document.createElement("div");
@@ -1216,10 +1221,10 @@ var Remote = {
         }
 
         if (data.installed) {
-            var statusElement = self.createSymbolText("fa fa-fw fa-check-circle", self.translate("INSTALLED"));
+            let statusElement = self.createSymbolText("fa fa-fw fa-check-circle", self.translate("INSTALLED"));
             footer.appendChild(statusElement);
         } else {
-            var statusElement = self.createSymbolText("fa fa-fw fa-download", self.translate("DOWNLOAD"), function(event) {
+            let statusElement = self.createSymbolText("fa fa-fw fa-download", self.translate("DOWNLOAD"), function(event) {
                 self.install(data.url, index);
             });
             statusElement.id = "download-button";
@@ -1304,7 +1309,7 @@ var Remote = {
                 var innerWrapper = document.createElement("div");
                 innerWrapper.className = "module-line";
 
-                var moduleBox = self.createSymbolText(symbol, modules[i].name, function(event) {
+                let moduleBox = self.createSymbolText(symbol, modules[i].name, function(event) {
                     var module = event.currentTarget.id.replace("update-module-", "");
                     self.updateModule(module);
                 });
@@ -1316,7 +1321,7 @@ var Remote = {
                 innerWrapper.appendChild(moduleBox);
 
                 if (modules[i].updateAvailable) {
-                    var moduleBox = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
+                    let moduleBox = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
                     innerWrapper.appendChild(moduleBox);
                 }
 
@@ -1336,7 +1341,7 @@ var Remote = {
         saveButton.className = saveButton.className.replace(" highlight", "");
         this.saving = true;
         this.setStatus("loading");
-        var configData = this.savedData["config"];
+        var configData = this.savedData.config;
         var remainingModules = [];
         for (var i = 0; i < configData.modules.length; i++) {
             if (this.deletedModules.indexOf(i) !== -1) {
@@ -1360,6 +1365,45 @@ var Remote = {
         }
         self.saving = false;
         self.loadConfigModules();
+    },
+
+    onTranslationsLoaded: function() {
+        this.createDynamicMenu();
+    },
+
+    createMenuElement: function(content, menu, $insertAfter) {
+        if (!content) { return; }
+        $item = $("<div>").attr("id", content.id).addClass(`menu-element button ${menu}-menu`);
+        let $mcmIcon = $('<span>').addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
+        let $mcmText = $('<span>').addClass('text').text(content.text);
+        $item.append($mcmIcon).append($mcmText);
+        if (content.type === "menu") {
+            let $mcmArrow = $('<span>').addClass('fa fa-fw fa-angle-right').attr("aria-hidden", "true");
+            $item.append($mcmArrow);
+            $('#back-button').addClass(`${content.id}-menu`);
+            $('#below-fold').addClass(`${content.id}-menu`);
+            $item.click(() => { window.location.hash = `${content.id}-menu`; });
+        } else if (content.action && content.content) {
+            let payload = content.content || {};
+            $item.click(() => {
+                this.sendSocketNotification("REMOTE_ACTION", { action: content.action.toUpperCase(), payload: payload });
+            });
+        }
+        if ((!window.location.hash && menu !== "main") ||
+            (window.location.hash && window.location.hash.substring(1) !== menu + "-menu")) {
+            $item.addClass('hidden');
+        }
+        $item.insertAfter($insertAfter);
+        if ("items" in content) {
+            content.items.forEach(i => {
+                this.createMenuElement(i, content.id, $item);
+            });
+        }
+        return $item;
+    },
+
+    createDynamicMenu: function(content) {
+        let $mcmBtn = this.createMenuElement(content, "main", $("#alert-button"));
     }
 };
 
@@ -1397,6 +1441,10 @@ var buttons = {
     "back-button": function() {
         if (window.location.hash === "#add-module-menu") {
             window.location.hash = "settings-menu";
+            return;
+        }
+        if (window.location.hash.indexOf("-sub") !== -1) {
+            window.location.hash = window.location.hash.replace("-sub","");
             return;
         }
         window.location.hash = "main-menu";

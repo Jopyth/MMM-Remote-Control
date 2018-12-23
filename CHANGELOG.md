@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     + Delayed calls ("DELAYED" Query option and `.../delay` API paths)
     + If using Electron: Open Dev Tools, Minimize, Toggle Fullscreen
 - Configuration Option to send custom shell commands to use. Currently, only custom monitor on/off/status commands are supported.
+- Custom menu items. See [Custom Menu Items in README](README.md#custom-menu-items)
 
 ### Changed
 

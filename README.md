@@ -39,7 +39,8 @@ npm install
     // , position: 'bottom_left'
     // you can hide this module afterwards from the remote control itself
     config: {
-        customCommand: {},  // Optional, See below for details on how to use
+        customCommand: {},  // Optional, See "Using Custom Commands" below
+        customMenu: "custom_menu.json" // Optional, See "Custom Menu Items" below
         apiKey: "",         // Optional, See API/README.md for details
     }
 },
@@ -220,6 +221,24 @@ Depending on your installation, some `shell` commands used by this module are no
         monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'
     }
 ```
+
+### Custom Menu Items
+
+You can create your own customized menu items by providing creating a JSON file for the menu and providing a `customMenu: "custom_menu.json"` directive in your config. The file may be called whatever you want, but the name must be provided in the `config` section, and it must be stored in the Mirror's `config/` directory (same place as your `config.js` file).
+
+An example menu is provided in this module's folder, titled `custom_menu.example.json`. You can copy this to the `/config` folder and modify as you need.
+
+#### Key Components:
+
+| Name | Description |
+| :-: | - |
+| `id` | The HTML id prefix to use for the menu item.<br>Note about nested menus: if your are creating a sub menu, adding `-sub` to the ID will allow the back button to function properly (1st menu: 'custom', 2nd deep: 'custom-sub', 3rd deep: 'custom-sub-sub').
+| `type` | The item type, either `'menu'` or `'item'`. `'menu'` is used to indicate the item is a sub-menu and has an ``items`` array. `'item'` is used for single menu items and will send a socket "REMOTE_ACTION" notification back to the server.  This requires `action:` and `content:` parameters before it can do anything.
+| `text` | The text to display.  You can use the translate string `'%%TRANSLATE:YOUR_KEY_HERE%%'`, but remember to also update the appropriate file in `/translations`.
+| `icon` | The [FontAwesome](https://fontawesome.com/v4.7.0/icons/) icon to use (without the leading `-fa`)
+| `items` | An array of sub-menu items to use with `"type":"menu"`. Should be the same format as the top level menu (i.e. the menu structure is recursive).
+| `action` | The `REMOTE_ACTION` notification action name, usually `NOTIFICATION`. Required for `"type":"item"` items to be able to do anything.
+| `content` | The `REMOTE_ACTION` action payload to send.  Usually for `"NOTIFICATION"`, this is of the form `{ "notification": "NOTIFICATION_TO_SEND", "payload": "PAYLOAD_TO_SEND"}`
 
 ## License
 
