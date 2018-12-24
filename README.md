@@ -40,7 +40,8 @@ npm install
     // you can hide this module afterwards from the remote control itself
     config: {
         customCommand: {},  // Optional, See "Using Custom Commands" below
-        customMenu: "custom_menu.json" // Optional, See "Custom Menu Items" below
+        customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
+        showModuleApiMenu: true, // Optional, Enable the Module Controls menu
         apiKey: "",         // Optional, See API/README.md for details
     }
 },
@@ -232,7 +233,7 @@ An example menu is provided in this module's folder, titled `custom_menu.example
 
 | Name | Description |
 | :-: | - |
-| `id` | The HTML id prefix to use for the menu item.<br>Note about nested menus: if your are creating a sub menu, adding `-sub` to the ID will allow the back button to function properly (1st menu: 'custom', 2nd deep: 'custom-sub', 3rd deep: 'custom-sub-sub').
+| `id` | The HTML id prefix to use for the menu item.
 | `type` | The item type, either `'menu'` or `'item'`. `'menu'` is used to indicate the item is a sub-menu and has an ``items`` array. `'item'` is used for single menu items and will send a socket "REMOTE_ACTION" notification back to the server.  This requires `action:` and `content:` parameters before it can do anything.
 | `text` | The text to display.  You can use the translate string `'%%TRANSLATE:YOUR_KEY_HERE%%'`, but remember to also update the appropriate file in `/translations`.
 | `icon` | The [FontAwesome](https://fontawesome.com/v4.7.0/icons/) icon to use (without the leading `-fa`)

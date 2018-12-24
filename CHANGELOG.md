@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     + Delayed calls ("DELAYED" Query option and `.../delay` API paths)
     + If using Electron: Open Dev Tools, Minimize, Toggle Fullscreen
 - Configuration Option to send custom shell commands to use. Currently, only custom monitor on/off/status commands are supported.
+- Module Control menu - Automatically generated from the API to control the different modules you have installed, based on their `notificationReceived` function.
 - Custom menu items. See [Custom Menu Items in README](README.md#custom-menu-items)
 
 ### Changed
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     + Moving modules' positions
 - PM2 Log Follower / Terminal Window
 - Added Notification Echo option to config to echo all Module Notifications to the remote's DevTools console for debugging.
+- Allow for text input in the Module Controls menu to be able to provide a notification payload.
 
 ## [1.1.5] - 2018-05-14
 

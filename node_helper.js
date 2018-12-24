@@ -62,6 +62,7 @@ module.exports = NodeHelper.create(Object.assign({
 
             /* API EXTENSION - Added v2.0.0 */
             this.externalApiRoutes = {};
+            this.moduleApiMenu = {};
         },
 
         stop: function() {
@@ -162,16 +163,10 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         formatName: function(string) {
-            string = string.replace(/MMM?-/ig, "").replace(/_/g, " ").replace(/-/g, " ");
-            string = string.replace(/([a-z])([A-Z])/g, function(txt) {
-                // insert space into camel case
-                return txt.charAt(0) + " " + txt.charAt(1);
+            string = string.replace(/MMM-/g, '').replace(/([a-z])([A-Z])/g, "$1 $2").replace(/(^|[-_])(\w)/g, function($0, $1, $2) {
+                return ($1 && ' ') + $2.toUpperCase();
             });
-            string = string.replace(/\w\S*/g, function(txt) {
-                // make character after white space upper case
-                return txt.charAt(0).toUpperCase() + txt.substr(1);
-            });
-            return string.charAt(0).toUpperCase() + string.slice(1);
+            return string;
         },
 
         updateModuleList: function(force) {
@@ -215,17 +210,15 @@ module.exports = NodeHelper.create(Object.assign({
 
                 // now check for installed modules
                 fs.readdir(path.resolve(__dirname + "/.."), function(err, files) {
-                    for (var i = 0; i < files.length; i++) {
-                        if (files[i] !== "node_modules" && files[i] !== "default") {
-                            self.addModule(files[i]);
-                        }
-                    }
-                    self.onModulesLoaded();
+                    let installedModules = files.filter(f => ['node_modules', 'default', 'README.md'].indexOf(f) === -1);
+                    installedModules.forEach((dir, i) => {
+                        self.addModule(dir, (i === installedModules.length - 1));
+                    });
                 });
             });
         },
 
-        addModule: function(folderName) {
+        addModule: function(folderName, lastOne) {
             var self = this;
 
             var modulePath = this.configOnHd.paths.modules + "/" + folderName;
@@ -255,7 +248,7 @@ module.exports = NodeHelper.create(Object.assign({
                         self.modulesAvailable.push(newModule);
                         currentModule = newModule;
                     }
-                    self.loadModuleDefaultConfig(currentModule, modulePath);
+                    self.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
 
                     // check for available updates
                     var stat;
@@ -291,12 +284,11 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        loadModuleDefaultConfig: function(module, modulePath) {
+        loadModuleDefaultConfig: function(module, modulePath, lastOne) {
             // function copied from MichMich (MIT)
             var filename = path.resolve(modulePath + "/" + module.longname + ".js");
             try {
                 fs.accessSync(filename, fs.F_OK);
-                let window;
                 var jsfile = require(filename);
                 /* Defaults are stored when Module.register is called during require(filename); */
             } catch (e) {
@@ -309,6 +301,7 @@ module.exports = NodeHelper.create(Object.assign({
                     console.error("ERROR! Could not load main module js file. Error found: " + e);
                 }
             }
+            if (lastOne) { this.onModulesLoaded(); }
         },
 
         answerConfigHelp: function(query, res) {
@@ -747,10 +740,13 @@ module.exports = NodeHelper.create(Object.assign({
                         payload = query.payload;
                     } else if (typeof query.payload === 'object') {
                         payload = query.payload;
-                    } else {
-                        payload = JSON.parse(query.payload);
+                    } else if (typeof query.payload === 'string') {
+                        if (query.payload.startsWith("{")) {
+                            payload = JSON.parse(query.payload);
+                        } else {
+                            payload = query.payload;
+                        }
                     }
-
                     this.sendSocketNotification(query.action, { 'notification': query.notification, 'payload': payload });
                     this.sendResponse(res);
                     return true;
@@ -882,12 +878,11 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         translate: function(data) {
-            for (var key in this.translation) {
-                var pattern = "%%TRANSLATE:" + key + "%%";
-                while (data.indexOf(pattern) > -1) {
-                    data = data.replace(pattern, this.translation[key]);
-                }
-            }
+            Object.keys(this.translation).forEach(t => {
+                let pattern = "%%TRANSLATE:" + t + "%%";
+                let re = new RegExp(pattern, "g");
+                data = data.replace(re, this.translation[t]);
+            });
             return data;
         },
 
@@ -1017,6 +1012,9 @@ module.exports = NodeHelper.create(Object.assign({
             if (notification === "REMOTE_CLIENT_CONNECTED") {
                 this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
                 this.loadCustomMenus();
+                if ("id" in this.moduleApiMenu) {
+                    this.sendSocketNotification("REMOTE_CLIENT_MODULEAPI_MENU", this.moduleApiMenu);
+                }
             }
             if (notification === "REMOTE_NOTIFICATION_ECHO_IN") {
                 this.sendSocketNotification("REMOTE_NOTIFICATION_ECHO_OUT", payload);

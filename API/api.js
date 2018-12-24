@@ -48,7 +48,12 @@ module.exports = {
             if (re.test(content)) {
                 content.match(re).forEach((match) => {
                     let n = match.replace(re, '$1');
-                    if (['ALL_MODULES_STARTED', 'DOM_OBJECTS_CREATED'].indexOf(n) < 0) {
+                    if (['ALL_MODULES_STARTED',
+                            'DOM_OBJECTS_CREATED',
+                            'KEYPRESS',
+                            'MODULE_DOM_CREATED',
+                            'KEYPRESS_MODE_CHANGED'
+                        ].indexOf(n) === -1) {
                         availabeActions.push(n);
                     }
                 });
@@ -57,7 +62,7 @@ module.exports = {
             return availabeActions;
         };
 
-        let skippedModules = ['clock', 'MMM-Remote-Control'];
+        let skippedModules = ['clock', 'compliments', 'MMM-Remote-Control'];
 
         this.configOnHd.modules.filter(mod => skippedModules.indexOf(mod.module) === -1).forEach(mod => {
             try {
@@ -88,6 +93,8 @@ module.exports = {
                 console.warn(`getExternalApiByGuessing failed for ${mod.module}: ${err.message}`);
             }
         });
+
+        this.updateModuleApiMenu();
     },
 
     createApiRoutes: function() {
@@ -410,4 +417,41 @@ module.exports = {
         return true;
     },
 
+    updateModuleApiMenu: function() {
+        if (!this.thisConfig.showModuleApiMenu) { return; }
+
+        this.moduleApiMenu = {
+            id: "module-control",
+            type: "menu",
+            text: this.translate("%%TRANSLATE:MODULE_CONTROLS%%"),
+            icon: "window-restore",
+            items: []
+        };
+        Object.keys(this.externalApiRoutes).forEach(r => {
+            let sub = {
+                id: "mc-" + r,
+                type: "menu",
+                icon: "bars",
+                text: this.formatName(this.externalApiRoutes[r].module),
+                items: []
+            };
+            Object.keys(this.externalApiRoutes[r].actions).forEach(a => {
+                let item = {
+                    id: `mc-${r}-${a}`,
+                    menu: "item",
+                    icon: "dot-circle-o",
+                    action: "NOTIFICATION",
+                    content: this.externalApiRoutes[r].actions[a],
+                    text: this.translate(this.externalApiRoutes[r].actions[a].notification).toLowerCase().replace(/(^|_)(\w)/g, function($0, $1, $2) {
+                        return ($1 && ' ') + $2.toUpperCase();
+                    })
+                };
+                sub.items.push(item);
+            });
+            this.moduleApiMenu.items.push(sub);
+        });
+
+        // console.log(JSON.stringify(this.moduleApiMenu, undefined, 3));
+        this.sendSocketNotification("REMOTE_CLIENT_MODULEAPI_MENU", this.moduleApiMenu);
+    },
 };

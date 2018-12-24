@@ -40,7 +40,7 @@
          }
       },
       {
-         "id": "custom-sub",
+         "id": "level2",
          "type": "menu",
          "menu": "custom",
          "icon": "bars",

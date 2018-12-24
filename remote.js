@@ -107,6 +107,13 @@ var Remote = {
         if (notification === "REMOTE_CLIENT_CUSTOM_MENU") {
             this.customMenu = payload;
             this.createDynamicMenu(this.customMenu);
+            return;
+        }
+        if (notification === "REMOTE_CLIENT_MODULEAPI_MENU") {
+            console.log(payload);
+            this.moduleApiMenu = payload;
+            this.createDynamicMenu(this.moduleApiMenu);
+            return;
         }
     },
 
@@ -325,6 +332,13 @@ var Remote = {
 
         if (this.autoHideTimer !== undefined) {
             clearTimeout(this.autoHideTimer);
+        }
+
+        // Simple status update
+        if (status === "success" && !message && !customContent) {
+            $("#success-popup").show();
+            this.autoHideTimer = setTimeout(function() { $("#success-popup").hide(); }, this.autoHideDelay);
+            return;
         }
 
         var parent = document.getElementById("result-contents");
@@ -1373,20 +1387,22 @@ var Remote = {
 
     createMenuElement: function(content, menu, $insertAfter) {
         if (!content) { return; }
-        $item = $("<div>").attr("id", content.id).addClass(`menu-element button ${menu}-menu`);
+        $item = $("<div>").attr("id", `${content.id}-button`).addClass(`menu-element button ${menu}-menu`);
         let $mcmIcon = $('<span>').addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
         let $mcmText = $('<span>').addClass('text').text(content.text);
         $item.append($mcmIcon).append($mcmText);
         if (content.type === "menu") {
             let $mcmArrow = $('<span>').addClass('fa fa-fw fa-angle-right').attr("aria-hidden", "true");
             $item.append($mcmArrow);
+            $item.attr("data-parent", menu).attr("data-type", "menu");
             $('#back-button').addClass(`${content.id}-menu`);
             $('#below-fold').addClass(`${content.id}-menu`);
             $item.click(() => { window.location.hash = `${content.id}-menu`; });
         } else if (content.action && content.content) {
-            let payload = content.content || {};
+            $item.attr("data-type", "item");
+            let payload = content.content.payload || {};
             $item.click(() => {
-                this.sendSocketNotification("REMOTE_ACTION", { action: content.action.toUpperCase(), payload: payload });
+                this.sendSocketNotification("REMOTE_ACTION", { action: content.action.toUpperCase(), notification: content.content.notification, payload: payload });
             });
         }
         if ((!window.location.hash && menu !== "main") ||
@@ -1403,6 +1419,13 @@ var Remote = {
     },
 
     createDynamicMenu: function(content) {
+        if (content && $(`#${content.id}-button`)) {
+            $(`#${content.id}-button`).remove();
+            $(`div`).remove(`.${content.id}-menu`);
+            if (window.location.hash === `${content.id}-menu`) {
+                window.location.hash = "main-menu";
+            }
+        }
         let $mcmBtn = this.createMenuElement(content, "main", $("#alert-button"));
     }
 };
@@ -1443,8 +1466,8 @@ var buttons = {
             window.location.hash = "settings-menu";
             return;
         }
-        if (window.location.hash.indexOf("-sub") !== -1) {
-            window.location.hash = window.location.hash.replace("-sub","");
+        if ($(window.location.hash.replace("-menu", "-button")).data("parent")) {
+            window.location.hash = $(window.location.hash.replace("-menu", "-button")).data("parent") + "-menu";
             return;
         }
         window.location.hash = "main-menu";

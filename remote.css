@@ -378,6 +378,21 @@ input:focus.input-error {
     overflow-y: auto;
 }
 
+.success-popup {
+    width: 30%;
+    min-width: 100px;
+    background-color: black;
+    position: absolute;
+    bottom: 0px;
+    display: none;
+    padding: 6px;
+    background: black;
+    border: 2px solid #666;
+    border-radius: 0.2em;
+    font-size: 20px;
+    line-height: 1.5em;
+}
+
 .popup-contents {
     padding: 5px 10px 5px 10px;
     display: flex;
