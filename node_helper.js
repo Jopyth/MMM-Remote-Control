@@ -605,7 +605,6 @@ module.exports = NodeHelper.create(Object.assign({
                     if (stdout.indexOf("TV is off") !== -1 || stdout.indexOf("false") !== -1) {
                         // Screen is OFF, turn it ON
                         status = "off";
-                        console.log(stdout);
                         if (action === "MONITORTOGGLE" || action === "MONITORON") {
                             exec(monitorOnCommand, opts, (error, stdout, stderr) => {
                                 this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
@@ -1001,7 +1000,6 @@ module.exports = NodeHelper.create(Object.assign({
                 self.loadDefaultSettings();
             }
             if (notification === "REMOTE_ACTION") {
-                console.log(notification, payload)
                 if ("action" in payload) {
                     this.executeQuery(payload, { isSocket: true });
                 } else if ("data" in payload) {
