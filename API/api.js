@@ -440,11 +440,15 @@ module.exports = {
                     menu: "item",
                     icon: "dot-circle-o",
                     action: "NOTIFICATION",
-                    content: this.externalApiRoutes[r].actions[a],
-                    text: this.translate(this.externalApiRoutes[r].actions[a].notification).toLowerCase().replace(/(^|_)(\w)/g, function($0, $1, $2) {
-                        return ($1 && ' ') + $2.toUpperCase();
-                    })
+                    content: this.externalApiRoutes[r].actions[a]
                 };
+                if ("prettyName" in this.externalApiRoutes[r].actions[a]) {
+                    item.text = this.translate(this.externalApiRoutes[r].actions[a].prettyName);
+                } else {
+                    item.text = this.translate(this.externalApiRoutes[r].actions[a].notification).toLowerCase().replace(/(^|_)(\w)/g, function($0, $1, $2) {
+                        return ($1 && ' ') + $2.toUpperCase();
+                    });
+                }
                 sub.items.push(item);
             });
             this.moduleApiMenu.items.push(sub);

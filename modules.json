@@ -98,6 +98,13 @@
     "desc": "Display network connection status (ping, download speed, upload speed)."
   },
   {
+    "longname": "MMM-network-signal",
+    "id": "PoOwAa/MMM-network-signal",
+    "url": "https://github.com/PoOwAa/MMM-network-signal",
+    "author": "PoOwAa",
+    "desc": "Display a solid wifi logo as network signal based on ping speed."
+  },
+  {
     "longname": "MMM-NotificationTrigger",
     "id": "eouia/MMM-NotificationTrigger",
     "url": "https://github.com/eouia/MMM-NotificationTrigger",
@@ -1316,6 +1323,13 @@
     "desc": "Adds the windy weather map which covers the whole screen"
   },
   {
+    "longname": "MMM-Weather-SMHI-Hourly",
+    "id": "Menturan/MMM-Weather-SMHI-Hourly",
+    "url": "https://github.com/Menturan/MMM-Weather-SMHI-Hourly",
+    "author": "Menturan",
+    "desc": "Displays weather from Swedish SMHI hourly"
+  },
+  {
     "longname": "MMM-CalendarWeek",
     "id": "heskja/MMM-CalendarWeek",
     "url": "https://github.com/heskja/MMM-CalendarWeek",
@@ -2429,6 +2443,13 @@
     "desc": "modified defult clock showing only the digital"
   },
   {
+    "longname": "MMM-Dreambox",
+    "id": "Ax-LED/MMM-Dreambox",
+    "url": "https://github.com/Ax-LED/MMM-Dreambox",
+    "author": "AxLED",
+    "desc": "A module to connect a Dreambox or a Enigma2 Receiver (like VU or VU+) to MagicMirror and stream stations via omxplayer."
+  },
+  {
     "longname": "MMM-Dribbble",
     "id": "marcobiedermann/MMM-dribbble",
     "url": "https://github.com/marcobiedermann/MMM-dribbble",
@@ -3113,5 +3134,12 @@
     "url": "https://github.com/delightedCrow/WallberryTheme",
     "author": "delightedCrow",
     "desc": "Re-themes MagicMirror² to look like a beautiful digital photo wall display. It adds a new font, styles, redesigned clock and weather displays, and rotating background image pulled from Unsplash.com"
+  },
+  {
+    "longname": "MMM-Namnsdag",
+    "id": "Menturan/MMM-Namnsdag",
+    "url": "https://github.com/Menturan/MMM-Namnsdag",
+    "author": "Menturan",
+    "desc": "Displays Swedish name of the day."
   }
 ]

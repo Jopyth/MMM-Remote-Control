@@ -175,7 +175,8 @@ let payload = {
     actionName: { 
         method: "GET", 
         notification: "NOTIFICATION_TO_SEND", 
-        payload: ObjectToSend 
+        payload: ObjectToSend, 
+        prettyName: "Action Name"
     },
     anotherActionName: { 
         method: "POST", 
@@ -194,6 +195,7 @@ this.sendNotification("REGISTER_API", payload);
 | `actionName` | The name for your action (e.g. called from `/api/module/mymodulename/actionName`).
 | `method` | *Optional:* The HTTP Method to use.<br>Valid options are: `"GET"` or `"POST"`. If `method` is not provided in an action, then both `"GET"` or `"POST"` methods will be treated as valid.
 | `notification` | The notification to send to your module. When the API receives a valid action, it passes a Module Notification to your module. It is your responsibility to do something with that notification to make the action work.
+| `prettyName` | *Optional:* You can specify a Formatted Name to use in dynamic menus, like the MMM-Remote-Control Module Control menu, otherwise one will be guessed based on the Notification text.
 | `payload` | *Optional:* If you always want the module to send the same `payload`, you can provide an `Object` here. It will be merged into the `payload` sent with the notification, which will also include:<br>1. URL Parameter, if used. See notes on `payload` Object below.<br>2. Query String, if used. API key will be removed.<br>3. Request body, if `POST` method is used and a body sent.<br>4. Finally, this parameter.
 
 #### About the `payload` Object 
