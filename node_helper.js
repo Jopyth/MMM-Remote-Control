@@ -600,16 +600,20 @@ module.exports = NodeHelper.create(Object.assign({
             let monitorStatusCommand = (this.initialized && "monitorStatusCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorStatusCommand :
                 "tvservice --status";
-            if (["MONITORTOGGLE", "MONITORSTATUS"].indexOf(action) !== -1) {
+            if (["MONITORTOGGLE", "MONITORSTATUS", "MONITORON"].indexOf(action) !== -1) {
                 screenStatus = exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-                    if (stdout.indexOf("TV is off") !== -1 || stdout.indexOf("false")) {
+                    if (stdout.indexOf("TV is off") !== -1 || stdout.indexOf("false") !== -1) {
                         // Screen is OFF, turn it ON
                         status = "off";
-                        if (action === "MONITORTOGGLE") {
-                            this.monitorControl("MONITORON", opts, res);
+                        console.log(stdout);
+                        if (action === "MONITORTOGGLE" || action === "MONITORON") {
+                            exec(monitorOnCommand, opts, (error, stdout, stderr) => {
+                                this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
+                            });
+                            this.sendSocketNotification("USER_PRESENCE", true);
                             return;
                         }
-                    } else if (stdout.indexOf("HDMI") !== -1 || stdout.indexOf("true")) {
+                    } else if (stdout.indexOf("HDMI") !== -1 || stdout.indexOf("true") !== -1) {
                         // Screen is ON, turn it OFF
                         status = "on";
                         if (action === "MONITORTOGGLE") {
@@ -621,13 +625,7 @@ module.exports = NodeHelper.create(Object.assign({
                     return;
                 });
             }
-            if (action === "MONITORON") {
-                exec(monitorOnCommand, opts, (error, stdout, stderr) => {
-                    this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
-                });
-                this.sendSocketNotification("USER_PRESENCE", true);
-                return;
-            } else if (action === "MONITOROFF") {
+            if (action === "MONITOROFF") {
                 exec(monitorOffCommand, (error, stdout, stderr) => {
                     this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
                 });
@@ -648,24 +646,8 @@ module.exports = NodeHelper.create(Object.assign({
                 exec("sudo shutdown -r now", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
                 return true;
             }
-            if (query.action === "RESTART") {
-                exec("pm2 ls", opts, (error, stdout, stderr) => {
-                    if (stdout.indexOf(" MagicMirror ") > -1) {
-                        exec("pm2 restart MagicMirror", opts, (error, stdout, stderr) => {
-                            self.sendSocketNotification("RESTART");
-                            self.checkForExecError(error, stdout, stderr, res);
-                        });
-                        return;
-                    }
-                    if (stdout.indexOf(" mm ") > -1) {
-                        exec("pm2 restart mm", opts, (error, stdout, stderr) => {
-                            self.sendSocketNotification("RESTART");
-                            self.checkForExecError(error, stdout, stderr, res);
-                        });
-                        return;
-                    }
-                    self.sendResponse(res, error);
-                });
+            if (query.action === "RESTART" || query.action === "STOP") {
+                this.controlPm2(res, query);
                 return true;
             }
             if (query.action === "USER_PRESENCE") {
@@ -877,6 +859,25 @@ module.exports = NodeHelper.create(Object.assign({
             this.sendResponse(res, error, data);
         },
 
+        controlPm2: function(res, query) {
+            var pm2 = require('pm2');
+            let processName = query.processName || this.thisConfig.pm2ProcessName || "mm";
+
+            pm2.connect((err) => {
+                if (err) {
+                    this.sendResponse(res, err);
+                    return;
+                }
+                console.log(`PM2 process: ${query.action.toLowerCase()} ${processName}`);
+
+                pm2.stop(processName, (err, apps) => {
+                    this.sendResponse(res, undefined, { action: action, processName: processName });
+                    pm2.disconnect();
+                    if (err) { this.sendResponse(res, err); }
+                });
+            });
+        },
+
         translate: function(data) {
             Object.keys(this.translation).forEach(t => {
                 let pattern = "%%TRANSLATE:" + t + "%%";
@@ -1000,6 +1001,7 @@ module.exports = NodeHelper.create(Object.assign({
                 self.loadDefaultSettings();
             }
             if (notification === "REMOTE_ACTION") {
+                console.log(notification, payload)
                 if ("action" in payload) {
                     this.executeQuery(payload, { isSocket: true });
                 } else if ("data" in payload) {
