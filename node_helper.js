@@ -1022,11 +1022,11 @@ module.exports = NodeHelper.create(Object.assign({
             if (notification === "USER_PRESENCE") {
                 this.userPresence = payload;
             }
-            /* API EXTENSION -- added v1.1.0 */
+            /* API EXTENSION -- added v2.0.0 */
             if (notification === "REGISTER_API") {
-                if ("module" in payload &&
-                    Object.keys(this.externalApiRoutes).indexOf(payload.modules) === -1) {
+                if ("module" in payload) {
                     this.externalApiRoutes[payload.path] = payload;
+                    this.updateModuleApiMenu();
                 }
             }
         }

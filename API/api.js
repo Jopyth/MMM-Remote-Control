@@ -75,7 +75,7 @@ module.exports = {
                     let actionsGuess = {};
 
                     modActions.forEach(a => {
-                        actionsGuess[a.replace(/[-_]/g, '').toLowerCase()] = { notification: a };
+                        actionsGuess[a.replace(/[-_]/g, '').toLowerCase()] = { notification: a, guessed: true };
                     });
 
                     if (pathGuess in this.externalApiRoutes) {
@@ -84,8 +84,7 @@ module.exports = {
                         this.externalApiRoutes[pathGuess] = {
                             module: mod.module,
                             path: mod.module.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase(),
-                            actions: actionsGuess,
-                            guessed: true
+                            actions: actionsGuess
                         };
                     }
                 }
