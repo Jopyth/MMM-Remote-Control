@@ -110,7 +110,6 @@ var Remote = {
             return;
         }
         if (notification === "REMOTE_CLIENT_MODULEAPI_MENU") {
-            console.log(payload);
             this.moduleApiMenu = payload;
             this.createDynamicMenu(this.moduleApiMenu);
             return;
@@ -202,18 +201,12 @@ var Remote = {
     },
 
     closePopup: function() {
-        var popup = document.getElementById("popup-container");
-        popup.style.display = "none";
-
-        var popupContents = document.getElementById("popup-contents");
-        while (popupContents.firstChild) {
-            popupContents.removeChild(popupContents.firstChild);
-        }
+        $("#popup-container").hide();
+        $("#popup-contents").empty();
     },
 
     showPopup: function() {
-        var popup = document.getElementById("popup-container");
-        popup.style.display = "block";
+        $("#popup-container").show();
     },
 
     getPopupContent: function(clear) {
@@ -223,7 +216,7 @@ var Remote = {
         if (clear) {
             this.closePopup();
         }
-        return document.getElementById("popup-contents");
+        return $("#popup-contents")[0];
     },
 
     loadOtherElements: function() {
@@ -428,12 +421,9 @@ var Remote = {
     install: function(url, index) {
         var self = this;
 
-        var downloadButton = document.getElementById("download-button");
-        var symbol = downloadButton.children[0];
-        var text = downloadButton.children[1];
-        symbol.className = "fa fa-fw fa-spinner fa-pulse";
-        text.innerHTML = " " + self.translate("DOWNLOADING");
-
+        var $downloadButton = $("#download-button");
+        $downloadButton.children(":first").removeClass("fa-download").addClass("fa-spinner fa-pulse");
+        $downloadButton.children(":last").html(" " + self.translate("DOWNLOADING"));
         this.sendSocketNotification("REMOTE_ACTION", { action: "INSTALL", url: url, index: index });
     },
 
@@ -493,7 +483,7 @@ var Remote = {
         var parent = document.getElementById(result.query.listname + "-results");
 
         self.hide(loadingIndicator);
-        self.savedData[result.query.dataId] = false;
+        self.savedData[result.query.data] = false;
 
         try {
             if (result.data.length === 0) {
@@ -501,7 +491,7 @@ var Remote = {
             } else {
                 self.hide(emptyIndicator);
             }
-            self.savedData[result.query.dataId] = result.data;
+            self.savedData[result.query.data] = result.data;
             if (self.pendingCallback) {
                 self.pendingCallback(parent, result.data);
                 delete self.pendingCallback;

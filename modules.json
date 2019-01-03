@@ -1008,6 +1008,13 @@
     "desc": "Display aviation weather (METAR) and FAA delay data for continental U.S. airports."
   },
   {
+    "longname": "MMM-TAF",
+    "id": "imperian/MMM-TAF",
+    "url": "https://github.com/imperian/MMM-TAF",
+    "author": "imperian",
+    "desc": "Display METAR and TAF data for airports world-wide."
+  },
+  {
     "longname": "MMM-bergfex.at",
     "id": "nebulx29/MMM-bergfex",
     "url": "https://github.com/nebulx29/MMM-bergfex",
@@ -1328,6 +1335,13 @@
     "url": "https://github.com/Menturan/MMM-Weather-SMHI-Hourly",
     "author": "Menturan",
     "desc": "Displays weather from Swedish SMHI hourly"
+  },
+  {
+    "longname": "MMM-UDR",
+    "id": "crimsonclyde/MMM-UDR",
+    "url": "https://github.com/crimsonclyde/MMM-UDR",
+    "author": "CrimsonClyde",
+    "desc": "Display own events in default compliments module style"
   },
   {
     "longname": "MMM-CalendarWeek",
@@ -1888,6 +1902,13 @@
     "url": "https://github.com/mboskamp/MMM-PIR",
     "author": "mboskamp",
     "desc": "Another PIR monitoring module that allows you to run custom scripts and integrates MMM-TelegramBot commands."
+  },
+  {
+    "longname": "MMM-NearCompliments",
+    "id": "semox/MMM-NearCompliments",
+    "url": "https://github.com/semox/MMM-NearCompliments",
+    "author": "semox",
+    "desc": "Uses HC-SR04 sensors to measure distance and display compliments if USER_PRESENCE is detected by MMM-PIR-Sensor and user is near the magic mirror."
   },
   {
     "longname": "MMM-portscan",
