@@ -211,7 +211,7 @@ module.exports = NodeHelper.create(Object.assign({
                 // now check for installed modules
                 fs.readdir(path.resolve(__dirname + "/.."), function(err, files) {
                     let installedModules = files.filter(f => ['node_modules', 'default', 'README.md'].indexOf(f) === -1);
-                    installedModules.forEach((dir, i) => {
+                    installedModules.forEach((dir, i, a) => {
                         self.addModule(dir, (i === installedModules.length - 1));
                     });
                 });
@@ -273,11 +273,16 @@ module.exports = NodeHelper.create(Object.assign({
                             if (error) {
                                 console.log(error);
                             }
-                            var baseUrl = result[0].refs.fetch;
-                            // replacements
-                            baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
-                            // if cloned with ssh
-                            currentModule.url = baseUrl.replace("git@", "https://");
+                            try {
+                                var baseUrl = result[0].refs.fetch;
+                                // replacements
+                                baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
+                                // if cloned with ssh
+                                currentModule.url = baseUrl.replace("git@", "https://");
+                            } catch (e) {
+                                // Something happened. Skip it.
+                                return;
+                            }
                         });
                     }
                 }
