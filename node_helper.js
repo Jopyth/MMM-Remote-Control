@@ -1030,7 +1030,12 @@ module.exports = NodeHelper.create(Object.assign({
             /* API EXTENSION -- added v2.0.0 */
             if (notification === "REGISTER_API") {
                 if ("module" in payload) {
-                    this.externalApiRoutes[payload.path] = payload;
+                    if ("actions" in payload && payload.actions !== {}) {
+                        this.externalApiRoutes[payload.path] = payload;
+                    } else {
+                        // Blank actions means the module has requested to be removed from API
+                        delete this.externalApiRoutes[payload.path];
+                    }
                     this.updateModuleApiMenu();
                 }
             }

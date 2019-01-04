@@ -42,7 +42,7 @@ module.exports = {
         if (!this.configOnHd) { return undefined; }
 
         let getActions = function(content) {
-            let re = /notification \=\=\=? "([A-Z_]+)"|case '([A-Z_]+)'/g;
+            let re = /notification \=\=\=? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
             let m;
             let availabeActions = [];
             if (re.test(content)) {
@@ -52,13 +52,13 @@ module.exports = {
                             'DOM_OBJECTS_CREATED',
                             'KEYPRESS',
                             'MODULE_DOM_CREATED',
-                            'KEYPRESS_MODE_CHANGED'
+                            'KEYPRESS_MODE_CHANGED',
+                            'USER_PRESENCE'
                         ].indexOf(n) === -1) {
                         availabeActions.push(n);
                     }
                 });
             }
-
             return availabeActions;
         };
 

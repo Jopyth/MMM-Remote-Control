@@ -1029,6 +1029,13 @@
     "desc": "Weather designed for bottom bar position, now using the DarkSky API"
   },
   {
+    "longname": "MMM-DarkSkyForecast",
+    "id": "jclarke0000/MMM-DarkSkyForecast",
+    "url": "https://github.com/jclarke0000/MMM-DarkSkyForecast",
+    "author": "jclarke0000",
+    "desc": "A weather module that displays current, hourly and daily forecast information using data from the Dark Sky API."
+  },
+  {
     "longname": "MMM-darksky-hourly",
     "id": "jacquesCedric/MMM-darksky-hourly",
     "url": "https://github.com/jacquesCedric/MMM-darksky-hourly",
@@ -1587,6 +1594,13 @@
     "url": "https://github.com/eouia/MMM-GoogleShoppingList",
     "author": "eouia",
     "desc": "Display a google shoppinglist items"
+  },
+  {
+    "longname": "MMM-BringList",
+    "id": "rseidt/MMM-bringList",
+    "url": "https://github.com/rseidt/MMM-bringList",
+    "author": "rseidt",
+    "desc": "Display a Bring! shopping list in a tabular view"
   },
   {
     "longname": "MMM-GoogleTasks",
