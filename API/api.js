@@ -226,7 +226,7 @@ module.exports = {
             .get((req, res) => {
                 if (!req.params.action) { req.params.action = "STATUS"; }
                 var actionName = req.params.action.toUpperCase();
-                this.executeQuery(checkDelay({ action: `MONITOR${actionName}` }, req), res);
+                this.executeQuery(this.checkDelay({ action: `MONITOR${actionName}` }, req), res);
             });
 
         this.expressRouter.route('/brightness/:setting(\\d+)')
