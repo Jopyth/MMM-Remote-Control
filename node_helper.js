@@ -593,22 +593,22 @@ module.exports = NodeHelper.create({
 			});
 			return true;
 		}
-		if (query.action === "MONITORON")
+		if (query.action === "MONITORONOLD")
 		{
 			exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === "MONITOROFF")
+		if (query.action === "MONITOROFFOLD")
 		{
 			exec("tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === "MONITORON2")
+		if (query.action === "MONITORON")
 		{
 			exec("vcgencmd display_power 1", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
-		if (query.action === "MONITOROFF2")
+		if (query.action === "MONITOROFF")
 		{
 			exec("vcgencmd display_power 0", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
