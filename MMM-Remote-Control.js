@@ -133,6 +133,9 @@ Module.register("MMM-Remote-Control", {
 			});
 		}
 		if (notification === "NOTIFICATION") {
+			
+			Log.info("Notification envoyee: " + payload.notification + " with payload: " + payload.payload);
+
 			this.sendNotification(payload.notification, payload.payload);
 		}
 	},

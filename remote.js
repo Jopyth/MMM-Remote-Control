@@ -1323,6 +1323,9 @@ var buttons = {
     "power-button": function() {
         window.location.hash = "power-menu";
     },
+    "swd-button": function() {
+        window.location.hash = "swd-menu";
+    },
     "edit-button": function() {
         window.location.hash = "edit-menu";
     },
@@ -1389,6 +1392,23 @@ var buttons = {
             buttons[i].className = buttons[i].className.replace("toggled-on", "toggled-off");
             Remote.hideModule(buttons[i].id);
         }
+    },
+
+	//smardwebdisplay swd menu
+	"swd-play-button": function() {
+        Remote.getWithStatus("action=RC_SWD_PLAY");
+    },
+    "swd-stop-button": function() {
+        Remote.getWithStatus("action=RC_SWD_STOP");
+    },
+	"swd-pause-button": function() {
+        Remote.getWithStatus("action=RC_SWD_PAUSE");
+    },
+    "swd-prev-button": function() {
+        Remote.getWithStatus("action=RC_SWD_PREV");
+    },
+    "swd-next-button": function() {
+        Remote.getWithStatus("action=RC_SWD_NEXT");
     },
 
     // power menu buttons

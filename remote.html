@@ -29,7 +29,7 @@
             <div class="menu above-fold">
                 <!-- general back button -->
                 <div id="back-button"
-                     class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu alert-menu"
+                     class="menu-element hidden button power-menu swd-menu edit-menu settings-menu add-module-menu update-menu alert-menu"
                 >
                     <span class="fa fa-fw fa-angle-left" aria-hidden="true"></span>
                     <!-- <span class="text">%%TRANSLATE:BACK%%</span> -->
@@ -100,12 +100,17 @@
                 </div>
             </div>
 
-            <div id="below-fold" class="below-fold menu-element hidden edit-menu settings-menu add-module-menu update-menu alert-menu main-menu power-menu">
+            <div id="below-fold" class="below-fold menu-element hidden edit-menu settings-menu add-module-menu update-menu alert-menu main-menu power-menu swd-menu">
                 <div class="menu-container">
                     <!-- main menu -->
                     <div id="power-button" class="menu-element hidden button main-menu">
                         <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
                         <span class="text">%%TRANSLATE:SHUTDOWN_MENU_NAME%%</span>
+                        <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+                    </div>
+                    <div id="swd-button" class="menu-element hidden button main-menu">
+                        <span class="fa fa-fw fa-television" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:SWD_MENU_NAME%%</span>
                         <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
                     </div>
                     <div id="edit-button" class="menu-element hidden button main-menu">
@@ -167,8 +172,45 @@
                         </span>
                         <span class="text">%%TRANSLATE:MONITOROFF%%</span>
                     </div>
+                    <!-- swd menu -->
+                    <div id="swd-play-button" class="menu-element hidden button swd-menu">
+                        <span class="fa fa-fw fa-play-circle" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:PLAY%%</span>
+                    </div>
+                    <div id="swd-next-button" class="menu-element hidden button swd-menu">
+                        <span class="fa fa-fw fa-chevron-circle-right" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:NEXT%%</span>
+                    </div>
+                    <div id="swd-prev-button" class="menu-element hidden button swd-menu">
+                        <span class="fa fa-fw fa-chevron-circle-left" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:PREV%%</span>
+                    </div>
+                    <div id="swd-pause-button" class="menu-element hidden button swd-menu">
+                        <span class="fa fa-fw fa-pause-circle" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:PAUSE%%</span>
+                    </div>
+                    <div id="swd-stop-button" class="menu-element hidden button swd-menu">
+                        <span class="fa fa-fw fa-stop-circle" aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:STOP%%</span>
+                    </div>
+					<!--
+					<form id="swd-url" action="" method="GET" class="menu-element hidden swd-menu">
+						<div class="xsmall">%%TRANSLATE:FORM_URL%%</div>
+						<input type="text" class="medium" placeholder="%%TRANSLATE:FORM_TITLE_URL%%" name="url">
+						<div class="xsmall">%%TRANSLATE:FORM_URL_UPDATE%%</div>
+						<input type="number" name="timer_update" value="0">
+						<div class="xsmall">%%TRANSLATE:FORM_URL_ROTATE%%</div>
+						<input type="number" name="timer_rotate" value="1">
+					</form>
+					<div id="send-swd-button" class="menu-element hidden button swd-menu fill">
+						<span class="fa fa-fw fa-send-o" aria-hidden="true"></span>
+						<span class="text">%%TRANSLATE:SENDALERT%%</span>
+					</div>
+					-->
+                    
                 </div>
-
+                
+                
                 <!-- below fold part of alert menu -->
                 <form id="alert" action="" method="GET" class="menu-element hidden alert-menu">
                     <input type="hidden" name="action" value="SHOW_ALERT">

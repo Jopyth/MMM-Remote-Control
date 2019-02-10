@@ -620,6 +620,67 @@ module.exports = NodeHelper.create({
 			exec("tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
 			return true;
 		}
+		if (query.action === "RC_SWD_PLAY")
+		{
+			try {
+				this.sendSocketNotification('NOTIFICATION', {'notification': 'SWD_PLAY'});
+				res.send({'status': 'success'});
+				return true;
+			} catch(err) {
+				console.log("ERROR: ", err);
+				res.send({'status': err.message});
+				return true;
+			}
+		}
+		if (query.action === "RC_SWD_STOP")
+		{
+			try {
+				this.sendSocketNotification('NOTIFICATION', {'notification': 'SWD_STOP'});
+				res.send({'status': 'success'});
+				return true;
+			} catch(err) {
+				console.log("ERROR: ", err);
+				res.send({'status': err.message});
+				return true;
+			}
+		}
+		if (query.action === "RC_SWD_PAUSE")
+		{
+			try {
+				this.sendSocketNotification('NOTIFICATION', {'notification': 'SWD_PAUSE'});
+				res.send({'status': 'success'});
+				return true;
+			} catch(err) {
+				console.log("ERROR: ", err);
+				res.send({'status': err.message});
+				return true;
+			}
+		}
+		if (query.action === "RC_SWD_NEXT")
+		{
+			try {
+				this.sendSocketNotification('NOTIFICATION', {'notification': 'SWD_NEXT'});
+				res.send({'status': 'success'});
+				return true;
+			} catch(err) {
+				console.log("ERROR: ", err);
+				res.send({'status': err.message});
+				return true;
+			}
+		}
+		if (query.action === "RC_SWD_PREV")
+		{
+			try {
+				this.sendSocketNotification('NOTIFICATION', {'notification': 'SWD_PREV'});
+				res.send({'status': 'success'});
+				return true;
+			} catch(err) {
+				console.log("ERROR: ", err);
+				res.send({'status': err.message});
+				return true;
+			}
+		}
+				
 		if (query.action === "HIDE" || query.action === "SHOW")
 		{
 			if (res) { res.send({"status": "success"}); }

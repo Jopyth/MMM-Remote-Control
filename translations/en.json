@@ -5,6 +5,18 @@
     "SHUTDOWN_MENU_NAME": "Power",
     "CONFIGURE_MENU_NAME": "Edit config.js",
     "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    
+    "SWD_MENU_NAME": "SmartWebDisplay",
+    "PLAY": "Play", 
+    "PAUSE": "Pause", 
+    "STOP": "Stop", 
+    "NEXT": "Next",
+    "PREV": "Previous",
+    "FORM_URL": "URL : format : [\"http://xxxxxx.com\", \"http://www.blablabla.fr\"]",
+    "FORM_TITLE_URL" : "Enter URL list",
+	"FORM_URL_UPDATE": "Delay to update the display (in min) : ",
+	"FORM_URL_ROTATE": "Delay to rotate the URL (in min) : ",
+
 
     "BACK": "Back",
 

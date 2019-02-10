@@ -5,6 +5,12 @@
     "SHUTDOWN_MENU_NAME": "Alimentation",
     "CONFIGURE_MENU_NAME": "Editer le fichier config.js",
     "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "SWD_MENU_NAME": "SmartWebDisplay",
+    "PLAY": "Play", 
+    "PAUSE": "Pause", 
+    "STOP": "STOP", 
+    "NEXT": "Next",
+    "PREV": "Prev",
 
     "BACK": "Retour",
 
