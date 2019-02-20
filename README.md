@@ -1,4 +1,4 @@
-# Magic Mirror Module: Remote Control
+# Magic Mirror Module: Remote Control w/ RESTful API
 
 This module for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
@@ -8,6 +8,8 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 ![The Main Menu](.github/main.png)
 ![The Power Menu](.github/power.png)
 ![Hide and Show a Module](.github/hide_show_module.gif)
+
+**New in Version 2.0.0:** The module now includes a more RESTful API for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
 
 ## Installation
 
@@ -36,6 +38,12 @@ npm install
     // uncomment the following line to show the URL of the remote control on the mirror
     // , position: 'bottom_left'
     // you can hide this module afterwards from the remote control itself
+    config: {
+        customCommand: {},  // Optional, See "Using Custom Commands" below
+        customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
+        showModuleApiMenu: true, // Optional, Enable the Module Controls menu
+        apiKey: "",         // Optional, See API/README.md for details
+    }
 },
 ```
 
@@ -101,21 +109,13 @@ If this happens, simply reconfigure and save it again.
 ## Call methods from other modules
 
 You can call any of the methods provided in the UI directly through a GET request, or a module notification.
-For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems.
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button. 
 
 ### Examples
 
-- Example for a GET request to trigger a RaspberryPi restart:
+- Example for a REST API GET request to trigger a RaspberryPi restart:
 ```
-http://192.168.xxx.xxx:8080/remote?action=RESTART
-```
-
-- Example for a notification schedule for [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically switch your monitor on and off with :
-```javascript
-notification_schedule: [
-    {notification: 'REMOTE_ACTION', schedule: '30 9 * * *', payload: {action: 'MONITOROFF'}},
-    {notification: 'REMOTE_ACTION', schedule: '30 18 * * *', payload: {action: 'MONITORON'}}
-]
+http://192.168.xxx.xxx:8080/api/restart
 ```
 
 - Example to trigger a RaspberryPi restart in your module:
@@ -123,25 +123,58 @@ notification_schedule: [
 this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 ```
 
+See some specific examples for controlling your mirror from other modules and add your own examples [in the Wiki page here](https://github.com/shbatm/MMM-Remote-Control/wiki/Examples-for-Controlling-from-Another-Module)
+
 ### List of actions
 
-| action | description |
-| ------------- | ------------- |
+#### System Control:
+
+| Action | Description |
+| :-: | ------------- |
 | SHUTDOWN | Shutdown your RaspberryPi |
 | REBOOT | Restart your RaspberryPi |
+| MONITORON | Switch your display on. Also sends a `"USER_PRESENCE": true` notification. |
+| MONITOROFF | Switch your display off. Also sends a `"USER_PRESENCE": false` notification. |
+| MONITORTOGGLE | Toggle the display on or off (with respective `"USER_PRESENCE"` notification. |
+| MONITORSTATUS | Report back the monitor status (on or off) |
+
+#### MagicMirror Control:
+
+| Action | Description |
+| :-: | ------------- |
 | RESTART | Restart your MagicMirror |
-| MONITORON | Switch your display on |
-| MONITOROFF | Switch your display off |
+| REFRESH | Refresh mirror page |
+| UPDATE | Update MagicMirror and any of it's modules |
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
-| HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
-| SHOW | Show a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
+
+#### MagicMirror Electron Browser Window Control:
+
+| Action | Description |
+| :-: | ------------- |
+| MINIMIZE | Minimize the browser window. |
+| TOGGLEFULLSCREEN | Toggle fullscreen mode on and off. |
+| DEVTOOLS | Open the DevTools console window. |
+
+#### Module Control:
+
+| Action | Description |
+| :-: | ------------- |
+| HIDE | Hide a module, with the name (or identifier--see `MODULE_DATA` action) specified by `module` in the payload. You can also send `module: "all"` to hide all modules. |
+| SHOW | Show a module (see above for how to specify which one). |
+| TOGGLE | Toggle a module's visiblity (see above for how to specify which one). |
+| FORCE | Force a module to show (see above for how to specify which one). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
-| REFRESH | Refresh mirror page |
+
+#### Alerts and Notifications:
+
+| Action | Description |
+| :-: | ------------- |
 | SHOW_ALERT | Show Default Alert/Notification |
 | HIDE_ALERT | Hide Default Alert/Notification |
-| UPDATE | Update MagicMirror and any of it's modules |
-| NOTIFICATION | Send a notification to all modules (see [Notification Request](#notification-request)). |
+| USER_PRESENCE | Will send a notification "USER_PRESENCE" = true or false (according to "value" to all other modules. See examples above|
+| NOTIFICATION | To send a notification to all modules, see the example in the [API README](API/README.md) |
+| DELAYED | Send any of the above nested inside a "DELAYED" call to delay the action. Default is 10s. See Delayed Actions below. |
 
 ### Format of module data response
 
@@ -159,26 +192,54 @@ The response will be in the JSON format, here is an example:
 }
 ```
 
-### Notification Request
+### Delayed Actions
 
-To send a notification to all modules, send the following GET-parameters.
+You can delay an action by sending the notification nested inside of a `"DELAYED"` notification. Below is an example of turning off the monitor in 60s.
 
-| key | value |
-| --- | ----- |
-| action | `NOTIFICATION`<br>**Required** |
-| notification | The notification to send, e.g. `ARTICLE_MORE_DETAILS`, `SHOW_ALERT` or `HIDE_ALERT`.<br>**Required** |
-| payload | A stringified JSON object with the payload for the notification.<br>**Optional** if absent, an empty payload (`{}`) is assumed. |
-
-Examples:
-
+```js
+this.sendSocketNotification("REMOTE_ACTION",
+    {
+        action: "DELAYED",
+        did: "SOME_UNIQUE_ID", // Optional; Some string, in case you want to cancel later.
+        timeout: 60,  // Optional; Default 10s
+        abort: false, // Optional; send true to cancel an existing timer
+        query: {
+            action: "MONITOROFF"
+        }
+    });
 ```
-?action=NOTIFICATION&notification=ARTICLE_MORE_DETAILS
 
-?action=NOTIFICATION&notification=SHOW_ALERT&payload={%22title%22:%22Alert%22,%22message%22:%22This%20is%an%20alert.%22}
-(Payload is URL-encoded form of {"title":"Alert","message":"This is an alert."})
+Can also be used with the [API](https://documenter.getpostman.com/view/6167403/Rzfni66c) by adding `/delay?timeout=10s&did=something` to some routes.
 
-?action=NOTIFICATION&notification=HIDE_ALERT
+### Using Custom Commands
+
+Depending on your installation, some `shell` commands used by this module are not appropriate and can be overwritten by something that will work for you. To overwrite the commands, add a `customCommand` object to your config section.  The following commands are supported:
+
+```js
+    customCommand: {
+        monitorOnCommand: 'shell command to turn on your monitor',
+        monitorOffCommand: 'shell command to turn off your monitor',
+        monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'
+    }
 ```
+
+### Custom Menu Items
+
+You can create your own customized menu items by providing creating a JSON file for the menu and providing a `customMenu: "custom_menu.json"` directive in your config. The file may be called whatever you want, but the name must be provided in the `config` section, and it must be stored in the Mirror's `config/` directory (same place as your `config.js` file).
+
+An example menu is provided in this module's folder, titled `custom_menu.example.json`. You can copy this to the `/config` folder and modify as you need.
+
+#### Key Components:
+
+| Name | Description |
+| :-: | - |
+| `id` | The HTML id prefix to use for the menu item.
+| `type` | The item type, either `'menu'` or `'item'`. `'menu'` is used to indicate the item is a sub-menu and has an ``items`` array. `'item'` is used for single menu items and will send a socket "REMOTE_ACTION" notification back to the server.  This requires `action:` and `content:` parameters before it can do anything.
+| `text` | The text to display.  You can use the translate string `'%%TRANSLATE:YOUR_KEY_HERE%%'`, but remember to also update the appropriate file in `/translations`.
+| `icon` | The [FontAwesome](https://fontawesome.com/v4.7.0/icons/) icon to use (without the leading `-fa`)
+| `items` | An array of sub-menu items to use with `"type":"menu"`. Should be the same format as the top level menu (i.e. the menu structure is recursive).
+| `action` | The `REMOTE_ACTION` notification action name, usually `NOTIFICATION`. Required for `"type":"item"` items to be able to do anything.
+| `content` | The `REMOTE_ACTION` action payload to send.  Usually for `"NOTIFICATION"`, this is of the form `{ "notification": "NOTIFICATION_TO_SEND", "payload": "PAYLOAD_TO_SEND"}`
 
 ## License
 

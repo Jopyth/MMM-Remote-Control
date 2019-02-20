@@ -17,6 +17,9 @@
     "RESTART": "Restart",
     "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
     "SHUTDOWN": "Shutdown",
+    "FULLSCREEN": "Toggle Fullscreen",
+    "MINIMIZE": "Minimize Browser",
+    "DEVTOOLS": "Open DevTools",
 
     "SHOWALL": "All",
     "HIDEALL": "All",
@@ -76,5 +79,10 @@
     "FORM_TITLE_PLACEHOLDER" : "Enter title...",
     "FORM_MESSAGE" : "Message:",
     "FORM_MESSAGE_PLACEHOLDER" : "Enter message...",
-    "FORM_SECONDS" : "Seconds:"
+    "FORM_SECONDS" : "Seconds:",
+
+
+    "RESPONSE_ERROR": "Well that didn't work. Check the MM logs for more details",
+    "MODULE_CONTROLS": "Module Controls",
+    "CUSTOM_MENU": "My Custom Menu"
 }

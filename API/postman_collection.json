@@ -1,0 +1,2936 @@
+{
+	"info": {
+		"_postman_id": "11f98248-69d7-4a64-ae1c-4fa39bba6f2f",
+		"name": "MagicMirror Remote Control API",
+		"description": "## Introduction\r\n\r\nThe MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the Magic Mirror using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules.  In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notificiation.\r\n\r\nThis expansion was developed by [shbatm](https://github.com/shbatm) using [juzim's MMM-Api](https://github.com/juzim/MMM-Api) and of-course, [jopyth's MMM-Remote-Control](https://github.com/jopyth/MMM-Remote-Control).\r\n\r\n## Overview\r\n\r\nThis extension exposes the `/api` URL from your MagicMirror² installation. Just like using the regular MMM-Remote-Control module, make sure your configuration listens on more than just `localhost`.\r\n\r\nAll URLs will be of the form: `http://magicmirrorip:8080/api/{your command}` and depending on the command, either `GET` or `POST` methods are accepted.\r\n\r\n### Basic examples for showing an Alert on the screen\r\n\r\n```bash\r\n$ curl -X GET http://magicmirrorip:8080/api/module/alert/showalert?message=Hello&timer=2000\r\n```\r\n\r\n```bash\r\n$ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \\\r\n  -H 'content-type: application/json' \\\r\n  -d '{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n    }'\r\n```\r\n\r\n## Authentication\r\n\r\nProviding an API key is recommended; however, remains optional. If you wish to use an API key to authenticate, add an `apiKey:` option to the config section for this module.\r\n\r\nIf you ran the `installer.sh` script when you installed the module, a non-canoical UUID is generated for you to use; you can use this unique code, or use any string you wish.\r\n\r\n### Example Config Section\r\n```js\r\n{\r\n    module: 'MMM-Remote-Control'\r\n    config: {\r\n        apiKey: 'bc2e979db92f4741afad01d5d18eb8e2'\r\n    }\r\n},\r\n```\r\n\r\n### Passing your API key\r\n\r\nSee the `GET /api/test` section below and use the examples drop down to view various different ways to pass the  API Key. \r\n\r\n***For convenience, the remainder of the examples omit the API Key***\r\n\r\n## Common Errors\r\n\r\n### Not Connected To Mirror\r\n\r\nSome API calls require a Front End (browser) open so the `node_helpers` can be connected. For example, if you run in `serveronly` mode and connect to your Mirror through a web browser--if you do not open the web browser (or refresh the page on a restart) before making an API call, you may get the following response:\r\n\r\n```json\r\n{\r\n    \"success\": false,\r\n    \"message\": \"Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?\"\r\n}\r\n```\r\n\r\nOpen the web browser (or refresh the page) and try your query again.\r\n\r\n# Methods",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/api/test",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "apiKey testkey",
+						"description": "Test Key Passed in Headers",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/test",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"test"
+					]
+				},
+				"description": "Test the API to make sure it's working.\n\n**Authentication:** See the drop down list in this method's examples to view different ways to pass the API Key."
+			},
+			"response": [
+				{
+					"name": "/api/test - apiKey required but not provided",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:24:23 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "/api/test",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "16"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"10-oV4hJxRVSENxc/wX8+mA4/Pe4tA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:18:44 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				},
+				{
+					"name": "/api/test - API Key provided in query string",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test?apiKey=testkey",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "testkey"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "16"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"10-oV4hJxRVSENxc/wX8+mA4/Pe4tA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:26:33 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				},
+				{
+					"name": "/api/test - API Key provided in Headers",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "apiKey testkey",
+								"description": "Test Key Passed in Headers",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "16"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"10-oV4hJxRVSENxc/wX8+mA4/Pe4tA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:28:38 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				},
+				{
+					"name": "/api/test - wrong API Key provided.",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test?apiKey=wrongone",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "wrongone"
+								}
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:25:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "/api/config",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/config",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"config"
+					]
+				},
+				"description": "Return the current MagicMirror configuration"
+			},
+			"response": [
+				{
+					"name": "/api/config",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/config",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"config"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2812"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"afc-uZ9dovmhazWUv6ok6LAA7esThI0\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 05:39:05 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"address\": \"localhost\",\n    \"port\": 8080,\n    \"kioskmode\": false,\n    \"electronOptions\": {},\n    \"ipWhitelist\": [\n        \"127.0.0.1\",\n        \"::ffff:127.0.0.1\",\n        \"::1\"\n    ],\n    \"language\": \"en\",\n    \"timeFormat\": 24,\n    \"units\": \"metric\",\n    \"zoom\": 1,\n    \"customCss\": \"css/custom.css\",\n    \"modules\": [\n        {\n            \"module\": \"alert\",\n            \"config\": {\n                \"effect\": \"slide\",\n                \"alert_effect\": \"jelly\",\n                \"display_time\": 3500,\n                \"position\": \"center\",\n                \"welcome_message\": false\n            }\n        },\n        {\n            \"module\": \"updatenotification\",\n            \"position\": \"top_bar\",\n            \"config\": {\n                \"updateInterval\": 600000\n            }\n        },\n        {\n            \"module\": \"MMM-Remote-Control\",\n            \"position\": \"lower_third\",\n            \"config\": {}\n        },\n        {\n            \"module\": \"clock\",\n            \"position\": \"top_left\",\n            \"config\": {\n                \"displayType\": \"digital\",\n                \"timeFormat\": 24,\n                \"displaySeconds\": true,\n                \"showPeriod\": true,\n                \"showPeriodUpper\": false,\n                \"clockBold\": false,\n                \"showDate\": true,\n                \"showWeek\": false,\n                \"dateFormat\": \"dddd, LL\",\n                \"analogSize\": \"200px\",\n                \"analogFace\": \"simple\",\n                \"analogPlacement\": \"bottom\",\n                \"analogShowDate\": \"top\",\n                \"secondsColor\": \"#888888\",\n                \"timezone\": null\n            }\n        },\n        {\n            \"module\": \"calendar\",\n            \"header\": \"US Holidays\",\n            \"position\": \"top_left\",\n            \"config\": {\n                \"calendars\": [\n                    {\n                        \"symbol\": \"calendar-check\",\n                        \"url\": \"webcal://www.calendarlabs.com/templates/ical/US-Holidays.ics\"\n                    }\n                ],\n                \"maximumEntries\": 10,\n                \"maximumNumberOfDays\": 365,\n                \"displaySymbol\": true,\n                \"defaultSymbol\": \"calendar\",\n                \"displayRepeatingCountTitle\": false,\n                \"defaultRepeatingCountTitle\": \"\",\n                \"maxTitleLength\": 25,\n                \"wrapEvents\": false,\n                \"fetchInterval\": 300000,\n                \"animationSpeed\": 2000,\n                \"fade\": true,\n                \"urgency\": 7,\n                \"timeFormat\": \"relative\",\n                \"dateFormat\": \"MMM Do\",\n                \"dateEndFormat\": \"HH:mm\",\n                \"fullDayEventDateFormat\": \"MMM Do\",\n                \"showEnd\": false,\n                \"getRelative\": 6,\n                \"fadePoint\": 0.25,\n                \"hidePrivate\": false,\n                \"hideOngoing\": false,\n                \"colored\": false,\n                \"coloredSymbolOnly\": false,\n                \"tableClass\": \"small\",\n                \"titleReplace\": {\n                    \"De verjaardag van \": \"\",\n                    \"'s birthday\": \"\"\n                },\n                \"broadcastEvents\": true,\n                \"excludedEvents\": []\n            }\n        },\n        {\n            \"module\": \"compliments\",\n            \"position\": \"lower_third\",\n            \"config\": {\n                \"compliments\": {\n                    \"anytime\": [\n                        \"Hey there sexy!\"\n                    ],\n                    \"morning\": [\n                        \"Good morning, handsome!\",\n                        \"Enjoy your day!\",\n                        \"How was your sleep?\"\n                    ],\n                    \"afternoon\": [\n                        \"Hello, beauty!\",\n                        \"You look sexy!\",\n                        \"Looking good today!\"\n                    ],\n                    \"evening\": [\n                        \"Wow, you look hot!\",\n                        \"You look nice!\",\n                        \"Hi, sexy!\"\n                    ]\n                },\n                \"updateInterval\": 30000,\n                \"remoteFile\": null,\n                \"fadeSpeed\": 4000,\n                \"morningStartTime\": 3,\n                \"morningEndTime\": 12,\n                \"afternoonStartTime\": 12,\n                \"afternoonEndTime\": 17\n            }\n        },\n        {\n            \"module\": \"newsfeed\",\n            \"position\": \"bottom_bar\",\n            \"config\": {\n                \"feeds\": [\n                    {\n                        \"title\": \"New York Times\",\n                        \"url\": \"http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml\"\n                    }\n                ],\n                \"showSourceTitle\": true,\n                \"showPublishDate\": true,\n                \"showDescription\": false,\n                \"wrapTitle\": true,\n                \"wrapDescription\": true,\n                \"truncDescription\": true,\n                \"lengthDescription\": 400,\n                \"hideLoading\": false,\n                \"reloadInterval\": 300000,\n                \"updateInterval\": 10000,\n                \"animationSpeed\": 2500,\n                \"maxNewsItems\": 0,\n                \"ignoreOldItems\": false,\n                \"ignoreOlderThan\": 86400000,\n                \"removeStartTags\": \"\",\n                \"removeEndTags\": \"\",\n                \"startTags\": [],\n                \"endTags\": [],\n                \"prohibitedWords\": [],\n                \"scrollLength\": 500,\n                \"logFeedWarnings\": false\n            }\n        }\n    ],\n    \"paths\": {\n        \"modules\": \"modules\",\n        \"vendor\": \"vendor\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/monitor/:action",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/monitor/:action",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"monitor",
+						":action"
+					],
+					"variable": [
+						{
+							"key": "action",
+							"value": "",
+							"description": "Valid actions are \"on\", \"off\", \"toggle\", or \"status\". If you don't pass an action, it assumes \"status\"."
+						}
+					]
+				},
+				"description": "Control the connected display, turning it on or off."
+			},
+			"response": [
+				{
+					"name": "/api/monitor",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/monitor/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"monitor",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "action",
+									"value": "",
+									"description": "Valid actions are \"on\", \"off\", \"toggle\", or \"status\". If you don't pass an action, it assumes \"status\"."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "149"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"95-+XkUiPbNJb2etHhTz4N3Be/e6IA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 07:27:02 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"monitor\": \"on\"\n}"
+				},
+				{
+					"name": "/api/monitor/on",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/monitor/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"monitor",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "action",
+									"value": "on",
+									"description": "Valid actions are \"on\" or \"off\""
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "162"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a2-Q4cZAgS8d8I9JfUnUV8CCmTsMTU\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 06:54:47 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n\t\"monitor\": \"on\"\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/reboot",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/reboot",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"reboot"
+					]
+				},
+				"description": "Reboot the Raspberry Pi"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/shutdown",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/shutdown",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"shutdown"
+					]
+				},
+				"description": "Reboot the Raspberry Pi"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/restart",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/restart",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"restart"
+					]
+				},
+				"description": "Restart your MagicMirror instance if using PM2 to control it."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/minimize",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/minimize",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"minimize"
+					]
+				},
+				"description": "(Electron only) Minimize the browser window."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/togglefullscreen",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/togglefullscreen",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"togglefullscreen"
+					]
+				},
+				"description": "(Electron only): Toggle Full Screen mode on/off"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/devtools",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/devtools",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"devtools"
+					]
+				},
+				"description": "(Electron only): Toggle Full Screen mode on/off"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/translations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/translations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"translations"
+					]
+				},
+				"description": "Returns the currently translations file."
+			},
+			"response": [
+				{
+					"name": "/api/translations",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/translations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"translations"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2103"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"837-NGoNq6XxsSIioxdd2T97B+DdKkA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 05:24:34 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"TITLE\": \"Magic Mirror Menu\",\n    \"EDIT_MENU_NAME\": \"Edit view\",\n    \"SHUTDOWN_MENU_NAME\": \"Power\",\n    \"CONFIGURE_MENU_NAME\": \"Edit config.js\",\n    \"VIEW_MIRROR\": \"MagicMirror<sup>2</sup>\",\n    \"BACK\": \"Back\",\n    \"BRIGHTNESS\": \"Brightness\",\n    \"REFRESHMM\": \"Refresh Browser\",\n    \"MONITOROFF\": \"Turn monitor OFF\",\n    \"MONITORON\": \"Turn monitor ON\",\n    \"MONITORTIMED\": \"Turn monitor ON briefly\",\n    \"RESTART\": \"Restart\",\n    \"RESTARTMM\": \"Restart MagicMirror<sup>2</sup>\",\n    \"SHUTDOWN\": \"Shutdown\",\n    \"SHOWALL\": \"All\",\n    \"HIDEALL\": \"All\",\n    \"ADD_MODULE\": \"Add module\",\n    \"SEARCH\": \"Search &hellip;\",\n    \"INSTALLED\": \"Installed\",\n    \"DOWNLOAD\": \"Download\",\n    \"DOWNLOADING\": \"Downloading &hellip;\",\n    \"CODE_LINK\": \"View code\",\n    \"BY\": \"by\",\n    \"ADD_THIS\": \"Add this module\",\n    \"HELP\": \"Show readme\",\n    \"MENU\": \"Menu\",\n    \"RESET\": \"Reset\",\n    \"NO_HEADER\": \"(no header)\",\n    \"NO_POSITION\": \"(invisible)\",\n    \"ADD_ENTRY\": \"Add entry\",\n    \"NEW_ENTRY_NAME\": \"(enter name of new entry)\",\n    \"DELETE_ENTRY\": \"Delete\",\n    \"UNSAVED_CHANGES\": \"Unsaved changes\",\n    \"OK\": \"Ok\",\n    \"DISCARD\": \"Discard changes\",\n    \"CANCEL\": \"Cancel\",\n    \"NO_MODULES_LOADED\": \"No module loaded.\",\n    \"SAVE\": \"Save\",\n    \"EXPERIMENTAL\": \"This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!<br>Do you want to continue?\",\n    \"PANIC\": \"Never mind.\",\n    \"NO_RISK_NO_FUN\": \"No risk no fun!\",\n    \"CONFIRM_SHUTDOWN\": \"The system will shut down.\",\n    \"CONFIRM_RESTART\": \"The system will restart.\",\n    \"LOAD_ERROR\": \"If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:\",\n    \"ISSUE_LINK\": \"Github issue page\",\n    \"DONE\": \"Done.\",\n    \"ERROR\": \"Error!\",\n    \"LOADING\": \"Loading &hellip;\",\n    \"LOCKSTRING_WARNING\": \"This module was hidden by LIST_OF_MODULES, it can not be shown.\",\n    \"FORCE_SHOW\": \"Do it anyway.\",\n    \"UPDATE_MENU_NAME\": \"Updates\",\n    \"UPDATEMM\": \"Update MagicMirror<sup>2</sup>\",\n    \"UPDATE_AVAILABLE\": \"Update available\",\n    \"ALERT_MENU_NAME\": \"Alert\",\n    \"SENDALERT\": \"Send\",\n    \"HIDEALERT\": \"Hide\",\n    \"FORM_TYPE\": \"Type:\",\n    \"FORM_ALERT\": \"Alert\",\n    \"FORM_NOTIFICATION\": \"Notification\",\n    \"FORM_TITLE\": \"Title:\",\n    \"FORM_TITLE_PLACEHOLDER\": \"Enter title...\",\n    \"FORM_MESSAGE\": \"Message:\",\n    \"FORM_MESSAGE_PLACEHOLDER\": \"Enter message...\",\n    \"FORM_SECONDS\": \"Seconds:\"\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/refresh",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"refresh"
+					]
+				},
+				"description": "Refresh the screen of your MagicMirror instance. Note: this only refreshes the browser window, it will not restart the backend server."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/save",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"save"
+					]
+				},
+				"description": "Saves the MMM-Remote-Control defaults to a file."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/brightness",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/brightness",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"brightness"
+					]
+				},
+				"description": "Get the brightness of the mirror\n\n*Returns:* Current brightness setting as `integer`."
+			},
+			"response": [
+				{
+					"name": "/api/brightness",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/brightness",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"brightness"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2-4YIttHDmDQkK/9CVbXQ8sOfN8RM\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:52:33 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "50"
+				}
+			]
+		},
+		{
+			"name": "/api/brightness/:setting",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/brightness/:setting",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"brightness",
+						":setting"
+					],
+					"variable": [
+						{
+							"key": "setting",
+							"value": "100",
+							"description": "Integer value to set the brightness to"
+						}
+					]
+				},
+				"description": "Set the brightness of the Mirror by passing a numerical value 0-100"
+			},
+			"response": [
+				{
+					"name": "/api/brightness/:setting",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/brightness/:setting",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"brightness",
+								":setting"
+							],
+							"variable": [
+								{
+									"key": "setting",
+									"value": "[0-100]",
+									"description": "Integer value to set the brightness to"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "16"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"10-oV4hJxRVSENxc/wX8+mA4/Pe4tA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:56:23 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/userpresence/:value",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/userpresence/:value",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"userpresence",
+						":value"
+					],
+					"variable": [
+						{
+							"key": "value",
+							"value": "true",
+							"description": "Boolean (true or false) value to set the User Presence variable and send a notification to other modules. \nIf no value is passed, the current User Presence state is returned, if known."
+						}
+					]
+				},
+				"description": "Get or Set the USER_PRESENCE status. If no `:value` is sent (just /api/userpresence is called), it will return the USER_PRESENCE state if known.  If `true` or `false` is sent (e.g. /api/userpresence/true), a `\"USER_PRESENCE\"` notification will be sent to all modules."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/modules",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/modules",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"modules"
+					]
+				},
+				"description": "List of all modules currently active."
+			},
+			"response": [
+				{
+					"name": "/api/modules",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3660"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"e4c-+jYZiP5crwXSojgnujd/BDmd4JE\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:23:53 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"index\": \"0\",\n        \"identifier\": \"module_0_alert\",\n        \"name\": \"alert\",\n        \"path\": \"modules/default/alert/\",\n        \"file\": \"alert.js\",\n        \"config\": {\n            \"effect\": \"slide\",\n            \"alert_effect\": \"jelly\",\n            \"display_time\": 3500,\n            \"position\": \"center\",\n            \"welcome_message\": false\n        },\n        \"classes\": \"alert\",\n        \"hidden\": false,\n        \"lockStrings\": []\n    },\n    {\n        \"index\": \"1\",\n        \"identifier\": \"module_1_updatenotification\",\n        \"name\": \"updatenotification\",\n        \"path\": \"modules/default/updatenotification/\",\n        \"file\": \"updatenotification.js\",\n        \"position\": \"top_bar\",\n        \"config\": {\n            \"updateInterval\": 600000\n        },\n        \"classes\": \"updatenotification\",\n        \"hidden\": true,\n        \"lockStrings\": []\n    },\n    {\n        \"index\": \"2\",\n        \"identifier\": \"module_2_MMM-Remote-Control\",\n        \"name\": \"MMM-Remote-Control\",\n        \"path\": \"modules/MMM-Remote-Control/\",\n        \"file\": \"MMM-Remote-Control.js\",\n        \"position\": \"lower_third\",\n        \"config\": {},\n        \"classes\": \"MMM-Remote-Control\",\n        \"hidden\": false,\n        \"lockStrings\": []\n    },\n    {\n        \"index\": \"3\",\n        \"identifier\": \"module_3_clock\",\n        \"name\": \"clock\",\n        \"path\": \"modules/default/clock/\",\n        \"file\": \"clock.js\",\n        \"position\": \"top_left\",\n        \"config\": {\n            \"displayType\": \"digital\",\n            \"timeFormat\": 24,\n            \"displaySeconds\": true,\n            \"showPeriod\": true,\n            \"showPeriodUpper\": false,\n            \"clockBold\": false,\n            \"showDate\": true,\n            \"showWeek\": false,\n            \"dateFormat\": \"dddd, LL\",\n            \"analogSize\": \"200px\",\n            \"analogFace\": \"simple\",\n            \"analogPlacement\": \"bottom\",\n            \"analogShowDate\": \"top\",\n            \"secondsColor\": \"#888888\",\n            \"timezone\": null\n        },\n        \"classes\": \"clock\",\n        \"hidden\": false,\n        \"lockStrings\": []\n    },\n    {\n        \"index\": \"4\",\n        \"identifier\": \"module_4_calendar\",\n        \"name\": \"calendar\",\n        \"path\": \"modules/default/calendar/\",\n        \"file\": \"calendar.js\",\n        \"position\": \"top_left\",\n        \"header\": \"US Holidays\",\n        \"config\": {\n            \"maximumEntries\": 10,\n            \"maximumNumberOfDays\": 365,\n            \"displaySymbol\": true,\n            \"defaultSymbol\": \"calendar\",\n            \"displayRepeatingCountTitle\": false,\n            \"defaultRepeatingCountTitle\": \"\",\n            \"maxTitleLength\": 25,\n            \"wrapEvents\": false,\n            \"fetchInterval\": 300000,\n            \"animationSpeed\": 2000,\n            \"fade\": true,\n            \"urgency\": 7,\n            \"timeFormat\": \"relative\",\n            \"dateFormat\": \"MMM Do\",\n            \"dateEndFormat\": \"HH:mm\",\n            \"fullDayEventDateFormat\": \"MMM Do\",\n            \"showEnd\": false,\n            \"getRelative\": 6,\n            \"fadePoint\": 0.25,\n            \"hidePrivate\": false,\n            \"hideOngoing\": false,\n            \"colored\": false,\n            \"coloredSymbolOnly\": false,\n            \"tableClass\": \"small\",\n            \"calendars\": [\n                {\n                    \"symbol\": \"calendar-check\",\n                    \"url\": \"http://www.calendarlabs.com/templates/ical/US-Holidays.ics\"\n                }\n            ],\n            \"titleReplace\": {\n                \"De verjaardag van \": \"\",\n                \"'s birthday\": \"\"\n            },\n            \"broadcastEvents\": true,\n            \"excludedEvents\": []\n        },\n        \"classes\": \"calendar\",\n        \"hidden\": false,\n        \"lockStrings\": []\n    },\n    {\n        \"index\": \"5\",\n        \"identifier\": \"module_5_compliments\",\n        \"name\": \"compliments\",\n        \"path\": \"modules/default/compliments/\",\n        \"file\": \"compliments.js\",\n        \"position\": \"lower_third\",\n        \"config\": {\n            \"compliments\": {\n                \"anytime\": [\n                    \"Hey there sexy!\"\n                ],\n                \"morning\": [\n                    \"Good morning, handsome!\",\n                    \"Enjoy your day!\",\n                    \"How was your sleep?\"\n                ],\n                \"afternoon\": [\n                    \"Hello, beauty!\",\n                    \"You look sexy!\",\n                    \"Looking good today!\"\n                ],\n                \"evening\": [\n                    \"Wow, you look hot!\",\n                    \"You look nice!\",\n                    \"Hi, sexy!\"\n                ]\n            },\n            \"updateInterval\": 30000,\n            \"remoteFile\": null,\n            \"fadeSpeed\": 4000,\n            \"morningStartTime\": 3,\n            \"morningEndTime\": 12,\n            \"afternoonStartTime\": 12,\n            \"afternoonEndTime\": 17\n        },\n        \"classes\": \"compliments\",\n        \"hidden\": false,\n        \"lockStrings\": []\n    },\n    {\n        \"index\": \"6\",\n        \"identifier\": \"module_6_newsfeed\",\n        \"name\": \"newsfeed\",\n        \"path\": \"modules/default/newsfeed/\",\n        \"file\": \"newsfeed.js\",\n        \"position\": \"bottom_bar\",\n        \"config\": {\n            \"feeds\": [\n                {\n                    \"title\": \"New York Times\",\n                    \"url\": \"http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml\"\n                }\n            ],\n            \"showSourceTitle\": true,\n            \"showPublishDate\": true,\n            \"showDescription\": false,\n            \"wrapTitle\": true,\n            \"wrapDescription\": true,\n            \"truncDescription\": true,\n            \"lengthDescription\": 400,\n            \"hideLoading\": false,\n            \"reloadInterval\": 300000,\n            \"updateInterval\": 10000,\n            \"animationSpeed\": 2500,\n            \"maxNewsItems\": 0,\n            \"ignoreOldItems\": false,\n            \"ignoreOlderThan\": 86400000,\n            \"removeStartTags\": \"\",\n            \"removeEndTags\": \"\",\n            \"startTags\": [],\n            \"endTags\": [],\n            \"prohibitedWords\": [],\n            \"scrollLength\": 500,\n            \"logFeedWarnings\": false\n        },\n        \"classes\": \"newsfeed\",\n        \"hidden\": false,\n        \"lockStrings\": []\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "/api/modules/:moduleName",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/module/:moduleName/:action/:p?apiKey=testkey",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"module",
+						":moduleName",
+						":action",
+						":p"
+					],
+					"query": [
+						{
+							"key": "apiKey",
+							"value": "testkey"
+						}
+					],
+					"variable": [
+						{
+							"key": "moduleName",
+							"value": "carousel",
+							"description": "Return details about a particular module.  Can be a Module Name or Unique Identifier."
+						},
+						{
+							"key": "action",
+							"value": "carouselgoto"
+						},
+						{
+							"key": "p",
+							"value": "1"
+						}
+					]
+				},
+				"description": "List of all modules currently active."
+			},
+			"response": [
+				{
+					"name": "/api/modules/alert",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules/:moduleName",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules",
+								":moduleName"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "alert",
+									"description": "Return details about a particular module.  Can be a Module Name or Unique Identifier."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "299"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"12b-XJhp0c57DMv5y8yvvzr0teY5ruU\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:46:19 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"index\": \"0\",\n            \"identifier\": \"module_0_alert\",\n            \"name\": \"alert\",\n            \"path\": \"modules/default/alert/\",\n            \"file\": \"alert.js\",\n            \"config\": {\n                \"effect\": \"slide\",\n                \"alert_effect\": \"jelly\",\n                \"display_time\": 3500,\n                \"position\": \"center\",\n                \"welcome_message\": false\n            },\n            \"classes\": \"alert\",\n            \"hidden\": false,\n            \"lockStrings\": []\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/modules/:moduleName/:action",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/modules/:moduleName/:action",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"modules",
+						":moduleName",
+						":action"
+					],
+					"variable": [
+						{
+							"key": "moduleName",
+							"value": "clock",
+							"description": "Module to act upon.  Can be a Module Name or Unique Identifier (e.g. `module_3_clock`).\n\nTo SHOW/HIDE/TOGGLE all modules, send \"all\" as :moduleName"
+						},
+						{
+							"key": "action",
+							"value": "defaults",
+							"description": "Action to take.  Valid options are \"show\", \"hide\", \"toggle\": or \"force\" to force a module to be shown if it has a lockstring from another module.\n\"defaults\" will return the default configuration for a given module."
+						}
+					]
+				},
+				"description": "List of all modules currently active."
+			},
+			"response": [
+				{
+					"name": "/api/modules/all/hide",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules/:moduleName/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules",
+								":moduleName",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "all",
+									"description": "Module to act upon.  Can be a Module Name or Unique Identifier (e.g. `module_3_clock`).\n\nTo SHOW/HIDE/TOGGLE all modules, send \"all\" as :moduleName"
+								},
+								{
+									"key": "action",
+									"value": "hide",
+									"description": "Action to take.  Valid options are \"show\", \"hide\", \"toggle\": or \"force\" to force a module to be shown if it has a lockstring from another module.\n\"defaults\" will return the default configuration for a given module."
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "/api/modules/clock/defaults",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules/:moduleName/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules",
+								":moduleName",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "clock",
+									"description": "Module to act upon.  Can be a Module Name or Unique Identifier (e.g. `module_3_clock`)."
+								},
+								{
+									"key": "action",
+									"value": "defaults",
+									"description": "Action to take.  Valid options are \"show\", \"hide\", or \"force\" to force a module to be shown if it has a lockstring from another module.\n\"defaults\" will return the default configuration for a given module."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "314"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"13a-rUbPIA5DQcTI09aa+VfSszuUFaM\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 06:47:33 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"displayType\": \"digital\",\n    \"timeFormat\": 24,\n    \"displaySeconds\": true,\n    \"showPeriod\": true,\n    \"showPeriodUpper\": false,\n    \"clockBold\": false,\n    \"showDate\": true,\n    \"showWeek\": false,\n    \"dateFormat\": \"dddd, LL\",\n    \"analogSize\": \"200px\",\n    \"analogFace\": \"simple\",\n    \"analogPlacement\": \"bottom\",\n    \"analogShowDate\": \"top\",\n    \"secondsColor\": \"#888888\",\n    \"timezone\": null\n}"
+				},
+				{
+					"name": "/api/modules/clock/hide",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules/:moduleName/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules",
+								":moduleName",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "clock",
+									"description": "Module to act upon.  Can be a Module Name or Unique Identifier (e.g. `module_3_clock`)."
+								},
+								{
+									"key": "action",
+									"value": "hide",
+									"description": "Action to take.  Valid options are \"SHOW\", \"HIDE\", or \"FORCE\" to force a module to be shown if it has a lockstring from another module."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "16"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"10-oV4hJxRVSENxc/wX8+mA4/Pe4tA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:59:27 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/modules/installed",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/modules/installed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"modules",
+						"installed"
+					]
+				},
+				"description": "List of all modules currently installed on the machine (including those not currently enabled in the config file)"
+			},
+			"response": [
+				{
+					"name": "/api/modules/installed",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules/installed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules",
+								"installed"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1407"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"57f-l6rDLAx0T/wYJk3gmcmoBL896OY\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:31:26 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"longname\": \"MMM-AlexaOnOff\",\n        \"name\": \"Alexa On Off\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-AlexaOnOff\",\n        \"url\": \"\"\n    },\n    {\n        \"longname\": \"MMM-Api\",\n        \"name\": \"Api\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-Api\",\n        \"url\": \"\"\n    },\n    {\n        \"author\": \"barnabycolby\",\n        \"desc\": \"Rotate modules, to save space on screen.\",\n        \"id\": \"barnabycolby/MMM-Carousel\",\n        \"longname\": \"MMM-Carousel\",\n        \"url\": \"https://github.com/barnabycolby/MMM-Carousel\",\n        \"name\": \"Carousel\",\n        \"isDefaultModule\": false,\n        \"installed\": true\n    },\n    {\n        \"longname\": \"MMM-KeyBindings\",\n        \"name\": \"Key Bindings\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-KeyBindings\",\n        \"url\": \"\"\n    },\n    {\n        \"longname\": \"MMM-OnScreenMenu\",\n        \"name\": \"On Screen Menu\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-OnScreenMenu\",\n        \"url\": \"\"\n    },\n    {\n        \"author\": \"Jopyth\",\n        \"desc\": \"Cleanly shutdown (or reboot) your mirror, edit which modules are shown on your mirror and turn your monitor off and on from a simple website, i.e. from your smartphone.\",\n        \"id\": \"Jopyth/MMM-Remote-Control\",\n        \"longname\": \"MMM-Remote-Control\",\n        \"url\": \"https://github.com/Jopyth/MMM-Remote-Control\",\n        \"name\": \"Remote Control\",\n        \"isDefaultModule\": false,\n        \"installed\": true\n    },\n    {\n        \"longname\": \"MMM-RTSPStream\",\n        \"name\": \"RTSPStream\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-RTSPStream\",\n        \"url\": \"\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "/api/modules/available",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/modules/available",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"modules",
+						"available"
+					]
+				},
+				"description": "List of modules available for installation"
+			},
+			"response": [
+				{
+					"name": "/api/modules/available",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/modules/available",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"modules",
+								"available"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "33497"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"82d9-3eP4W3cdxigiUMN1a34ngCO8Jas\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 04:33:20 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"author\": \"Jopyth\",\n        \"desc\": \"Display a candle burning down towards a specific date (e.g. an advent candle).\",\n        \"id\": \"Jopyth/MMM-Advent\",\n        \"longname\": \"MMM-Advent\",\n        \"url\": \"https://github.com/Jopyth/MMM-Advent\",\n        \"name\": \"Advent\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CFenner\",\n        \"desc\": \"Display the air quality index a for a certain location.\",\n        \"id\": \"CFenner/MagicMirror-AirQuality-Module\",\n        \"longname\": \"MMM-AirQuality\",\n        \"url\": \"https://github.com/CFenner/MagicMirror-AirQuality-Module\",\n        \"name\": \"Air Quality\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"alert\",\n        \"name\": \"Alert\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"author\": \"sakirtemel\",\n        \"desc\": \"Amazon Alexa integration with using Javascript only.\",\n        \"id\": \"sakirtemel/MMM-alexa\",\n        \"longname\": \"MMM-Alexa\",\n        \"url\": \"https://github.com/sakirtemel/MMM-alexa\",\n        \"name\": \"Alexa\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"MMM-AlexaOnOff\",\n        \"name\": \"Alexa On Off\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-AlexaOnOff\",\n        \"url\": \"\"\n    },\n    {\n        \"longname\": \"MMM-Api\",\n        \"name\": \"Api\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-Api\",\n        \"url\": \"\"\n    },\n    {\n        \"author\": \"stuloh\",\n        \"desc\": \"Display aviation weather (METAR) and FAA delay data for continental U.S. airports.\",\n        \"id\": \"stuloh/MMM-aviationwx\",\n        \"longname\": \"MMM-aviationwx\",\n        \"url\": \"https://github.com/stuloh/MMM-aviationwx\",\n        \"name\": \"Aviationwx\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"valmassoi\",\n        \"desc\": \"Display bitcoin ticker price.\",\n        \"id\": \"valmassoi/MMM-bitcoin\",\n        \"longname\": \"MMM-bitcoin\",\n        \"url\": \"https://github.com/valmassoi/MMM-bitcoin\",\n        \"name\": \"Bitcoin\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PtrBld\",\n        \"desc\": \"Use a button to hide or show different modules via a broadcast message.\",\n        \"id\": \"ptrbld/MMM-Button\",\n        \"longname\": \"MMM-Button\",\n        \"url\": \"https://github.com/ptrbld/MMM-Button\",\n        \"name\": \"Button\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"calendar\",\n        \"name\": \"Calendar\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"author\": \"KirAsh4\",\n        \"desc\": \"Display a compact monthly calendar view.\",\n        \"id\": \"KirAsh4/calendar_monthly\",\n        \"longname\": \"calendar_monthly\",\n        \"url\": \"https://github.com/KirAsh4/calendar_monthly\",\n        \"name\": \"Calendar Monthly\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PaViRo\",\n        \"desc\": \"Extension for [MMM-FRITZ-Box-Callmonitor](https://github.com/paviro/MMM-FRITZ-Box-Callmonitor) (Displays the currently active call)\",\n        \"id\": \"paviro/MMM-Callmonitor-Current-Call\",\n        \"longname\": \"MMM-Callmonitor-Current-Call\",\n        \"url\": \"https://github.com/paviro/MMM-Callmonitor-Current-Call\",\n        \"name\": \"Callmonitor Current Call\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"alexyak\",\n        \"desc\": \"Display a webcamera video feed.\",\n        \"id\": \"alexyak/camera\",\n        \"longname\": \"camera\",\n        \"url\": \"https://github.com/alexyak/camera\",\n        \"name\": \"Camera\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"barnabycolby\",\n        \"desc\": \"Rotate modules, to save space on screen.\",\n        \"id\": \"barnabycolby/MMM-Carousel\",\n        \"longname\": \"MMM-Carousel\",\n        \"url\": \"https://github.com/barnabycolby/MMM-Carousel\",\n        \"name\": \"Carousel\",\n        \"isDefaultModule\": false,\n        \"installed\": true\n    },\n    {\n        \"author\": \"ian\",\n        \"desc\": \"A module that displays random Clash Royale decks.\",\n        \"id\": \"ianperrin/MMM-Clash-Royale\",\n        \"longname\": \"MMM-Clash-Royale\",\n        \"url\": \"https://github.com/ianperrin/MMM-Clash-Royale\",\n        \"name\": \"Clash Royale\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"clock\",\n        \"name\": \"Clock\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"longname\": \"compliments\",\n        \"name\": \"Compliments\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"longname\": \"currentweather\",\n        \"name\": \"Currentweather\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"author\": \"Arthur Garza\",\n        \"desc\": \"A module that displays the verse of the day from www.biblegateway.com.\",\n        \"id\": \"arthurgarzajr/MMM-DailyBibleVerse.git\",\n        \"longname\": \"MMM-DailyBibleVerse\",\n        \"url\": \"https://github.com/arthurgarzajr/MMM-DailyBibleVerse.git\",\n        \"name\": \"Daily Bible Verse\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Blastitt\",\n        \"desc\": \"Displays the daily XKCD web comic.\",\n        \"id\": \"Blastitt/DailyXKCD\",\n        \"longname\": \"DailyXKCD\",\n        \"url\": \"https://github.com/Blastitt/DailyXKCD\",\n        \"name\": \"Daily XKCD\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"archerydwd\",\n        \"desc\": \"Display Realtime Irish Rail data for a targeted station.\",\n        \"id\": \"archerydwd/DWD-RealtimeIrishRail\",\n        \"longname\": \"DWD-RealtimeIrishRail\",\n        \"url\": \"https://github.com/archerydwd/DWD-RealtimeIrishRail\",\n        \"name\": \"DWD Realtime Irish Rail\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"LukeSkywalker92\",\n        \"desc\": \"Displays weather warnings for Germany.\",\n        \"id\": \"LukeSkywalker92/MMM-DWD-WarnWeather\",\n        \"longname\": \"MMM-DWD-WarnWeather\",\n        \"url\": \"https://github.com/LukeSkywalker92/MMM-DWD-WarnWeather\",\n        \"name\": \"DWD Warn Weather\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ronny3050\",\n        \"desc\": \"Display incoming emails.\",\n        \"id\": \"ronny3050/email-mirror\",\n        \"longname\": \"email-mirror\",\n        \"url\": \"https://github.com/ronny3050/email-mirror\",\n        \"name\": \"Email Mirror\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"nigel-daniels\",\n        \"desc\": \"Display information published by the FAA on delays and weather conditions at some US airports.\",\n        \"id\": \"nigel-daniels/MMM-FAA-Delay\",\n        \"longname\": \"MMM-FAA-Delay\",\n        \"url\": \"https://github.com/nigel-daniels/MMM-FAA-Delay\",\n        \"name\": \"FAA Delay\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PaViRo\",\n        \"desc\": \"Facial recognition and module swapping based on the current user ...\",\n        \"id\": \"paviro/MMM-Facial-Recognition\",\n        \"longname\": \"MMM-Facial-Recognition\",\n        \"url\": \"https://github.com/paviro/MMM-Facial-Recognition\",\n        \"name\": \"Facial Recognition\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"BenRoe\",\n        \"desc\": \"Display Readings/Values from your FHEM device like temperature or humidity.\",\n        \"id\": \"BenRoe/MMM-FHEM\",\n        \"longname\": \"MMM-FHEM\",\n        \"url\": \"https://github.com/BenRoe/MMM-FHEM\",\n        \"name\": \"FHEM\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"SVendittelli\",\n        \"desc\": \"Display your Fitbit statistics.\",\n        \"id\": \"SVendittelli/MMM-fitbit\",\n        \"longname\": \"MMM-fitbit\",\n        \"url\": \"https://github.com/SVendittelli/MMM-fitbit\",\n        \"name\": \"Fitbit\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"kapsolas\",\n        \"desc\": \"A module to load last 20 images posted to user's Flickr photostream to mirror and animate them; with the need of an API_KEY\",\n        \"id\": \"kapsolas/MMM-Flickr\",\n        \"longname\": \"MMM-Flickr\",\n        \"url\": \"https://github.com/kapsolas/MMM-Flickr\",\n        \"name\": \"Flickr\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"dmcinnes\",\n        \"desc\": \"Display weather based on forecast API.\",\n        \"id\": \"dmcinnes/MMM-forecast-io\",\n        \"longname\": \"MMM-forecast-io\",\n        \"url\": \"https://github.com/dmcinnes/MMM-forecast-io\",\n        \"name\": \"Forecast Io\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ian\",\n        \"desc\": \"A module that displays the driver standings from the current Formula 1 season.\",\n        \"id\": \"ianperrin/MMM-Formula1\",\n        \"longname\": \"MMM-Formula1\",\n        \"url\": \"https://github.com/ianperrin/MMM-Formula1\",\n        \"name\": \"Formula1\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"tataille\",\n        \"desc\": \"Display data from your FreeBox v6 server (Revolution) from the french ISP free.\",\n        \"id\": \"tataille/MMM-FreeBox-Monitor\",\n        \"longname\": \"MMM-FreeBox-Monitor\",\n        \"url\": \"https://github.com/tataille/MMM-FreeBox-Monitor\",\n        \"name\": \"Free Box Monitor\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PaViRo\",\n        \"desc\": \"FRITZ!Box Callmonitor (Display an alert when someone is calling and offers a call history...)\",\n        \"id\": \"paviro/MMM-FRITZ-Box-Callmonitor\",\n        \"longname\": \"MMM-FRITZ-Box-Callmonitor\",\n        \"url\": \"https://github.com/paviro/MMM-FRITZ-Box-Callmonitor\",\n        \"name\": \"FRITZ Box Callmonitor\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display Gas Station prices.\",\n        \"id\": \"fewieden/MMM-Fuel\",\n        \"longname\": \"MMM-Fuel\",\n        \"url\": \"https://github.com/fewieden/MMM-Fuel\",\n        \"name\": \"Fuel\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"LukeSkywalker92\",\n        \"desc\": \"Displays live image of our planet.\",\n        \"id\": \"LukeSkywalker92/MMM-Globe\",\n        \"longname\": \"MMM-Globe\",\n        \"url\": \"https://github.com/LukeSkywalker92/MMM-Globe\",\n        \"name\": \"Globe\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"sp4ceman\",\n        \"desc\": \"Displays a google map of an origin and destination\",\n        \"id\": \"sp4ceman/MMM-googlemaps\",\n        \"longname\": \"MMM-googlemaps\",\n        \"url\": \"https://github.com/sp4ceman/MMM-googlemaps\",\n        \"name\": \"Googlemaps\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"mochman\",\n        \"desc\": \"Display weather from a self-updated GPS Location.\",\n        \"id\": \"mochman/MMM-GPSWeather\",\n        \"longname\": \"MMM-GPSWeather\",\n        \"url\": \"https://github.com/mochman/MMM-GPSWeather\",\n        \"name\": \"GPSWeather\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"helloworld\",\n        \"name\": \"Helloworld\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"author\": \"georg90\",\n        \"desc\": \"Display local transport in Hamburg/Germany.\",\n        \"id\": \"georg90/MMM-HH-LocalTransport\",\n        \"longname\": \"MMM-HH-LocalTransport\",\n        \"url\": \"https://github.com/georg90/MMM-HH-LocalTransport\",\n        \"name\": \"HH Local Transport\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"masters1222\",\n        \"desc\": \"Hide all modules on your screen.\",\n        \"id\": \"masters1222/mm-hide-all\",\n        \"longname\": \"mm-hide-all\",\n        \"url\": \"https://github.com/masters1222/mm-hide-all\",\n        \"name\": \"Hide All\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"MMM-horoscope\",\n        \"desc\": \"Displays Daily Horoscope.\",\n        \"id\": \"morozgrafix/MMM-horoscope\",\n        \"longname\": \"MMM-horoscope\",\n        \"url\": \"https://github.com/morozgrafix/MMM-horoscope\",\n        \"name\": \"Horoscope\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Eunanibus\",\n        \"desc\": \"Display XML data from a HTTP response.\",\n        \"id\": \"Eunanibus/MMM-HTTPRequestDisplay\",\n        \"longname\": \"MMM-HTTPRequestDisplay\",\n        \"url\": \"https://github.com/Eunanibus/MMM-HTTPRequestDisplay\",\n        \"name\": \"HTTPRequest Display\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"MitchSS\",\n        \"desc\": \"Display the status of groups or lights in your Philips Hue setup.\",\n        \"id\": \"MitchSS/MMM-Hue\",\n        \"longname\": \"MMM-Hue\",\n        \"url\": \"https://github.com/MitchSS/MMM-Hue\",\n        \"name\": \"Hue\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Bitte-ein-Bit\",\n        \"desc\": \"Load iCloud addressbook and provide birthday iCal feed for calendar module and addressbook for [MMM-FRITZ-Box-Callmonitor](https://github.com/paviro/MMM-FRITZ-Box-Callmonitor).\",\n        \"id\": \"bitte-ein-bit/MMM-iCloud-Client\",\n        \"longname\": \"MMM-iCloud-Client\",\n        \"url\": \"https://github.com/bitte-ein-bit/MMM-iCloud-Client\",\n        \"name\": \"I Cloud Client\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"desertblade\",\n        \"desc\": \"A simple way to add an iFrame of any web content to your MagicMirror.\",\n        \"id\": \"desertblade/iFrame\",\n        \"longname\": \"iFrame\",\n        \"url\": \"https://github.com/desertblade/iFrame\",\n        \"name\": \"I Frame\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"basti0001\",\n        \"desc\": \"Visulizes your places where you have been traveled..or intend to go.......or or or.\",\n        \"id\": \"basti0001/MMM-iHaveBeenThere\",\n        \"longname\": \"MMM-iHaveBeenThere\",\n        \"url\": \"https://github.com/basti0001/MMM-iHaveBeenThere\",\n        \"name\": \"I Have Been There\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"kapsolas\",\n        \"desc\": \"A module load the images from a users Instagram feed. The images are displayed on the mirror and animated; it requires an API_KEY\",\n        \"id\": \"kapsolas/MMM-Instagram\",\n        \"longname\": \"MMM-Instagram\",\n        \"url\": \"https://github.com/kapsolas/MMM-Instagram\",\n        \"name\": \"Instagram\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ronny3050\",\n        \"desc\": \"Display internet statistics such as strength and speed information.\",\n        \"id\": \"ronny3050/internet-monitor\",\n        \"longname\": \"internet-monitor\",\n        \"url\": \"https://github.com/ronny3050/internet-monitor\",\n        \"name\": \"Internet Monitor\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display IPv4/IPv6 Network Address.\",\n        \"id\": \"fewieden/MMM-ip\",\n        \"longname\": \"MMM-ip\",\n        \"url\": \"https://github.com/fewieden/MMM-ip\",\n        \"name\": \"Ip\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"RedNax67\",\n        \"desc\": \"Display ipcam feed on MagicMirror.\",\n        \"id\": \"RedNax67/MMM-IPCam\",\n        \"longname\": \"MMM-IPCam\",\n        \"url\": \"https://github.com/RedNax67/MMM-IPCam\",\n        \"name\": \"IPCam\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"pvyParts\",\n        \"desc\": \"A module to load random jokes from the web.\",\n        \"id\": \"pvyParts/MMM-jokes\",\n        \"longname\": \"MMM-jokes\",\n        \"url\": \"https://github.com/pvyParts/MMM-jokes\",\n        \"name\": \"Jokes\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"MMM-KeyBindings\",\n        \"name\": \"Key Bindings\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-KeyBindings\",\n        \"url\": \"\"\n    },\n    {\n        \"author\": \"yo-less\",\n        \"desc\": \"Station monitor for the Karlsruhe/Germany local transport (KVV) bus, tram and train system.\",\n        \"id\": \"yo-less/MMM-KVV\",\n        \"longname\": \"MMM-KVV\",\n        \"url\": \"https://github.com/yo-less/MMM-KVV\",\n        \"name\": \"KVV\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CFenner\",\n        \"desc\": \"Display the next public transport connections for a certain route.\",\n        \"id\": \"CFenner/MagicMirror-LocalTransport-Module\",\n        \"longname\": \"MMM-LocalTransport\",\n        \"url\": \"https://github.com/CFenner/MagicMirror-LocalTransport-Module\",\n        \"name\": \"Local Transport\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"whyjustin\",\n        \"desc\": \"Voice control based on based on Sphinx and Alexa.\",\n        \"id\": \"whyjustin/magic-mirror-voice\",\n        \"longname\": \"magic-mirror-voice\",\n        \"url\": \"https://github.com/whyjustin/magic-mirror-voice\",\n        \"name\": \"Magic Mirror Voice\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Bangee44\",\n        \"desc\": \"Display current weather based on the Meteoblue.com API.\",\n        \"id\": \"Bangee44/MMM-meteoblueCurrent\",\n        \"longname\": \"MMM-meteoblueCurrent\",\n        \"url\": \"https://github.com/Bangee44/MMM-meteoblueCurrent\",\n        \"name\": \"Meteoblue Current\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"joanaz\",\n        \"desc\": \"Alexa voice control to show/hide modules and display text/images on the mirror.\",\n        \"id\": \"joanaz/MMM-MirrorMirrorOnTheWall\",\n        \"longname\": \"MMM-MirrorMirrorOnTheWall\",\n        \"url\": \"https://github.com/joanaz/MMM-MirrorMirrorOnTheWall\",\n        \"name\": \"Mirror Mirror On The Wall\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ianperrin\",\n        \"desc\": \"Create schedules to control when other modules are shown, hidden or dimmed and to send notifications to other modules.\",\n        \"id\": \"ianperrin/MMM-ModuleScheduler\",\n        \"longname\": \"MMM-ModuleScheduler\",\n        \"url\": \"https://github.com/ianperrin/MMM-ModuleScheduler\",\n        \"name\": \"Module Scheduler\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"alexyak\",\n        \"desc\": \"Camera based motion detector.\",\n        \"id\": \"alexyak/motiondetector\",\n        \"longname\": \"motiondetector\",\n        \"url\": \"https://github.com/alexyak/motiondetector\",\n        \"name\": \"Motiondetector\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display information about upcoming movies (title, cover, genre, rating, plot).\",\n        \"id\": \"fewieden/MMM-MovieInfo\",\n        \"longname\": \"MMM-MovieInfo\",\n        \"url\": \"https://github.com/fewieden/MMM-MovieInfo\",\n        \"name\": \"Movie Info\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"masters1222\",\n        \"desc\": \"Simple player to play your music.\",\n        \"id\": \"masters1222/mm-music-player\",\n        \"longname\": \"mm-music-player\",\n        \"url\": \"https://github.com/masters1222/mm-music-player\",\n        \"name\": \"Music Player\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"qistoph\",\n        \"desc\": \"A Magic Mirror Module for Nagios.\",\n        \"id\": \"qistoph/MMM-nagios\",\n        \"longname\": \"MMM-nagios\",\n        \"url\": \"https://github.com/qistoph/MMM-nagios\",\n        \"name\": \"Nagios\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Mochman\",\n        \"desc\": \"A Magic Mirror Module for the Nest Thermostat.\",\n        \"id\": \"mochman/MMM-Nest\",\n        \"longname\": \"MMM-Nest\",\n        \"url\": \"https://github.com/mochman/MMM-Nest\",\n        \"name\": \"Nest\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CFenner\",\n        \"desc\": \"Display your Netatmo in/outdoor weather station data on your MagicMirror.\",\n        \"id\": \"CFenner/MagicMirror-Netatmo-Module\",\n        \"longname\": \"MMM-Netatmo\",\n        \"url\": \"https://github.com/CFenner/MagicMirror-Netatmo-Module\",\n        \"name\": \"Netatmo\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ianperrin\",\n        \"desc\": \"Display the status of devices on the network based on their MAC address\",\n        \"id\": \"ianperrin/MMM-NetworkScanner\",\n        \"longname\": \"MMM-NetworkScanner\",\n        \"url\": \"https://github.com/ianperrin/MMM-NetworkScanner\",\n        \"name\": \"Network Scanner\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"newsfeed\",\n        \"name\": \"Newsfeed\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"author\": \"yo-less\",\n        \"desc\": \"Station monitor for the nextbike bike-sharing network.\",\n        \"id\": \"yo-less/MMM-nextbike\",\n        \"longname\": \"MMM-nextbike\",\n        \"url\": \"https://github.com/yo-less/MMM-nextbike\",\n        \"name\": \"Nextbike\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display scores of National Football League.\",\n        \"id\": \"fewieden/MMM-NFL\",\n        \"longname\": \"MMM-NFL\",\n        \"url\": \"https://github.com/fewieden/MMM-NFL\",\n        \"name\": \"NFL\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"qistoph\",\n        \"desc\": \"Shows informantion on trains departuring a configurable Dutch trainstation.\",\n        \"id\": \"qistoph/MMM-nstreinen\",\n        \"longname\": \"MMM-nstreinen\",\n        \"url\": \"https://github.com/qistoph/MMM-nstreinen\",\n        \"name\": \"Nstreinen\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ghlasse\",\n        \"desc\": \"A module that displays the medals for the current summer olympics.\",\n        \"id\": \"GHLasse/MagicMirror-Olympia-Module\",\n        \"longname\": \"MMM-Olympia\",\n        \"url\": \"https://github.com/GHLasse/MagicMirror-Olympia-Module\",\n        \"name\": \"Olympia\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Displays the medals for olympic games in Rio.\",\n        \"id\": \"fewieden/MMM-OlympicGames\",\n        \"longname\": \"MMM-OlympicGames\",\n        \"url\": \"https://github.com/fewieden/MMM-OlympicGames\",\n        \"name\": \"Olympic Games\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"MMM-OnScreenMenu\",\n        \"name\": \"On Screen Menu\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-OnScreenMenu\",\n        \"url\": \"\"\n    },\n    {\n        \"author\": \"RedNax67\",\n        \"desc\": \"Display information from your OpenTherm gateway.\",\n        \"id\": \"RedNax67/MMM-OpenTherm\",\n        \"longname\": \"MMM-OpenTherm\",\n        \"url\": \"https://github.com/RedNax67/MMM-OpenTherm\",\n        \"name\": \"Open Therm\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"paphko\",\n        \"desc\": \"Show lights and window states on a floorplan of an openhab server.\",\n        \"id\": \"paphko/mmm-openhabfloorplan\",\n        \"longname\": \"MMM-openhabfloorplan\",\n        \"url\": \"https://github.com/paphko/mmm-openhabfloorplan\",\n        \"name\": \"Openhabfloorplan\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"da4throux\",\n        \"desc\": \"time to the next train & buses leaving a list stations for Paris (RATP)\",\n        \"id\": \"da4throux/MMM-Paris-RATP-PG\",\n        \"longname\": \"MMM-Paris-RATP-PG\",\n        \"url\": \"https://github.com/da4throux/MMM-Paris-RATP-PG\",\n        \"name\": \"Paris RATP PG\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ronny3050\",\n        \"desc\": \"Displays and alerts mirror users on new phone notifications.\",\n        \"id\": \"ronny3050/phone-notification-mirror\",\n        \"longname\": \"phone-notification-mirror\",\n        \"url\": \"https://github.com/ronny3050/phone-notification-mirror\",\n        \"name\": \"Phone Notification Mirror\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"SheyaBernstein\",\n        \"desc\": \"Display stats from Pi-Hole DNS ad blocking.\",\n        \"id\": \"sheyabernstein/MMM-pihole-stats\",\n        \"longname\": \"MMM-pihole-stats\",\n        \"url\": \"https://github.com/sheyabernstein/MMM-pihole-stats\",\n        \"name\": \"Pihole Stats\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display status from website/ip's.\",\n        \"id\": \"fewieden/MMM-ping\",\n        \"longname\": \"MMM-ping\",\n        \"url\": \"https://github.com/fewieden/MMM-ping\",\n        \"name\": \"Ping\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CFenner\",\n        \"desc\": \"Display the mirrors connection status.\",\n        \"id\": \"CFenner/MagicMirror-Ping-Module\",\n        \"longname\": \"MMM-Ping\",\n        \"url\": \"https://github.com/CFenner/MagicMirror-Ping-Module\",\n        \"name\": \"Ping\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PaViRo\",\n        \"desc\": \"This module can monitor a PIR motion sensor and put your mirror to sleep if nobody uses it.\",\n        \"id\": \"paviro/MMM-PIR-Sensor\",\n        \"longname\": \"MMM-PIR-Sensor\",\n        \"url\": \"https://github.com/paviro/MMM-PIR-Sensor\",\n        \"name\": \"PIR Sensor\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"croxis\",\n        \"desc\": \"Display the rise and set times of the planets.\",\n        \"id\": \"croxis/planetrise\",\n        \"longname\": \"planetrise\",\n        \"url\": \"https://github.com/croxis/planetrise\",\n        \"name\": \"Planetrise\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"croxis\",\n        \"desc\": \"Display the next time on a clear morning or evening that you can go outside and experience the brightness of high noon on Pluto.\",\n        \"id\": \"croxis/PlutoTime\",\n        \"longname\": \"PlutoTime\",\n        \"url\": \"https://github.com/croxis/PlutoTime\",\n        \"name\": \"Pluto Time\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PtrBld\",\n        \"desc\": \"This module can show/hide a video downloaded from a Podcast or a private server (needs static file path). At the moment you can only display the video by clicking a button (use the MMM-Button module).\",\n        \"id\": \"ptrbld/MMM-Podcast\",\n        \"longname\": \"MMM-Podcast\",\n        \"url\": \"https://github.com/ptrbld/MMM-Podcast\",\n        \"name\": \"Podcast\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Slamet PS\",\n        \"desc\": \"Displays prayer time (in local time) and also recite Adzan/Adhan.\",\n        \"id\": \"slametps/MMM-PrayerTime\",\n        \"longname\": \"MMM-PrayerTime\",\n        \"url\": \"https://github.com/slametps/MMM-PrayerTime\",\n        \"name\": \"Prayer Time\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"deg0nz\",\n        \"desc\": \"Display departures for public transport in Berlin and Brandenburg (Covers VBB Area).\",\n        \"id\": \"deg0nz/MMM-PublicTransportBerlin\",\n        \"longname\": \"MMM-PublicTransportBerlin\",\n        \"url\": \"https://github.com/deg0nz/MMM-PublicTransportBerlin\",\n        \"name\": \"Public Transport Berlin\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"diego-vieira\",\n        \"desc\": \"A module that will load a random photo from an URL.\",\n        \"id\": \"diego-vieira/MMM-RandomPhoto\",\n        \"longname\": \"MMM-RandomPhoto\",\n        \"url\": \"https://github.com/diego-vieira/MMM-RandomPhoto\",\n        \"name\": \"Random Photo\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"KirAsh4\",\n        \"desc\": \"Display random quotes from brainyquote.\",\n        \"id\": \"KirAsh4/random_quotes\",\n        \"longname\": \"random_quotes\",\n        \"url\": \"https://github.com/KirAsh4/random_quotes\",\n        \"name\": \"Random Quotes\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Slamet PS\",\n        \"desc\": \"Displays Quran Ayah/Verse randomly\",\n        \"id\": \"slametps/MMM-RandomQuranAyah\",\n        \"longname\": \"MMM-RandomQuranAyah\",\n        \"url\": \"https://github.com/slametps/MMM-RandomQuranAyah\",\n        \"name\": \"Random Quran Ayah\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Jopyth\",\n        \"desc\": \"Cleanly shutdown (or reboot) your mirror, edit which modules are shown on your mirror and turn your monitor off and on from a simple website, i.e. from your smartphone.\",\n        \"id\": \"Jopyth/MMM-Remote-Control\",\n        \"longname\": \"MMM-Remote-Control\",\n        \"url\": \"https://github.com/Jopyth/MMM-Remote-Control\",\n        \"name\": \"Remote Control\",\n        \"isDefaultModule\": false,\n        \"installed\": true\n    },\n    {\n        \"author\": \"Tuxdiver\",\n        \"desc\": \"Fetching REST data and display them on the mirror.\",\n        \"id\": \"Tuxdiver/MMM-Rest\",\n        \"longname\": \"MMM-Rest\",\n        \"url\": \"https://github.com/Tuxdiver/MMM-Rest\",\n        \"name\": \"Rest\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"yawns\",\n        \"desc\": \"Monitor a given station in the RNV traffic network\",\n        \"id\": \"yawnsde/MMM-RNV\",\n        \"longname\": \"MMM-RNV\",\n        \"url\": \"https://github.com/yawnsde/MMM-RNV\",\n        \"name\": \"RNV\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"taolanoz\",\n        \"desc\": \"Display any RSS feed\",\n        \"id\": \"Taolanoz/MMM-RSS-FEED\",\n        \"longname\": \"MMM-RSS-FEED\",\n        \"url\": \"https://github.com/Taolanoz/MMM-RSS-FEED\",\n        \"name\": \"RSS FEED\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"MMM-RTSPStream\",\n        \"name\": \"RTSPStream\",\n        \"isDefaultModule\": false,\n        \"installed\": true,\n        \"author\": \"unknown\",\n        \"desc\": \"\",\n        \"id\": \"local/MMM-RTSPStream\",\n        \"url\": \"\"\n    },\n    {\n        \"author\": \"CatoAntonsen\",\n        \"desc\": \"Display public transport information for Oslo and Akershus in Norway\",\n        \"id\": \"CatoAntonsen/MMM-Ruter\",\n        \"longname\": \"MMM-Ruter\",\n        \"url\": \"https://github.com/CatoAntonsen/MMM-Ruter\",\n        \"name\": \"Ruter\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display scottish premiere league standings.\",\n        \"id\": \"fewieden/MMM-ScottishPremierLeague\",\n        \"longname\": \"MMM-ScottishPremierLeague\",\n        \"url\": \"https://github.com/fewieden/MMM-ScottishPremierLeague\",\n        \"name\": \"Scottish Premier League\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PtrBld\",\n        \"desc\": \"Display the current playing song from Spotify, ITunes and Co.\",\n        \"id\": \"PtrBld/MMM-Scrobbler\",\n        \"longname\": \"MMM-Scrobbler\",\n        \"url\": \"https://github.com/PtrBld/MMM-Scrobbler\",\n        \"name\": \"Scrobbler\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"SheyaBernstein\",\n        \"desc\": \"Display shabbat times for the current week and optionally hide all modules.\",\n        \"id\": \"sheyabernstein/MMM-shabbat\",\n        \"longname\": \"MMM-shabbat\",\n        \"url\": \"https://github.com/sheyabernstein/MMM-shabbat\",\n        \"name\": \"Shabbat\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display your shipment tracking status.\",\n        \"id\": \"fewieden/MMM-ShipmentTracking\",\n        \"longname\": \"MMM-ShipmentTracking\",\n        \"url\": \"https://github.com/fewieden/MMM-ShipmentTracking\",\n        \"name\": \"Shipment Tracking\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"frdteknikelektro\",\n        \"desc\": \"Simply displays logo with local image file path or url.\",\n        \"id\": \"frdteknikelektro/MMM-SimpleLogo\",\n        \"longname\": \"MMM-SimpleLogo\",\n        \"url\": \"https://github.com/frdteknikelektro/MMM-SimpleLogo\",\n        \"name\": \"Simple Logo\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"nhubbard\",\n        \"desc\": \"Get your festive on. Put snow in the background for winter or anti burn-in purposes... your family won't know the difference.\",\n        \"id\": \"nhubbard/MagicPlugins\",\n        \"longname\": \"Snow\",\n        \"url\": \"https://github.com/nhubbard/MagicPlugins\",\n        \"name\": \"Snow\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"A module that displays standings from European Soccer (Football) leagues.\",\n        \"id\": \"fewieden/MMM-soccer\",\n        \"longname\": \"MMM-soccer\",\n        \"url\": \"https://github.com/fewieden/MMM-soccer\",\n        \"name\": \"Soccer\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"LukeSkywalker92\",\n        \"desc\": \"A module that displays live scores of your favorite soccer leagues/competitions.\",\n        \"id\": \"LukeSkywalker92/MMM-SoccerLiveScore\",\n        \"longname\": \"MMM-SoccerLiveScore\",\n        \"url\": \"https://github.com/LukeSkywalker92/MMM-SoccerLiveScore\",\n        \"name\": \"Soccer Live Score\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CFenner\",\n        \"desc\": \"Display the currently playing track of your Sonos system.\",\n        \"id\": \"CFenner/MagicMirror-Sonos-Module\",\n        \"longname\": \"MMM-Sonos\",\n        \"url\": \"https://github.com/CFenner/MagicMirror-Sonos-Module\",\n        \"name\": \"Sonos\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CatoAntonsen\",\n        \"desc\": \"Display information from Spotify Connect e.g. cover, artist and track information.\",\n        \"id\": \"CatoAntonsen/MMM-SpotifyConnectUI\",\n        \"longname\": \"MMM-SpotifyConnectUI\",\n        \"url\": \"https://github.com/CatoAntonsen/MMM-SpotifyConnectUI\",\n        \"name\": \"Spotify Connect UI\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"danito\",\n        \"desc\": \"Display the next transports for any given STIB (Brussel/Belgium) station.\",\n        \"id\": \"danito/MMM-stib\",\n        \"longname\": \"MMM-stib\",\n        \"url\": \"https://github.com/danito/MMM-stib\",\n        \"name\": \"Stib\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"hakanmhmd\",\n        \"desc\": \"Displays current stock prices of companies using YAHHO FINANCE API...\",\n        \"id\": \"hakanmhmd/MMM-Stock\",\n        \"longname\": \"MMM-Stock\",\n        \"url\": \"https://github.com/hakanmhmd/MMM-Stock\",\n        \"name\": \"Stock\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"alexyak\",\n        \"desc\": \"Display a scrolling stocks ticker.\",\n        \"id\": \"alexyak/stocks\",\n        \"longname\": \"stocks\",\n        \"url\": \"https://github.com/alexyak/stocks\",\n        \"name\": \"Stocks\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"ian\",\n        \"desc\": \"A module that displays your activity data from [Strava.com](https://www.strava.com).\",\n        \"id\": \"ianperrin/MMM-Strava\",\n        \"longname\": \"MMM-Strava\",\n        \"url\": \"https://github.com/ianperrin/MMM-Strava\",\n        \"name\": \"Strava\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"mochman\",\n        \"desc\": \"Uses 2 HC-SR04 ultrasonic sensors to determing hand position to produce a \\\"Swipe Left\\\", \\\"Swipe Right\\\", or \\\"Press\\\".\",\n        \"id\": \"mochman/MMM-Swipe\",\n        \"longname\": \"MMM-Swipe\",\n        \"url\": \"https://github.com/mochman/MMM-Swipe\",\n        \"name\": \"Swipe\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Bangee44\",\n        \"desc\": \"Display train departures from your favourit trainstation.\",\n        \"id\": \"Bangee44/MMM-swisstransport\",\n        \"longname\": \"MMM-swisstransport\",\n        \"url\": \"https://github.com/Bangee44/MMM-swisstransport\",\n        \"name\": \"Swisstransport\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"paviro\",\n        \"desc\": \"API for sending notifications to your mirror.\",\n        \"id\": \"paviro/MMM-syslog\",\n        \"longname\": \"MMM-syslog\",\n        \"url\": \"https://github.com/paviro/MMM-syslog\",\n        \"name\": \"Syslog\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"BenRoe\",\n        \"desc\": \"Shows Raspberry Pi system stats like CPU temperature, free Ram and System load\",\n        \"id\": \"BenRoe/MMM-SystemStats\",\n        \"longname\": \"MMM-SystemStats\",\n        \"url\": \"https://github.com/BenRoe/MMM-SystemStats\",\n        \"name\": \"System Stats\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"MichMich\",\n        \"desc\": \"Display your Raspberry Pi's processor temperature on your MagicMirror.\",\n        \"id\": \"MichMich/mmm-systemtemperature\",\n        \"longname\": \"MMM-SystemTemperature\",\n        \"url\": \"https://github.com/MichMich/mmm-systemtemperature\",\n        \"name\": \"System Temperature\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CBrooker\",\n        \"desc\": \"Displays your todos from Todoist on  your MagicMirror.\",\n        \"id\": \"cbrooker/MMM-Todoist\",\n        \"longname\": \"MMM-Todoist\",\n        \"url\": \"https://github.com/cbrooker/MMM-Todoist\",\n        \"name\": \"Todoist\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"MichMich\",\n        \"desc\": \"A Magic Mirror Module for the Toon Thermostat.\",\n        \"id\": \"MichMich/MMM-Toon\",\n        \"longname\": \"MMM-Toon\",\n        \"url\": \"https://github.com/MichMich/MMM-Toon\",\n        \"name\": \"Toon\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"SamLewis0602\",\n        \"desc\": \"Display commute travel time with current traffic conditions factored in. Can be used for driving, biking, walking, and public transit.\",\n        \"id\": \"SamLewis0602/MMM-Traffic\",\n        \"longname\": \"MMM-Traffic\",\n        \"url\": \"https://github.com/SamLewis0602/MMM-Traffic\",\n        \"name\": \"Traffic\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Bangee44\",\n        \"desc\": \"Display trains from your favourit departure station to any destination in Europe.\",\n        \"id\": \"Bangee44/MMM-TrainConnections\",\n        \"longname\": \"MMM-TrainConnections\",\n        \"url\": \"https://github.com/Bangee44/MMM-TrainConnections\",\n        \"name\": \"Train Connections\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Jopyth\",\n        \"desc\": \"This module can show [Trello](https://trello.com/) cards on your mirror.\",\n        \"id\": \"Jopyth/MMM-Trello\",\n        \"longname\": \"MMM-Trello\",\n        \"url\": \"https://github.com/Jopyth/MMM-Trello\",\n        \"name\": \"Trello\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Offline Text-To-Speech based on festival.\",\n        \"id\": \"fewieden/MMM-TTS\",\n        \"longname\": \"MMM-TTS\",\n        \"url\": \"https://github.com/fewieden/MMM-TTS\",\n        \"name\": \"TTS\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Blastitt\",\n        \"desc\": \"Display your Twitter feed.\",\n        \"id\": \"Blastitt/twitControl\",\n        \"longname\": \"twitControl\",\n        \"url\": \"https://github.com/Blastitt/twitControl\",\n        \"name\": \"Twit Control\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"AdamMoses-GitHub\",\n        \"desc\": \"Displays the Twitter Trending Topics for a given place or city, as well as showing the tweet volume for each topic.\",\n        \"id\": \"AdamMoses-GitHub/MMM-TwitterTrendsByPlace\",\n        \"longname\": \"MMM-TwitterTrendsByPlace\",\n        \"url\": \"https://github.com/AdamMoses-GitHub/MMM-TwitterTrendsByPlace\",\n        \"name\": \"Twitter Trends By Place\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"updatenotification\",\n        \"name\": \"Updatenotification\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"author\": \"erikmohn\",\n        \"desc\": \"Display weather data from weather stations available at vindsiden.no(Norway)...\",\n        \"id\": \"erikmohn/MMM-Vindsiden\",\n        \"longname\": \"MMM-Vindsiden\",\n        \"url\": \"https://github.com/erikmohn/MMM-Vindsiden\",\n        \"name\": \"Vindsiden\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"dr4ke616\",\n        \"desc\": \"Voice control based on annyang.\",\n        \"id\": \"dr4ke616/MMM-Voice-Control\",\n        \"longname\": \"MMM-Voice-Control\",\n        \"url\": \"https://github.com/dr4ke616/MMM-Voice-Control\",\n        \"name\": \"Voice Control\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"alexyak\",\n        \"desc\": \"Voice control based on snowboy.\",\n        \"id\": \"alexyak/voicecontrol\",\n        \"longname\": \"voicecontrol\",\n        \"url\": \"https://github.com/alexyak/voicecontrol\",\n        \"name\": \"Voicecontrol\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"MichMich\",\n        \"desc\": \"Keeps an eye on your UI and quits app in case the UI crashes. If you combine this with the PM2 process manager, MM2 will automaticly restart after a UI failure.\",\n        \"id\": \"MichMich/MMM-WatchDog\",\n        \"longname\": \"MMM-WatchDog\",\n        \"url\": \"https://github.com/MichMich/MMM-WatchDog\",\n        \"name\": \"Watch Dog\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"paphko\",\n        \"desc\": \"Display a weather diagram provided by yr.no.\",\n        \"id\": \"paphko/mmm-weatherchart\",\n        \"longname\": \"MMM-weatherchart\",\n        \"url\": \"https://github.com/paphko/mmm-weatherchart\",\n        \"name\": \"Weatherchart\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"longname\": \"weatherforecast\",\n        \"name\": \"Weatherforecast\",\n        \"isDefaultModule\": true,\n        \"installed\": true,\n        \"author\": \"MichMich\",\n        \"desc\": \"\",\n        \"id\": \"MichMich/MagicMirror\",\n        \"url\": \"https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules\"\n    },\n    {\n        \"author\": \"fewieden\",\n        \"desc\": \"Display Public Transport timetable of Vienna/Austria.\",\n        \"id\": \"fewieden/MMM-WienerLinien\",\n        \"longname\": \"MMM-WienerLinien\",\n        \"url\": \"https://github.com/fewieden/MMM-WienerLinien\",\n        \"name\": \"Wiener Linien\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"CFenner\",\n        \"desc\": \"Display the wind forecast for a location, important for surfers & sailors.\",\n        \"id\": \"CFenner/MagicMirror-Windfinder-Module\",\n        \"longname\": \"MMM-Windfinder\",\n        \"url\": \"https://github.com/CFenner/MagicMirror-Windfinder-Module\",\n        \"name\": \"Windfinder\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"Vendittelli\",\n        \"desc\": \"Get the word of the day, its definition, and origin ...\",\n        \"id\": \"SVendittelli/MMM-wordnik\",\n        \"longname\": \"MMM-wordnik\",\n        \"url\": \"https://github.com/SVendittelli/MMM-wordnik\",\n        \"name\": \"Wordnik\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"yawns\",\n        \"desc\": \"Displays low and high water time predictions for a given tide station, derived from worldtides.info\",\n        \"id\": \"yawnsde/MMM-WorldTides\",\n        \"longname\": \"MMM-WorldTides\",\n        \"url\": \"https://github.com/yawnsde/MMM-WorldTides\",\n        \"name\": \"World Tides\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"MattLugar\",\n        \"desc\": \"Weather Underground Forecast Module Retrieves forecast from Weather Underground. Also adds a percentage probability of precipitation to forecast display.\",\n        \"id\": \"MattLugar/wuforecast\",\n        \"longname\": \"wuforecast\",\n        \"url\": \"https://github.com/MattLugar/wuforecast\",\n        \"name\": \"Wuforecast\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"RedNax67\",\n        \"desc\": \"Display weather based on wunderground API.\",\n        \"id\": \"RedNax67/MMM-WunderGround\",\n        \"longname\": \"MMM-WunderGround\",\n        \"url\": \"https://github.com/RedNax67/MMM-WunderGround\",\n        \"name\": \"Wunder Ground\",\n        \"isDefaultModule\": false\n    },\n    {\n        \"author\": \"PaViRo\",\n        \"desc\": \"Displays your Wunderlist todos on your mirror ...\",\n        \"id\": \"paviro/MMM-Wunderlist\",\n        \"longname\": \"MMM-Wunderlist\",\n        \"url\": \"https://github.com/paviro/MMM-Wunderlist\",\n        \"name\": \"Wunderlist\",\n        \"isDefaultModule\": false\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "/api/mmUpdateAvailable",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/mmUpdateAvailable",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"mmUpdateAvailable"
+					]
+				},
+				"description": "Check if there is an update available for MagicMirror."
+			},
+			"response": [
+				{
+					"name": "/api/mmUpdateAvailable",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/mmUpdateAvailable",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"mmUpdateAvailable"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "5"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"5-fLbvuYullyqbUJDcLlF/4U0SywQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 05:36:53 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "false"
+				}
+			]
+		},
+		{
+			"name": "/api/update/:moduleName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/update/:moduleName",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"update",
+						":moduleName"
+					],
+					"variable": [
+						{
+							"key": "moduleName",
+							"value": "MMM-Remote-Control",
+							"description": "*Optional* Name of the module to update. If left blank, it will update the MagicMirror repo itself."
+						}
+					]
+				},
+				"description": "Check if there is an update available for MagicMirror."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/module/:moduleName?/:action?/:p?",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/module/:moduleName/:action/:p?a=something&b=somethingelse",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"module",
+						":moduleName",
+						":action",
+						":p"
+					],
+					"query": [
+						{
+							"key": "a",
+							"value": "something",
+							"description": "Query String will be passed as the payload for the notificiation"
+						},
+						{
+							"key": "b",
+							"value": "somethingelse"
+						}
+					],
+					"variable": [
+						{
+							"description": "Module Name or Identifier upon which to act.",
+							"key": "moduleName",
+							"value": ""
+						},
+						{
+							"description": "*Optional* Action to send. If no action is sent, the module's available actions are returned.",
+							"key": "action",
+							"value": ""
+						},
+						{
+							"description": "*Optional* Parameter associated with the action. Refer to specific module for documentation.",
+							"key": "p",
+							"value": ""
+						}
+					]
+				},
+				"description": "# External API requests.\n\n**There is a difference between `/api/module` and `/api/modules`**\n1. `module` is for the External API (control of another module).\n2. `modules` is part of the internal Remote Control system functions.\n\n\nAs discussed in the [API README](https://github.com/shbatm/MMM-Remote-Control/tree/wip_api/API), these methods are guessed based on your currently installed modules. To see what actions are available on your particular installation:\n\n| Method | URL | Description |\n| ------ | --- | ------- |\n| GET | /api/module | Return a list of all external API actions registered.\n| GET | /api/module/:moduleName | Returns registered API actions for a given module<br>`:moduleName`: Name or Identifier for an installed & activated module.\n| GET | /api/module/:moduleName/:action/:p?a=b&c=d | Sends a notification `:action` to the module `:moduleName` with a payload `{ param: p, a: b, c: d }` \n\n*NOTE:* Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want. Consult each modules' README for details on what notifications can be used and how."
+			},
+			"response": [
+				{
+					"name": "/api/module/newsfeed/articlenext",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/module/:moduleName/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"module",
+								":moduleName",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "newsfeed",
+									"description": "Name or Identifier of the Module."
+								},
+								{
+									"key": "action",
+									"value": "articlenext",
+									"description": "Action name"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "59"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3b-UDbf8tafPvLeMLsxugjeHfOCAHc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:14:53 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"notification\": \"ARTICLE_NEXT\",\n    \"payload\": {}\n}"
+				},
+				{
+					"name": "/api/module/newsfeed",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/module/:moduleName",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"module",
+								":moduleName"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "newsfeed"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "459"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1cb-x48ebsTWDCTO3Y34c0b2X0QohR8\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:13:44 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"module\": \"newsfeed\",\n    \"path\": \"newsfeed\",\n    \"actions\": {\n        \"newsitems\": {\n            \"notification\": \"NEWS_ITEMS\"\n        },\n        \"articlenext\": {\n            \"notification\": \"ARTICLE_NEXT\"\n        },\n        \"articleprevious\": {\n            \"notification\": \"ARTICLE_PREVIOUS\"\n        },\n        \"articlemoredetails\": {\n            \"notification\": \"ARTICLE_MORE_DETAILS\"\n        },\n        \"articlescrollup\": {\n            \"notification\": \"ARTICLE_SCROLL_UP\"\n        },\n        \"articlelessdetails\": {\n            \"notification\": \"ARTICLE_LESS_DETAILS\"\n        },\n        \"articletogglefull\": {\n            \"notification\": \"ARTICLE_TOGGLE_FULL\"\n        }\n    },\n    \"guessed\": true\n}"
+				},
+				{
+					"name": "/api/module/",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/module",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"module"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1137"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"471-Oey/jUODLG21d9qIxtvt0hMwQDo\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:12:54 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\r\n   \"success\": true,\r\n   \"alert\": {\r\n      \"module\": \"alert\",\r\n      \"path\": \"alert\",\r\n      \"actions\": {\r\n         \"showalert\": {\r\n            \"notification\": \"SHOW_ALERT\"\r\n         },\r\n         \"hidealert\": {\r\n            \"notification\": \"HIDE_ALERT\"\r\n         }\r\n      },\r\n      \"guessed\": true\r\n   },\r\n   \"compliments\": {\r\n      \"module\": \"compliments\",\r\n      \"path\": \"compliments\",\r\n      \"actions\": {\r\n         \"currentweatherdata\": {\r\n            \"notification\": \"CURRENTWEATHER_DATA\"\r\n         }\r\n      },\r\n      \"guessed\": true\r\n   },\r\n   \"newsfeed\": {\r\n      \"module\": \"newsfeed\",\r\n      \"path\": \"newsfeed\",\r\n      \"actions\": {\r\n         \"articlenext\": {\r\n            \"notification\": \"ARTICLE_NEXT\"\r\n         },\r\n         \"articleprevious\": {\r\n            \"notification\": \"ARTICLE_PREVIOUS\"\r\n         },\r\n         \"articlemoredetails\": {\r\n            \"notification\": \"ARTICLE_MORE_DETAILS\"\r\n         },\r\n         \"articlescrollup\": {\r\n            \"notification\": \"ARTICLE_SCROLL_UP\"\r\n         },\r\n         \"articlelessdetails\": {\r\n            \"notification\": \"ARTICLE_LESS_DETAILS\"\r\n         },\r\n         \"articletogglefull\": {\r\n            \"notification\": \"ARTICLE_TOGGLE_FULL\"\r\n         }\r\n      },\r\n      \"guessed\": true\r\n   }\r\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/module/:moduleName?/:action?",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "This header is required for any POST method.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/module/:moduleName/:action",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"module",
+						":moduleName",
+						":action"
+					],
+					"variable": [
+						{
+							"key": "moduleName",
+							"value": "alert",
+							"description": "Module Name or Identifier upon which to act."
+						},
+						{
+							"key": "action",
+							"value": "showalert",
+							"description": "*Optional* Action to send. If no action is sent, the module's available actions are returned."
+						}
+					]
+				},
+				"description": "`POST` version of the External API."
+			},
+			"response": [
+				{
+					"name": "/api/module/alert/showalert",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "This header is required for any POST method.",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/module/:moduleName/:action",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"module",
+								":moduleName",
+								":action"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "alert",
+									"description": "Module Name or Identifier upon which to act."
+								},
+								{
+									"key": "action",
+									"value": "showalert",
+									"description": "*Optional* Action to send. If no action is sent, the module's available actions are returned."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "130"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"82-NCVYaecz3FW1+kgtV5i9/jGIgzc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:20:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"notification\": \"SHOW_ALERT\",\n    \"payload\": {\n        \"title\": \"Hello World!\",\n        \"message\": \"Alert Successfully Shown!\",\n        \"timer\": 2000\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "/api/notification/:notification/:p?",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/notification/:notification/:p?a=something&b=somethingelse",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"notification",
+						":notification",
+						":p"
+					],
+					"query": [
+						{
+							"key": "a",
+							"value": "something",
+							"description": "Query String will be passed as the payload for the notificiation"
+						},
+						{
+							"key": "b",
+							"value": "somethingelse"
+						}
+					],
+					"variable": [
+						{
+							"key": "notification",
+							"value": "SHOW_ALERT",
+							"description": "Notification Text to Send"
+						},
+						{
+							"description": "*Optional* Parameter associated with the action. Refer to specific module for documentation.",
+							"key": "p",
+							"value": "HELLO"
+						}
+					]
+				},
+				"description": "# Generic Notification Requests\n\nSwiss army knife of the API (and MagicMirror in general) -- If you just want a simple way to send a module notification, this is it.  Payload is treated the same as `/api/module/:moduleName/:action` commands (because it is pretty much the same thing, just without any validation of if a module will recognize the notification)."
+			},
+			"response": []
+		},
+		{
+			"name": "/api/notification/:notification",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "This header is required for any POST method.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/notification/:notification",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"notification",
+						":notification"
+					],
+					"variable": [
+						{
+							"key": "notification",
+							"value": "SHOW_ALERT",
+							"description": "Notification text to send. Payload sent in body."
+						}
+					]
+				},
+				"description": "`POST` version of the Notification API, more convenient for sending complex payloads via the post body."
+			},
+			"response": [
+				{
+					"name": "/api/notification/SHOW_ALERT",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "This header is required for any POST method.",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/module/:moduleName",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"module",
+								":moduleName"
+							],
+							"variable": [
+								{
+									"key": "moduleName",
+									"value": "alert",
+									"description": "Module Name or Identifier upon which to act."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "130"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"82-NCVYaecz3FW1+kgtV5i9/jGIgzc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 17 Dec 2018 08:20:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"notification\": \"SHOW_ALERT\",\n    \"payload\": {\n        \"title\": \"Hello World!\",\n        \"message\": \"Alert Successfully Shown!\",\n        \"timer\": 2000\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Delayed Functions (/:delayed)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"description": "This header is required for any POST method.",
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/notification/:notification/:delayed?timeout=5&did=myShowAlertTimer&abort=false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"notification",
+						":notification",
+						":delayed"
+					],
+					"query": [
+						{
+							"key": "timeout",
+							"value": "5",
+							"description": "Optional: Delay time in seconds"
+						},
+						{
+							"key": "did",
+							"value": "myShowAlertTimer",
+							"description": "Optional: (Delay ID) Some string to identify your timer, in case you want to cancel it later."
+						},
+						{
+							"key": "abort",
+							"value": "false",
+							"description": "Optional: Abort an existing timer. If you want to cancel a long running timer, pass it again with the same DID and abort=true."
+						}
+					],
+					"variable": [
+						{
+							"description": "Notification text to send. Payload sent in body.",
+							"key": "notification",
+							"value": "SHOW_ALERT"
+						},
+						{
+							"description": "Send \"/delay\" to delay an action",
+							"key": "delayed",
+							"value": "delay"
+						}
+					]
+				},
+				"description": "On the following routes, you can add a `/delay` to the end of the URL to delay the action until some time in the future.  The default is 10s, but this can be set in the query string or POST body.\n\nAvailable for:\n- /api/refresh\n- /api/shutdown\n- /api/reboot\n- /api/restart\n- /api/monitor/:action\n- /api/notification/:notification\n- /api/modules/:moduleName/:action\n- /api/module/:moduleName/:action\n\nActive timers can be viewed by calling `GET /api/timers`"
+			},
+			"response": [
+				{
+					"name": "Delayed Alert Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"description": "This header is required for any POST method.",
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"title\": \"Hello World!\", \r\n    \"message\": \"Alert Successfully Shown!\", \r\n    \"timer\": 2000\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/notification/:notification/:delayed?timeout=5&did=myShowAlertTimer&abort=false",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"notification",
+								":notification",
+								":delayed"
+							],
+							"query": [
+								{
+									"key": "timeout",
+									"value": "5",
+									"description": "Optional: Delay time in seconds"
+								},
+								{
+									"key": "did",
+									"value": "myShowAlertTimer",
+									"description": "Optional: (Delay ID) Some string to identify your timer, in case you want to cancel it later."
+								},
+								{
+									"key": "abort",
+									"value": "false",
+									"description": "Optional: Abort an existing timer. If you want to cancel a long running timer, pass it again with the same DID and abort=true."
+								}
+							],
+							"variable": [
+								{
+									"description": "Notification text to send. Payload sent in body.",
+									"key": "notification",
+									"value": "SHOW_ALERT"
+								},
+								{
+									"key": "delayed",
+									"value": "delay",
+									"description": "Send \"/delay\" to delay an action"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "236"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"ec-pcpNfeSfoc1WV+Sn0nLKUxM3HMo\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 22 Dec 2018 01:02:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"action\": \"DELAYED\",\n    \"did\": \"myShowAlertTimer\",\n    \"timeout\": \"5\",\n    \"abort\": false,\n    \"query\": {\n        \"notification\": \"SHOW_ALERT\",\n        \"payload\": {\n            \"title\": \"Hello World!\",\n            \"message\": \"Alert Successfully Shown!\",\n            \"timer\": 2000\n        },\n        \"action\": \"NOTIFICATION\"\n    }\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "87d88e5c-abc7-46a4-a4b0-5c750af7c937",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4119141e-697d-4c73-bd58-6e50ffe4cf18",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
