@@ -1,0 +1,80 @@
+{
+    "TITLE": "Menú Magic Mirror",
+
+    "EDIT_MENU_NAME": "Editar Vista",
+    "SHUTDOWN_MENU_NAME": "Encendre/Apagar",
+    "CONFIGURE_MENU_NAME": "Editar config.js",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+
+    "BACK": "Endarrera",
+
+    "BRIGHTNESS": "Brillantor",
+
+    "REFRESHMM" : "Recarregar Navegador",
+    "MONITOROFF": "Apagar monitor",
+    "MONITORON": "Encendre monitor",
+    "MONITORTIMED": "Encendre monitor breument",
+    "RESTART": "Recarregar",
+    "RESTARTMM": "Recarregar MagicMirror<sup>2</sup>",
+    "SHUTDOWN": "Apagar",
+
+    "SHOWALL": "Tots",
+    "HIDEALL": "Tots",
+
+    "ADD_MODULE": "Afegir mòdul",
+    "SEARCH": "Buscar &hellip;",
+    "INSTALLED": "Instal.lat",
+    "DOWNLOAD": "Descarrega",
+    "DOWNLOADING": "Descarregant &hellip;",
+    "CODE_LINK": "Veure còdig",
+    "BY": "per",
+    "ADD_THIS": "Afegir aquest mòdul",
+    "HELP": "Veure Readme",
+    "MENU": "Menú",
+    "RESET": "Reset",
+    "NO_HEADER": "(sin capcelera)",
+    "NO_POSITION": "(invisible)",
+    "ADD_ENTRY": "Afegir entrada",
+    "NEW_ENTRY_NAME": "(nom de la nova entrada)",
+    "DELETE_ENTRY": "Esborrar",
+    "UNSAVED_CHANGES": "Canvis sense guardar",
+    "OK": "Ok",
+    "DISCARD": "Descartar canvis",
+    "CANCEL": "Cancelar",
+
+    "NO_MODULES_LOADED": "No hi han móduls carregats.",
+    "SAVE": "Guardar",
+
+    "EXPERIMENTAL": "Aquesta es una funciò experimental, pot corrompre el teu arxiu config. Fes còpia de seguretat primer, per si de cas!<br>Vols continuar?",
+    "PANIC": "No m'importa.",
+    "NO_RISK_NO_FUN": "Qui no arrisca no pisca!",
+
+    "CONFIRM_SHUTDOWN": "El sistema s'apagarà.",
+    "CONFIRM_RESTART": "El sistema es recarregarà.",
+
+    "LOAD_ERROR": "Si ves este mensaje, un error ha ocurrido cargando el archivo javascript. Si us plau, revisa aquest enllaç per veure si es un problema amb el teu navegador:",
+    "ISSUE_LINK": "Pàgina de problemes de Github",
+
+    "DONE": "Fet.",
+    "ERROR": "Error!",
+    "LOADING": "Carregant &hellip;",
+
+    "LOCKSTRING_WARNING": "Aquest mòdul ha estat ocultat per LIST_OF_MODULES, no pot ser mostrat.",
+    "FORCE_SHOW": "Fes-ho igualment.",
+
+    "UPDATE_MENU_NAME" : "Actualizaciones",
+    "UPDATEMM" : "Actualiza MagicMirror<sup>2</sup>",
+    "UPDATE_AVAILABLE" : "Actualitzaciò disponible",
+
+	"ALERT_MENU_NAME" : "Alertes / Notificacions",
+	"SENDALERT" : "Envia alerta",
+	"HIDEALERT" : "Oculta alerta",
+    "FORM_TYPE" : "Tipus:",
+    "FORM_ALERT" : "Alerta",
+    "FORM_NOTIFICATION" : "Notificaciò",
+    "FORM_TITLE" : "Títol:",
+    "FORM_TITLE_PLACEHOLDER" : "Introdueix títol...",
+    "FORM_MESSAGE" : "Missatge:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Introdueix missatge...",
+    "FORM_SECONDS" : "Segons:"
+}

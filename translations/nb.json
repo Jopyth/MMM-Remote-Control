@@ -1,0 +1,80 @@
+{
+    "TITLE": "Magic Mirror Meny",
+
+    "EDIT_MENU_NAME": "Rediger visning",
+    "SHUTDOWN_MENU_NAME": "Strøm",
+    "CONFIGURE_MENU_NAME": "Rediger config.js",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+
+    "BACK": "Tilbake",
+
+    "BRIGHTNESS": "Lysstyrke",
+
+    "REFRESHMM" : "Oppdater nettleseren",
+    "MONITOROFF": "Slå av skjermen",
+    "MONITORON": "Slå på skjermen",
+    "MONITORTIMED": "Slå skjermen på kort",
+    "RESTART": "Omstart",
+    "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
+    "SHUTDOWN": "Slå av",
+
+    "SHOWALL": "Alle",
+    "HIDEALL": "Alle",
+
+    "ADD_MODULE": "Legg til modul",
+    "SEARCH": "Søk &hellip;",
+    "INSTALLED": "Installert",
+    "DOWNLOAD": "Last ned",
+    "DOWNLOADING": "Laster ned &hellip;",
+    "CODE_LINK": "Se kildekode",
+    "BY": "av",
+    "ADD_THIS": "Legg til denne modulen",
+    "HELP": "Vis readme",
+    "MENU": "Meny",
+    "RESET": "Reset",
+    "NO_HEADER": "(ingen topptekst)",
+    "NO_POSITION": "(usynlig)",
+    "ADD_ENTRY": "Legg til oppføring",
+    "NEW_ENTRY_NAME": "(skriv inn navn på ny oppføring)",
+    "DELETE_ENTRY": "Slett",
+    "UNSAVED_CHANGES": "Ulagrede endringer",
+    "OK": "Ok",
+    "DISCARD": "Forkaste endringer",
+    "CANCEL": "Avbryt",
+
+    "NO_MODULES_LOADED": "Ingen modul lastet.",
+    "SAVE": "Lagre",
+
+    "EXPERIMENTAL": "Dette er en eksperimentell funksjon, det kan ødelegge konfigurasjonsfilen din. Sikkerhetskopier din konfigurasjon først, bare i tilfelle!<br>Vil du fortsette?",
+    "PANIC": "Glem det.",
+    "NO_RISK_NO_FUN": "Ingen risiko, ingen morro!",
+
+    "CONFIRM_SHUTDOWN": "Systemet slås av.",
+    "CONFIRM_RESTART": "Systemet vil starte på nytt.",
+
+    "LOAD_ERROR": "Hvis du ser denne meldingen, oppstod det en feil ved lasting av javascriptfilen. Vennligst gå til den følgende lenken og se om dette er et kjent problem med nettleseren din:",
+    "ISSUE_LINK": "Github problem side",
+
+    "DONE": "Ferdig.",
+    "ERROR": "Feil!",
+    "LOADING": "Laster &hellip;",
+
+    "LOCKSTRING_WARNING": "Denne modulen ble skjult av LIST_OF_MODULES, det kan ikke vises.",
+    "FORCE_SHOW": "Gjør det likevel.",
+
+	"UPDATE_MENU_NAME" : "Oppdateringer",
+	"UPDATEMM" : "Oppdater MagicMirror<sup>2</sup>",
+    "UPDATE_AVAILABLE" : "Oppdatering tilgjengelig",
+
+	"ALERT_MENU_NAME" : "Varsling",
+	"SENDALERT" : "Send",
+	"HIDEALERT" : "Skjul",
+    "FORM_TYPE" : "Type:",
+    "FORM_ALERT" : "Varsling",
+    "FORM_NOTIFICATION" : "Melding",
+    "FORM_TITLE" : "Tittel:",
+    "FORM_TITLE_PLACEHOLDER" : "Skriv inn tittel...",
+    "FORM_MESSAGE" : "Beskjed:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Skriv inn melding...",
+    "FORM_SECONDS" : "Sekunder:"
+}
