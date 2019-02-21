@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.0] - 2019-02-21
 
-Huge shoutout to @shbatm for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:
+Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:
 
 ### Added
 
@@ -20,6 +20,7 @@ Huge shoutout to @shbatm for his work on this new major version, which brings a 
 - Configuration Option to send custom shell commands to use. Currently, only custom monitor on/off/status commands are supported.
 - Module Control menu - Automatically generated from the API to control the different modules you have installed, based on their `notificationReceived` function.
 - Custom menu items. See [Custom Menu Items in README](README.md#custom-menu-items)
+- Norsk bokmål translation
 
 ### Changed
 
@@ -28,7 +29,7 @@ Huge shoutout to @shbatm for his work on this new major version, which brings a 
 - General clean-up and standardization of status reporting for GET and POST calls, to original URLs and to new API URLs.
 - Updated to ES2015 (ES Version 6) function calls in most locations.
 - Added USER_PRESENCE controls from [AgP42](https://github.com/AgP42)
-- Added translations from [BKeyport](https://github.com/Bkeyport)
+- Added/updated french translations from [BKeyport](https://github.com/Bkeyport) and [Mysh3ll](https://github.com/Mysh3ll)
 - Added SHOW/HIDE/TOGGLE ALL modules option per request from [Rene1709](https://github.com/Rene1709)
 
 ### Upcoming Changes
