@@ -3,7 +3,7 @@
 
     "EDIT_MENU_NAME": "Afficher ou cacher les modules",
     "SHUTDOWN_MENU_NAME": "Alimentation",
-    "CONFIGURE_MENU_NAME": "Editer le fichier config.js",
+    "CONFIGURE_MENU_NAME": "Éditer le fichier config.js",
     "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
 
     "BACK": "Retour",
@@ -11,12 +11,12 @@
     "BRIGHTNESS": "Luminosité",
 
     "REFRESHMM" : "Recharger l'affichage",
-    "MONITOROFF": "Eteindre le miroir",
+    "MONITOROFF": "Éteindre le miroir",
     "MONITORON": "Allumer le miroir",
     "MONITORTIMED": "Allumer brièvement le miroir",
     "RESTART": "Redémarrer RPI",
     "RESTARTMM": "Redémarrer MagicMirror<sup>2</sup>",
-    "SHUTDOWN": "Eteindre RPI",
+    "SHUTDOWN": "Éteindre RPI",
 
     "SHOWALL": "Tout voir",
     "HIDEALL": "Tout cacher",
@@ -31,7 +31,7 @@
     "ADD_THIS": "Ajouter ce module",
     "HELP": "Voir le readme",
     "MENU": "Menu",
-    "RESET": "Reinitialiser",
+    "RESET": "Réinitialiser",
     "NO_HEADER": "(no header)",
     "NO_POSITION": "(invisible)",
     "ADD_ENTRY": "Ajouter une entrée",
@@ -45,7 +45,7 @@
     "NO_MODULES_LOADED": "Aucun module chargé.",
     "SAVE": "Enregistrer",
 
-    "EXPERIMENTAL": "Ceci est une fonctionnalitée expérimentale, elle peut casser votre configuration. Enregistrez votre configuration au cas ou!<br>Voulez vous continuer ?",
+    "EXPERIMENTAL": "Ceci est une fonctionnalité expérimentale, elle peut casser votre configuration. Enregistrez votre configuration au cas où !<br>Voulez vous continuer ?",
     "PANIC": "Non, tant pis !",
     "NO_RISK_NO_FUN": "On a qu'une vie ! Go !",
 
