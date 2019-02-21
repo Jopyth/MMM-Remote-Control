@@ -1,7 +1,8 @@
 {
     "TITLE": "Magic Mirror Menu",
 
-    "EDIT_MENU_NAME": "Éditer le nom du menu",
+
+    "EDIT_MENU_NAME": "Afficher ou cacher les modules",
     "SHUTDOWN_MENU_NAME": "Alimentation",
     "CONFIGURE_MENU_NAME": "Éditer le fichier config.js",
     "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
@@ -11,12 +12,13 @@
     "BRIGHTNESS": "Luminosité",
 
     "REFRESHMM" : "Recharger l'affichage",
+
     "MONITOROFF": "Éteindre le miroir",
     "MONITORON": "Allumer le miroir",
     "MONITORTIMED": "Allumer brièvement le miroir",
-    "RESTART": "Redémarrer",
+    "RESTART": "Redémarrer RPI",
     "RESTARTMM": "Redémarrer MagicMirror<sup>2</sup>",
-    "SHUTDOWN": "Éteindre",
+    "SHUTDOWN": "Éteindre RPI",
 
     "SHOWALL": "Tout voir",
     "HIDEALL": "Tout cacher",
@@ -35,7 +37,7 @@
     "NO_HEADER": "(no header)",
     "NO_POSITION": "(invisible)",
     "ADD_ENTRY": "Ajouter une entrée",
-    "NEW_ENTRY_NAME": "(enter name of new entry)",
+    "NEW_ENTRY_NAME": "Entrer le nom",
     "DELETE_ENTRY": "Supprimer",
     "UNSAVED_CHANGES": "Changements non sauvegardés",
     "OK": "Ok",
@@ -46,8 +48,8 @@
     "SAVE": "Enregistrer",
 
     "EXPERIMENTAL": "Ceci est une fonctionnalité expérimentale, elle peut casser votre configuration. Enregistrez votre configuration au cas où !<br>Voulez vous continuer ?",
-    "PANIC": "Ça ne fait rien.",
-    "NO_RISK_NO_FUN": "On a qu'une vie !",
+    "PANIC": "Non, tant pis !",
+    "NO_RISK_NO_FUN": "On a qu'une vie ! Go !",
 
     "CONFIRM_SHUTDOWN": "Le système va s'éteindre.",
     "CONFIRM_RESTART": "Le système va redémarrer.",

@@ -34,6 +34,8 @@ fi
 
 # assume default install location
 MM_HOME=$HOME/MagicMirror
+MODULE_NAME=MMM-Remote-Control
+FORK=Jopyth
 
 # check if we are correct by searching for https://github.com/MichMich/MagicMirror in package.json
 TEST_STRING="\"url\": \"git+https://github.com/MichMich/MagicMirror.git\""
@@ -53,12 +55,12 @@ else
     fi
 fi
 
-if [ -d "$MM_HOME/modules/MMM-Remote-Control" ] ; then
+if [ -d "$MM_HOME/modules/$MODULE_NAME" ] ; then
     # already installed
-    echo "Directory $MM_HOME/modules/MMM-Remote-Control already exists."
+    echo "Directory $MM_HOME/modules/$MODULE_NAME already exists."
     echo ""
 
-    cd "$MM_HOME/modules/MMM-Remote-Control"
+    cd "$MM_HOME/modules/$MODULE_NAME"
 
     BRANCH="$(git symbolic-ref HEAD 2>/dev/null)" || BRANCH="(unnamed branch)" # detached HEAD
 
@@ -119,12 +121,12 @@ else
             echo ""
             echo "Cloning the repository on $BRANCH branch..."
             echo ""
-            git clone https://github.com/Jopyth/MMM-Remote-Control.git -b $BRANCH
+            git clone https://github.com/$FORK/$MODULE_NAME.git -b $BRANCH
             if [ $? -ne 0 ]; then
                 echo "Failed. Do you have an internet connection?"
                 exit 1;
             fi
-            cd MMM-Remote-Control
+            cd $MODULE_NAME
 
             echo ""
             echo "Installing dependencies..."
@@ -142,17 +144,23 @@ else
     fi
 fi
 
+# Get an UUID to use as an API key
+APIKEY=$(/usr/local/bin/node -e 'console.log(require("uuid/v4")().replace(/-/g, ""));');
+
 echo ""
 if check_no "Do you want to view instructions on how to configure the module?"; then
     echo "(1) Please add the following snippet into your modules array in your config.js:"
-    echo "    -------------- copy below this line --------------"
-    echo "    {"
-    echo "        module: 'MMM-Remote-Control'"
-    echo "        // uncomment the following line to show the URL of the remote control on the mirror"
-    echo "        // , position: 'bottom_left'"
-    echo "        // you can hide this module afterwards from the remote control itself"
-    echo "    },"
-    echo "    -------------- copy above this line --------------"
+    echo -e "\033[33m    -------------- copy below this line --------------"
+    echo -e "    {"
+    echo -e "        module: '$MODULE_NAME'"
+    echo -e "        // uncomment the following line to show the URL of the remote control on the mirror"
+    echo -e "        // , position: 'bottom_left'"
+    echo -e "        // you can hide this module afterwards from the remote control itself"
+    echo -e "        config: {"
+    echo -e "\033[31m            apiKey: '$APIKEY'\033[33m"
+    echo -e "        }"
+    echo -e "    },"
+    echo -e "    -------------- copy above this line --------------\033[0m"
     echo ""
     echo "(2) Also you will need to change the address at which the server listens:"
     echo "    Search for the following line in  your config.js:"
@@ -176,10 +184,17 @@ if check_no "Do you want to view instructions on how to configure the module?"; 
         echo "Please have a look at the links below for help."
         echo ""
     fi
+else
+    echo ""
+    echo -e "\033[31mYou should also set an API key in your config section!\033[0m"
+    echo "  It's dangerous to go alone! Take this. "
+    echo -e "\033[31m  apiKey: '$APIKEY'\033[0m"
+    echo "  I made it just for you."
+    echo ""
 fi
 echo "Have fun with the module, if you have any problems, please search for help on github or in the forum:"
 echo ""
-echo "   Github : https://github.com/Jopyth/MMM-Remote-Control"
+echo "   Github : https://github.com/$FORK/$MODULE_NAME"
 echo "   Forum  : http://forum.magicmirror.builders"
 echo ""
 echo "Do not forget to restart your MagicMirror2 to activate the module! Installation finished."

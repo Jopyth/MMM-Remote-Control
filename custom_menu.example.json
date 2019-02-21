@@ -1,0 +1,76 @@
+{
+   "id": "custom",
+   "type": "menu",
+   "icon": "id-card-o",
+   "text": "%%TRANSLATE:CUSTOM_MENU%%",
+   "items": [{
+         "id": "custom-item-1",
+         "type": "item",
+         "icon": "dot-circle-o",
+         "text": "Menu Item 1",
+         "action": "NOTIFICATION",
+         "content": {
+            "notification": "NOTIFCATION_TEXT_1",
+            "payload": "This notification requires a string payload"
+         }
+      },
+      {
+         "id": "custom-item-2",
+         "type": "item",
+         "icon": "dot-circle-o",
+         "text": "Menu Item 2",
+         "action": "NOTIFICATION",
+         "content": {
+            "notification": "NOTIFCATION_TEXT_2",
+            "payload": {
+               "title": "Payload Object",
+               "message": "This notification requires a payload object"
+            }
+         }
+      },
+      {
+         "id": "custom-item-3",
+         "type": "item",
+         "icon": "dot-circle-o",
+         "text": "Menu Item 3",
+         "action": "NOTIFICATION",
+         "content": {
+            "notification": "NOTIFCATION_TEXT_3",
+            "payload": null
+         }
+      },
+      {
+         "id": "level2",
+         "type": "menu",
+         "menu": "custom",
+         "icon": "bars",
+         "text": "Sub-Menu",
+         "items": [{
+               "id": "custom-item-4",
+               "type": "item",
+               "icon": "dot-circle-o",
+               "text": "Sub-Menu Item 1",
+               "action": "NOTIFICATION",
+               "content": {
+                  "notification": "NOTIFCATION_TEXT_4",
+                  "payload": "This notification requires a string payload"
+               }
+            },
+            {
+               "id": "custom-item-2",
+               "type": "item",
+               "icon": "dot-circle-o",
+               "text": "Sub-Menu Item 2",
+               "action": "NOTIFICATION",
+               "content": {
+                  "notification": "NOTIFCATION_TEXT_5",
+                  "payload": {
+                     "title": "Payload Object",
+                     "message": "This notification requires a payload object"
+                  }
+               }
+            }
+         ]
+      }
+   ]
+}

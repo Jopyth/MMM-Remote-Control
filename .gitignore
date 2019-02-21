@@ -34,3 +34,7 @@ node_modules
 
 # Default settings
 settings.json
+
+# Package Lock File
+package-lock.json
+
