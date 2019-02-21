@@ -1,7 +1,6 @@
 {
     "TITLE": "Magic Mirror Menu",
 
-
     "EDIT_MENU_NAME": "Afficher ou cacher les modules",
     "SHUTDOWN_MENU_NAME": "Alimentation",
     "CONFIGURE_MENU_NAME": "Éditer le fichier config.js",
@@ -12,7 +11,6 @@
     "BRIGHTNESS": "Luminosité",
 
     "REFRESHMM" : "Recharger l'affichage",
-
     "MONITOROFF": "Éteindre le miroir",
     "MONITORON": "Allumer le miroir",
     "MONITORTIMED": "Allumer brièvement le miroir",
