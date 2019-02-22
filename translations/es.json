@@ -16,10 +16,13 @@
     "MONITORTIMED": "Encender monitor brevemente",
     "RESTART": "Recargar",
     "RESTARTMM": "Recargar MagicMirror<sup>2</sup>",
-    "SHUTDOWN": "Apagar",
+    "SHUTDOWN": "Apagar RPi",
+    "FULLSCREEN": "Pantalla entera",
+    "MINIMIZE": "Minimizar Navegador",
+    "DEVTOOLS": "Abrir herram. para desarrolladores",
 
-    "SHOWALL": "Todos",
-    "HIDEALL": "Todos",
+    "SHOWALL": "Mostrar Todos",
+    "HIDEALL": "Ocultar Todos",
 
     "ADD_MODULE": "Añadir módulo",
     "SEARCH": "Buscar &hellip;",
@@ -66,9 +69,9 @@
     "UPDATEMM" : "Actualiza MagicMirror<sup>2</sup>",
     "UPDATE_AVAILABLE" : "Actualización disponible",
 
-	"ALERT_MENU_NAME" : "Alertas / Notificaciones",
-	"SENDALERT" : "Envía alerta",
-	"HIDEALERT" : "Oculta alerta",
+    "ALERT_MENU_NAME" : "Alertas / Notificaciones",
+    "SENDALERT" : "Envía alerta",
+    "HIDEALERT" : "Oculta alerta",
     "FORM_TYPE" : "Tipo:",
     "FORM_ALERT" : "Alerta",
     "FORM_NOTIFICATION" : "Notificación",
@@ -77,4 +80,9 @@
     "FORM_MESSAGE" : "Mensaje:",
     "FORM_MESSAGE_PLACEHOLDER" : "Introduce mensaje...",
     "FORM_SECONDS" : "Segundos:"
+
+    "RESPONSE_ERROR": "No ha funcionado. Comprueba los MM logs para más detalles",
+    "MODULE_CONTROLS": "Controles de módulos",
+    "CUSTOM_MENU": "Mi Menú Personalizado"
+
 }
