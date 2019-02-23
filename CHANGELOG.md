@@ -4,9 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Proposed change by BKeyport 
-### Added 
-- MONITORON2 and MONITOROFF2 to work where TVService Fails.
+## [2.0.0] - 2019-02-21
+
+Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:
+
+### Added
+
+- REST API interface for controlling all aspects of the MagicMirror from HTTP RESTful-style GET and POST calls, based on principles from [MMM-Api](https://github.com/juzim/MMM-Api)
+    + Full API Documentation at [API/README.md](API/README.md)
+- Live daily updates of `modules.json` from the MagicMirror wiki, based on principles from [MMM-Remote-Control-Repository](https://github.com/eouia/MMM-Remote-Control-Repository).  
+- Incorporated some features found in [MMM-OnScreenMenu](https://github.com/shbatm/MMM-OnScreenMenu) that were not originally in this module.
+    + Monitor (Connected Screen) On-Off Status and Toggle
+    + Delayed calls ("DELAYED" Query option and `.../delay` API paths)
+    + If using Electron: Open Dev Tools, Minimize, Toggle Fullscreen
+- Configuration Option to send custom shell commands to use. Currently, only custom monitor on/off/status commands are supported.
+- Module Control menu - Automatically generated from the API to control the different modules you have installed, based on their `notificationReceived` function.
+- Custom menu items. See [Custom Menu Items in README](README.md#custom-menu-items)
+- Norsk bokmål translation
+
+### Changed
+
+- Updates to `remote.html` and the `node_helper.js` to use direct SocketIO communication back and forth instead of separate HTTP calls.
+    + Future framework for following PM2 logs and more live update options.
+- General clean-up and standardization of status reporting for GET and POST calls, to original URLs and to new API URLs.
+- Updated to ES2015 (ES Version 6) function calls in most locations.
+- Added USER_PRESENCE controls from [AgP42](https://github.com/AgP42)
+- Added/updated french translations from [BKeyport](https://github.com/Bkeyport) and [Mysh3ll](https://github.com/Mysh3ll)
+- Added SHOW/HIDE/TOGGLE ALL modules option per request from [Rene1709](https://github.com/Rene1709)
+
+### Upcoming Changes
+
+- Add additional MMM-OnScreenMenu features:
+    + Moving modules' positions
+- PM2 Log Follower / Terminal Window
+- Added Notification Echo option to config to echo all Module Notifications to the remote's DevTools console for debugging.
+- Allow for text input in the Module Controls menu to be able to provide a notification payload.
 
 ## [1.1.5] - 2018-05-14
 
