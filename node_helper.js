@@ -872,13 +872,25 @@ module.exports = NodeHelper.create(Object.assign({
                     this.sendResponse(res, err);
                     return;
                 }
-                console.log(`PM2 process: ${query.action.toLowerCase()} ${processName}`);
 
-                pm2.stop(processName, (err, apps) => {
-                    this.sendResponse(res, undefined, { action: action, processName: processName });
-                    pm2.disconnect();
-                    if (err) { this.sendResponse(res, err); }
-                });
+                var actionName = query.action.toLowerCase();
+                console.log(`PM2 process: ${actionName} ${processName}`);
+
+                switch (actionName) {
+                    case 'restart':
+                        pm2.restart(processName, (err, apps) => {
+                            this.sendResponse(res, undefined, { action: action, processName: processName});
+                            if (err) { this.sendResponse(res, err); }
+                        });
+                        break;
+                    case 'stop':
+                        pm2.stop(processName, (err, apps) => {
+                            this.sendResponse(res, undefined, { action: action, processName: processName });
+                            pm2.disconnect();
+                            if (err) { this.sendResponse(res, err); }
+                        });
+                        break;
+                }
             });
         },
 
