@@ -152,9 +152,9 @@ if check_no "Do you want to view instructions on how to configure the module?"; 
     echo "(1) Please add the following snippet into your modules array in your config.js:"
     echo -e "\033[33m    -------------- copy below this line --------------"
     echo -e "    {"
-    echo -e "        module: '$MODULE_NAME'"
+    echo -e "        module: '$MODULE_NAME'",
     echo -e "        // uncomment the following line to show the URL of the remote control on the mirror"
-    echo -e "        // , position: 'bottom_left'"
+    echo -e "        // position: 'bottom_left'",
     echo -e "        // you can hide this module afterwards from the remote control itself"
     echo -e "        config: {"
     echo -e "\033[31m            apiKey: '$APIKEY'\033[33m"
