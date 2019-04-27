@@ -11,7 +11,7 @@
 
 Module.register("MMM-Remote-Control", {
 
-    requiresVersion: "2.4.0",
+    requiresVersion: "2.7.0",
 
     // Default module config.
     defaults: {
