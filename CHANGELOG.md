@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.1] - Unreleased
+
+Now requires MagicMirror version 2.7.
+
+### Fixed
+
+- Path to font awesome
+
 ## [2.0.0] - 2019-02-21
 
 Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:
