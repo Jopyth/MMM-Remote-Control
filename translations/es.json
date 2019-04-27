@@ -79,7 +79,7 @@
     "FORM_TITLE_PLACEHOLDER" : "Introduce título...",
     "FORM_MESSAGE" : "Mensaje:",
     "FORM_MESSAGE_PLACEHOLDER" : "Introduce mensaje...",
-    "FORM_SECONDS" : "Segundos:"
+    "FORM_SECONDS" : "Segundos:",
 
     "RESPONSE_ERROR": "No ha funcionado. Comprueba los MM logs para más detalles",
     "MODULE_CONTROLS": "Controles de módulos",
