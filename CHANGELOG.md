@@ -10,7 +10,8 @@ Now requires MagicMirror version 2.7.
 
 ### Fixed
 
-- Path to font awesome
+- Path to font awesome icons
+- A few typos in `ca` and `es` translations
 
 ## [2.0.0] - 2019-02-21
 
