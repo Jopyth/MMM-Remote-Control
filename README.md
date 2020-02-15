@@ -34,9 +34,9 @@ npm install
 - (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
 ```js
 {
-    module: 'MMM-Remote-Control'
+    module: 'MMM-Remote-Control',
     // uncomment the following line to show the URL of the remote control on the mirror
-    // , position: 'bottom_left'
+    // position: 'bottom_left'
     // you can hide this module afterwards from the remote control itself
     config: {
         customCommand: {},  // Optional, See "Using Custom Commands" below
@@ -217,6 +217,8 @@ Depending on your installation, some `shell` commands used by this module are no
 
 ```js
     customCommand: {
+        shutdownCommand: 'shell command to shutdown your pc',
+        rebootCommand: 'shell command to reboot your pc',
         monitorOnCommand: 'shell command to turn on your monitor',
         monitorOffCommand: 'shell command to turn off your monitor',
         monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'

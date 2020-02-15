@@ -120,7 +120,7 @@ module.exports = NodeHelper.create(Object.assign({
 
             this.expressApp.get("/remote.html", function(req, res) {
                 if (self.template === "") {
-                    res.send(503);
+                    res.sendStatus(503);
                 } else {
                     res.contentType("text/html");
                     var transformedData = self.fillTemplates(self.template);
@@ -638,16 +638,27 @@ module.exports = NodeHelper.create(Object.assign({
             }
         },
 
+        shutdownControl: function(action, opts, res) {
+            let shutdownCommand = (this.initialized && "shutdownCommand" in this.thisConfig.customCommand) ?
+                this.thisConfig.customCommand.shutdownCommand :
+                "sudo shutdown -h now";
+            let rebootCommand = (this.initialized && "rebootCommand" in this.thisConfig.customCommand) ?
+                this.thisConfig.customCommand.rebootCommand :
+                "sudo shutdown -r now";
+            if (action === "SHUTDOWN") {
+                exec(shutdownCommand, opts, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+            }
+            if (action === "REBOOT") {
+                exec(rebootCommand, opts, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+            }
+        },
+
         executeQuery: function(query, res) {
             var self = this;
             var opts = { timeout: 15000 };
 
-            if (query.action === "SHUTDOWN") {
-                exec("sudo shutdown -h now", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
-                return true;
-            }
-            if (query.action === "REBOOT") {
-                exec("sudo shutdown -r now", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
+            if (["SHUTDOWN", "REBOOT"].indexOf(query.action) !== -1) {
+                this.shutdownControl(query.action, opts, res);
                 return true;
             }
             if (query.action === "RESTART" || query.action === "STOP") {
@@ -872,13 +883,25 @@ module.exports = NodeHelper.create(Object.assign({
                     this.sendResponse(res, err);
                     return;
                 }
-                console.log(`PM2 process: ${query.action.toLowerCase()} ${processName}`);
 
-                pm2.stop(processName, (err, apps) => {
-                    this.sendResponse(res, undefined, { action: action, processName: processName });
-                    pm2.disconnect();
-                    if (err) { this.sendResponse(res, err); }
-                });
+                var actionName = query.action.toLowerCase();
+                console.log(`PM2 process: ${actionName} ${processName}`);
+
+                switch (actionName) {
+                    case 'restart':
+                        pm2.restart(processName, (err, apps) => {
+                            this.sendResponse(res, undefined, { action: actionName, processName: processName});
+                            if (err) { this.sendResponse(res, err); }
+                        });
+                        break;
+                    case 'stop':
+                        pm2.stop(processName, (err, apps) => {
+                            this.sendResponse(res, undefined, { action: actionName, processName: processName });
+                            pm2.disconnect();
+                            if (err) { this.sendResponse(res, err); }
+                        });
+                        break;
+                }
             });
         },
 
