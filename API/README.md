@@ -70,7 +70,7 @@ It can also be passed as an Authentication Header:
 ```bash
 $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
   -H 'content-type: application/json' \
-  -H 'Authentication: apiKey bc2e979db92f4741afad01d5d18eb8e2' \
+  -H 'Authorization: apiKey bc2e979db92f4741afad01d5d18eb8e2' \
   -d '{ 
     "title": "Hello World!", 
     "message": "Alert Successfully Shown!", 
