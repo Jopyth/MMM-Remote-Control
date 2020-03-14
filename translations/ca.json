@@ -14,12 +14,15 @@
     "MONITOROFF": "Apagar monitor",
     "MONITORON": "Encendre monitor",
     "MONITORTIMED": "Encendre monitor breument",
-    "RESTART": "Recarregar",
+    "RESTART": "Reiniciar RPi",
     "RESTARTMM": "Recarregar MagicMirror<sup>2</sup>",
-    "SHUTDOWN": "Apagar",
+    "SHUTDOWN": "Apagar RPi",
+    "FULLSCREEN": "Pantalla sencera",
+    "MINIMIZE": "Minimitzar Navegador",
+    "DEVTOOLS": "Obrir Eines per desenvolupadors",
 
-    "SHOWALL": "Tots",
-    "HIDEALL": "Tots",
+    "SHOWALL": "Mostrar Tots",
+    "HIDEALL": "Amagar Tots",
 
     "ADD_MODULE": "Afegir mòdul",
     "SEARCH": "Buscar &hellip;",
@@ -32,7 +35,7 @@
     "HELP": "Veure Readme",
     "MENU": "Menú",
     "RESET": "Reset",
-    "NO_HEADER": "(sin capcelera)",
+    "NO_HEADER": "(sense capcelera)",
     "NO_POSITION": "(invisible)",
     "ADD_ENTRY": "Afegir entrada",
     "NEW_ENTRY_NAME": "(nom de la nova entrada)",
@@ -40,7 +43,7 @@
     "UNSAVED_CHANGES": "Canvis sense guardar",
     "OK": "Ok",
     "DISCARD": "Descartar canvis",
-    "CANCEL": "Cancelar",
+    "CANCEL": "Cancel.lar",
 
     "NO_MODULES_LOADED": "No hi han móduls carregats.",
     "SAVE": "Guardar",
@@ -62,13 +65,13 @@
     "LOCKSTRING_WARNING": "Aquest mòdul ha estat ocultat per LIST_OF_MODULES, no pot ser mostrat.",
     "FORCE_SHOW": "Fes-ho igualment.",
 
-    "UPDATE_MENU_NAME" : "Actualizaciones",
-    "UPDATEMM" : "Actualiza MagicMirror<sup>2</sup>",
+    "UPDATE_MENU_NAME" : "Actualitzacions",
+    "UPDATEMM" : "Actualitza MagicMirror<sup>2</sup>",
     "UPDATE_AVAILABLE" : "Actualitzaciò disponible",
 
-	"ALERT_MENU_NAME" : "Alertes / Notificacions",
-	"SENDALERT" : "Envia alerta",
-	"HIDEALERT" : "Oculta alerta",
+    "ALERT_MENU_NAME" : "Alertes / Notificacions",
+    "SENDALERT" : "Envia alerta",
+    "HIDEALERT" : "Oculta alerta",
     "FORM_TYPE" : "Tipus:",
     "FORM_ALERT" : "Alerta",
     "FORM_NOTIFICATION" : "Notificaciò",
@@ -76,5 +79,10 @@
     "FORM_TITLE_PLACEHOLDER" : "Introdueix títol...",
     "FORM_MESSAGE" : "Missatge:",
     "FORM_MESSAGE_PLACEHOLDER" : "Introdueix missatge...",
-    "FORM_SECONDS" : "Segons:"
+    "FORM_SECONDS" : "Segons:",
+
+    "RESPONSE_ERROR": "No ha funcionat. Comprova els MM logs per més detalls",
+    "MODULE_CONTROLS": "Controls de mòduls",
+    "CUSTOM_MENU": "El meu Menú Personalitzat"
+
 }
