@@ -1,0 +1,88 @@
+{
+    "TITLE": "Magic Mirror Menu",
+
+    "EDIT_MENU_NAME": "Udseende",
+    "SHUTDOWN_MENU_NAME": "Strøm",
+    "CONFIGURE_MENU_NAME": "Rediger config.js",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+
+    "BACK": "Tilbage",
+
+    "BRIGHTNESS": "Lysstyrke",
+
+    "REFRESHMM" : "Genindlæs Browser",
+    "MONITOROFF": "Sluk skærm",
+    "MONITORON": "Tænd skærm",
+    "MONITORTIMED": "Tænd skærm kortvarig",
+    "RESTART": "Genstart",
+    "RESTARTMM": "Genstart MagicMirror<sup>2</sup>",
+    "SHUTDOWN": "Luk ned",
+    "FULLSCREEN": "Toggle fuldskærm",
+    "MINIMIZE": "Minimer Browser",
+    "DEVTOOLS": "Åben DevTools",
+
+    "SHOWALL": "Vis alle",
+    "HIDEALL": "Skjul alle",
+
+    "ADD_MODULE": "Tilføj modul",
+    "SEARCH": "Søg &hellip;",
+    "INSTALLED": "Installeret",
+    "DOWNLOAD": "Download",
+    "DOWNLOADING": "Downloading &hellip;",
+    "CODE_LINK": "Vis kode",
+    "BY": "af",
+    "ADD_THIS": "Tilføj dette modul",
+    "HELP": "Vis readme",
+    "MENU": "Menu",
+    "RESET": "Nulstil",
+    "NO_HEADER": "(ingen overskrift)",
+    "NO_POSITION": "(usynlig)",
+    "ADD_ENTRY": "Tilføj post",
+    "NEW_ENTRY_NAME": "(skriv navn på ny post)",
+    "DELETE_ENTRY": "Slet",
+    "UNSAVED_CHANGES": "Ikke-gemte ændringer",
+    "OK": "Ok",
+    "DISCARD": "Forkast ændringer",
+    "CANCEL": "Annullere",
+
+    "NO_MODULES_LOADED": "Ingen moduler indlæst.",
+    "SAVE": "Gem",
+
+    "EXPERIMENTAL": "Dette er en eksperimentel funktion, det kan ødelægge din konfigurationsfil. Sikkerhedskopier først din konfiguration, hvis det er tilfældet! <br> Vil du fortsætte?",
+    "PANIC": "Glem det.",
+    "NO_RISK_NO_FUN": "Selvfølgelig!",
+
+    "CONFIRM_SHUTDOWN": "Systemet lukker ned.",
+    "CONFIRM_RESTART": "Systemet genstarter",
+
+    "LOAD_ERROR": "Hvis du ser denne meddelelse, opstod der en fejl under indlæsning af javascript-filen. Gå til følgende link og se, om dette er et kendt problem med din browser:",
+    "ISSUE_LINK": "Github fejlrapportering",
+
+    "DONE": "Færdig.",
+    "ERROR": "Fejl!",
+    "LOADING": "Indlæser &hellip;",
+
+    "LOCKSTRING_WARNING": "Dette modul blev skjult af LIST_OF_MODULES, det kan ikke vises.",
+    "FORCE_SHOW": "Gør det alligevel.",
+
+	"UPDATE_MENU_NAME" : "Opdateringer",
+	"UPDATEMM" : "Opdater MagicMirror<sup>2</sup>",
+    "UPDATE_AVAILABLE" : "Opdatering tilgængelig",
+
+	"ALERT_MENU_NAME" : "Alarm",
+	"SENDALERT" : "Send",
+	"HIDEALERT" : "Skjul",
+    "FORM_TYPE" : "Type:",
+    "FORM_ALERT" : "Alarm",
+    "FORM_NOTIFICATION" : "Notifikation",
+    "FORM_TITLE" : "Titel:",
+    "FORM_TITLE_PLACEHOLDER" : "Skriv titel...",
+    "FORM_MESSAGE" : "Besked:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Skriv besked...",
+    "FORM_SECONDS" : "Sekunder:",
+
+
+    "RESPONSE_ERROR": "Nå, det virkede ikke. Kontroller MM-logfilerne for at få flere oplysninger",
+    "MODULE_CONTROLS": "Modul kontrol",
+    "CUSTOM_MENU": "Min tilpassede menu"
+}
