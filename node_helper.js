@@ -451,11 +451,11 @@ module.exports = NodeHelper.create(Object.assign({
                         (error) => {
                             query.data = "config_update";
                             if (error) {
-                                self.sendResponse(res, error, { query: query, backup: backupPath, config: self.configOnHd });
+                                self.sendResponse(res, error, { query: query, backup: backupPath, data: self.configOnHd });
                             }
                             console.info("MMM-Remote-Control saved new config!");
                             console.info("Used backup: " + backupPath);
-                            self.sendResponse(res, undefined, { query: query, backup: backupPath, config: self.configOnHd });
+                            self.sendResponse(res, undefined, { query: query, backup: backupPath, data: self.configOnHd });
                         }
                     );
                 });
