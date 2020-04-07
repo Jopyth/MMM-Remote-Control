@@ -12,6 +12,7 @@ Now requires MagicMirror version 2.7.
 
 - Path to font awesome icons
 - A few typos in `ca` and `es` translations
+- Updates to `remote.html` to support new `basePath` feature in MM `config.js`, [follow up to this MM issue](https://github.com/MichMich/MagicMirror/issues/1973), related to #185
 
 ## [2.0.0] - 2019-02-21
 
