@@ -55,12 +55,14 @@ Module.register("MMM-Remote-Control", {
     socketNotificationReceived: function(notification, payload) {
         if (notification === "UPDATE") {
             this.sendCurrentData();
-            if (notification === "IP_ADDRESSES") {}
+        }  
+        if (notification === "IP_ADDRESSES") {
             this.addresses = payload;
             if (this.data.position) {
                 this.updateDom();
             }
         }
+        
         if (notification === "USER_PRESENCE") {
             this.sendNotification(notification, payload);
         }
