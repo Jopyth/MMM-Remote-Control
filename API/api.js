@@ -251,6 +251,17 @@ module.exports = {
                 if (!req.params.action) { req.params.action = "STATUS"; }
                 var actionName = req.params.action.toUpperCase();
                 this.executeQuery(this.checkDelay({ action: `MONITOR${actionName}` }, req), res);
+            })
+            .post((req, res) => {
+                var actionName = "STATUS";
+                if (typeof req.body !== 'undefined' && "monitor" in req.body) {
+                    if (req.body.monitor === "off" || !req.body.monitor) {
+                        actionName = "OFF";
+                    } else {
+                        actionName = "ON";
+                    }
+                }
+                this.executeQuery(this.checkDelay({ action: `MONITOR${actionName}` }, req), res);
             });
 
         this.expressRouter.route('/brightness/:setting(\\d+)')
