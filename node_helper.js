@@ -923,8 +923,6 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         checkForExecError: function(error, stdout, stderr, res, data) {
-            console.log(stdout);
-            console.log(stderr);
             this.sendResponse(res, error, data);
         },
 
