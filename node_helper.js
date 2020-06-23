@@ -874,11 +874,19 @@ module.exports = NodeHelper.create(Object.assign({
                 }
                 console.log(`PM2 process: ${query.action.toLowerCase()} ${processName}`);
 
-                pm2.stop(processName, (err, apps) => {
-                    this.sendResponse(res, undefined, { action: action, processName: processName });
-                    pm2.disconnect();
-                    if (err) { this.sendResponse(res, err); }
-                });
+                if(query.action === "RESTART"){
+                	pm2.restart(processName, (err, apps) => {
+                		this.sendResponse(res, undefined, { action: action, processName: processName });
+                    	pm2.disconnect();
+                    	if (err) { this.sendResponse(res, err); }
+                	});
+                } else {
+                	pm2.stop(processName, (err, apps) => {
+                    	this.sendResponse(res, undefined, { action: action, processName: processName });
+                    	pm2.disconnect();
+                    	if (err) { this.sendResponse(res, err); }
+                	});
+                }
             });
         },
 
