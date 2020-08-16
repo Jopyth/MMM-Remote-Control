@@ -35,7 +35,7 @@ fi
 # assume default install location
 MM_HOME=$HOME/MagicMirror
 MODULE_NAME=MMM-Remote-Control
-FORK=Jopyth
+FORK=ezeholz
 
 # check if we are correct by searching for https://github.com/MichMich/MagicMirror in package.json
 TEST_STRING="\"url\": \"git+https://github.com/MichMich/MagicMirror.git\""
