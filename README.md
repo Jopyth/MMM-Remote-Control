@@ -18,7 +18,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer.
 The following command will download the installer and execute it:
 ```bash
-bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh)"
+bash -c "$(curl -s https://raw.githubusercontent.com/ezeholz/MMM-Remote-Control/master/installer.sh)"
 ```
 
 ### Manual install
@@ -26,7 +26,7 @@ bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/m
 - (1) Clone this repository in your `modules` folder, and install dependencies:
 ```bash
 cd ~/MagicMirror/modules # adapt directory if you are using a different one
-git clone https://github.com/Jopyth/MMM-Remote-Control.git
+git clone https://github.com/ezeholz/MMM-Remote-Control.git
 cd MMM-Remote-Control
 npm install
 ```
@@ -36,7 +36,7 @@ npm install
 {
     module: 'MMM-Remote-Control',
     // uncomment the following line to show the URL of the remote control on the mirror
-    // position: 'bottom_left'
+    // position: 'bottom_left',
     // you can hide this module afterwards from the remote control itself
     config: {
         customCommand: {},  // Optional, See "Using Custom Commands" below
