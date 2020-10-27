@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.1] - Unreleased
 
-**Big thanks to @ezeholz** who has offered to maintain the module fron now on!
+**Huge thanks to [@ezeholz](https://github.com/ezeholz)** who has offered to maintain the module fron now on!
+Credit for this (and future) versions and releases goes to @ezeholz (unless noted otherwise).
+
 Now requires MagicMirror version 2.7.
 
 ### Fixed
