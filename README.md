@@ -40,9 +40,10 @@ npm install
     // you can hide this module afterwards from the remote control itself
     config: {
         customCommand: {},  // Optional, See "Using Custom Commands" below
-        customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
         showModuleApiMenu: true, // Optional, Enable the Module Controls menu
-        apiKey: "",         // Optional, See API/README.md for details
+        // uncomment any of the lines below if you're gonna use it
+        // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
+        // apiKey: "",         // Optional, See API/README.md for details
     }
 },
 ```
