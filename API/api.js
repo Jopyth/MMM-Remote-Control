@@ -231,10 +231,9 @@ module.exports = {
             .post((req, res) => {
                 var actionName = "STATUS";
                 if (typeof req.body !== 'undefined' && "monitor" in req.body) {
-                    if (req.body.monitor === "off" || !req.body.monitor) {
-                        actionName = "OFF";
-                    } else {
-                        actionName = "ON";
+                    switch(req.body.monitor){
+                        case 'off': case 'OFF': actionName = "OFF"; break;
+                        case 'on': case 'ON': actionName = "ON"; break;
                     }
                 }
                 this.executeQuery(this.checkDelay({ action: `MONITOR${actionName}` }, req), res);
