@@ -88,7 +88,7 @@ First look at which versions are available:
 ```bash
 cd MagicMirror/modules/MMM-Remote-Control # or wherever you installed the Mirror and the module
 git fetch # fetch all tags
-git tags # display them
+git tag # display them
 ```
 
 The output should look similar to this:
