@@ -834,27 +834,30 @@ module.exports = NodeHelper.create(Object.assign({
             console.log("path: " + path + " name: " + name);
 
             var git = simpleGit(path);
-            git.pull((error, result) => {
-                if (error) {
-                    console.log(error);
-                    self.sendResponse(res, error);
-                    return;
-                }
-                if (result.summary.changes) {
-                    exec("npm install", { cwd: path, timeout: 120000 }, (error, stdout, stderr) => {
-                        if (error) {
-                            console.log(error);
-                            self.sendResponse(res, error, { stdout: stdout, stderr: stderr });
-                        } else {
-                            // success part
-                            self.readModuleData();
-                            self.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
-                        }
-                    });
-                } else {
-                    self.sendResponse(res, undefined, { code: "up-to-date", info: name + " already up to date." });
-                }
+            git.reset('hard').then(() => {
+                git.pull((error, result) => {
+                    if (error) {
+                        console.log(error);
+                        self.sendResponse(res, error);
+                        return;
+                    }
+                    if (result.summary.changes) {
+                        exec("npm install", { cwd: path, timeout: 120000 }, (error, stdout, stderr) => {
+                            if (error) {
+                                console.log(error);
+                                self.sendResponse(res, error, { stdout: stdout, stderr: stderr });
+                            } else {
+                                // success part
+                                self.readModuleData();
+                                self.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
+                            }
+                        });
+                    } else {
+                        self.sendResponse(res, undefined, { code: "up-to-date", info: name + " already up to date." });
+                    }
+                });
             });
+            
         },
 
         checkForExecError: function(error, stdout, stderr, res, data) {
