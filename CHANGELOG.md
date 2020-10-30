@@ -4,7 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.1] - Unreleased
+## [2.1.0] - Unreleased
+
+Now requires MagicMirror version 2.12.
+
+### Fixed
+
+- A typo in `es` translation
+- A few typos in README.md (#134 and #149) and API/README.md (#179)
+- Error inside API.js (#190)
+- Tweaks inside MMM-Remote-Control.js (#184 and #194)
+- PRs accepted to fix bugs in node_helper.js (#126 and #153)
+
+### Added
+
+- Danish translation (#157)
+
+### Changed
+
+- Overwrite of local changes when updating from a repository
+
+## [2.0.1] - 2020-10-28
 
 **Huge thanks to [@ezeholz](https://github.com/ezeholz)** who has offered to maintain the module fron now on!
 Credit for this (and future) versions and releases goes to @ezeholz (unless noted otherwise).
