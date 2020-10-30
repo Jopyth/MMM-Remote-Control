@@ -19,6 +19,7 @@ Now requires MagicMirror version 2.12.
 ### Added
 
 - Danish translation (#157)
+- Italian translation (#162)
 
 ### Changed
 
