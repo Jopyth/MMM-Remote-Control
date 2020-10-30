@@ -1015,7 +1015,7 @@ module.exports = NodeHelper.create(Object.assign({
             if (notification === "REQUEST_DEFAULT_SETTINGS") {
                 // module started, answer with current ip addresses
                 self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
-
+                self.sendSocketNotification("LOAD_PORT", self.configOnHd.port ? self.configOnHd.port : '');
                 // check if we have got saved default settings
                 self.loadDefaultSettings();
             }

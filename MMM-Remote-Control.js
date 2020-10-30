@@ -25,6 +25,7 @@ Module.register("MMM-Remote-Control", {
         this.settingsVersion = 2;
 
         this.addresses = [];
+        this.port = '';
 
         this.brightness = 100;
     },
@@ -58,6 +59,12 @@ Module.register("MMM-Remote-Control", {
         }  
         if (notification === "IP_ADDRESSES") {
             this.addresses = payload;
+            if (this.data.position) {
+                this.updateDom();
+            }
+        }
+        if (notification === "LOAD_PORT") {
+            this.port = payload;
             if (this.data.position) {
                 this.updateDom();
             }
@@ -230,10 +237,16 @@ Module.register("MMM-Remote-Control", {
 
     getDom: function() {
         var wrapper = document.createElement("div");
+        var portToShow = ''
         if (this.addresses.length === 0) {
             this.addresses = ["ip-of-your-mirror"];
         }
-        wrapper.innerHTML = "http://" + this.addresses[0] + ":8080/remote.html";
+        switch(this.port) {
+            case '': case '8080': portToShow = ':8080'; break;
+            case '80': portToShow = ''; break;
+            default: portToShow = ':'+this.port; break;
+        }
+        wrapper.innerHTML = "http://" + this.addresses[0] + portToShow +"/remote.html";
         wrapper.className = "normal xsmall";
         return wrapper;
     },

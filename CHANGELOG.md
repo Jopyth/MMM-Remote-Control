@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.1.0] - Unreleased
 
-Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just think that some things needed to be fixed ASAP.
+Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just thinked that some things needed to be fixed ASAP.
 See you in future commits, issues and PRs :D
 
 ### Fixed
@@ -16,11 +16,13 @@ See you in future commits, issues and PRs :D
 - Error inside API.js (#190)
 - Tweaks inside MMM-Remote-Control.js (#184 and #194)
 - PRs accepted to fix bugs in node_helper.js (#126 and #153)
+- installer.sh now detects where's the node instalation (#222)
 
 ### Added
 
 - Danish translation (#157)
 - Italian translation (#162)
+- Port now showing according to config.js (#98)
 
 ### Changed
 
