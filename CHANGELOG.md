@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.1.0] - Unreleased
 
-Now requires MagicMirror version 2.12.
+Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just think that some things needed to be fixed ASAP.
+See you in future commits, issues and PRs :D
 
 ### Fixed
 
@@ -24,6 +25,7 @@ Now requires MagicMirror version 2.12.
 ### Changed
 
 - Overwrite of local changes when updating from a repository
+- Now requires MagicMirror version 2.12
 
 ## [2.0.1] - 2020-10-28
 
