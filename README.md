@@ -34,15 +34,16 @@ npm install
 - (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
 ```js
 {
-    module: 'MMM-Remote-Control'
+    module: 'MMM-Remote-Control',
     // uncomment the following line to show the URL of the remote control on the mirror
-    // , position: 'bottom_left'
+    // position: 'bottom_left',
     // you can hide this module afterwards from the remote control itself
     config: {
         customCommand: {},  // Optional, See "Using Custom Commands" below
-        customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
         showModuleApiMenu: true, // Optional, Enable the Module Controls menu
-        apiKey: "",         // Optional, See API/README.md for details
+        // uncomment any of the lines below if you're gonna use it
+        // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
+        // apiKey: "",         // Optional, See API/README.md for details
     }
 },
 ```
@@ -88,7 +89,7 @@ First look at which versions are available:
 ```bash
 cd MagicMirror/modules/MMM-Remote-Control # or wherever you installed the Mirror and the module
 git fetch # fetch all tags
-git tags # display them
+git tag # display them
 ```
 
 The output should look similar to this:

@@ -40,7 +40,7 @@ Module.register("MMM-Remote-Control", {
             this.sendCurrentData();
         }
         if (notification === "REMOTE_ACTION") {
-            console.log(payload);
+            Log.log(payload);
             this.sendSocketNotification(notification, payload);
         }
         if (notification === "REGISTER_API") {

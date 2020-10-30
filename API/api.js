@@ -165,7 +165,7 @@ module.exports = {
             '/togglefullscreen',
             '/devtools'
         ]).get((req, res) => {
-            let r = req.path.substring(1).toUpperCase();
+            let r = req.path.split("/")[1].toUpperCase();
             console.log(req.path);
             self.executeQuery(this.checkDelay({ action: r }, req), res);
         });

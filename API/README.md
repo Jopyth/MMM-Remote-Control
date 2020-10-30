@@ -66,11 +66,11 @@ The API Key can be passed in one of two ways, either as part of the query string
 $ curl -X GET http://magicmirrorip:8080/api/module/alert/showalert?message=Hello&timer=2000&apiKey=bc2e979db92f4741afad01d5d18eb8e2
 ```
 
-It can also be passed as an Authentication Header:
+It can also be passed as an Authorization Header:
 ```bash
 $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
   -H 'content-type: application/json' \
-  -H 'Authentication: apiKey bc2e979db92f4741afad01d5d18eb8e2' \
+  -H 'Authorization: apiKey bc2e979db92f4741afad01d5d18eb8e2' \
   -d '{ 
     "title": "Hello World!", 
     "message": "Alert Successfully Shown!", 
