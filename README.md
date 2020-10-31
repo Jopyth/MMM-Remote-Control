@@ -218,6 +218,8 @@ Depending on your installation, some `shell` commands used by this module are no
 
 ```js
     customCommand: {
+        shutdownCommand: 'shell command to shutdown your pc',
+        rebootCommand: 'shell command to reboot your pc',
         monitorOnCommand: 'shell command to turn on your monitor',
         monitorOffCommand: 'shell command to turn off your monitor',
         monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'
