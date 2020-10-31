@@ -120,7 +120,7 @@ module.exports = NodeHelper.create(Object.assign({
 
             this.expressApp.get("/remote.html", function(req, res) {
                 if (self.template === "") {
-                    res.sendStatus(503);
+                    res.send(503);
                 } else {
                     res.contentType("text/html");
                     var transformedData = self.fillTemplates(self.template);
