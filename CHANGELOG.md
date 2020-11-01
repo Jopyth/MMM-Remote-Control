@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] - 2020-11-01
+
+Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just thinked that some things needed to be fixed ASAP.
+See you in future commits, issues and PRs :D
+
+### Fixed
+
+- A typo in `es` translation
+- A few typos in README.md (#134 and #149) and API/README.md (#179)
+- Delayed commands should now work (#190)
+- Typo on remote_action (#184)
+- IP now showing (#194)
+- MM restart button don't just stop anymore (#126)
+- Saving config should work as expected now (#153)
+- installer.sh now detects where's the node instalation (#222)
+
+### Added
+
+- Danish translation (#157)
+- Italian translation (#162)
+- Port now showing according to config.js (#98)
+- Custom commands for shutdown and reboot
+
+### Changed
+
+- Overwrite of local changes when updating from a repository
+- Now requires MagicMirror version 2.12
+
+## [2.0.1] - 2020-10-28
+
+**Huge thanks to [@ezeholz](https://github.com/ezeholz)** who has offered to maintain the module fron now on!
+Credit for this (and future) versions and releases goes to @ezeholz (unless noted otherwise).
+
+Now requires MagicMirror version 2.7.
+
+### Fixed
+
+- Path to font awesome icons
+- A few typos in `ca` and `es` translations
+- Updates to `remote.html` to support new `basePath` feature in MM `config.js`, [follow up to this MM issue](https://github.com/MichMich/MagicMirror/issues/1973), related to #185
+
 ## [2.0.0] - 2019-02-21
 
 Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:

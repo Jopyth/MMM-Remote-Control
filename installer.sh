@@ -145,16 +145,17 @@ else
 fi
 
 # Get an UUID to use as an API key
-APIKEY=$(/usr/local/bin/node -e 'console.log(require("uuid/v4")().replace(/-/g, ""));');
+NODE_BIN=$(which node)
+APIKEY=$($NODE_BIN -e 'console.log(require("uuid/v4")().replace(/-/g, ""));');
 
 echo ""
 if check_no "Do you want to view instructions on how to configure the module?"; then
     echo "(1) Please add the following snippet into your modules array in your config.js:"
     echo -e "\033[33m    -------------- copy below this line --------------"
     echo -e "    {"
-    echo -e "        module: '$MODULE_NAME'"
+    echo -e "        module: '$MODULE_NAME'",
     echo -e "        // uncomment the following line to show the URL of the remote control on the mirror"
-    echo -e "        // , position: 'bottom_left'"
+    echo -e "        // position: 'bottom_left'",
     echo -e "        // you can hide this module afterwards from the remote control itself"
     echo -e "        config: {"
     echo -e "\033[31m            apiKey: '$APIKEY'\033[33m"

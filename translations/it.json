@@ -1,0 +1,80 @@
+{
+    "TITLE": "Menù MagicMirror",
+
+    "EDIT_MENU_NAME": "Modifica vista",
+    "SHUTDOWN_MENU_NAME": "Alimentazione",
+    "CONFIGURE_MENU_NAME": "Modifica config.js",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+
+    "BACK": "Indietro",
+
+    "BRIGHTNESS": "Luminosità",
+
+    "REFRESHMM" : "Aggiorna browser",
+    "MONITOROFF": "Spegni il monitor",
+    "MONITORON": "Accendi il monitor",
+    "MONITORTIMED": "Accendi brevemente il monitor",
+    "RESTART": "Riavvia",
+    "RESTARTMM": "Riavvia MagicMirror<sup>2</sup>",
+    "SHUTDOWN": "Spegni",
+
+    "SHOWALL": "Tutto",
+    "HIDEALL": "Tutto",
+
+    "ADD_MODULE": "Aggiungi modulo",
+    "SEARCH": "Cerca &hellip;",
+    "INSTALLED": "Installati",
+    "DOWNLOAD": "Scarica",
+    "DOWNLOADING": "Sto scaricando &hellip;",
+    "CODE_LINK": "Vedi sorgente",
+    "BY": "di",
+    "ADD_THIS": "Aggiungi questo modulo",
+    "HELP": "Visualizza il file readme",
+    "MENU": "Menù",
+    "RESET": "Ripristina",
+    "NO_HEADER": "(nessuna intestazione)",
+    "NO_POSITION": "(invisibile)",
+    "ADD_ENTRY": "Aggiungi voce",
+    "NEW_ENTRY_NAME": "(inserisci il nome della nuova voce)",
+    "DELETE_ENTRY": "Elimina",
+    "UNSAVED_CHANGES": "Modifiche non salvate",
+    "OK": "Ok",
+    "DISCARD": "Annulla modifiche",
+    "CANCEL": "Annulla",
+
+    "NO_MODULES_LOADED": "Nessun modulo caricato.",
+    "SAVE": "Salva",
+
+    "EXPERIMENTAL": "Questa è una funzione sperimentale e potrebbe rendere illeggibile il file config. Effettua prima il backup del tuo config per sicurezza!<br>Vuoi continuare?",
+    "PANIC": "Nessun problema.",
+    "NO_RISK_NO_FUN": "Chi non risica non rosica!",
+
+    "CONFIRM_SHUTDOWN": "Il sistema verrà arrestato.",
+    "CONFIRM_RESTART": "Il sistema verrà riavviato.",
+
+    "LOAD_ERROR": "Se leggi questo messaggo allora c'è stato un errore nel caricare il file javascript. Per favore vai al link seguente e verifica se sia un problema conosciuto del tuo browser:",
+    "ISSUE_LINK": "Pagina Github del problema",
+
+    "DONE": "Fatto.",
+    "ERROR": "Errore!",
+    "LOADING": "Sto caricando &hellip;",
+
+    "LOCKSTRING_WARNING": "Questo modulo è stato nascosto da LIST_OF_MODULES e non può essere mostrato.",
+    "FORCE_SHOW": "Procedi comunque.",
+
+    "UPDATE_MENU_NAME" : "Aggiornamenti",
+    "UPDATEMM" : "Aggiorna MagicMirror<sup>2</sup>",
+    "UPDATE_AVAILABLE" : "Aggiornamento disponibile",
+
+    "ALERT_MENU_NAME" : "Avviso",
+    "SENDALERT" : "Invia",
+    "HIDEALERT" : "Nascondi",
+    "FORM_TYPE" : "Tipo:",
+    "FORM_ALERT" : "Avviso",
+    "FORM_NOTIFICATION" : "Notifica",
+    "FORM_TITLE" : "Titolo:",
+    "FORM_TITLE_PLACEHOLDER" : "Inserisci il titolo...",
+    "FORM_MESSAGE" : "Messaggio:",
+    "FORM_MESSAGE_PLACEHOLDER" : "Inserisci il messaggio...",
+    "FORM_SECONDS" : "Secondi:"
+}

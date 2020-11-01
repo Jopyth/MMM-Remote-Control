@@ -451,11 +451,11 @@ module.exports = NodeHelper.create(Object.assign({
                         (error) => {
                             query.data = "config_update";
                             if (error) {
-                                self.sendResponse(res, error, { query: query, backup: backupPath, config: self.configOnHd });
+                                self.sendResponse(res, error, { query: query, backup: backupPath, data: self.configOnHd });
                             }
                             console.info("MMM-Remote-Control saved new config!");
                             console.info("Used backup: " + backupPath);
-                            self.sendResponse(res, undefined, { query: query, backup: backupPath, config: self.configOnHd });
+                            self.sendResponse(res, undefined, { query: query, backup: backupPath, data: self.configOnHd });
                         }
                     );
                 });
@@ -638,16 +638,27 @@ module.exports = NodeHelper.create(Object.assign({
             }
         },
 
+        shutdownControl: function(action, opts, res) {
+            let shutdownCommand = (this.initialized && "shutdownCommand" in this.thisConfig.customCommand) ?
+                this.thisConfig.customCommand.shutdownCommand :
+                "sudo shutdown -h now";
+            let rebootCommand = (this.initialized && "rebootCommand" in this.thisConfig.customCommand) ?
+                this.thisConfig.customCommand.rebootCommand :
+                "sudo shutdown -r now";
+            if (action === "SHUTDOWN") {
+                exec(shutdownCommand, opts, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+            }
+            if (action === "REBOOT") {
+                exec(rebootCommand, opts, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+            }
+        },
+
         executeQuery: function(query, res) {
             var self = this;
             var opts = { timeout: 15000 };
 
-            if (query.action === "SHUTDOWN") {
-                exec("sudo shutdown -h now", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
-                return true;
-            }
-            if (query.action === "REBOOT") {
-                exec("sudo shutdown -r now", opts, (error, stdout, stderr) => { self.checkForExecError(error, stdout, stderr, res); });
+            if (["SHUTDOWN", "REBOOT"].indexOf(query.action) !== -1) {
+                this.shutdownControl(query.action, opts, res);
                 return true;
             }
             if (query.action === "RESTART" || query.action === "STOP") {
@@ -834,27 +845,30 @@ module.exports = NodeHelper.create(Object.assign({
             console.log("path: " + path + " name: " + name);
 
             var git = simpleGit(path);
-            git.pull((error, result) => {
-                if (error) {
-                    console.log(error);
-                    self.sendResponse(res, error);
-                    return;
-                }
-                if (result.summary.changes) {
-                    exec("npm install", { cwd: path, timeout: 120000 }, (error, stdout, stderr) => {
-                        if (error) {
-                            console.log(error);
-                            self.sendResponse(res, error, { stdout: stdout, stderr: stderr });
-                        } else {
-                            // success part
-                            self.readModuleData();
-                            self.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
-                        }
-                    });
-                } else {
-                    self.sendResponse(res, undefined, { code: "up-to-date", info: name + " already up to date." });
-                }
+            git.reset('hard').then(() => {
+                git.pull((error, result) => {
+                    if (error) {
+                        console.log(error);
+                        self.sendResponse(res, error);
+                        return;
+                    }
+                    if (result.summary.changes) {
+                        exec("npm install", { cwd: path, timeout: 120000 }, (error, stdout, stderr) => {
+                            if (error) {
+                                console.log(error);
+                                self.sendResponse(res, error, { stdout: stdout, stderr: stderr });
+                            } else {
+                                // success part
+                                self.readModuleData();
+                                self.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
+                            }
+                        });
+                    } else {
+                        self.sendResponse(res, undefined, { code: "up-to-date", info: name + " already up to date." });
+                    }
+                });
             });
+            
         },
 
         checkForExecError: function(error, stdout, stderr, res, data) {
@@ -872,13 +886,25 @@ module.exports = NodeHelper.create(Object.assign({
                     this.sendResponse(res, err);
                     return;
                 }
-                console.log(`PM2 process: ${query.action.toLowerCase()} ${processName}`);
 
-                pm2.stop(processName, (err, apps) => {
-                    this.sendResponse(res, undefined, { action: action, processName: processName });
-                    pm2.disconnect();
-                    if (err) { this.sendResponse(res, err); }
-                });
+                var actionName = query.action.toLowerCase();
+                console.log(`PM2 process: ${actionName} ${processName}`);
+
+                switch (actionName) {
+                    case 'restart':
+                        pm2.restart(processName, (err, apps) => {
+                            this.sendResponse(res, undefined, { action: actionName, processName: processName});
+                            if (err) { this.sendResponse(res, err); }
+                        });
+                        break;
+                    case 'stop':
+                        pm2.stop(processName, (err, apps) => {
+                            this.sendResponse(res, undefined, { action: actionName, processName: processName });
+                            pm2.disconnect();
+                            if (err) { this.sendResponse(res, err); }
+                        });
+                        break;
+                }
             });
         },
 
@@ -1000,7 +1026,7 @@ module.exports = NodeHelper.create(Object.assign({
             if (notification === "REQUEST_DEFAULT_SETTINGS") {
                 // module started, answer with current ip addresses
                 self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
-
+                self.sendSocketNotification("LOAD_PORT", self.configOnHd.port ? self.configOnHd.port : '');
                 // check if we have got saved default settings
                 self.loadDefaultSettings();
             }
