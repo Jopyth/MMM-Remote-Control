@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.0] - Unreleased
+## [2.1.0] - 2020-11-01
 
 Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just thinked that some things needed to be fixed ASAP.
 See you in future commits, issues and PRs :D
@@ -13,9 +13,11 @@ See you in future commits, issues and PRs :D
 
 - A typo in `es` translation
 - A few typos in README.md (#134 and #149) and API/README.md (#179)
-- Error inside API.js (#190)
-- Tweaks inside MMM-Remote-Control.js (#184 and #194)
-- PRs accepted to fix bugs in node_helper.js (#126 and #153)
+- Delayed commands should now work (#190)
+- Typo on remote_action (#184)
+- IP now showing (#194)
+- MM restart button don't just stop anymore (#126)
+- Saving config should work as expected now (#153)
 - installer.sh now detects where's the node instalation (#222)
 
 ### Added
@@ -23,6 +25,7 @@ See you in future commits, issues and PRs :D
 - Danish translation (#157)
 - Italian translation (#162)
 - Port now showing according to config.js (#98)
+- Custom commands for shutdown and reboot
 
 ### Changed
 
