@@ -76,6 +76,20 @@ module.exports = NodeHelper.create(Object.assign({
             /* CALLED AFTER MODULES AND CONFIG DATA ARE LOADED */
             /* API EXTENSION - Added v2.0.0 */
             this.createApiRoutes();
+
+	    	this.loadTimers();
+	    },
+
+		loadTimers: function() {
+            var delay = 24*3600;
+            
+            var self = this;
+            
+            clearTimeout(this.delayedQueryTimers['update'])
+            this.delayedQueryTimers['update'] = setTimeout(function () {
+            	self.updateModuleList();
+            	self.loadTimers();
+            }, delay*1000);
         },
 
         combineConfig: function() {
