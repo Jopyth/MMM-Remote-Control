@@ -16,6 +16,7 @@ const os = require("os");
 const simpleGit = require("simple-git");
 const bodyParser = require("body-parser");
 const express = require("express");
+const _ = require("lodash");
 
 var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodules.js"));
 
@@ -385,7 +386,7 @@ module.exports = NodeHelper.create(Object.assign({
             var defaultConfig = require(__dirname + "/../../js/defaults.js");
 
             for (let key in defaultConfig) {
-                if (defaultConfig.hasOwnProperty(key) && config && config.hasOwnProperty(key) && defaultConfig[key] === config[key]) {
+                if (defaultConfig.hasOwnProperty(key) && config && config.hasOwnProperty(key) && _.isEqual(defaultConfig[key], config[key])) {
                     delete config[key];
                 }
             }
@@ -397,7 +398,7 @@ module.exports = NodeHelper.create(Object.assign({
                     def = {};
                 }
                 for (let key in def) {
-                    if (def.hasOwnProperty(key) && current.config.hasOwnProperty(key) && def[key] === current.config[key]) {
+                    if (def.hasOwnProperty(key) && current.config.hasOwnProperty(key) && _.isEqual(def[key], current.config[key])) {
                         delete current.config[key];
                     }
                 }

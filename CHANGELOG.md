@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.2.0] - Unreleased
 
 ### Fixed
+- Default values now removed from backup (#12)
 
 ### Added
 - Updates now show if there's an update available every day (#52)
 
 ### Changed
-
+- **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
 
 ## [2.1.0] - 2020-11-01
 
