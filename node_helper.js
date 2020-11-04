@@ -605,36 +605,30 @@ module.exports = NodeHelper.create(Object.assign({
             let monitorStatusCommand = (this.initialized && "monitorStatusCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorStatusCommand :
                 "tvservice --status";
-            if (["MONITORTOGGLE", "MONITORSTATUS", "MONITORON"].indexOf(action) !== -1) {
-                screenStatus = exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-                    if (stdout.indexOf("TV is off") !== -1 || stdout.indexOf("false") !== -1) {
-                        // Screen is OFF, turn it ON
-                        status = "off";
-                        if (action === "MONITORTOGGLE" || action === "MONITORON") {
-                            exec(monitorOnCommand, opts, (error, stdout, stderr) => {
-                                this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
-                            });
-                            this.sendSocketNotification("USER_PRESENCE", true);
-                            return;
-                        }
-                    } else if (stdout.indexOf("HDMI") !== -1 || stdout.indexOf("true") !== -1) {
-                        // Screen is ON, turn it OFF
-                        status = "on";
-                        if (action === "MONITORTOGGLE") {
-                            this.monitorControl("MONITOROFF", opts, res);
-                            return;
-                        }
-                    }
-                    this.checkForExecError(error, stdout, stderr, res, { monitor: status });
-                    return;
-                });
-            }
-            if (action === "MONITOROFF") {
-                exec(monitorOffCommand, (error, stdout, stderr) => {
-                    this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
-                });
-                this.sendSocketNotification("USER_PRESENCE", false);
-                return;
+            switch (action) {
+                case "MONITORSTATUS": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
+                        status = ["false","TV is Off"].indexOf(stdout) !== -1 ? "off" : "on";
+                        this.checkForExecError(error, stdout, stderr, res, { monitor: status });
+                        return;
+                    };
+                    break;
+                case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
+                        status = ["false","TV is Off"].indexOf(stdout) !== -1 ? "off" : "on";
+                        if(status === "on") this.monitorControl("MONITOROFF", opts, res);
+                        else this.monitorControl("MONITORON", opts, res);
+                        return;
+                    };
+                    break;
+                case "MONITORON": exec(monitorOnCommand, opts, (error, stdout, stderr) => {
+                        this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
+                    });
+                    this.sendSocketNotification("USER_PRESENCE", true);
+                    break;
+                case "MONITOROFF": exec(monitorOffCommand, opts, (error, stdout, stderr) => {
+                        this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
+                    });
+                    this.sendSocketNotification("USER_PRESENCE", false);
+                    break;
             }
         },
 
