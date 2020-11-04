@@ -610,14 +610,14 @@ module.exports = NodeHelper.create(Object.assign({
                         status = ["false","TV is Off"].indexOf(stdout) !== -1 ? "off" : "on";
                         this.checkForExecError(error, stdout, stderr, res, { monitor: status });
                         return;
-                    };
+                    });
                     break;
                 case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
                         status = ["false","TV is Off"].indexOf(stdout) !== -1 ? "off" : "on";
                         if(status === "on") this.monitorControl("MONITOROFF", opts, res);
                         else this.monitorControl("MONITORON", opts, res);
                         return;
-                    };
+                    });
                     break;
                 case "MONITORON": exec(monitorOnCommand, opts, (error, stdout, stderr) => {
                         this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
