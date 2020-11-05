@@ -303,6 +303,17 @@ var Remote = {
         if (newMenu === "update-menu") {
             this.loadModulesToUpdate();
         }
+        
+        if (newMenu === "main-menu") {
+        	this.loadList("config-modules", "config", function(parent,configData) {
+        		let alertElem = document.getElementById("alert-button")
+        		if(configData.modules.find(m=>m.module==="alert")===undefined && alertElem !== undefined) {
+					alertElem.remove()
+	    		}
+        	})
+	    	
+        }
+        
         var allMenus = document.getElementsByClassName("menu-element");
 
         for (let i = 0; i < allMenus.length; i++) {

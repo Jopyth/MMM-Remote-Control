@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
+- Alert button don't show up when Alert module isn't active
 
 ## [2.1.0] - 2020-11-01
 
