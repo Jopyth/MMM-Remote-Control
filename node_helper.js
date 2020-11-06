@@ -596,6 +596,7 @@ module.exports = NodeHelper.create(Object.assign({
 
         monitorControl: function(action, opts, res) {
             let status = "unknown";
+            let offArr = ["false","TV is Off","standby"];
             let monitorOnCommand = (this.initialized && "monitorOnCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorOnCommand :
                 "tvservice --preferred && sudo chvt 6 && sudo chvt 7";
@@ -607,13 +608,13 @@ module.exports = NodeHelper.create(Object.assign({
                 "tvservice --status";
             switch (action) {
                 case "MONITORSTATUS": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-                        status = ["false","TV is Off"].indexOf(stdout) !== -1 ? "off" : "on";
+                        status = offArr.indexOf(stdout) !== -1 ? "off" : "on";
                         this.checkForExecError(error, stdout, stderr, res, { monitor: status });
                         return;
                     });
                     break;
                 case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-                        status = ["false","TV is Off"].indexOf(stdout) !== -1 ? "off" : "on";
+                        status = offArr.indexOf(stdout) !== -1 ? "off" : "on";
                         if(status === "on") this.monitorControl("MONITOROFF", opts, res);
                         else this.monitorControl("MONITORON", opts, res);
                         return;
