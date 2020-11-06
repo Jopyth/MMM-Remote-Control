@@ -12,11 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Updates now show if there's an update available every day (#52)
 - Templates for issues and PRs, and also stale for automanagement of issues.
+- Close Dev Tools (#119)
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
 - Alert button don't show up when Alert module isn't active
-- The way monitor turn on and off
+- The way monitor turn on and off (#225)
 
 ## [2.1.0] - 2020-11-01
 

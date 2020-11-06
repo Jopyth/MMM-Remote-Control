@@ -776,7 +776,8 @@ module.exports = NodeHelper.create(Object.assign({
                             win.setFullScreen(!win.isFullScreen());
                             break;
                         case "DEVTOOLS":
-                            win.webContents.openDevTools();
+                        	if (win.webContents.isDevToolsOpened()) win.webContents.closeDevTools();
+                            else win.webContents.openDevTools();
                             break;
                         default:
                     }
