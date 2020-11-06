@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Updates now show if there's an update available every day (#52)
+- Templates for issues and PRs, and also stale for automanagement of issues.
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
