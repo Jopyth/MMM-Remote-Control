@@ -517,6 +517,23 @@ module.exports = NodeHelper.create(Object.assign({
                 this.sendResponse(res, undefined, { query: query, data: this.getConfig() });
                 return;
             }
+            if (query.data === "saves") {
+                var backupHistorySize = 5;
+                let times = [];
+
+                for (var i = backupHistorySize - 1; i > 0; i--) {
+                    let backupPath = path.resolve("config/config.js.backup" + i);
+                    try {
+                        var stats = fs.statSync(backupPath);
+                        times.push(stats.mtime)
+                    } catch (e) {
+                        continue;
+                    }
+                }
+                query.data = "undo_configs_menu";
+                this.sendResponse(res, undefined, { query: query, data: times.sort((a,b) => b - a) });
+                return
+            }
             if (query.data === "defaultConfig") {
                 if (!(query.module in Module.configDefaults)) {
                     this.sendResponse(res, undefined, { query: query, data: {} });
@@ -1047,6 +1064,34 @@ module.exports = NodeHelper.create(Object.assign({
                 } else if ("data" in payload) {
                     this.answerGet(payload, { isSocket: true });
                 }
+            }
+            if (notification === "UNDO_CONFIG_MENU") {
+            	this.answerGet({data: "saves"}, { isSocket: true })
+            }
+            if (notification === "UNDO_CONFIG") {
+            	var backupHistorySize = 5;
+            	var iteration = -1
+
+                for (var i = backupHistorySize - 1; i > 0; i--) {
+                    let backupPath = path.resolve("config/config.js.backup" + i);
+                    try {
+                        var stats = fs.statSync(backupPath);
+                        if(stats.mtime.toISOString()==payload) {
+                        	iteration = i
+                        	i = -1
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+                if(iteration<0) {
+                	this.answerGet({data: "saves"}, { isSocket: true })
+                	return
+                }
+                var backupPath = path.resolve("config/config.js.backup" + iteration);
+            	var req = require(backupPath)
+            	
+            	this.answerPost({ data: "config" }, { body: req }, { isSocket: true });
             }
             if (notification === "NEW_CONFIG") {
                 this.answerPost({ data: "config" }, { body: payload }, { isSocket: true });

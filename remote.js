@@ -68,6 +68,8 @@ var Remote = {
             if ("data" in payload) {
                 if (payload.query.data === "config_update") {
                     this.saveConfigCallback(payload);
+                } else if (payload.query.data === "undo_configs_menu") {
+                	this.undoConfigMenuCallback(payload)
                 } else if (payload.query.data === "mmUpdateAvailable") {
                     this.mmUpdateCallback(payload.result);
                 } else if (payload.query.data === "brightness") {
@@ -1291,6 +1293,40 @@ var Remote = {
         wrapper.appendChild(restart);
         this.setStatus("success", false, wrapper);
     },
+    
+    offerReload: function(message) {
+        var wrapper = document.createElement("div");
+
+        var info = document.createElement("span");
+        info.innerHTML = message;
+        wrapper.appendChild(info);
+		
+		var restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
+        restart.children[1].className += " text";
+        wrapper.appendChild(restart);
+		
+        var reload = this.createSymbolText("fa fa-fw fa-globe", this.translate("REFRESHMM"), buttons["refresh-mm-button"]);
+        reload.children[1].className += " text";
+        wrapper.appendChild(reload);
+        
+        this.setStatus("success", false, wrapper);
+    },
+    
+    offerOptions: function(message, data) {
+    	var wrapper = document.createElement("div");
+    	
+    	var info = document.createElement("span");
+        info.innerHTML = message;
+        wrapper.appendChild(info);
+        
+        for(const b in data) {
+        	var restart = this.createSymbolText("fa fa-fw fa-recycle", b, data[b]);
+        	restart.children[1].className += " text";
+        	wrapper.appendChild(restart);
+        }
+        
+        this.setStatus("success", false, wrapper);
+    },
 
     updateModule: function(module) {
         this.sendSocketNotification("REMOTE_ACTION", { action: "UPDATE", module: module });
@@ -1344,6 +1380,48 @@ var Remote = {
             }
         });
     },
+    
+    undoConfigMenu: function() {
+    	var self = this;
+
+        if (this.saving) {
+            return;
+        }
+        var undoButton = document.getElementById("undo-config");
+        undoButton.className = undoButton.className.replace(" highlight", "");
+        this.setStatus("loading");
+        this.sendSocketNotification("UNDO_CONFIG_MENU");
+    },
+    
+    undoConfigMenuCallback: function(result) {
+    	var self = this;
+
+        if (result.success) {
+        	var dates = {};
+        	for(const i in result.data) {
+        		dates[new Date(result.data[i])] = function() {
+        			console.log(result.data[i])
+        			self.undoConfig(result.data[i])
+        		}
+        	}
+        	self.offerOptions(self.translate("DONE"),dates);
+        } else {
+            self.setStatus("error");
+        }
+    },
+    
+    undoConfig: function(date) {
+    	var self = this;
+
+        // prevent saving before current saving is finished
+        if (this.saving) {
+            return;
+        }
+        this.saving = true;
+        this.setStatus("loading");
+        
+        this.sendSocketNotification("UNDO_CONFIG", date);
+    },
 
     saveConfig: function() {
         var self = this;
@@ -1374,7 +1452,7 @@ var Remote = {
         var self = this;
 
         if (result.success) {
-            self.offerRestart(self.translate("DONE"));
+            self.offerReload(self.translate("DONE"));
         } else {
             self.setStatus("error");
         }
@@ -1583,6 +1661,9 @@ var buttons = {
         Remote.saveConfig();
     },
 
+    "undo-config": function() {
+        Remote.undoConfigMenu();
+    },
     // main menu
     "save-button": function() {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "SAVE" });
