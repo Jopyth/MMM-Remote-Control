@@ -1479,9 +1479,9 @@ var Remote = {
             $item.click(() => { window.location.hash = `${content.id}-menu`; });
         } else if (content.action && content.content) {
             $item.attr("data-type", "item");
-            let payload = content.content.payload || {};
+            // let payload = content.content.payload || {};
             $item.click(() => {
-                this.sendSocketNotification("REMOTE_ACTION", { action: content.action.toUpperCase(), notification: content.content.notification, payload: payload });
+                this.sendSocketNotification("REMOTE_ACTION", Object.assign({ action: content.action.toUpperCase() }, { payload:{} }, content.content ));
             });
         }
         if ((!window.location.hash && menu !== "main") ||
