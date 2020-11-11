@@ -43,7 +43,8 @@ npm install
         showModuleApiMenu: true, // Optional, Enable the Module Controls menu
         // uncomment any of the lines below if you're gonna use it
         // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
-        // apiKey: "",         // Optional, See API/README.md for details
+        // apiKey: "", // Optional, See API/README.md for details
+        // classes: {} // Optional, See "Custom Classes" below
     }
 },
 ```
@@ -223,6 +224,25 @@ Depending on your installation, some `shell` commands used by this module are no
         monitorOnCommand: 'shell command to turn on your monitor',
         monitorOffCommand: 'shell command to turn off your monitor',
         monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'
+    }
+```
+
+### Custom Classes
+
+You probably wanna hide or show some modules at the same time, right? It's everything that we want this module for, of course.
+Well, now you can add as many classes as you like, and define whether they show themself, hide or toggle between the two stages!
+
+```js
+    classes: {
+        "Any Name You Want": {
+            hide: ["calendar"],
+            show: ["newsfeed"],
+            toggle: ["clock"],
+        },
+        "Another Name You Want": {
+            hide: ["newsfeed"],
+            show: ["calendar"],
+        },
     }
 ```
 

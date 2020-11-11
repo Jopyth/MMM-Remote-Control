@@ -25,7 +25,7 @@
             <div class="fill">
                 <div class="menu above-fold">
                     <!-- general back button -->
-                    <div id="back-button" class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu alert-menu">
+                    <div id="back-button" class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu classes-menu alert-menu">
                         <span class="fa fa-fw fa-angle-left" aria-hidden="true"></span>
                         <!-- <span class="text">%%TRANSLATE:BACK%%</span> -->
                     </div>
@@ -91,7 +91,7 @@
                         <span class="text">%%TRANSLATE:UPDATE_AVAILABLE%%</span>
                     </div>
                 </div>
-                <div id="below-fold" class="below-fold menu-element hidden edit-menu settings-menu add-module-menu update-menu alert-menu main-menu power-menu">
+                <div id="below-fold" class="below-fold menu-element hidden edit-menu settings-menu add-module-menu update-menu classes-menu alert-menu main-menu power-menu">
                     <div class="menu-container">
                         <!-- main menu -->
                         <div id="power-button" class="menu-element hidden button main-menu">
@@ -110,6 +110,11 @@
                         <div id="settings-button" class="menu-element hidden button main-menu">
                             <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
                             <span class="text">%%TRANSLATE:CONFIGURE_MENU_NAME%%</span>
+                            <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+                        </div>
+                        <div id="classes-button" class="menu-element hidden button main-menu">
+                            <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
+                            <span class="text">Classes Menu</span>
                             <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
                         </div>
                         <div id="update-button" class="menu-element hidden button main-menu">
@@ -198,6 +203,20 @@
                             <span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>
                         </div>
                         <div id="visible-modules-results" class="results small">
+                            <!-- elements are inserted here -->
+                        </div>
+                    </div>
+                    <!-- below fold part of classes menu -->
+                     <div id="classes-container" class="result-list menu-element hidden classes-menu">
+                        <div id="classes-loading">
+                            <span class="fa fa-fw fa-spinner fa-pulse"></span>
+                            <span class="text">%%TRANSLATE:LOADING%%</span>
+                        </div>
+                        <div id="classes-empty" class="hidden">
+                            <span class="fa fa-fw fa-exclamation-circle"></span>
+                            <span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>
+                        </div>
+                        <div id="classes-results" class="results small">
                             <!-- elements are inserted here -->
                         </div>
                     </div>

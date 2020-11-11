@@ -517,6 +517,11 @@ module.exports = NodeHelper.create(Object.assign({
                 this.sendResponse(res, undefined, { query: query, data: this.getConfig() });
                 return;
             }
+            if (query.data === "classes") {
+            	var thisconfig = this.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
+            	this.sendResponse(res, undefined, { query: query, data: thisconfig.classes ? thisconfig.classes : {} });
+                return;
+            }
             if (query.data === "saves") {
                 var backupHistorySize = 5;
                 let times = [];
@@ -779,6 +784,16 @@ module.exports = NodeHelper.create(Object.assign({
                     this.sendResponse(res, err, { reason: err.message });
                     return true;
                 }
+            }
+            if (query.action === "MANAGE_CLASSES") {
+            	if (!query.payload || !query.payload.classes) return;
+            	for(const act in query.payload.classes) {
+            		if (["SHOW","HIDE","TOGGLE"].includes(act.toUpperCase())) {
+            			this.sendSocketNotification(act.toUpperCase(),{ module: query.payload.classes[act]});
+            		}
+            	}
+            	this.sendResponse(res);
+            	return;
             }
             if (["MINIMIZE", "TOGGLEFULLSCREEN", "DEVTOOLS"].indexOf(query.action) !== -1) {
                 try {

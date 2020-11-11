@@ -41,7 +41,6 @@ Module.register("MMM-Remote-Control", {
             this.sendCurrentData();
         }
         if (notification === "REMOTE_ACTION") {
-            Log.log(payload);
             this.sendSocketNotification(notification, payload);
         }
         if (notification === "REGISTER_API") {
@@ -132,7 +131,7 @@ Module.register("MMM-Remote-Control", {
             if (payload.force) { options.force = true; }
             let modules = (payload.module === "all") ? MM.getModules() :
                 MM.getModules().filter(m => {
-                    return (m.identifier === payload.module || m.name === payload.module);
+                    return (payload.module.includes(m.identifier) || payload.module.includes(m.name));
                 });
             if (typeof modules === "undefined") { return; }
             modules.forEach((mod) => {

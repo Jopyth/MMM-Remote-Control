@@ -15,11 +15,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Templates for issues and PRs, and also stale for automanagement of issues.
 - Close Dev Tools (#119)
 - Undo Config Implementation [Beta]
+- Classes to show, hide or toggle multiple modules at once [Beta] (#34)
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
 - Alert button don't show up when Alert module isn't active
 - The way monitor turn on and off (#225)
+- Now hide, show or toggle modules also accept arrays
 
 ## [2.1.0] - 2020-11-01
 

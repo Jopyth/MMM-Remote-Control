@@ -302,6 +302,9 @@ var Remote = {
         if (newMenu === "settings-menu") {
             this.loadConfigModules();
         }
+        if (newMenu === "classes-menu") {
+            this.loadClasses();
+        }
         if (newMenu === "update-menu") {
             this.loadModulesToUpdate();
         }
@@ -1200,6 +1203,33 @@ var Remote = {
             }
         });
     },
+    
+    loadClasses: function() {
+    	var self = this;
+    	
+    	console.log("Loading classes...");
+    	this.loadList("classes", "classes", function(parent, classes) {
+    		for(const i in classes) {
+    			$node = $("<div>").attr("id", "classes-before-result").attr("hidden", "true")
+    			$('#classes-results').append($node)
+    			var content = Object.assign({}, {
+						id: i,
+						text: i,
+						icon: "dot-circle-o",
+						type: "item",
+						action: "MANAGE_CLASSES",
+    				},{
+						content: {
+							payload: {
+								classes: classes[i]
+							}
+    				}
+    			})
+    			if ($(`#${content.id}-button`)) $(`#${content.id}-button`).remove()
+    			self.createMenuElement(content, "classes", $("#classes-before-result"))
+    		}
+    	})
+    },
 
     createAddingPopup: function(index) {
         var self = this;
@@ -1539,6 +1569,9 @@ var buttons = {
     },
     "mirror-link-button": function() {
         window.open("/", "_blank");
+    },
+    "classes-button": function() {
+    	window.location.hash = "classes-menu";
     },
     "back-button": function() {
         if (window.location.hash === "#add-module-menu") {
