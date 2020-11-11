@@ -84,7 +84,9 @@ var Remote = {
                 return;
             }
             if ("code" in payload && payload.code === "restart") {
-                this.offerRestart(payload.info);
+            	var chlog = new showdown.Converter()
+            	chlog.setFlavor('github')
+                this.offerRestart(payload.chlog ? payload.info + "<br><div id='changelog'>" + chlog.makeHtml(payload.chlog) + "</div>": payload.info);
                 return;
             }
             if ("success" in payload) {

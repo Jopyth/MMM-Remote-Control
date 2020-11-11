@@ -903,7 +903,16 @@ module.exports = NodeHelper.create(Object.assign({
                             } else {
                                 // success part
                                 self.readModuleData();
-                                self.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
+                                fs.readdir(path, function(err, files) {
+                                	if (files.includes("CHANGELOG.md")) {
+                                		var chlog = fs.readFileSync(path+"/CHANGELOG.md", 'utf-8')
+                                		self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: chlog });
+                                	} else {
+                                		self.sendResponse(res, undefined, { code: "restart", info: name + " updated."});
+                                	}
+                                })
+                                //var chlog = fs.readFileSync(path+"/CHANGELOG.md")
+                                //self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: "" });
                             }
                         });
                     } else {

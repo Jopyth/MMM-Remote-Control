@@ -15,7 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Templates for issues and PRs, and also stale for automanagement of issues.
 - Close Dev Tools (#119)
 - Undo Config Implementation [Beta]
-- Classes to show, hide or toggle multiple modules at once [Beta] (#34)
+- Classes to show, hide or toggle multiple modules at once (#34)
+- Changelog of every module updated
+- [Showdown](https://github.com/showdownjs/showdown) implemented in order to show changelog markdown.
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
