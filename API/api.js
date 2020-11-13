@@ -142,6 +142,8 @@ module.exports = {
             });
 
         this.expressRouter.route([
+        	'/saves',
+        	'/classes',
             '/modules',
             '/modules/installed',
             '/modules/available',
@@ -169,12 +171,23 @@ module.exports = {
             console.log(req.path);
             self.executeQuery(this.checkDelay({ action: r }, req), res);
         });
+        
+        this.expressRouter.route('/classes/:value')
+            .get((req, res) => {
+                var classes = self.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
+                const val = decodeURIComponent(req.params.value)
+                if(classes.classes && classes.classes[val]) {
+                	self.executeQuery({ action: "MANAGE_CLASSES", payload: { classes: classes.classes[val]} }, res);
+                } else {
+               		res.status(400).json({ success: false, message: `Invalid value ${val} provided in request. Use /api/classes to see actual values` });
+               	}
+            });
 
-        this.expressRouter.route('/userpresence/:value')
+        this.expressRouter.route('/userpresence/:value?')
             .get((req, res) => {
                 if (req.params.value) {
                     if (req.params.value === "true" || req.params.value === "false") {
-                        self.executeQuery({ action: "USER_PRESENCE", value: (req.params.value === "true") });
+                        self.executeQuery({ action: "USER_PRESENCE", value: (req.params.value === "true") }, res);
                     } else {
                         res.status(400).json({ success: false, message: `Invalid value ${req.params.value} provided in request. Must be true or false.` });
                     }

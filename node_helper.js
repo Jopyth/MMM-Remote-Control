@@ -220,7 +220,7 @@ module.exports = NodeHelper.create(Object.assign({
                     });
                     var module = self.modulesAvailable[self.modulesAvailable.length - 1];
                     var modulePath = self.configOnHd.paths.modules + "/default/" + defaultModules[i];
-                    self.loadModuleDefaultConfig(module, modulePath);
+                    self.loadModuleDefaultConfig(module, modulePath, i === defaultModules.length-1);
                 }
 
                 // now check for installed modules
@@ -535,7 +535,6 @@ module.exports = NodeHelper.create(Object.assign({
                         continue;
                     }
                 }
-                query.data = "undo_configs_menu";
                 this.sendResponse(res, undefined, { query: query, data: times.sort((a,b) => b - a) });
                 return
             }

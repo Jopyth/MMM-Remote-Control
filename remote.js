@@ -68,7 +68,7 @@ var Remote = {
             if ("data" in payload) {
                 if (payload.query.data === "config_update") {
                     this.saveConfigCallback(payload);
-                } else if (payload.query.data === "undo_configs_menu") {
+                } else if (payload.query.data === "saves") {
                 	this.undoConfigMenuCallback(payload)
                 } else if (payload.query.data === "mmUpdateAvailable") {
                     this.mmUpdateCallback(payload.result);

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Default values now removed from backup (#12)
 - Custom Menus now works as expected
+- API working, not well implemented in the past
+- API userPresence now working as expected
 
 ### Added
 - Updates now show if there's an update available every day (#52)
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Close Dev Tools (#119)
 - Undo Config Implementation [Beta]
 - Classes to show, hide or toggle multiple modules at once (#34)
+- Classes and saves API
 - Changelog of every module updated
 - [Showdown](https://github.com/showdownjs/showdown) implemented in order to show changelog markdown.
 
