@@ -545,14 +545,14 @@ module.exports = NodeHelper.create(Object.assign({
                     this.sendResponse(res, undefined, { query: query, data: Module.configDefaults[query.module] });
                 }
                 return;
-            }/*
+            }
             if (query.data === "modules") {
                 if (!this.checkInititialized(res)) { return; }
                 this.callAfterUpdate(() => {
                     this.sendResponse(res, undefined, { query: query, data: self.configData.moduleData });
                 });
                 return;
-            }*/
+            }
             if (query.data === "brightness") {
                 if (!this.checkInititialized(res)) { return; }
                 this.callAfterUpdate(() => {
