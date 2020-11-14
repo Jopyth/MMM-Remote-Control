@@ -144,7 +144,6 @@ module.exports = {
         this.expressRouter.route([
         	'/saves',
         	'/classes',
-            '/modules',
             '/modules/installed',
             '/modules/available',
             '/brightness',
@@ -221,18 +220,12 @@ module.exports = {
                 this.answerNotifyApi(req, res);
             });
 
-        this.expressRouter.route('/modules/:moduleName/:action?/:delayed?')
+        this.expressRouter.route('/module/:moduleName?/:action?/:delayed?')
             .get((req, res) => {
-                this.answerModulesApi(req, res);
-            });
-
-        // Add routes to be extended by other modules.
-        this.expressRouter.route('/module/:moduleName?/:action?/:p?/:delayed?')
-            .get((req, res) => {
-                this.answerExternalApi(req, res);
+                this.answerModuleApi(req, res);
             })
             .post((req, res) => {
-                this.answerExternalApi(req, res);
+                this.answerModuleApi(req, res);
             });
 
         this.expressRouter.route('/monitor/:action?/:delayed?')
@@ -270,7 +263,90 @@ module.exports = {
         }
         return query;
     },
+    
+    mergeData: function() {
+        var extApiRoutes = this.externalApiRoutes;
+        var modules = this.configData.moduleData
+        var query = {success: true, data: []};
+        
+        modules.forEach((mod) => {
+            if (extApiRoutes[mod.name] === undefined) {
+                query.data.push(mod);
+            } else {
+                query.data.push(Object.assign({},mod, {actions: extApiRoutes[mod.name].actions}));
+            }
+        })
+        
+        return query;
+    },
 
+    answerModuleApi: function(req, res) {
+        if (!this.checkInititialized(res)) { return; }
+        var dataMerged = this.mergeData().data
+        
+        if (!req.params.moduleName) {
+            res.json({ success: true, data: dataMerged });
+            return;
+        }
+        
+        var modData = dataMerged.filter(m => req.params.moduleName.includes(m.name) || req.params.moduleName.includes(m.identifier));
+        
+        if (!modData) {
+            res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
+            return;
+        } 
+        
+        if (!req.params.action) {
+            res.json({ success: true, data: dataMerged.filter(m => req.params.moduleName.includes(m.name)) });
+            return;
+        }
+        
+        var action = req.params.action.toUpperCase();
+        
+        if (["SHOW", "HIDE", "FORCE", "TOGGLE", "DEFAULTS"].indexOf(action) !== -1) { // /api/modules part of the code
+            
+            if (action === "DEFAULTS") {
+                this.answerGet({ data: "defaultConfig", module: mod.name }, res);
+                return;
+            }
+            
+            if (req.params.moduleName === "all") {
+                let query = { module: "all" };
+                if (action === "FORCE") {
+                    query.action = "SHOW";
+                    query.force = true;
+                } else {
+                    query.action = action;
+                }
+                this.executeQuery(this.checkDelay(query, req), res);
+                return;
+            }
+            
+            modData.forEach(mod => {
+                let query = { module: mod.identifier };
+                if (action === "FORCE") {
+                    query.action = "SHOW";
+                    query.force = true;
+                } else {
+                    query.action = action;
+                }
+                this.executeQuery(this.checkDelay(query, req), res);
+            });
+            return;
+        }
+        
+        action = modData[0].actions[req.params.action]
+        
+        if (action) {
+            if ("method" in action && action.method !== req.method) {
+                res.status(400).json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
+                return;
+            }
+            this.answerNotifyApi(req, res, action);
+        }
+        
+    },
+    
     answerNotifyApi: function(req, res, action) {
         // Build the payload to send with our notification.
         let n = "";
@@ -328,97 +404,6 @@ module.exports = {
             res.json(Object.assign({ success: true }, query));
         }
         return;
-    },
-
-    answerModulesApi: function(req, res) {
-        try {
-            if (!this.checkInititialized(res)) { return; }
-            let actionName = req.params.action.toUpperCase();
-
-            if (req.params.moduleName === "all") {
-                if (["SHOW", "HIDE", "FORCE", "TOGGLE"].indexOf(actionName) !== -1) {
-                    let query = { module: "all" };
-                    if (actionName === "FORCE") {
-                        query.action = "SHOW";
-                        query.force = true;
-                    } else {
-                        query.action = actionName;
-                    }
-                    this.executeQuery(this.checkDelay(query, req), res);
-                } else {
-                    throw `Action: ${actionName} is not a valid action.`;
-                }
-            }
-
-            let modData = this.configData.moduleData.filter(m => m.name === req.params.moduleName || m.identifier === req.params.moduleName);
-            if (!modData) {
-                res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
-                return;
-            }
-            if (!req.params.action) {
-                res.json({ success: true, data: modData });
-                return;
-            }
-
-            modData.forEach(mod => {
-                if (["SHOW", "HIDE", "FORCE", "TOGGLE"].indexOf(actionName) !== -1) {
-                    let query = { module: mod.identifier };
-                    if (actionName === "FORCE") {
-                        query.action = "SHOW";
-                        query.force = true;
-                    } else {
-                        query.action = actionName;
-                    }
-                    this.executeQuery(this.checkDelay(query, req), res);
-                } else if (actionName === "DEFAULTS") {
-                    this.answerGet({ data: "defaultConfig", module: mod.name }, res);
-                } else {
-                    throw `Action: ${actionName} is not a valid action.`;
-                }
-            });
-        } catch (err) {
-            res.status(400).json({ success: false, message: err.message });
-            return;
-        }
-    },
-
-    /* answerExternalApi(req, res)
-     * This method is called when an API call is made to /module/:moduleName...
-     * It provides a method for responding to external api calls (calls for other modules).
-     * External API calls can be registered from another module by sending this module a
-     * notification upon startup.
-     *
-     * @param {object} req - Express Request Object
-     * @param {object} res - Express Response Object
-     */
-    answerExternalApi: function(req, res) {
-        if (!req.params.moduleName) {
-            res.json(Object.assign({ success: true }, this.externalApiRoutes));
-            return;
-        }
-
-        if (!(req.params.moduleName in this.externalApiRoutes)) {
-            res.status(400).json({ success: false, info: `No API routes found for ${req.params.moduleName}.` });
-            return;
-        }
-
-        let moduleApi = this.externalApiRoutes[req.params.moduleName];
-        if (!req.params.action) {
-            res.json(Object.assign({ success: true }, moduleApi));
-            return;
-        }
-
-        if (!(req.params.action in moduleApi.actions)) {
-            res.status(400).json({ success: false, info: `Action ${req.params.action} is not a valid action for ${moduleApi.module}.` });
-            return;
-        }
-        let action = moduleApi.actions[req.params.action];
-        if ("method" in action && action.method !== req.method) {
-            res.status(400).json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
-            return;
-        }
-
-        this.answerNotifyApi(req, res, action);
     },
 
     checkInititialized: function(res) {

@@ -1422,7 +1422,7 @@ var Remote = {
         var undoButton = document.getElementById("undo-config");
         undoButton.className = undoButton.className.replace(" highlight", "");
         this.setStatus("loading");
-        this.sendSocketNotification("UNDO_CONFIG_MENU");
+        this.sendSocketNotification("REMOTE_ACTION", {data: "saves"});
     },
     
     undoConfigMenuCallback: function(result) {
