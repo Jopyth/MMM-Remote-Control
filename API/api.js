@@ -22,12 +22,21 @@ module.exports = {
     getApiKey: function() {
         let thisConfig = this.configOnHd.modules.find(x => x.module === "MMM-Remote-Control");
         if (typeof "thisConfig" !== "undefined" &&
-            "config" in thisConfig &&
-            "apiKey" in thisConfig.config) {
-            this.apiKey = thisConfig.config.apiKey;
-        } else {
-            this.apiKey = undefined;
+            "config" in thisConfig){
+            if ("apiKey" in thisConfig.config &&
+                thisConfig.config.apiKey !== '') {
+                this.apiKey = thisConfig.config.apiKey;
+            } else {
+                this.apiKey = undefined;
+            }
+            if ("secureEndpoints" in thisConfig.config &&
+                !thisConfig.config.secureEndpoints) {
+                this.secureEndpoints = false;
+            } else {
+                this.secureEndpoints = true;
+            }
         }
+        
     },
 
 
@@ -110,7 +119,7 @@ module.exports = {
         // Can be passed as a header "Authorization: apiKey YOURAPIKEY"
         // or can be passed in the url ?apiKey=YOURAPIKEY
         this.expressRouter.use((req, res, next) => {
-            if (typeof this.apiKey !== "undefined") {
+            if (typeof this.apiKey !== "undefined" && !req.path.includes("test") && req.path !== "/") {
                 if (!("authorization" in req.headers) || req.headers.authorization.indexOf("apiKey") === -1) {
                     // API Key was not provided as a header. Check the URL.
                     var query = url.parse(req.url, true).query;
@@ -136,7 +145,7 @@ module.exports = {
         });
 
         // Route for testing the api at http://mirror:8080/api/test
-        this.expressRouter.route('/test')
+        this.expressRouter.route(['/test','/'])
             .get((req, res) => {
                 res.json({ success: true });
             });
@@ -144,15 +153,15 @@ module.exports = {
         this.expressRouter.route([
         	'/saves',
         	'/classes',
-            '/modules/installed',
-            '/modules/available',
+            '/module/installed',
+            '/module/available',
             '/brightness',
             '/translations',
             '/mmUpdateAvailable',
             '/config'
         ]).get((req, res) => {
             let r = req.path.substring(1);
-            r = r.replace(/\/([a-z])/, function(v) { return v.substring(1).toUpperCase(); });
+            r = r.replace(/\/([a-z])/i, function(v) { return v.substring(1).toUpperCase(); }).replace('/','');
             self.answerGet({ data: r }, res);
         });
 
@@ -166,6 +175,7 @@ module.exports = {
             '/togglefullscreen',
             '/devtools'
         ]).get((req, res) => {
+            if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
             let r = req.path.split("/")[1].toUpperCase();
             console.log(req.path);
             self.executeQuery(this.checkDelay({ action: r }, req), res);
@@ -197,14 +207,20 @@ module.exports = {
 
         this.expressRouter.route('/update/:moduleName')
             .get((req, res) => {
-                this.updateModule(req.params.moduleName, res);
+                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                switch(req.params.moduleName) {
+                    case 'mm': case 'MM': self.answerGet({ data: 'mmUpdateAvailable' }, res); break;
+                    case 'rc': case 'RC': this.updateModule('MMM-Remote-Control', res); break;
+                    default: this.updateModule(req.params.moduleName, res); break;
+                }
             });
 
         this.expressRouter.route('/install')
             .get((req, res) => {
-                res.status(400).json({ success: false, message: "Invalid method, use PUT" });
+                res.status(400).json({ success: false, message: "Invalid method, use POST" });
             })
             .post((req, res) => {
+                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 if (typeof req.body !== 'undefined' && "url" in req.body) {
                     this.installModule(req.body.url, res);
                 } else {
@@ -214,9 +230,11 @@ module.exports = {
 
         this.expressRouter.route('/notification/:notification/:p?/:delayed?')
             .get((req, res) => {
+                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 this.answerNotifyApi(req, res);
             })
             .post((req, res) => {
+                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 this.answerNotifyApi(req, res);
             });
 

@@ -21,12 +21,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Classes and saves API
 - Changelog of every module updated
 - [Showdown](https://github.com/showdownjs/showdown) implemented in order to show changelog markdown.
+- secureEndpoint config to bypass the non-api limitation. This could be dangerous, use it with caution.
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
 - Alert button don't show up when Alert module isn't active
 - The way monitor turn on and off (#225)
 - Now hide, show or toggle modules also accept arrays
+- /api/test can be reach without any apiKey
+- /api/modules/installed and /available are now /api/module/installed and /available
+- ApiKey required in order to change substantial things on the Mirror
+
+### Removed
+- /api/modules it's no longer available, you can use /api/module instead.
 
 ## [2.1.0] - 2020-11-01
 

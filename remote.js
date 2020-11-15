@@ -313,12 +313,15 @@ var Remote = {
         
         if (newMenu === "main-menu") {
         	this.loadList("config-modules", "config", function(parent,configData) {
+                
         		let alertElem = document.getElementById("alert-button")
-        		if(configData.modules.find(m=>m.module==="alert")===undefined && alertElem !== undefined) {
-					alertElem.remove()
-	    		}
+        		if(!configData.modules.find(m=>m.module==="alert") && alertElem !== undefined) alertElem.remove();
+                
+                let modConfig = configData.modules.find(m=>m.module==="MMM-Remote-Control").config
+                let classElem = document.getElementById("classes-button")
+                if((!modConfig || !modConfig.classes) && classElem !== undefined) classElem.remove();
+                
         	})
-	    	
         }
         
         var allMenus = document.getElementsByClassName("menu-element");
@@ -1386,7 +1389,7 @@ var Remote = {
         // also update mm info notification
         this.sendSocketNotification("REMOTE_ACTION", { data: "mmUpdateAvailable" });
 
-        this.loadList("update-module", "modulesInstalled", function(parent, modules) {
+        this.loadList("update-module", "moduleInstalled", function(parent, modules) {
             for (var i = 0; i < modules.length; i++) {
                 var symbol = "fa fa-fw fa-toggle-up";
                 var innerWrapper = document.createElement("div");

@@ -480,12 +480,12 @@ module.exports = NodeHelper.create(Object.assign({
         answerGet: function(query, res) {
             var self = this;
 
-            if (query.data === "modulesAvailable") {
+            if (query.data === "moduleAvailable") {
                 this.modulesAvailable.sort(function(a, b) { return a.name.localeCompare(b.name); });
                 this.sendResponse(res, undefined, { query: query, data: this.modulesAvailable });
                 return;
             }
-            if (query.data === "modulesInstalled") {
+            if (query.data === "moduleInstalled") {
                 var filterInstalled = function(value) {
                     return value.installed && !value.isDefaultModule;
                 };
