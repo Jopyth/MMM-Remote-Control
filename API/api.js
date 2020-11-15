@@ -229,11 +229,12 @@ module.exports = {
             });
         
         //edit config, payload is completely new config object with your changes(edits).
-        this.expressRouter.route('/editconfig')
+        this.expressRouter.route('/config/edit')
             .get((req, res) => {
-                res.status(400).json({ success: false, message: "Invalid method, use PUT" });
+                res.status(400).json({ success: false, message: "Invalid method, use POST" });
             })
             .post((req, res) => {
+                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 if (typeof req.body !== 'undefined' && "payload" in req.body) {
                     this.answerPost({ data: "config" }, { body: req.body.payload }, res);
                 } else {
