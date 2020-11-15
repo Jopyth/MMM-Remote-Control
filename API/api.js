@@ -112,15 +112,24 @@ module.exports = {
 
         this.expressApp.use(bodyParser.urlencoded({ extended: true }));
         this.expressApp.use(bodyParser.json());
+        
+        this.expressApp.use('/api/docs', express.static(path.join(__dirname, '../docs'))); // Docs without apikey
 
         this.expressRouter = express.Router();
+        
+        // Route for testing the api at http://mirror:8080/api/test
+        this.expressRouter.route(['/test','/']) // Test without apiKey
+            .get((req, res) => {
+                if (!this.checkInititialized(res)) { return; }
+                res.json({ success: true });
+            });
 
         // Check for authorization if apiKey is defined in the config.
-        // Can be passed as a header "Authorization: apiKey YOURAPIKEY"
+        // Can be passed as a header "Authorization: apiKey YOURAPIKEY" or "Authorization: Bearer YOURAPIKEY"
         // or can be passed in the url ?apiKey=YOURAPIKEY
         this.expressRouter.use((req, res, next) => {
-            if (typeof this.apiKey !== "undefined" && !req.path.includes("test") && req.path !== "/") {
-                if (!("authorization" in req.headers) || req.headers.authorization.indexOf("apiKey") === -1) {
+            if (typeof this.apiKey !== "undefined") {
+                if (!("authorization" in req.headers) || req.headers.authorization.search(/(apikey|bearer)/gi) === -1) {
                     // API Key was not provided as a header. Check the URL.
                     var query = url.parse(req.url, true).query;
                     if ("apiKey" in query) {
@@ -143,12 +152,6 @@ module.exports = {
 
             next(); // make sure we go to the next routes and don't stop here
         });
-
-        // Route for testing the api at http://mirror:8080/api/test
-        this.expressRouter.route(['/test','/'])
-            .get((req, res) => {
-                res.json({ success: true });
-            });
 
         this.expressRouter.route([
         	'/saves',
@@ -205,9 +208,10 @@ module.exports = {
                 }
             });
 
-        this.expressRouter.route('/update/:moduleName')
+        this.expressRouter.route('/update/:moduleName?')
             .get((req, res) => {
                 if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                if(!req.params.moduleName) return self.answerGet({ data: 'mmUpdateAvailable' }, res);
                 switch(req.params.moduleName) {
                     case 'mm': case 'MM': self.answerGet({ data: 'mmUpdateAvailable' }, res); break;
                     case 'rc': case 'RC': this.updateModule('MMM-Remote-Control', res); break;
