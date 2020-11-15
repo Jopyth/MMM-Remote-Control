@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Changelog of every module updated
 - [Showdown](https://github.com/showdownjs/showdown) implemented in order to show changelog markdown.
 - secureEndpoint config to bypass the non-api limitation. This could be dangerous, use it with caution.
+- Added POST support for Monitor API (#200)
+- Added endpoint to edit config file (#206)
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.

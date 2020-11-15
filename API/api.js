@@ -270,10 +270,11 @@ module.exports = {
             .post((req, res) => {
                 var actionName = "STATUS";
                 if (typeof req.body !== 'undefined' && "monitor" in req.body) {
-                    switch(req.body.monitor){
-                        case 'off': case 'OFF': actionName = "OFF"; break;
-                        case 'on': case 'ON': actionName = "ON"; break;
+                    if(["OFF","ON","TOGGLE"].includes(req.body.monitor.toUpperCase())) {
+                        actionName = req.body.monitor.toUpperCase();
                     }
+                } else {
+                    var actionName = req.params.action ? req.params.action.toUpperCase() : "STATUS";
                 }
                 this.executeQuery(this.checkDelay({ action: `MONITOR${actionName}` }, req), res);
             });
