@@ -82,6 +82,22 @@ $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
 
 ***For convenience, the remainder of the examples omit the API Key***
 
+## Secure Endpoints
+Since 2.2.0, and in a way to prevent malicious actions on your mirror, a new config was added. This config allow you to, in case you don't use an apikey or never use the API at all, prevent some endpoints to work without an apikey.
+As usual, this option can be disabled, but this will expose your Mirror to potentials hackers, so it's up to you to turn it off.
+
+```js
+{
+    module: 'MMM-Remote-Control'
+    config: {
+        secureEndpoints: true
+    }
+},
+```
+
+By default, secureEndpoints it's true, defending commands like shutdown or install modules when no apikey it's present.
+Setting secureEndpoints to false allow every endpoint to be reachable externally, even without an apikey. (Just like the old times)
+
 ## Methods
 
 There are three general categories of API commands:
@@ -100,7 +116,7 @@ There are three general categories of API commands:
 
 The majority of MMM-Remote-Control's abilities are extended to the API (this is a fundamental reason for "extending" this module instead of creating a new one for the API).
 
-Review the API documentation online [here](docs/index.html)
+Review the API documentation online [here](https://ezeholz.github.io/MMM-Remote-Control/)
 
 Or check it in your own installation using http://ip-of-your-mirror:8080/api/docs
 

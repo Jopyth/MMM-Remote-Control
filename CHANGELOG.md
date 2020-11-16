@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.2.0] - Unreleased
+## [2.2.0] - 2020-11-16
 
 ### Fixed
 - Default values now removed from backup (#12)
@@ -21,9 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Classes and saves API
 - Changelog of every module updated
 - [Showdown](https://github.com/showdownjs/showdown) implemented in order to show changelog markdown.
-- secureEndpoint config to bypass the non-api limitation. This could be dangerous, use it with caution.
+- secureEndpoint config to bypass the non-apikey limitation. This could be dangerous, use it with caution.
 - Added POST support for Monitor API (#200)
 - Added endpoint to edit config file (#206)
+- Endpoint /api/docs now shows you the documentation available for the API. You can test your mirror right there!
 
 ### Changed
 - **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
@@ -33,9 +34,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - /api/test can be reach without any apiKey
 - /api/modules/installed and /available are now /api/module/installed and /available
 - ApiKey required in order to change substantial things on the Mirror
+- Some Endpoints are gonna be deprecated in the future. You can see those inside /api/docs, in the Legacy menu.
 
 ### Removed
 - /api/modules it's no longer available, you can use /api/module instead.
+- Postman collection deprecated ~ (Sorry n.n)
 
 ## [2.1.0] - 2020-11-01
 

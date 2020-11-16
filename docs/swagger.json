@@ -747,7 +747,7 @@
           "Mirror Control",
           "API"
         ],
-        "summary": "Get or set the brightness of the Mirror by passing a numerical value",
+        "summary": "Get or set the brightness of the Mirror by passing a numerical value (1~100)",
         "parameters": [
           {
             "name": ":setting",
