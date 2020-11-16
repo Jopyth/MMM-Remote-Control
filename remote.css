@@ -605,3 +605,9 @@ pre {
     width: 90%;
     max-height: 35vh;
 }
+
+#changelog {
+	max-height: 30vh;
+	font-size: small;
+	overflow: scroll;
+}

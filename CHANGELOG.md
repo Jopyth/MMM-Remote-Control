@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.0] - 2020-11-16
+
+### Fixed
+- Default values now removed from backup (#12)
+- Custom Menus now works as expected
+- API working, not well implemented in the past
+- API userPresence now working as expected
+
+### Added
+- Updates now show if there's an update available every day (#52)
+- Templates for issues and PRs, and also stale for automanagement of issues.
+- Close Dev Tools (#119)
+- Undo Config Implementation [Beta]
+- Classes to show, hide or toggle multiple modules at once (#34)
+- Classes and saves API
+- Changelog of every module updated
+- [Showdown](https://github.com/showdownjs/showdown) implemented in order to show changelog markdown.
+- secureEndpoint config to bypass the non-apikey limitation. This could be dangerous, use it with caution.
+- Added POST support for Monitor API (#200)
+- Added endpoint to edit config file (#206)
+- Endpoint /api/docs now shows you the documentation available for the API. You can test your mirror right there!
+
+### Changed
+- **[lodash](https://lodash.com/) required**. Do `npm install` on the Remote Control module.
+- Alert button don't show up when Alert module isn't active
+- The way monitor turn on and off (#225)
+- Now hide, show or toggle modules also accept arrays
+- /api/test can be reach without any apiKey
+- /api/modules/installed and /available are now /api/module/installed and /available
+- ApiKey required in order to change substantial things on the Mirror
+- Some Endpoints are gonna be deprecated in the future. You can see those inside /api/docs, in the Legacy menu.
+
+### Removed
+- /api/modules it's no longer available, you can use /api/module instead.
+- Postman collection deprecated ~ (Sorry n.n)
+
 ## [2.1.0] - 2020-11-01
 
 Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just thinked that some things needed to be fixed ASAP.

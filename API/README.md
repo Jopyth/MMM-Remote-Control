@@ -6,6 +6,8 @@ The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API t
 
 This expansion was developed by [shbatm](https://github.com/shbatm) using [juzim's MMM-Api](https://github.com/juzim/MMM-Api) and of-course, [jopyth's MMM-Remote-Control](https://github.com/jopyth/MMM-Remote-Control).
 
+Modified by [ezeholz](https://github.com/ezeholz) in the 2.2.0+, in the efford of making a more simplified version for everyone to use it.
+
 ## Overview
 
 This extension exposes the `/api` URL from your MagicMirror² installation. Just like using the regular MMM-Remote-Control module, make sure your configuration listens on more than just `localhost`.
@@ -80,6 +82,22 @@ $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
 
 ***For convenience, the remainder of the examples omit the API Key***
 
+## Secure Endpoints
+Since 2.2.0, and in a way to prevent malicious actions on your mirror, a new config was added. This config allow you to, in case you don't use an apikey or never use the API at all, prevent some endpoints to work without an apikey.
+As usual, this option can be disabled, but this will expose your Mirror to potentials hackers, so it's up to you to turn it off.
+
+```js
+{
+    module: 'MMM-Remote-Control'
+    config: {
+        secureEndpoints: true
+    }
+},
+```
+
+By default, secureEndpoints it's true, defending commands like shutdown or install modules when no apikey it's present.
+Setting secureEndpoints to false allow every endpoint to be reachable externally, even without an apikey. (Just like the old times)
+
 ## Methods
 
 There are three general categories of API commands:
@@ -98,9 +116,9 @@ There are three general categories of API commands:
 
 The majority of MMM-Remote-Control's abilities are extended to the API (this is a fundamental reason for "extending" this module instead of creating a new one for the API).
 
-[Review the API documentation on Postman here](https://documenter.getpostman.com/view/6167403/Rzfni66c)
+Review the API documentation online [here](https://ezeholz.github.io/MMM-Remote-Control/)
 
-The Postman [collection file](API/postman_collection.json) is also included in the repo if you want to load it and test calls on your machine.
+Or check it in your own installation using http://ip-of-your-mirror:8080/api/docs
 
 ### 2. External APIs (Guessed)
 

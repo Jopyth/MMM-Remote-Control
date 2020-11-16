@@ -16,6 +16,7 @@ const os = require("os");
 const simpleGit = require("simple-git");
 const bodyParser = require("body-parser");
 const express = require("express");
+const _ = require("lodash");
 
 var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodules.js"));
 
@@ -76,6 +77,20 @@ module.exports = NodeHelper.create(Object.assign({
             /* CALLED AFTER MODULES AND CONFIG DATA ARE LOADED */
             /* API EXTENSION - Added v2.0.0 */
             this.createApiRoutes();
+
+	    	this.loadTimers();
+	    },
+
+		loadTimers: function() {
+            var delay = 24*3600;
+            
+            var self = this;
+            
+            clearTimeout(this.delayedQueryTimers['update'])
+            this.delayedQueryTimers['update'] = setTimeout(function () {
+            	self.updateModuleList();
+            	self.loadTimers();
+            }, delay*1000);
         },
 
         combineConfig: function() {
@@ -205,7 +220,7 @@ module.exports = NodeHelper.create(Object.assign({
                     });
                     var module = self.modulesAvailable[self.modulesAvailable.length - 1];
                     var modulePath = self.configOnHd.paths.modules + "/default/" + defaultModules[i];
-                    self.loadModuleDefaultConfig(module, modulePath);
+                    self.loadModuleDefaultConfig(module, modulePath, i === defaultModules.length-1);
                 }
 
                 // now check for installed modules
@@ -371,7 +386,7 @@ module.exports = NodeHelper.create(Object.assign({
             var defaultConfig = require(__dirname + "/../../js/defaults.js");
 
             for (let key in defaultConfig) {
-                if (defaultConfig.hasOwnProperty(key) && config && config.hasOwnProperty(key) && defaultConfig[key] === config[key]) {
+                if (defaultConfig.hasOwnProperty(key) && config && config.hasOwnProperty(key) && _.isEqual(defaultConfig[key], config[key])) {
                     delete config[key];
                 }
             }
@@ -383,7 +398,7 @@ module.exports = NodeHelper.create(Object.assign({
                     def = {};
                 }
                 for (let key in def) {
-                    if (def.hasOwnProperty(key) && current.config.hasOwnProperty(key) && def[key] === current.config[key]) {
+                    if (def.hasOwnProperty(key) && current.config.hasOwnProperty(key) && _.isEqual(def[key], current.config[key])) {
                         delete current.config[key];
                     }
                 }
@@ -465,12 +480,12 @@ module.exports = NodeHelper.create(Object.assign({
         answerGet: function(query, res) {
             var self = this;
 
-            if (query.data === "modulesAvailable") {
+            if (query.data === "moduleAvailable") {
                 this.modulesAvailable.sort(function(a, b) { return a.name.localeCompare(b.name); });
                 this.sendResponse(res, undefined, { query: query, data: this.modulesAvailable });
                 return;
             }
-            if (query.data === "modulesInstalled") {
+            if (query.data === "moduleInstalled") {
                 var filterInstalled = function(value) {
                     return value.installed && !value.isDefaultModule;
                 };
@@ -501,6 +516,27 @@ module.exports = NodeHelper.create(Object.assign({
             if (query.data === "config") {
                 this.sendResponse(res, undefined, { query: query, data: this.getConfig() });
                 return;
+            }
+            if (query.data === "classes") {
+            	var thisconfig = this.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
+            	this.sendResponse(res, undefined, { query: query, data: thisconfig.classes ? thisconfig.classes : {} });
+                return;
+            }
+            if (query.data === "saves") {
+                var backupHistorySize = 5;
+                let times = [];
+
+                for (var i = backupHistorySize - 1; i > 0; i--) {
+                    let backupPath = path.resolve("config/config.js.backup" + i);
+                    try {
+                        var stats = fs.statSync(backupPath);
+                        times.push(stats.mtime)
+                    } catch (e) {
+                        continue;
+                    }
+                }
+                this.sendResponse(res, undefined, { query: query, data: times.sort((a,b) => b - a) });
+                return
             }
             if (query.data === "defaultConfig") {
                 if (!(query.module in Module.configDefaults)) {
@@ -596,6 +632,7 @@ module.exports = NodeHelper.create(Object.assign({
 
         monitorControl: function(action, opts, res) {
             let status = "unknown";
+            let offArr = ["false","TV is Off","standby"];
             let monitorOnCommand = (this.initialized && "monitorOnCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorOnCommand :
                 "tvservice --preferred && sudo chvt 6 && sudo chvt 7";
@@ -605,36 +642,30 @@ module.exports = NodeHelper.create(Object.assign({
             let monitorStatusCommand = (this.initialized && "monitorStatusCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorStatusCommand :
                 "tvservice --status";
-            if (["MONITORTOGGLE", "MONITORSTATUS", "MONITORON"].indexOf(action) !== -1) {
-                screenStatus = exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-                    if (stdout.indexOf("TV is off") !== -1 || stdout.indexOf("false") !== -1) {
-                        // Screen is OFF, turn it ON
-                        status = "off";
-                        if (action === "MONITORTOGGLE" || action === "MONITORON") {
-                            exec(monitorOnCommand, opts, (error, stdout, stderr) => {
-                                this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
-                            });
-                            this.sendSocketNotification("USER_PRESENCE", true);
-                            return;
-                        }
-                    } else if (stdout.indexOf("HDMI") !== -1 || stdout.indexOf("true") !== -1) {
-                        // Screen is ON, turn it OFF
-                        status = "on";
-                        if (action === "MONITORTOGGLE") {
-                            this.monitorControl("MONITOROFF", opts, res);
-                            return;
-                        }
-                    }
-                    this.checkForExecError(error, stdout, stderr, res, { monitor: status });
-                    return;
-                });
-            }
-            if (action === "MONITOROFF") {
-                exec(monitorOffCommand, (error, stdout, stderr) => {
-                    this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
-                });
-                this.sendSocketNotification("USER_PRESENCE", false);
-                return;
+            switch (action) {
+                case "MONITORSTATUS": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
+                        status = offArr.indexOf(stdout) !== -1 ? "off" : "on";
+                        this.checkForExecError(error, stdout, stderr, res, { monitor: status });
+                        return;
+                    });
+                    break;
+                case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
+                        status = offArr.indexOf(stdout) !== -1 ? "off" : "on";
+                        if(status === "on") this.monitorControl("MONITOROFF", opts, res);
+                        else this.monitorControl("MONITORON", opts, res);
+                        return;
+                    });
+                    break;
+                case "MONITORON": exec(monitorOnCommand, opts, (error, stdout, stderr) => {
+                        this.checkForExecError(error, stdout, stderr, res, { monitor: "on" });
+                    });
+                    this.sendSocketNotification("USER_PRESENCE", true);
+                    break;
+                case "MONITOROFF": exec(monitorOffCommand, opts, (error, stdout, stderr) => {
+                        this.checkForExecError(error, stdout, stderr, res, { monitor: "off" });
+                    });
+                    this.sendSocketNotification("USER_PRESENCE", false);
+                    break;
             }
         },
 
@@ -753,6 +784,16 @@ module.exports = NodeHelper.create(Object.assign({
                     return true;
                 }
             }
+            if (query.action === "MANAGE_CLASSES") {
+            	if (!query.payload || !query.payload.classes) return;
+            	for(const act in query.payload.classes) {
+            		if (["SHOW","HIDE","TOGGLE"].includes(act.toUpperCase())) {
+            			this.sendSocketNotification(act.toUpperCase(),{ module: query.payload.classes[act]});
+            		}
+            	}
+            	this.sendResponse(res);
+            	return;
+            }
             if (["MINIMIZE", "TOGGLEFULLSCREEN", "DEVTOOLS"].indexOf(query.action) !== -1) {
                 try {
                     let electron = require("electron").BrowserWindow;
@@ -766,7 +807,8 @@ module.exports = NodeHelper.create(Object.assign({
                             win.setFullScreen(!win.isFullScreen());
                             break;
                         case "DEVTOOLS":
-                            win.webContents.openDevTools();
+                        	if (win.webContents.isDevToolsOpened()) win.webContents.closeDevTools();
+                            else win.webContents.openDevTools();
                             break;
                         default:
                     }
@@ -860,7 +902,16 @@ module.exports = NodeHelper.create(Object.assign({
                             } else {
                                 // success part
                                 self.readModuleData();
-                                self.sendResponse(res, undefined, { code: "restart", info: name + " updated." });
+                                fs.readdir(path, function(err, files) {
+                                	if (files.includes("CHANGELOG.md")) {
+                                		var chlog = fs.readFileSync(path+"/CHANGELOG.md", 'utf-8')
+                                		self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: chlog });
+                                	} else {
+                                		self.sendResponse(res, undefined, { code: "restart", info: name + " updated."});
+                                	}
+                                })
+                                //var chlog = fs.readFileSync(path+"/CHANGELOG.md")
+                                //self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: "" });
                             }
                         });
                     } else {
@@ -872,8 +923,7 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         checkForExecError: function(error, stdout, stderr, res, data) {
-            console.log(stdout);
-            console.log(stderr);
+	    console.log(stderr);
             this.sendResponse(res, error, data);
         },
 
@@ -1036,6 +1086,31 @@ module.exports = NodeHelper.create(Object.assign({
                 } else if ("data" in payload) {
                     this.answerGet(payload, { isSocket: true });
                 }
+            }
+            if (notification === "UNDO_CONFIG") {
+            	var backupHistorySize = 5;
+            	var iteration = -1
+
+                for (var i = backupHistorySize - 1; i > 0; i--) {
+                    let backupPath = path.resolve("config/config.js.backup" + i);
+                    try {
+                        var stats = fs.statSync(backupPath);
+                        if(stats.mtime.toISOString()==payload) {
+                        	iteration = i
+                        	i = -1
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+                if(iteration<0) {
+                	this.answerGet({data: "saves"}, { isSocket: true })
+                	return
+                }
+                var backupPath = path.resolve("config/config.js.backup" + iteration);
+            	var req = require(backupPath)
+            	
+            	this.answerPost({ data: "config" }, { body: req }, { isSocket: true });
             }
             if (notification === "NEW_CONFIG") {
                 this.answerPost({ data: "config" }, { body: payload }, { isSocket: true });

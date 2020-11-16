@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Remote Control API</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.24.2/swagger-ui.css" >
+  <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+  <style>
+    html
+    {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+    *,
+    *:before,
+    *:after
+    {
+      box-sizing: inherit;
+    }
+
+    body {
+      margin:0;
+      background: #fafafa;
+    }
+    
+    .download-url-wrapper  {
+        display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+<div id="remote"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.24.2/swagger-ui-bundle.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.24.2/swagger-ui-standalone-preset.js"> </script>
+
+<script>
+window.onload = async function() {
+  var spec = await fetch('./swagger.json').then((e) => e.json())
+  
+  // Build a system
+  const ui = SwaggerUIBundle({
+    spec: spec,
+    dom_id: '#remote',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    layout: "StandaloneLayout"
+  })
+  
+  window.ui = ui
+  
+  if(window.location.href.includes("github")) {
+    let css = "button.btn.try-out__btn, .auth-wrapper {display: none !important;}",
+        style = document.createElement('style'),
+        head = document.head || document.getElementsByTagName('head')[0];
+    
+    head.appendChild(style);
+    
+    style.type = 'text/css';
+    if (style.styleSheet){
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+  }
+  
+  try{
+    let node = document.createElement('div')
+    node.appendChild(document.getElementsByClassName('info__extdocs')[0])
+    document.getElementsByClassName('info')[0].appendChild(node)
+    document.getElementsByClassName('info__license')[0].parentElement.appendChild(document.getElementsByClassName('info__license')[0])
+  } catch(e){
+    console.log(e)
+  }
+  
+  
+  document.addEventListener('click',function(){
+    setTimeout(function(){
+      let cambio = document.getElementsByClassName("response-controls")
+      for(let i=0;i<cambio.length;i++){
+        if(cambio[i].parentNode.lastChild != cambio[i])
+          cambio[i].parentNode.appendChild(cambio[i])
+      }
+      let place = document.getElementsByClassName("parameters-col_description")
+      try{for(let i=0;i<place.length;i++){
+        if(place[i].getElementsByTagName("input") != undefined) {
+          z = place[i].getElementsByTagName("input")
+          for(let x=0;x<z.length;x++){
+            if(z[x].placeholder.split(" - ")[1] != undefined && (z[x].placeholder = z[x].placeholder.split(" - ")[1])) z[x].parentNode.removeChild(z[x].parentNode.children[0])
+          }
+        }
+      }}catch(err){console.log(err)}
+      let code = document.querySelectorAll(".response-col_description__inner code")
+      for(let i=0;i<code.length;i++){
+        code[i].style.background = "#41444e"
+        code[i].style.color = "#ffffff"
+      }
+      let sel = document.querySelectorAll("select.content-type")
+      for(let i=0;i<sel.length;i++){
+        if(sel[i].childNodes.length <= 1)
+          sel[i].parentNode.parentNode.removeChild(sel[i].parentNode)
+      }
+    },100)
+  })
+
+    
+}
+</script>
+<style>
+    td.response-col_description {
+      padding: 0 0 0 0 !important;
+    }
+
+    td.col.col_header.response-col_links, td.response-col_links {
+      display: none !important;
+    }
+</style>
+</body>
+
+</html>
