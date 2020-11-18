@@ -1,12 +1,3 @@
----
-name: Bug Fixes
-about: Think you could fix a bug? PR now!
-title: ''
-labels: bug, to check
-assignees: ''
-
----
-
 <!--
 If you publish this PR, you accept that you made your own tests, and that the program not only works, but also fixes the issue.
 You should have the steps to being able to reproduce this bug, for us to check if it's truly a bug.

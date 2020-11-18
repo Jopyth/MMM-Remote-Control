@@ -1,12 +1,3 @@
----
-name: Feature Addition
-about: Could be a nice addition? Feel free to develop!
-title: ''
-labels: feature, to check
-assignees: ''
-
----
-
 <!--
 So you have a nice feature you want in the module? Nice! Feel free to let us know.
 Please, make sure that your feature it's not inside the develop branch already.
