@@ -337,9 +337,21 @@ module.exports = {
             return;
         }
         
-        var modData = dataMerged.filter(m => req.params.moduleName.includes(m.name) || req.params.moduleName.includes(m.identifier));
-        
-        if (!modData) {
+        var modData = [];
+        if(req.params.moduleName !== 'all') {
+            let i = dataMerged.find(m => {
+                return (req.params.moduleName.includes(m.identifier));
+            });
+            if (!i) {
+                modData = dataMerged.filter(m => {
+                    return (req.params.moduleName.includes(m.name));
+                });
+            } else modData.push(i)
+        } else {
+            modData = dataMerged;
+        }
+    
+        if (!modData.length) {
             res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
             return;
         } 
