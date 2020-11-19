@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Module Identifier now working as expected (#229)
+- Module Installation now working
 
 ## [2.2.0] - 2020-11-16
 

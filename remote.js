@@ -1298,7 +1298,7 @@ var Remote = {
 
         console.log("Loading modules to add...");
 
-        this.loadList("add-module", "modulesAvailable", function(parent, modules) {
+        this.loadList("add-module", "moduleAvailable", function(parent, modules) {
             for (var i = 0; i < modules.length; i++) {
                 var symbol = "fa fa-fw fa-cloud";
                 if (modules[i].installed) {
