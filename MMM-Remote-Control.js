@@ -129,11 +129,20 @@ Module.register("MMM-Remote-Control", {
         if (notification === "HIDE" || notification === "SHOW" || notification === "TOGGLE") {
             let options = { lockString: this.identifier };
             if (payload.force) { options.force = true; }
-            let modules = (payload.module === "all") ? MM.getModules() :
-                MM.getModules().filter(m => {
-                    return (payload.module.includes(m.identifier) || payload.module.includes(m.name));
+            let modules = []
+            if(payload.module !== 'all') {
+                let i = MM.getModules().find(m => {
+                    return (payload.module.includes(m.identifier));
                 });
-            if (typeof modules === "undefined") { return; }
+                if (!i) {
+                    modules = MM.getModules().filter(m => {
+                        return (payload.module.includes(m.name));
+                    });
+                } else modules.push(i)
+            } else {
+                modules = MM.getModules()
+            }
+            if (!modules.length) { return; }
             modules.forEach((mod) => {
                 if (notification === "HIDE" ||
                     (notification === "TOGGLE" && !mod.hidden)) {
