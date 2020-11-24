@@ -174,7 +174,7 @@ var Remote = {
         var regex = new RegExp(pattern, "i");
         var searchIn = ["author", "desc", "longname", "name"];
 
-        var data = this.savedData.modulesAvailable;
+        var data = this.savedData.moduleAvailable;
         for (var i = 0; i < data.length; i++) {
             var currentData = data[i];
             var id = "install-module-" + i;
@@ -452,7 +452,7 @@ var Remote = {
         if (result.success) {
             var bgElement = document.getElementById("install-module-" + result.index);
             bgElement.firstChild.className = "fa fa-fw fa-check-circle";
-            this.savedData.modulesAvailable[result.index].installed = true;
+            this.savedData.moduleAvailable[result.index].installed = true;
             this.createAddingPopup(result.index);
         } else {
             symbol.className = "fa fa-fw fa-exclamation-circle";
@@ -1242,7 +1242,7 @@ var Remote = {
             index = parseInt(index);
         }
 
-        var data = this.savedData.modulesAvailable[index];
+        var data = this.savedData.moduleAvailable[index];
         var wrapper = this.getPopupContent();
 
         var name = document.createElement("div");

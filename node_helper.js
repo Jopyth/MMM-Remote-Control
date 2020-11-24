@@ -138,6 +138,7 @@ module.exports = NodeHelper.create(Object.assign({
                     res.send(503);
                 } else {
                     res.contentType("text/html");
+                    res.set('Content-Security-Policy', "frame-ancestors http://*:*")
                     var transformedData = self.fillTemplates(self.template);
                     res.send(transformedData);
                 }

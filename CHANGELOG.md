@@ -4,11 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.2] - 2020-11-24
+
+### Fixed
+- Module Installation now working
+- iframe now working (#161)
+
 ## [2.2.1] - 2020-11-18
 
 ### Fixed
 - Module Identifier now working as expected (#229)
-- Module Installation now working
+- Update Installation seems to work
 
 ## [2.2.0] - 2020-11-16
 
