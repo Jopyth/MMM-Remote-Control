@@ -194,6 +194,13 @@ module.exports = {
                		res.status(400).json({ success: false, message: `Invalid value ${val} provided in request. Use /api/classes to see actual values` });
                	}
             });
+            
+        this.expressRouter.route('/command/:value')
+            .get((req, res) => {
+                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                const val = decodeURIComponent(req.params.value)
+                self.executeQuery({ action: "COMMAND", command: req.params.value }, res);
+            });
 
         this.expressRouter.route('/userpresence/:value?')
             .get((req, res) => {

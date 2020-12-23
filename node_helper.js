@@ -164,7 +164,7 @@ module.exports = NodeHelper.create(Object.assign({
             this.expressApp.get("/remote", function(req, res) {
                 var query = url.parse(req.url, true).query;
 
-                if (query.action) {
+                if (query.action && ["COMMAND"].indexOf(query.action)===-1) {
                     var result = self.executeQuery(query, res);
                     if (result === true) {
                         return;
@@ -633,25 +633,25 @@ module.exports = NodeHelper.create(Object.assign({
 
         monitorControl: function(action, opts, res) {
             let status = "unknown";
-            let offArr = ["false","TV is Off","standby"];
+            let offArr = ["false","TV is off","standby","display_power=0"];
             let monitorOnCommand = (this.initialized && "monitorOnCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorOnCommand :
-                "tvservice --preferred && sudo chvt 6 && sudo chvt 7";
+                "vcgencmd display_power 1";
             let monitorOffCommand = (this.initialized && "monitorOffCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorOffCommand :
-                "tvservice -o";
+                "vcgencmd display_power 0";
             let monitorStatusCommand = (this.initialized && "monitorStatusCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.monitorStatusCommand :
-                "tvservice --status";
+                "vcgencmd display_power -1";
             switch (action) {
                 case "MONITORSTATUS": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-                        status = offArr.indexOf(stdout) !== -1 ? "off" : "on";
+                        status = offArr.indexOf(stdout.trim()) !== -1 ? "off" : "on";
                         this.checkForExecError(error, stdout, stderr, res, { monitor: status });
                         return;
                     });
                     break;
                 case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-                        status = offArr.indexOf(stdout) !== -1 ? "off" : "on";
+                        status = offArr.indexOf(stdout.trim()) !== -1 ? "off" : "on";
                         if(status === "on") this.monitorControl("MONITOROFF", opts, res);
                         else this.monitorControl("MONITORON", opts, res);
                         return;
@@ -695,6 +695,16 @@ module.exports = NodeHelper.create(Object.assign({
             }
             if (query.action === "RESTART" || query.action === "STOP") {
                 this.controlPm2(res, query);
+                return true;
+            }
+            if (query.action === "COMMAND") {
+                if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
+                    exec(this.thisConfig.customCommand[query.command], opts, (error, stdout, stderr) => { 
+                        self.checkForExecError(error, stdout, stderr, res, { stdout: stdout });
+                    });
+                } else {
+                    self.sendResponse(res, new Error("Command not found"), query);
+                }
                 return true;
             }
             if (query.action === "USER_PRESENCE") {
@@ -924,7 +934,7 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         checkForExecError: function(error, stdout, stderr, res, data) {
-	    console.log(stderr);
+            if(error) console.log(stderr);
             this.sendResponse(res, error, data);
         },
 

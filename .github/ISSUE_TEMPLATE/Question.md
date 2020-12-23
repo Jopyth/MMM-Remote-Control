@@ -11,6 +11,8 @@ assignees: ''
 Keep in mind that poorly formulated questions could lead to your question never answer, and the issue closed.
 Feel free to explain the problem you're having, and the community will help you.
 
+Also, you accept that, if this issue it's invalid in any way, will be discarded without receiving any response about it.
+
 You can now erase this warning, and complete the steps below. Cheers :D
 -->
 

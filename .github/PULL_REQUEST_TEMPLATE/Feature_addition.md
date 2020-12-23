@@ -3,6 +3,8 @@ So you have a nice feature you want in the module? Nice! Feel free to let us kno
 Please, make sure that your feature it's not inside the develop branch already.
 Please commit your contribution into the develop branch. Will be change if you don't do it.
 
+Also, you accept that, if this Pull Request it's invalid in any way, will be discarded without receiving any response about it.
+
 You can now erase this warning, and complete the steps below. Cheers :D
 -->
 

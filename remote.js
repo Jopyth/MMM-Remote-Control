@@ -1504,15 +1504,42 @@ var Remote = {
         $item = $("<div>").attr("id", `${content.id}-button`).addClass(`menu-element button ${menu}-menu`);
         let $mcmIcon = $('<span>').addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
         let $mcmText = $('<span>').addClass('text').text(content.text);
-        $item.append($mcmIcon).append($mcmText);
+        if (content.icon) $item.append($mcmIcon)
         if (content.type === "menu") {
+            if (content.text) $item.append($mcmText);
             let $mcmArrow = $('<span>').addClass('fa fa-fw fa-angle-right').attr("aria-hidden", "true");
             $item.append($mcmArrow);
             $item.attr("data-parent", menu).attr("data-type", "menu");
             $('#back-button').addClass(`${content.id}-menu`);
             $('#below-fold').addClass(`${content.id}-menu`);
             $item.click(() => { window.location.hash = `${content.id}-menu`; });
+        } else if (content.type === "slider") {
+            if (content.text) $item.append($mcmText.attr("style", "flex: 0 1 auto"));
+            let $contain = $('<div>').attr("style", "flex: 1")
+            let $slide = $('<input>').attr("id", `${content.id}-slider`).addClass("slider")
+            $slide.attr({
+                "type": "range",
+                "min": content.min || 0,
+                "max": content.max || 100,
+                "step": content.step || 10,
+                "value": content.defaultValue || 50
+            })
+            $slide.change(() => {
+                this.sendSocketNotification("REMOTE_ACTION", Object.assign({ action: content.action.toUpperCase() }, { payload:{} }, content.content, { value: document.getElementById(`${content.id}-slider`).value }));
+            })
+            $contain.append($slide);
+            $item.append($contain)
+        } else if (content.type === "input") {
+            $item = $("<input>").addClass(`menu-element ${menu}-menu medium`).attr({
+                "id": `${content.id}-input`,
+                "type": "text",
+                "placeholder": content.text || ""
+            });
+            $item.focusout(() => {
+                this.sendSocketNotification("REMOTE_ACTION", Object.assign({ action: content.action.toUpperCase() }, { payload:{} }, content.content, { value: document.getElementById(`${content.id}-input`).value }));
+            })
         } else if (content.action && content.content) {
+            if (content.text) $item.append($mcmText);
             $item.attr("data-type", "item");
             // let payload = content.content.payload || {};
             $item.click(() => {

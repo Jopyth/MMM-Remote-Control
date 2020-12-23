@@ -11,7 +11,7 @@
       "name": "MIT License",
       "url": "https://github.com/Jopyth/MMM-Remote-Control/blob/master/LICENSE"
     },
-    "version": "2.2.0+"
+    "version": "2.3.0+"
   },
   "externalDocs": {
     "url": "https://github.com/Jopyth/MMM-Remote-Control/issues",
@@ -145,6 +145,57 @@
                 "example": {
                   "success": false,
                   "message": "Invalid value test provided in request. Use /api/classes to see actual values"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/command/{:value}": {
+      "get": {
+        "tags": [
+          "Mirror Control",
+          "API"
+        ],
+        "summary": "Execute command saved in config",
+        "parameters": [
+          {
+            "name": ":value",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Value is needed"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"
                 }
               }
             }

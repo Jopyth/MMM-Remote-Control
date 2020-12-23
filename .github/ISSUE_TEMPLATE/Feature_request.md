@@ -11,6 +11,8 @@ assignees: ''
 So you have a nice feature you want in the module? Nice! Feel free to let us know.
 Please, make sure that your feature it's not in the PRs waiting to merge, or inside the develop branch.
 
+Also, you accept that, if this issue it's invalid in any way, will be discarded without receiving any response about it.
+
 You can now erase this warning, and complete the steps below. Cheers :D
 -->
 
