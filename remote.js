@@ -1525,7 +1525,7 @@ var Remote = {
                 "value": content.defaultValue || 50
             })
             $slide.change(() => {
-                this.sendSocketNotification("REMOTE_ACTION", Object.assign({ action: content.action.toUpperCase() }, { payload:{} }, content.content, { value: document.getElementById(`${content.id}-slider`).value }));
+                this.sendSocketNotification("REMOTE_ACTION", Object.assign({ action: content.action.toUpperCase() }, content.content, { payload: Object.assign({}, content.content == undefined ? {} : content.content.payload, {value: document.getElementById(`${content.id}-slider`).value})}, { value: document.getElementById(`${content.id}-slider`).value }));
             })
             $contain.append($slide);
             $item.append($contain)
@@ -1536,7 +1536,7 @@ var Remote = {
                 "placeholder": content.text || ""
             });
             $item.focusout(() => {
-                this.sendSocketNotification("REMOTE_ACTION", Object.assign({ action: content.action.toUpperCase() }, { payload:{} }, content.content, { value: document.getElementById(`${content.id}-input`).value }));
+                this.sendSocketNotification("REMOTE_ACTION", Object.assign({ action: content.action.toUpperCase() }, content.content, { payload: Object.assign({}, content.content == undefined ? {} : content.content.payload, {value: document.getElementById(`${content.id}-input`).value})}, { value: document.getElementById(`${content.id}-input`).value }));
             })
         } else if (content.action && content.content) {
             if (content.text) $item.append($mcmText);
