@@ -1,8 +1,16 @@
 # MMM Remote Control Change Log
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [2.3.2] - 2021-02-19
+
+### Fixed
+- `value` now travels along with the payload when slide or input it's used on Custom Menus. (#251)
+
+### Changed
+- If you use slide or input, and you add a string payload, it'll now be available in the `string` object of the payload.
 
 ## [2.3.1] - 2020-12-29
 
