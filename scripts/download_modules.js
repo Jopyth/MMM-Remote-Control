@@ -12,7 +12,7 @@
  */
 
 /* jshint esversion:6, node: true */
-const request = require('node-fetch');
+const fetch = require("node-fetch");
 const path = require("path");
 const fs = require("fs");
 const util = require("util");
@@ -54,30 +54,39 @@ var downloadModules = {
     },
 
     getPackages: function() {
-        request.get(this.config.sourceUrl, (error, response, body) => {
-            if (!error && response.statusCode == 200) {
-                let modules = this.parseList(body);
-                var json = JSON.stringify(modules, undefined, 2);
-                var jsonPath = this.config.modulesFile;
-                fs.writeFile(jsonPath, json, "utf8", (err, data) => {
-                    if (err) {
-                        console.error("MODULE LIST ERROR: modules.json updating fail:" + err.message);
-                        this.config.callback("ERROR_UPDATING");
-                    } else {
-                        this.config.callback("UPDATED");
-                    }
-                });
+        fetch(this.config.sourceUrl)
+        .then(response => {
+            if (response.status === 200) {
+                return response;
             } else if (response.statusCode === 401) {
                 console.error("MODULE LIST ERROR: Could not load module data from wiki. 401 Error");
                 this.config.callback("ERROR_401");
                 return;
             } else {
-                console.error("MODULE LIST ERROR: Could not load data.", error);
+                console.error("MODULE LIST ERROR: Could not load data.", statusText);
                 this.config.callback("ERROR_LOADING_DATA");
                 return;
             }
+        })
+        .then(response => response.text())
+        .then(body => {
+            let modules = this.parseList(body);
+            var json = JSON.stringify(modules, undefined, 2);
+            var jsonPath = this.config.modulesFile;
+            fs.writeFile(jsonPath, json, "utf8", (err, data) => {
+                if (err) {
+                    console.error("MODULE LIST ERROR: modules.json updating fail:" + err.message);
+                    this.config.callback("ERROR_UPDATING");
+                } else {
+                    this.config.callback("UPDATED");
+                }
+            });
+        })
+        .catch(error => {
+            console.error("MODULE LIST ERROR: Could not load data.", error);
+            this.config.callback("ERROR_LOADING_DATA");
+            return;
         });
-
         return;
     },
 
