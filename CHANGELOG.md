@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.3] - 2021-04-05
+
+### Changed
+- `request` is deprecated inside MM package. Now using `node-fetch` (#257)
+
 ## [2.3.2] - 2021-02-19
 
 ### Fixed

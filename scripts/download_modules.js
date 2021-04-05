@@ -12,7 +12,7 @@
  */
 
 /* jshint esversion:6, node: true */
-const request = require('request');
+const request = require('node-fetch');
 const path = require("path");
 const fs = require("fs");
 const util = require("util");
