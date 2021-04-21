@@ -131,22 +131,18 @@ Module.register("MMM-Remote-Control", {
             if (payload.force) { options.force = true; }
             let modules = []
             if(payload.module !== 'all') {
-                if (!Array.prototype.find) {
-                    // https://tc39.github.io/ecma262/#sec-array.prototype.find
-                    Object.defineProperty(Array.prototype,"find",{value:function(r){if(null==this)throw new TypeError('"this" is null or not defined');var e=Object(this),t=e.length>>>0;if("function"!=typeof r)throw new TypeError("predicate must be a function");for(var n=arguments[1],i=0;i<t;){var o=e[i];if(r.call(n,o,i,e))return o;i++}},configurable:!0,writable:!0});
-                }
-                let i = MM.getModules().find(m => {
-                	if(m) {
-                		return (payload.module.includes(m.identifier));
-                	}
-                });
-                if (!i) {
-                    modules = MM.getModules().filter(m => {
-                    	if(m) {
-                        	return (payload.module.includes(m.name));
-                        }
-                    });
-                } else modules.push(i)
+                let x = payload.module
+                modules = modules.concat(MM.getModules().filter(m => {
+                    if(m && x.includes(m.identifier)) {
+                        if(typeof x == "object") x = x.filter((t)=>t!=m.identifier)
+                        else x = ''
+                        return true;
+                    }
+                }),MM.getModules().filter(m => {
+                    if(m) {
+                        return x.includes(m.name);
+                    }
+                }))
             } else {
                 modules = MM.getModules()
             }

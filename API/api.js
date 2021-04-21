@@ -189,7 +189,7 @@ module.exports = {
                 var classes = self.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
                 const val = decodeURIComponent(req.params.value)
                 if(classes.classes && classes.classes[val]) {
-                	self.executeQuery({ action: "MANAGE_CLASSES", payload: { classes: classes.classes[val]} }, res);
+                	self.executeQuery({ action: "MANAGE_CLASSES", payload: { classes: req.params.value} }, res);
                 } else {
                		res.status(400).json({ success: false, message: `Invalid value ${val} provided in request. Use /api/classes to see actual values` });
                	}

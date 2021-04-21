@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.4] - 2021-04-21
+
+### Added
+- Now you can use MANAGE_CLASSES to use them between modules, instead of just the API
+
+### Fixed
+- Classes now detects when you're using identifiers and names in the same action (#259)
+
 ## [2.3.3] - 2021-04-05
 
 ### Changed

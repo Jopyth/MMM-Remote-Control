@@ -1226,7 +1226,7 @@ var Remote = {
     				},{
 						content: {
 							payload: {
-								classes: classes[i]
+								classes: i
 							}
     				}
     			})

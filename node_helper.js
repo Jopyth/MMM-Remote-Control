@@ -796,12 +796,24 @@ module.exports = NodeHelper.create(Object.assign({
                 }
             }
             if (query.action === "MANAGE_CLASSES") {
-            	if (!query.payload || !query.payload.classes) return;
-            	for(const act in query.payload.classes) {
-            		if (["SHOW","HIDE","TOGGLE"].includes(act.toUpperCase())) {
-            			this.sendSocketNotification(act.toUpperCase(),{ module: query.payload.classes[act]});
-            		}
-            	}
+            	if (!query.payload || !query.payload.classes || !this.thisConfig || !this.thisConfig.classes) return;
+                let classes = [];
+                switch (typeof query.payload.classes) {
+                    case 'string': classes.push(this.thisConfig.classes[query.payload.classes]); break;
+                    case 'object': query.payload.classes.forEach((t)=>classes.push(this.thisConfig.classes[t]))
+                }
+                classes.forEach((cl)=>{
+                    for(const act in cl) {
+                        if (["SHOW","HIDE","TOGGLE"].includes(act.toUpperCase())) {
+                            if(typeof cl[act] == 'string') this.sendSocketNotification(act.toUpperCase(),{ module: cl[act]});
+                            else {
+                                cl[act].forEach((t)=>{
+                                    this.sendSocketNotification(act.toUpperCase(),{ module: t});
+                                })
+                            }
+                        }
+                    }
+                })
             	this.sendResponse(res);
             	return;
             }
