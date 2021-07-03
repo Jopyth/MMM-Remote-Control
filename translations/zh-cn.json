@@ -1,0 +1,88 @@
+{
+    "TITLE": "Magic Mirror Menu 魔镜菜单",
+
+    "EDIT_MENU_NAME": "编辑界面",
+    "SHUTDOWN_MENU_NAME": "电源",
+    "CONFIGURE_MENU_NAME": "编辑 config.js",
+    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+
+    "BACK": "返回",
+
+    "BRIGHTNESS": "亮度",
+
+    "REFRESHMM" : "刷新界面",
+    "MONITOROFF": "关闭显示器",
+    "MONITORON": "打开显示器",
+    "MONITORTIMED": "短暂打开显示器",
+    "RESTART": "重启",
+    "RESTARTMM": "重启 MagicMirror<sup>2</sup>",
+    "SHUTDOWN": "关闭",
+    "FULLSCREEN": "切换全屏",
+    "MINIMIZE": "最小化魔镜",
+    "DEVTOOLS": "打开开发者工具",
+
+    "SHOWALL": "打开全部",
+    "HIDEALL": "关闭全部",
+
+    "ADD_MODULE": "添加模块",
+    "SEARCH": "搜索 &hellip;",
+    "INSTALLED": "安装",
+    "DOWNLOAD": "下载",
+    "DOWNLOADING": "下载中 &hellip;",
+    "CODE_LINK": "查看代码",
+    "BY": "by",
+    "ADD_THIS": "添加此模块",
+    "HELP": "帮助",
+    "MENU": "菜单",
+    "RESET": "重置",
+    "NO_HEADER": "(无标题)",
+    "NO_POSITION": "(隐藏)",
+    "ADD_ENTRY": "添加配置项",
+    "NEW_ENTRY_NAME": "(添加配置项字段名)",
+    "DELETE_ENTRY": "删除",
+    "UNSAVED_CHANGES": "未保存更新",
+    "OK": "Ok",
+    "DISCARD": "放弃更改",
+    "CANCEL": "取消",
+
+    "NO_MODULES_LOADED": "无模块.",
+    "SAVE": "保存",
+
+    "EXPERIMENTAL": "这是一个实验特性, 它可能会损坏你的配置文件. 先备份你的配置文件，以防万一!<br>是否继续?",
+    "PANIC": "不搞了.",
+    "NO_RISK_NO_FUN": "就是折腾!",
+
+    "CONFIRM_SHUTDOWN": "即将关机.",
+    "CONFIRM_RESTART": "即将重启.",
+
+    "LOAD_ERROR": "如果你看到这个消息, 说明加载javascript文件时出错。请转到以下链接，查看浏览器是否存在已知问题:",
+    "ISSUE_LINK": "Issue链接",
+
+    "DONE": "完成.",
+    "ERROR": "错误!",
+    "LOADING": "加载中 &hellip;",
+
+    "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
+    "FORCE_SHOW": "继续.",
+
+	"UPDATE_MENU_NAME" : "更新",
+	"UPDATEMM" : "更新 MagicMirror<sup>2</sup>",
+    "UPDATE_AVAILABLE" : "更新可用",
+
+	"ALERT_MENU_NAME" : "通知",
+	"SENDALERT" : "发送",
+	"HIDEALERT" : "隐藏",
+    "FORM_TYPE" : "分类:",
+    "FORM_ALERT" : "警告",
+    "FORM_NOTIFICATION" : "通知",
+    "FORM_TITLE" : "标题:",
+    "FORM_TITLE_PLACEHOLDER" : "输入标题...",
+    "FORM_MESSAGE" : "消息:",
+    "FORM_MESSAGE_PLACEHOLDER" : "输入消息...",
+    "FORM_SECONDS" : "显示时长(秒):",
+
+
+    "RESPONSE_ERROR": "操作失败. 查看 MagicMirror<sup>2</sup> 日志获取更多信息",
+    "MODULE_CONTROLS": "模块控制",
+    "CUSTOM_MENU": "自定义菜单"
+}

@@ -951,6 +951,10 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         controlPm2: function(res, query) {
+            try {require('pm2')} catch (err) {
+                this.sendResponse(res, err, { reason: "PM2 not installed or unlinked" });
+                return;
+            }
             var pm2 = require('pm2');
             let processName = query.processName || this.thisConfig.pm2ProcessName || "mm";
 
