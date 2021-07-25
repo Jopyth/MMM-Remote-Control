@@ -399,6 +399,7 @@ module.exports = {
                 }
                 this.executeQuery(this.checkDelay(query, req), res);
             });
+            this.sendSocketNotification("UPDATE");
             return;
         }
         
