@@ -1,8 +1,6 @@
 name: Bug Report
 description: Think you found a bug? Let us know!
-title: ""
 labels: [bug, to check]
-assignees: ''
 body:
   - type: markdown
     attributes:

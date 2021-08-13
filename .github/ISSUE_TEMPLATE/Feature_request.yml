@@ -1,8 +1,6 @@
 name: Feature Request
 description: Could be a nice addition? Feel free to post!
-title: ""
 labels: [feature, to check]
-assignees: ''
 body:
   - type: textarea
     attributes:
