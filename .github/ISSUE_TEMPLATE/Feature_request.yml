@@ -1,0 +1,34 @@
+name: Feature Request
+description: Could be a nice addition? Feel free to post!
+title: ""
+labels: [feature, to check]
+assignees: ''
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: Tell us more about your awesome feature. Why do you feel that this should be implemented?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Changelog
+      description: Do you, by any chance, know which files are needed to be changed in order to make it work?
+      placeholder: |
+        Probably `api.js` would need a change, because...
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Requirements
+      description: You have a suggestion of how to implement it? Let's heard it!
+      placeholder: |
+        You can change Line 35 of this file and everything is gonna be just fine.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional info
+      description: Everything else that you think could be useful for us. ;D
+    validations:
+      required: false

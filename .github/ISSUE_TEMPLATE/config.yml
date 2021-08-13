@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Discussions
+    url: https://github.com/ezeholz/MMM-Remote-Control/discussions
+    about: Don't know how to do it? Ask the community!
