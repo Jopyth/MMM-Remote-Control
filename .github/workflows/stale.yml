@@ -19,12 +19,12 @@ jobs:
             This pull request has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs. Thank you
             for your contributions.
-          days-before-issue-stale: 30
-          days-before-pr-stale: 45
+          days-before-issue-stale: 20
+          days-before-pr-stale: 30
           days-before-issue-close: 7
           days-before-pr-close: 7
           stale-issue-label: 'stale'
           exempt-issue-labels: 'working,help wanted'
           stale-pr-label: 'stale'
           exempt-pr-labels: 'working,help wanted'
-          start-date: '2021-01-01T00:00:00Z'
+          exempt-all-milestones: true
