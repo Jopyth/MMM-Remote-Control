@@ -261,6 +261,10 @@ module.exports = {
             })
             .post((req, res) => {
                 if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                req.params = {
+                    ... req.params,
+                    ... req.body
+                }
                 this.answerNotifyApi(req, res);
             });
 
@@ -269,6 +273,10 @@ module.exports = {
                 this.answerModuleApi(req, res);
             })
             .post((req, res) => {
+                req.params = {
+                    ... req.params,
+                    ... req.body
+                }
                 this.answerModuleApi(req, res);
             });
 
