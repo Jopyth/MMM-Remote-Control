@@ -648,6 +648,9 @@ var Remote = {
                 var text = document.createElement("span");
                 text.className = "text";
                 text.innerHTML = " " + self.formatName(moduleData[i].name);
+                if ("header" in moduleData[i]) {
+                        text.innerHTML += ` (${moduleData[i].header})`;
+                }
                 moduleBox.appendChild(text);
 
                 parent.appendChild(moduleBox);
