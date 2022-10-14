@@ -344,16 +344,16 @@ module.exports = {
             return;
         }
         
-        var modData = [];
+        let modData = [];
         if(req.params.moduleName !== 'all') {
-            let i = dataMerged.find(m => {
+            modData = dataMerged.filter(m => {
                 return (req.params.moduleName.includes(m.identifier));
             });
-            if (!i) {
+            if (!modData) {
                 modData = dataMerged.filter(m => {
                     return (req.params.moduleName.includes(m.name));
                 });
-            } else modData.push(i)
+            }
         } else {
             modData = dataMerged;
         }
@@ -364,7 +364,7 @@ module.exports = {
         } 
         
         if (!req.params.action) {
-            res.json({ success: true, data: dataMerged.filter(m => req.params.moduleName.includes(m.name)) });
+            res.json({ success: true, data: modData });
             return;
         }
         
