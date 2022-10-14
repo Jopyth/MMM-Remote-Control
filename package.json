@@ -1,6 +1,6 @@
 {
   "name": "Magic-Mirror-Module-Remote-Control",
-  "version": "2.3.4",
+  "version": "2.3.7",
   "description": "This module for the Magic Mirror allows you to shutdown and configure your mirror through a web browser.",
   "repository": {
     "type": "git",
