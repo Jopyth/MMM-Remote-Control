@@ -24,6 +24,7 @@
     "body-parser": "latest",
     "simple-git": "latest",
     "lodash": "latest",
+    "node-fetch": "^2.6.9",
     "uuid": "^3.3.2"
   }
 }
