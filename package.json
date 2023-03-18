@@ -14,7 +14,7 @@
     "control"
   ],
   "author": "Joseph Bethge",
-  "contributors": "git+https://github.com/jopyth/MMM-Remote-Control/graphs/contributors",
+  "contributors": ["https://github.com/jopyth/MMM-Remote-Control/graphs/contributors"],
   "license": "MIT",
   "bugs": {
     "url": "git+https://github.com/jopyth/MMM-Remote-Control/issues"
