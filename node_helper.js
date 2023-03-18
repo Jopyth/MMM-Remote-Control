@@ -822,7 +822,7 @@ module.exports = NodeHelper.create(Object.assign({
                 try {
                     let electron = require("electron").BrowserWindow;
                     if (!electron) { throw "Could not get Electron window instance."; }
-                    let win = electron.getFocusedWindow();
+                    let win = electron.getAllWindows()[0]
                     switch (query.action) {
                         case "MINIMIZE":
                             win.minimize();
