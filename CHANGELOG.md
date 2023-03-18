@@ -141,14 +141,14 @@ See you in future commits, issues and PRs :D
 ### Changed
 
 - Overwrite of local changes when updating from a repository
-- Now requires MagicMirror version 2.12
+- Now requires MagicMirror² version 2.12
 
 ## [2.0.1] - 2020-10-28
 
 **Huge thanks to [@ezeholz](https://github.com/ezeholz)** who has offered to maintain the module fron now on!
 Credit for this (and future) versions and releases goes to @ezeholz (unless noted otherwise).
 
-Now requires MagicMirror version 2.7.
+Now requires MagicMirror² version 2.7.
 
 ### Fixed
 
@@ -162,9 +162,9 @@ Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new ma
 
 ### Added
 
-- REST API interface for controlling all aspects of the MagicMirror from HTTP RESTful-style GET and POST calls, based on principles from [MMM-Api](https://github.com/juzim/MMM-Api)
+- REST API interface for controlling all aspects of the MagicMirror² from HTTP RESTful-style GET and POST calls, based on principles from [MMM-Api](https://github.com/juzim/MMM-Api)
     + Full API Documentation at [API/README.md](API/README.md)
-- Live daily updates of `modules.json` from the MagicMirror wiki, based on principles from [MMM-Remote-Control-Repository](https://github.com/eouia/MMM-Remote-Control-Repository).  
+- Live daily updates of `modules.json` from the MagicMirror² wiki, based on principles from [MMM-Remote-Control-Repository](https://github.com/eouia/MMM-Remote-Control-Repository).  
 - Incorporated some features found in [MMM-OnScreenMenu](https://github.com/shbatm/MMM-OnScreenMenu) that were not originally in this module.
     + Monitor (Connected Screen) On-Off Status and Toggle
     + Delayed calls ("DELAYED" Query option and `.../delay` API paths)
@@ -198,8 +198,8 @@ Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new ma
 - French translation
 
 ### Fixed
-- Updated documentation to new MagicMirror version
-- Fix error on updating MagicMirror
+- Updated documentation to new MagicMirror² version
+- Fix error on updating MagicMirror²
 
 ## [1.1.4] - 2017-09-17
 
@@ -227,7 +227,7 @@ Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new ma
 - Installation no longer needs a temporary file
 
 ### Fixed
-- Icon paths adapted to changes in [Magic Mirror²](https://github.com/MichMich/MagicMirror) 2.1.0
+- Icon paths adapted to changes in [MagicMirror²](https://github.com/MichMich/MagicMirror) 2.1.0
 
 ## [1.1.2] - 2017-02-01
 
@@ -238,13 +238,13 @@ Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new ma
 
 ### Changed
 - Installation process updated in [README.md](README.md#Installation)
-- Automatic installer/updater includes hint to restart [Magic Mirror²](https://github.com/MichMich/MagicMirror)
+- Automatic installer/updater includes hint to restart [MagicMirror²](https://github.com/MichMich/MagicMirror)
 
 ### Fixed
 - Issues with not applying shown and hidden status correctly to modules
 - Issues where lockstrings were missing
 - Modules sometimes did not show correctly in the UI as hidden or shown:
-    - This is due to a bug in [Magic Mirror²](https://github.com/MichMich/MagicMirror)
+    - This is due to a bug in [MagicMirror²](https://github.com/MichMich/MagicMirror)
     - PR [#659](https://github.com/MichMich/MagicMirror/pull/659) to fix this was made in the project, will be released in the next version
 
 ## [1.1.1] - 2017-01-26
@@ -255,7 +255,7 @@ Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new ma
 ### Added
 - First version of installer script
 - Menu to send Alerts and/or Notifications to your mirror
-- Menu to update your MagicMirror installation and your modules (through `git pull`)
+- Menu to update your MagicMirror² installation and your modules (through `git pull`)
 - Menu to change the `config.js`
     - Modules can be installed, added, removed, configured
     - There will be backups of the five last versions of the `config.js` in the `config` folder
@@ -284,7 +284,7 @@ Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new ma
 ### Changed
 - Internal timeout for commands increased from 5 to 8 seconds
 - Symbols for display on and off
-- Internal changes in preparation for Magic Mirror version `2.1.0`
+- Internal changes in preparation for MagicMirror² version `2.1.0`
 
 ## [0.1.0] - 2016-09-30
 ### Initial release of the Remote Control module.

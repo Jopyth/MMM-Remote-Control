@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Men&uuml;",
+    "TITLE": "MagicMirror² Men&uuml;",
 
     "EDIT_MENU_NAME": "Ansicht editieren",
     "SHUTDOWN_MENU_NAME": "Energieoptionen",
     "CONFIGURE_MENU_NAME": "Einstellungen",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Zurück",
 
@@ -14,7 +14,7 @@
     "MONITOROFF": "Bildschirm ausschalten",
     "MONITORON": "Bildschirm einschalten",
     "RESTART": "Neu starten",
-    "RESTARTMM": "Starte MagicMirror<sup>2</sup> neu",
+    "RESTARTMM": "Starte MagicMirror² neu",
     "SHUTDOWN": "Ausschalten",
 
     "SHOWALL": "Alle",
@@ -59,7 +59,7 @@
     "LOADING": "Lade &hellip;",
 
     "UPDATE_MENU_NAME" : "Updates",
-    "UPDATEMM" : "Update MagicMirror<sup>2</sup>",
+    "UPDATEMM" : "Update MagicMirror²",
     "UPDATE_AVAILABLE" : "Update verf&uuml;gbar",
 
     "REFRESHMM" : "Refresh Browser",

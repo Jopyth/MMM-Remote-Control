@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Meny",
+    "TITLE": "MagicMirror² Meny",
 
     "EDIT_MENU_NAME": "Editera synlighet",
     "SHUTDOWN_MENU_NAME": "Av och På",
     "CONFIGURE_MENU_NAME": "Editera config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Tillbaka",
 
@@ -15,7 +15,7 @@
     "MONITORON": "Väck skärmen",
     "MONITORTIMED": "Väck skärmen en kort stund",
     "RESTART": "Starta om",
-    "RESTARTMM": "Starta om MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Starta om MagicMirror²",
     "SHUTDOWN": "Stäng av",
 
     "SHOWALL": "Alla",
@@ -60,7 +60,7 @@
     "LOADING": "Laddar &hellip;",
 
 	"UPDATE_MENU_NAME" : "Uppdateringar",
-	"UPDATEMM" : "Uppdatera MagicMirror<sup>2</sup>",
+	"UPDATEMM" : "Uppdatera MagicMirror²",
     "UPDATE_AVAILABLE" : "Uppdatering tillgänglig",
 
 	"ALERT_MENU_NAME" : "Larm",

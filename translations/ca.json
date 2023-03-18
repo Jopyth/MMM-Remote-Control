@@ -1,10 +1,10 @@
 {
-    "TITLE": "Menú Magic Mirror",
+    "TITLE": "Menú MagicMirror²",
 
     "EDIT_MENU_NAME": "Editar Vista",
     "SHUTDOWN_MENU_NAME": "Encendre/Apagar",
     "CONFIGURE_MENU_NAME": "Editar config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Endarrera",
 
@@ -15,7 +15,7 @@
     "MONITORON": "Encendre monitor",
     "MONITORTIMED": "Encendre monitor breument",
     "RESTART": "Reiniciar RPi",
-    "RESTARTMM": "Recarregar MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Recarregar MagicMirror²",
     "SHUTDOWN": "Apagar RPi",
     "FULLSCREEN": "Pantalla sencera",
     "MINIMIZE": "Minimitzar Navegador",
@@ -66,7 +66,7 @@
     "FORCE_SHOW": "Fes-ho igualment.",
 
     "UPDATE_MENU_NAME" : "Actualitzacions",
-    "UPDATEMM" : "Actualitza MagicMirror<sup>2</sup>",
+    "UPDATEMM" : "Actualitza MagicMirror²",
     "UPDATE_AVAILABLE" : "Actualitzaciò disponible",
 
     "ALERT_MENU_NAME" : "Alertes / Notificacions",

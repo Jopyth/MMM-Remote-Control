@@ -1,10 +1,10 @@
 [
   {
-    "longname": "MagicMirror-Module-Template",
+    "longname": "MagicMirror²-Module-Template",
     "id": "roramirez/MagicMirror-Module-Template",
     "url": "https://github.com/roramirez/MagicMirror-Module-Template",
     "author": "MichMich",
-    "desc": "Module to help developers to start building their own modules for the MagicMirror."
+    "desc": "Module to help developers to start building their own modules for the MagicMirror²."
   },
   {
     "longname": "MMM-Button",
@@ -46,7 +46,7 @@
     "id": "sheyabernstein/MMM-connection-status",
     "url": "https://github.com/sheyabernstein/MMM-connection-status",
     "author": "SheyaBernstein",
-    "desc": "Display internet connection status for MagicMirror<sup>2</sup>"
+    "desc": "Display internet connection status for MagicMirror²"
   },
   {
     "longname": "mm-hide-all",
@@ -88,7 +88,7 @@
     "id": "Ax-LED/MMM-Navigate",
     "url": "https://github.com/Ax-LED/MMM-Navigate",
     "author": "AxLED",
-    "desc": "A module to connect a rotary encoder to MagicMirror and use it for Navigation inside of MagicMirror."
+    "desc": "A module to connect a rotary encoder to MagicMirror² and use it for Navigation inside of MagicMirror²."
   },
   {
     "longname": "MMM-NetworkConnection",
@@ -179,7 +179,7 @@
     "id": "eouia/MMM-AVStock",
     "url": "https://github.com/eouia/MMM-AVStock",
     "author": "eouia",
-    "desc": "MagicMirror module for displaying stock price with Alphavantage API."
+    "desc": "MagicMirror² module for displaying stock price with Alphavantage API."
   },
   {
     "longname": "MMM-CoinMarketCap",
@@ -501,7 +501,7 @@
     "id": "ottopaulsen/MMM-NesteBussAtB",
     "url": "https://github.com/ottopaulsen/MMM-NesteBussAtB",
     "author": "ottopaulsen",
-    "desc": "A Magic Mirror Module that shows how many minutes until the next bus(es) goes from given bus stops."
+    "desc": "A MagicMirror² Module that shows how many minutes until the next bus(es) goes from given bus stops."
   },
   {
     "longname": "MMM-nextbike",
@@ -900,7 +900,7 @@
     "id": "Matzefication/MMM-Hello-Mirror",
     "url": "https://github.com/Matzefication/MMM-Hello-Mirror",
     "author": "Matzefication",
-    "desc": "Voice-Control for the MagicMirror based on Google Speech Recognizer (annyang). Send a notification to all other modules on voice detection."
+    "desc": "Voice-Control for the MagicMirror² based on Google Speech Recognizer (annyang). Send a notification to all other modules on voice detection."
   },
   {
     "longname": "MMM-Hotword",
@@ -942,7 +942,7 @@
     "id": "fewieden/MMM-voice",
     "url": "https://github.com/fewieden/MMM-voice",
     "author": "fewieden",
-    "desc": "Offline Voice Recognition Module for MagicMirror2, with ability to control other modules, based on pocketsphinx."
+    "desc": "Offline Voice Recognition Module for MagicMirror², with ability to control other modules, based on pocketsphinx."
   },
   {
     "longname": "magic-mirror-voice",
@@ -1054,14 +1054,14 @@
     "id": "Bangee44/MMM-DHT22",
     "url": "https://github.com/Bangee44/MMM-DHT22",
     "author": "Bangee44",
-    "desc": "Monitor the temperature and the humidity from a DHT22-Sensor on your Magic Mirror"
+    "desc": "Monitor the temperature and the humidity from a DHT22-Sensor on your MagicMirror²"
   },
   {
     "longname": "MMM-HDC1080",
     "id": "MichaelF1/MMM-HDC1080",
     "url": "https://github.com/MichaelF1/MMM-HDC1080",
     "author": "MichaelF1",
-    "desc": "Display the temperature and humidity of the I2C-based HDC1080-sensor on your Magic Mirror"
+    "desc": "Display the temperature and humidity of the I2C-based HDC1080-sensor on your MagicMirror²"
   },
   {
     "longname": "MMM-dht22",
@@ -1145,7 +1145,7 @@
     "id": "CFenner/MMM-Netatmo",
     "url": "https://github.com/CFenner/MMM-Netatmo",
     "author": "CFenner",
-    "desc": "Display your Netatmo in/outdoor weather station data on your MagicMirror."
+    "desc": "Display your Netatmo in/outdoor weather station data on your MagicMirror²."
   },
   {
     "longname": "MMM-NOAA3",
@@ -1243,7 +1243,7 @@
     "id": "eouia/MMM-WeatherBackground",
     "url": "https://github.com/eouia/MMM-WeatherBackground",
     "author": "eouia",
-    "desc": "MagicMirror Module - for Weather image background from Unsplash. This is a plugin of other weather modules."
+    "desc": "MagicMirror² Module - for Weather image background from Unsplash. This is a plugin of other weather modules."
   },
   {
     "longname": "MMM-Weather-Now",
@@ -1264,7 +1264,7 @@
     "id": "jharttech/MMM-weatherforecast",
     "url": "https://github.com/jharttech/MMM-weatherforecast",
     "author": "jharttech",
-    "desc": "This is a new version of the weather forecast module for MagicMirror. This one does not come as a default module. This version has been edited to allow the days of the week to span left to right, each with its own weather icon and details. Uses openweathermap.org API Key."
+    "desc": "This is a new version of the weather forecast module for MagicMirror². This one does not come as a default module. This version has been edited to allow the days of the week to span left to right, each with its own weather icon and details. Uses openweathermap.org API Key."
   },
   {
     "longname": "MMM-WorldTides",
@@ -1411,7 +1411,7 @@
     "id": "desertblade/iFrame",
     "url": "https://github.com/desertblade/iFrame",
     "author": "desertblade",
-    "desc": "A simple way to add an iFrame of any web content to your MagicMirror. Seem to be abandoned."
+    "desc": "A simple way to add an iFrame of any web content to your MagicMirror². Seem to be abandoned."
   },
   {
     "longname": "internet-monitor",
@@ -1439,7 +1439,7 @@
     "id": "fewieden/MMM-AlarmClock",
     "url": "https://github.com/fewieden/MMM-AlarmClock",
     "author": "fewieden",
-    "desc": "Alarm Clock Module for MagicMirror2. (touch and non-touch)"
+    "desc": "Alarm Clock Module for MagicMirror². (touch and non-touch)"
   },
   {
     "longname": "MMM-Bose-Soundtouch",
@@ -1481,7 +1481,7 @@
     "id": "flo80/MMM-chromecast",
     "url": "https://github.com/flo80/MMM-chromecast",
     "author": "flo80",
-    "desc": "A module to directly cast from the MagicMirror server to a chromecast."
+    "desc": "A module to directly cast from the MagicMirror² server to a chromecast."
   },
   {
     "longname": "MMM-ComEdPrice",
@@ -1502,7 +1502,7 @@
     "id": "eouia/MMM-DailyAlarm",
     "url": "https://github.com/eouia/MMM-DailyAlarm",
     "author": "eouia",
-    "desc": "MagicMirror module for daily recurrent event alarms"
+    "desc": "MagicMirror² module for daily recurrent event alarms"
   },
   {
     "longname": "MMM-Discogs",
@@ -1579,7 +1579,7 @@
     "id": "PalatinCoder/MMM-GoogleBirthdaysProvider",
     "url": "https://github.com/PalatinCoder/MMM-GoogleBirthdaysProvider",
     "author": "PalatinCoder",
-    "desc": "Integrate your Google Contact's birthdays in the MagicMirror calendar"
+    "desc": "Integrate your Google Contact's birthdays in the MagicMirror² calendar"
   },
   {
     "longname": "MMM-googlemaps",
@@ -1628,7 +1628,7 @@
     "id": "michael5r/mmm-hue-lights",
     "url": "https://github.com/michael5r/mmm-hue-lights",
     "author": "michael5r",
-    "desc": "Display the status of your Philips Hue lights and light groups on your Magic Mirror. Supports multiple view types and modes."
+    "desc": "Display the status of your Philips Hue lights and light groups on your MagicMirror². Supports multiple view types and modes."
   },
   {
     "longname": "MMM-Hue",
@@ -1649,35 +1649,35 @@
     "id": "alberttwong/MMM-iFrame",
     "url": "https://github.com/alberttwong/MMM-iFrame",
     "author": "alberttwong",
-    "desc": "A simple way to add an iFrame of any web content to your MagicMirror. Supports multiple URLs and will rotate between them. Works with static pages or streams like Nest Cam, D-Link Cameras, Twitch.tv, YouTube and more."
+    "desc": "A simple way to add an iFrame of any web content to your MagicMirror². Supports multiple URLs and will rotate between them. Works with static pages or streams like Nest Cam, D-Link Cameras, Twitch.tv, YouTube and more."
   },
   {
     "longname": "MMM-iFrame-GSlides",
     "id": "jharttech/MMM-iFrame-GSlides",
     "url": "https://github.com/jharttech/MMM-iFrame-GSlides",
     "author": "jharttech",
-    "desc": "The MMM-iFrame-GSlides module is a module for MagicMirror. It is a simple way to add an iFrame of a published Google Slides Presentation to your MagicMirror."
+    "desc": "The MMM-iFrame-GSlides module is a module for MagicMirror². It is a simple way to add an iFrame of a published Google Slides Presentation to your MagicMirror²."
   },
   {
     "longname": "MMM-iFrame-Ping",
     "id": "AgP42/MMM-iFrame-Ping",
     "url": "https://github.com/AgP42/MMM-iFrame-Ping",
     "author": "AgP42",
-    "desc": "An iFrame module to display any web content to your MagicMirror (including YouTube, IP Cameras, ...). Several functionalities like auto-refresh, Ping the Url before to display it and last update time display."
+    "desc": "An iFrame module to display any web content to your MagicMirror² (including YouTube, IP Cameras, ...). Several functionalities like auto-refresh, Ping the Url before to display it and last update time display."
   },
   {
     "longname": "MMM-ioBroker",
     "id": "ioBroker/MMM-ioBroker",
     "url": "https://github.com/ioBroker/MMM-ioBroker",
     "author": "Bluefox",
-    "desc": "Display ioBroker values on MagicMirror."
+    "desc": "Display ioBroker values on MagicMirror²."
   },
   {
     "longname": "MMM-IPCam",
     "id": "RedNax67/MMM-IPCam",
     "url": "https://github.com/RedNax67/MMM-IPCam",
     "author": "RedNax67",
-    "desc": "Display ipcam feed on MagicMirror."
+    "desc": "Display ipcam feed on MagicMirror²."
   },
   {
     "longname": "MMM-ip",
@@ -1761,7 +1761,7 @@
     "id": "schnibel/MMM-Memo",
     "url": "https://github.com/schnibel/MMM-Memo",
     "author": "schnibel",
-    "desc": "Add one to many memo notes (\"post-it look & feel\") on your Magic Mirror. Content is manageable through HTTP get requests."
+    "desc": "Add one to many memo notes (\"post-it look & feel\") on your MagicMirror². Content is manageable through HTTP get requests."
   },
   {
     "longname": "MMM-MPR121",
@@ -1775,7 +1775,7 @@
     "id": "ottopaulsen/MMM-MQTT",
     "url": "https://github.com/ottopaulsen/MMM-MQTT",
     "author": "ottopaulsen",
-    "desc": "A Magic Mirror Module that subscribes topics from MQTT message queues, and displays the payload values in a table, with configurable labels."
+    "desc": "A MagicMirror² Module that subscribes topics from MQTT message queues, and displays the payload values in a table, with configurable labels."
   },
   {
     "longname": "MMM-MyCalendar",
@@ -1803,21 +1803,21 @@
     "id": "qistoph/MMM-nagios",
     "url": "https://github.com/qistoph/MMM-nagios",
     "author": "qistoph",
-    "desc": "A Magic Mirror Module for Nagios."
+    "desc": "A MagicMirror² Module for Nagios."
   },
   {
     "longname": "MMM-Nest-Cameras",
     "id": "michael5r/mmm-nest-cameras",
     "url": "https://github.com/michael5r/mmm-nest-cameras",
     "author": "michael5r",
-    "desc": "Displays your [Nest](https://www.nest.com) cameras on your Magic Mirror and gives you the option to show either live streams or constantly-updated snapshots."
+    "desc": "Displays your [Nest](https://www.nest.com) cameras on your MagicMirror² and gives you the option to show either live streams or constantly-updated snapshots."
   },
   {
     "longname": "MMM-Nest-Status",
     "id": "michael5r/mmm-nest-status",
     "url": "https://github.com/michael5r/mmm-nest-status",
     "author": "michael5r",
-    "desc": "Displays both your [Nest](https://www.nest.com) thermostats and protect smoke detectors on your Magic Mirror. Supports multiple designs & sizes."
+    "desc": "Displays both your [Nest](https://www.nest.com) thermostats and protect smoke detectors on your MagicMirror². Supports multiple designs & sizes."
   },
   {
     "longname": "MMM-Netatmo-Presence",
@@ -1880,7 +1880,7 @@
     "id": "mykle1/MMM-PC-Stats",
     "url": "https://github.com/mykle1/MMM-PC-Stats",
     "author": "mykle1",
-    "desc": "A MagicMirror module to get system stats from a PC board. Supports multiple core CPU's."
+    "desc": "A MagicMirror² module to get system stats from a PC board. Supports multiple core CPU's."
   },
   {
     "longname": "MMM-pihole-stats",
@@ -1922,7 +1922,7 @@
     "id": "semox/MMM-NearCompliments",
     "url": "https://github.com/semox/MMM-NearCompliments",
     "author": "semox",
-    "desc": "Uses HC-SR04 sensors to measure distance and display compliments if USER_PRESENCE is detected by MMM-PIR-Sensor and user is near the magic mirror."
+    "desc": "Uses HC-SR04 sensors to measure distance and display compliments if USER_PRESENCE is detected by MMM-PIR-Sensor and user is near the MagicMirror²."
   },
   {
     "longname": "MMM-portscan",
@@ -1943,7 +1943,7 @@
     "id": "mboskamp/MMM-Pull",
     "url": "https://github.com/mboskamp/MMM-Pull",
     "author": "mboskamp",
-    "desc": "Module to pull changes from module/MagicMirror repositories and restart your MagicMirror via Telegram commands."
+    "desc": "Module to pull changes from module/MagicMirror repositories and restart your MagicMirror² via Telegram commands."
   },
   {
     "longname": "MMM-Rest",
@@ -2006,7 +2006,7 @@
     "id": "surekap/MMM-ShairportMetadata",
     "url": "https://github.com/surekap/MMM-ShairportMetadata",
     "author": "surekap",
-    "desc": "A module to integrate Apple AirTunes/Airplay metadata coming via shairport-sync into the MagicMirror. Does not work with video or mirroring."
+    "desc": "A module to integrate Apple AirTunes/Airplay metadata coming via shairport-sync into the MagicMirror². Does not work with video or mirroring."
   },
   {
     "longname": "MMM-ShipmentTracking",
@@ -2104,21 +2104,21 @@
     "id": "MichMich/mmm-systemtemperature",
     "url": "https://github.com/MichMich/mmm-systemtemperature",
     "author": "MichMich",
-    "desc": "Display your Raspberry Pi's processor temperature on your MagicMirror."
+    "desc": "Display your Raspberry Pi's processor temperature on your MagicMirror²."
   },
   {
     "longname": "MMM-TelegramBot",
     "id": "eouia/MMM-TelegramBot",
     "url": "https://github.com/eouia/MMM-TelegramBot",
     "author": "eouia",
-    "desc": "Remote controlling your MagicMirror on Telegram."
+    "desc": "Remote controlling your MagicMirror² on Telegram."
   },
   {
     "longname": "MMM-temp-ds18b20",
     "id": "Thlb/MMM-temp-ds18b20",
     "url": "https://github.com/Thlb/MMM-temp-ds18b20",
     "author": "Thlb",
-    "desc": "Display DS18B20 sensor's temperature on your MagicMirror."
+    "desc": "Display DS18B20 sensor's temperature on your MagicMirror²."
   },
   {
     "longname": "MMM-TFL-Arrivals",
@@ -2139,7 +2139,7 @@
     "id": "cbrooker/MMM-Todoist",
     "url": "https://github.com/cbrooker/MMM-Todoist",
     "author": "CBrooker",
-    "desc": "Displays your todos from Todoist on your MagicMirror."
+    "desc": "Displays your todos from Todoist on your MagicMirror²."
   },
   {
     "longname": "MMM-Tools",
@@ -2153,7 +2153,7 @@
     "id": "MichMich/MMM-Toon",
     "url": "https://github.com/MichMich/MMM-Toon",
     "author": "MichMich",
-    "desc": "A Magic Mirror Module for the Toon Thermostat."
+    "desc": "A MagicMirror² Module for the Toon Thermostat."
   },
   {
     "longname": "MMM-TPLink",
@@ -2342,7 +2342,7 @@
     "id": "asimhsidd/MMM-VideoPlayer",
     "url": "https://github.com/asimhsidd/MMM-VideoPlayer",
     "author": "Asimsidd",
-    "desc": "A module for playing video on your magic mirror from any device on the same network."
+    "desc": "A module for playing video on your MagicMirror² from any device on the same network."
   },
   {
     "longname": "MMM-MP3Player",
@@ -2412,7 +2412,7 @@
     "id": "mykle1/MMM-BMW",
     "url": "https://github.com/mykle1/MMM-BMW",
     "author": "Mykle1",
-    "desc": "Minimalist Weather for the bottom_bar or thirds position of your MagicMirror."
+    "desc": "Minimalist Weather for the bottom_bar or thirds position of your MagicMirror²."
   },
   {
     "longname": "MMM-CARDS",
@@ -2482,7 +2482,7 @@
     "id": "Ax-LED/MMM-Dreambox",
     "url": "https://github.com/Ax-LED/MMM-Dreambox",
     "author": "AxLED",
-    "desc": "A module to connect a Dreambox or a Enigma2 Receiver (like VU or VU+) to MagicMirror and stream stations via omxplayer."
+    "desc": "A module to connect a Dreambox or a Enigma2 Receiver (like VU or VU+) to MagicMirror² and stream stations via omxplayer."
   },
   {
     "longname": "MMM-Dribbble",
@@ -2601,7 +2601,7 @@
     "id": "mykle1/MMM-Fortune",
     "url": "https://github.com/mykle1/MMM-Fortune",
     "author": "Mykle1",
-    "desc": "A fortune cookie for your MagicMirror."
+    "desc": "A fortune cookie for your MagicMirror²."
   },
   {
     "longname": "MMM-Globe",
@@ -2692,7 +2692,7 @@
     "id": "mykle1/MMM-JEOPARDY",
     "url": "https://github.com/mykle1/MMM-JEOPARDY",
     "author": "Mykle1",
-    "desc": "Spanning more than 40 years, the widely popular game show comes to your Magic Mirror. With more than 156,800 clues and answers from the show."
+    "desc": "Spanning more than 40 years, the widely popular game show comes to your MagicMirror². With more than 156,800 clues and answers from the show."
   },
   {
     "longname": "MMM-jokes",
@@ -2727,7 +2727,7 @@
     "id": "mykle1/MMM-Lottery",
     "url": "https://github.com/mykle1/MMM-Lottery",
     "author": "Mykle1",
-    "desc": "A MagicMirror module that gives you truly random lottery numbers, coinciding with many International lotteries."
+    "desc": "A MagicMirror² module that gives you truly random lottery numbers, coinciding with many International lotteries."
   },
   {
     "longname": "MMM-Meniny",
@@ -2748,14 +2748,14 @@
     "id": "eouia/MMM-LunarDate",
     "url": "https://github.com/eouia/MMM-LunarDate",
     "author": "eouia",
-    "desc": "MagicMirror Module - Lunar date of today (Chinese Zodiac)"
+    "desc": "MagicMirror² Module - Lunar date of today (Chinese Zodiac)"
   },
   {
     "longname": "MMM-JewishDate",
     "id": "yohaybn/MMM-JewishDate",
     "url": "https://github.com/yohaybn/MMM-JewishDate",
     "author": "yohaybn",
-    "desc": "MagicMirror Module - This module displays the current Jewish date."
+    "desc": "MagicMirror² Module - This module displays the current Jewish date."
   },
   {
     "longname": "MMM-Lunartic",
@@ -2818,7 +2818,7 @@
     "id": "nebulx29/MMM-nasaastropic",
     "url": "https://github.com/nebulx29/MMM-nasaastropic",
     "author": "nebulx29",
-    "desc": "A Magic Mirror Module displaying NASA's astronomy picture of the day."
+    "desc": "A MagicMirror² Module displaying NASA's astronomy picture of the day."
   },
   {
     "longname": "MMM-NASA",
@@ -2881,7 +2881,7 @@
     "id": "spelinski/MMM-PandorasMirror",
     "url": "https://github.com/spelinski/MMM-PandorasMirror",
     "author": "spelinski",
-    "desc": "A Magic Mirror module for streaming Pandora music."
+    "desc": "A MagicMirror² module for streaming Pandora music."
   },
   {
     "longname": "MMM-PetFinder",
@@ -2944,7 +2944,7 @@
     "id": "eouia/MMM-Rijks",
     "url": "https://github.com/eouia/MMM-Rijks",
     "author": "eouia",
-    "desc": "MagicMirror module for Rijks Museum. This was developed using the Rijksmuseum API."
+    "desc": "MagicMirror² module for Rijks Museum. This was developed using the Rijksmuseum API."
   },
   {
     "longname": "MMM-food2fork-recipes",
@@ -2972,7 +2972,7 @@
     "id": "kevinatown/MMM-Screencast",
     "url": "https://github.com/kevinatown/MMM-Screencast",
     "author": "kevinatown",
-    "desc": "Cast a video from your phone to the magic mirror (currently can only cast YouTube)"
+    "desc": "Cast a video from your phone to the MagicMirror² (currently can only cast YouTube)"
   },
   {
     "longname": "MMM-ScriptScheduler",
@@ -3035,7 +3035,7 @@
     "id": "Thlb/MMM-teamspeak3",
     "url": "https://github.com/Thlb/MMM-teamspeak3",
     "author": "Thlb",
-    "desc": "Display client list of a Teamspeak3 server on your MagicMirror."
+    "desc": "Display client list of a Teamspeak3 server on your MagicMirror²."
   },
   {
     "longname": "MMM-mumble",
@@ -3138,7 +3138,7 @@
   {
     "longname": "The Quote Catalog",
     "id": "MagicMirror-QuoteCatalog/",
-    "url": "https://github.com/salpar/MagicMirror-QuoteCatalog/",
+    "url": "https://github.com/salpar/MagicMirror²-QuoteCatalog/",
     "author": "salpar",
     "desc": "Displays a random quote from various movies, books, and people."
   },

@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Menu",
+    "TITLE": "MagicMirror² Menu",
 
     "EDIT_MENU_NAME": "Aanzicht aanpassen",
     "SHUTDOWN_MENU_NAME": "Stroom",
     "CONFIGURE_MENU_NAME": "config.js aanpassen",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Terug",
 
@@ -15,7 +15,7 @@
     "MONITORON": "Schakel monitor AAN",
     "MONITORTIMED": "Schakel monitor korstondig AAN",
     "RESTART": "Herstarten",
-    "RESTARTMM": "MagicMirror<sup>2</sup> herstarten",
+    "RESTARTMM": "MagicMirror² herstarten",
     "SHUTDOWN": "Uitschakelen",
 
     "SHOWALL": "Alles",
@@ -60,7 +60,7 @@
     "LOADING": "Laden &hellip;",
 
 	"UPDATE_MENU_NAME" : "Updates",
-	"UPDATEMM" : "MagicMirror<sup>2</sup> updaten",
+	"UPDATEMM" : "MagicMirror² updaten",
     "UPDATE_AVAILABLE" : "Update beschikbaar",
 
 	"ALERT_MENU_NAME" : "Waarschuwing",

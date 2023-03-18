@@ -1,4 +1,4 @@
-/* Magic Mirror Package List Downloader
+/* MagicMirror² Package List Downloader
  * Module: Remote Control
  *
  * Usage: 

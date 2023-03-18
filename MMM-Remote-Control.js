@@ -1,6 +1,6 @@
 /* global Module, Log, MM, config */
 
-/* Magic Mirror
+/* MagicMirror²
  * Module: Remote Control
  *
  * By Joseph Bethge

@@ -1,4 +1,4 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module Extension: Remote Control API
  *
  * By shbatm
@@ -484,7 +484,7 @@ module.exports = {
 
     checkInititialized: function(res) {
         if (!this.initialized) {
-            this.sendResponse(res, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?");
+            this.sendResponse(res, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror²?");
             return false;
         }
         return true;

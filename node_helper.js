@@ -1,4 +1,4 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module: Remote Control
  *
  * By Joseph Bethge

@@ -1,6 +1,6 @@
-# Magic Mirror Module: Remote Control w/ RESTful API
+# MagicMirror² Module: Remote Control w/ RESTful API
 
-This module for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
+This module for the [MagicMirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
 Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug everytime, am I right?
 Additionally you can hide and show modules on your mirror and do other cool stuff.
@@ -15,7 +15,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 
 ### Quick install
 
-If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer.
+If you followed the default installation instructions for the [MagicMirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer.
 The following command will download the installer and execute it:
 ```bash
 bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh)"
@@ -50,7 +50,7 @@ npm install
 },
 ```
 
-- (3) For security reasons, the MagicMirror (and therefore the Remote Control) is *not* reachable externally.
+- (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is *not* reachable externally.
 To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MichMich/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
 For example change `address` to `0.0.0.0` and add two allowed devices with IP-Adresses `192.168.0.42` and `192.168.0.50`:
 ```
@@ -63,7 +63,7 @@ You can also add multiple devices in an IP range (e.g. all devices with `192.168
     ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.1/120", "192.168.0.1/24"],
 ```
 
-- (4) Restart your Magic Mirror² (i.e. `pm2 restart MagicMirror`).
+- (4) Restart your MagicMirror² (i.e. `pm2 restart MagicMirror`).
 
 - (5) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
 
@@ -141,17 +141,17 @@ See some specific examples for controlling your mirror from other modules and ad
 | MONITORTOGGLE | Toggle the display on or off (with respective `"USER_PRESENCE"` notification. |
 | MONITORSTATUS | Report back the monitor status (on or off) |
 
-#### MagicMirror Control:
+#### MagicMirror² Control:
 
 | Action | Description |
 | :-: | ------------- |
-| RESTART | Restart your MagicMirror |
+| RESTART | Restart your MagicMirror² |
 | REFRESH | Refresh mirror page |
-| UPDATE | Update MagicMirror and any of it's modules |
+| UPDATE | Update MagicMirror² and any of it's modules |
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 
-#### MagicMirror Electron Browser Window Control:
+#### MagicMirror² Electron Browser Window Control:
 
 | Action | Description |
 | :-: | ------------- |

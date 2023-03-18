@@ -1,8 +1,8 @@
-## MagicMirror Remote Control API
+# MagicMirror² Remote Control API
 
 ## Introduction
 
-The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the Magic Mirror using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules.  In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notificiation.
+The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the MagicMirror² using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules.  In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notificiation.
 
 This expansion was developed by [shbatm](https://github.com/shbatm) using [juzim's MMM-Api](https://github.com/juzim/MMM-Api) and of-course, [jopyth's MMM-Remote-Control](https://github.com/jopyth/MMM-Remote-Control).
 

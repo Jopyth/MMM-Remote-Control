@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Menu",
+    "TITLE": "MagicMirror² Menu",
 
     "EDIT_MENU_NAME": "Afficher ou cacher les modules",
     "SHUTDOWN_MENU_NAME": "Alimentation",
     "CONFIGURE_MENU_NAME": "Éditer le fichier config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Retour",
 
@@ -15,7 +15,7 @@
     "MONITORON": "Allumer le miroir",
     "MONITORTIMED": "Allumer brièvement le miroir",
     "RESTART": "Redémarrer RPI",
-    "RESTARTMM": "Redémarrer MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Redémarrer MagicMirror²",
     "SHUTDOWN": "Éteindre RPI",
 
     "SHOWALL": "Tout voir",
@@ -63,7 +63,7 @@
     "FORCE_SHOW": "Fais-le quand même.",
 
     "UPDATE_MENU_NAME" : "Mises à jour",
-    "UPDATEMM" : "Update MagicMirror<sup>2</sup>",
+    "UPDATEMM" : "Update MagicMirror²",
     "UPDATE_AVAILABLE" : "Mise à jour disponible",
 
     "ALERT_MENU_NAME" : "Alerte",
