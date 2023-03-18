@@ -117,7 +117,7 @@ Module.register("MMM-Remote-Control", {
         if (notification === "RESTART") {
             setTimeout(function() {
                 document.location.reload();
-                console.log('Delayed REFRESH');
+                Log.log('Delayed REFRESH');
             }, 60000);
         }
         if (notification === "SHOW_ALERT") {

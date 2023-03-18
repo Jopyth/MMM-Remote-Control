@@ -12,6 +12,7 @@ const url = require("url");
 const fs = require("fs");
 const util = require("util");
 const exec = require("child_process").exec;
+const Log = require("logger");
 const os = require("os");
 const simpleGit = require("simple-git");
 const bodyParser = require("body-parser");
@@ -37,7 +38,7 @@ module.exports = NodeHelper.create(Object.assign({
             var self = this;
 
             this.initialized = false;
-            console.log("Starting node helper for: " + self.name);
+            Log.log("Starting node helper for: " + self.name);
 
             // load fall back translation
             self.loadTranslation("en");
@@ -287,7 +288,7 @@ module.exports = NodeHelper.create(Object.assign({
                     if (!isInList) {
                         sg.getRemotes(true, function(error, result) {
                             if (error) {
-                                console.log(error);
+                                Log.error(error);
                             }
                             try {
                                 var baseUrl = result[0].refs.fetch;
@@ -332,7 +333,7 @@ module.exports = NodeHelper.create(Object.assign({
                 let git = simpleGit(dir);
                 git.revparse(["HEAD"], function(error, result) {
                     if (error) {
-                        console.log(error);
+                        Log.error(error);
                     }
                     res.writeHead(302, { 'Location': "https://github.com/MichMich/MagicMirror/tree/" + result.trim() + "/modules/default/" + query.module });
                     res.end();
@@ -343,7 +344,7 @@ module.exports = NodeHelper.create(Object.assign({
             let git = simpleGit(modulePath);
             git.getRemotes(true, function(error, result) {
                 if (error) {
-                    console.log(error);
+                    Log.error(error);
                 }
                 var baseUrl = result[0].refs.fetch;
                 // replacements
@@ -352,7 +353,7 @@ module.exports = NodeHelper.create(Object.assign({
                 baseUrl = baseUrl.replace("git@", "https://");
                 git.revparse(["HEAD"], function(error, result) {
                     if (error) {
-                        console.log(error);
+                        Log.error(error);
                     }
                     res.writeHead(302, { 'Location': baseUrl + "/tree/" + result.trim() });
                     res.end();
@@ -403,12 +404,12 @@ module.exports = NodeHelper.create(Object.assign({
                         delete current.config[key];
                     }
                 }
-                // console.log(current.config);
+                // Log.log(current.config);
                 if (current.config === {}) {
                     delete current[config];
                     continue;
                 }
-                // console.log(current);
+                // Log.log(current);
             }
 
             return config;
@@ -613,7 +614,7 @@ module.exports = NodeHelper.create(Object.assign({
             let status = 200;
             let result = true;
             if (error) {
-                console.log(error);
+                Log.error(error);
                 response = { success: false, status: "error", reason: "unknown", info: error };
                 status = 400;
                 result = false;
@@ -790,7 +791,7 @@ module.exports = NodeHelper.create(Object.assign({
                     this.sendResponse(res);
                     return true;
                 } catch (err) {
-                    console.log("ERROR: ", err);
+                    Log.error("ERROR: ", err);
                     this.sendResponse(res, err, { reason: err.message });
                     return true;
                 }
@@ -868,13 +869,13 @@ module.exports = NodeHelper.create(Object.assign({
 
             simpleGit(path.resolve(__dirname + "/..")).clone(url, path.basename(url), function(error, result) {
                 if (error) {
-                    console.log(error);
+                    Log.error(error);
                     self.sendResponse(res, error);
                 } else {
                     var workDir = path.resolve(__dirname + "/../" + path.basename(url));
                     exec("npm install", { cwd: workDir, timeout: 120000 }, (error, stdout, stderr) => {
                         if (error) {
-                            console.log(error);
+                            Log.error(error);
                             self.sendResponse(res, error, Object.assign({ stdout: stdout, stderr: stderr }, data));
                         } else {
                             // success part
@@ -887,7 +888,7 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         updateModule: function(module, res) {
-            console.log("UPDATE " + (module || "MagicMirror"));
+            Log.log("UPDATE " + (module || "MagicMirror"));
 
             var self = this;
 
@@ -907,20 +908,20 @@ module.exports = NodeHelper.create(Object.assign({
                 }
             }
 
-            console.log("path: " + path + " name: " + name);
+            Log.log("path: " + path + " name: " + name);
 
             var git = simpleGit(path);
             git.reset('hard').then(() => {
                 git.pull((error, result) => {
                     if (error) {
-                        console.log(error);
+                        Log.error(error);
                         self.sendResponse(res, error);
                         return;
                     }
                     if (result.summary.changes) {
                         exec("npm install", { cwd: path, timeout: 120000 }, (error, stdout, stderr) => {
                             if (error) {
-                                console.log(error);
+                                Log.error(error);
                                 self.sendResponse(res, error, { stdout: stdout, stderr: stderr });
                             } else {
                                 // success part
@@ -946,7 +947,7 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         checkForExecError: function(error, stdout, stderr, res, data) {
-            if(error) console.log(stderr);
+            if(error) Log.error(stderr);
             this.sendResponse(res, error, data);
         },
 
@@ -965,7 +966,7 @@ module.exports = NodeHelper.create(Object.assign({
                 }
 
                 var actionName = query.action.toLowerCase();
-                console.log(`PM2 process: ${actionName} ${processName}`);
+                Log.log(`PM2 process: ${actionName} ${processName}`);
 
                 switch (actionName) {
                     case 'restart':
@@ -1029,7 +1030,7 @@ module.exports = NodeHelper.create(Object.assign({
                     if (self.in("no such file or directory", err.message)) {
                         return;
                     }
-                    console.log(err);
+                    Log.error(err);
                 } else {
                     data = JSON.parse(data.toString());
                     self.sendSocketNotification("DEFAULT_SETTINGS", data);
@@ -1057,7 +1058,7 @@ module.exports = NodeHelper.create(Object.assign({
             if ("customMenu" in this.thisConfig) {
                 let menuPath = path.resolve(__dirname + "/../../config/" + this.thisConfig.customMenu);
                 if (!fs.existsSync(menuPath)) {
-                    console.log(`MMM-Remote-Control customMenu Requested, but file:${menuPath} was not found`);
+                    Log.log(`MMM-Remote-Control customMenu Requested, but file:${menuPath} was not found`);
                     return;
                 }
                 fs.readFile(menuPath, (err, data) => {
