@@ -22,10 +22,10 @@
     "HIDEALL": "Alle",
 
     "ADD_MODULE": "Legg til modul",
-    "SEARCH": "Søk &hellip;",
+    "SEARCH": "Søk …",
     "INSTALLED": "Installert",
     "DOWNLOAD": "Last ned",
-    "DOWNLOADING": "Laster ned &hellip;",
+    "DOWNLOADING": "Laster ned …",
     "CODE_LINK": "Se kildekode",
     "BY": "av",
     "ADD_THIS": "Legg til denne modulen",
@@ -57,7 +57,7 @@
 
     "DONE": "Ferdig.",
     "ERROR": "Feil!",
-    "LOADING": "Laster &hellip;",
+    "LOADING": "Laster …",
 
     "LOCKSTRING_WARNING": "Denne modulen ble skjult av LIST_OF_MODULES, det kan ikke vises.",
     "FORCE_SHOW": "Gjør det likevel.",

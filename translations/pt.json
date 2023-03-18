@@ -22,10 +22,10 @@
     "HIDEALL": "Todos",
 
     "ADD_MODULE": "Adicionar módulo",
-    "SEARCH": "Procurar &hellip;",
+    "SEARCH": "Procurar …",
     "INSTALLED": "Instalado",
     "DOWNLOAD": "Descarregar",
-    "DOWNLOADING": "A descarregar &hellip;",
+    "DOWNLOADING": "A descarregar …",
     "CODE_LINK": "Ver o código",
     "BY": "por",
     "ADD_THIS": "Adicionar este módulo",
@@ -57,7 +57,7 @@
 
     "DONE": "Concluído.",
     "ERROR": "Erro!",
-    "LOADING": "A carregar &hellip;",
+    "LOADING": "A carregar …",
 
 	"UPDATE_MENU_NAME" : "Atualizações",
 	"UPDATEMM" : "Atualizar o MagicMirror²",

@@ -22,10 +22,10 @@
     "HIDEALL": "Semua",
 
     "ADD_MODULE": "Tambah modul",
-    "SEARCH": "Cari &hellip;",
+    "SEARCH": "Cari …",
     "INSTALLED": "Terinstal",
     "DOWNLOAD": "Unduh",
-    "DOWNLOADING": "Sedang mengunduh &hellip;",
+    "DOWNLOADING": "Sedang mengunduh …",
     "CODE_LINK": "Lihat kode",
     "BY": "oleh",
     "ADD_THIS": "Tambahkan modul ini",
@@ -57,7 +57,7 @@
 
     "DONE": "Selesai.",
     "ERROR": "Error!",
-    "LOADING": "Memuat &hellip;",
+    "LOADING": "Memuat …",
 
 	"UPDATE_MENU_NAME" : "Pembaharuan",
 	"UPDATEMM" : "Perbarui MagicMirror²",

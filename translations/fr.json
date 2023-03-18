@@ -22,10 +22,10 @@
     "HIDEALL": "Tout cacher",
 
     "ADD_MODULE": "Ajouter un module",
-    "SEARCH": "Rechercher &hellip;",
+    "SEARCH": "Rechercher …",
     "INSTALLED": "Installer",
     "DOWNLOAD": "Télécharger",
-    "DOWNLOADING": "Téléchargements &hellip;",
+    "DOWNLOADING": "Téléchargements …",
     "CODE_LINK": "Voir le code",
     "BY": "par",
     "ADD_THIS": "Ajouter ce module",
@@ -57,7 +57,7 @@
 
     "DONE": "Fait.",
     "ERROR": "Erreur!",
-    "LOADING": "Chargement &hellip;",
+    "LOADING": "Chargement …",
 
     "LOCKSTRING_WARNING": "Ce module a été masqué par LIST_OF_MODULES, il ne peut pas être affiché.",
     "FORCE_SHOW": "Fais-le quand même.",

@@ -25,10 +25,10 @@
     "HIDEALL": "Skjul alle",
 
     "ADD_MODULE": "Tilføj modul",
-    "SEARCH": "Søg &hellip;",
+    "SEARCH": "Søg …",
     "INSTALLED": "Installeret",
     "DOWNLOAD": "Download",
-    "DOWNLOADING": "Downloading &hellip;",
+    "DOWNLOADING": "Downloading …",
     "CODE_LINK": "Vis kode",
     "BY": "af",
     "ADD_THIS": "Tilføj dette modul",
@@ -60,7 +60,7 @@
 
     "DONE": "Færdig.",
     "ERROR": "Fejl!",
-    "LOADING": "Indlæser &hellip;",
+    "LOADING": "Indlæser …",
 
     "LOCKSTRING_WARNING": "Dette modul blev skjult af LIST_OF_MODULES, det kan ikke vises.",
     "FORCE_SHOW": "Gør det alligevel.",

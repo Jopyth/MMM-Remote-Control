@@ -22,10 +22,10 @@
     "HIDEALL": "Alla",
 
     "ADD_MODULE": "Lägg till modul",
-    "SEARCH": "Sök &hellip;",
+    "SEARCH": "Sök …",
     "INSTALLED": "Installerad",
     "DOWNLOAD": "Ladda ned",
-    "DOWNLOADING": "Laddar ner &hellip;",
+    "DOWNLOADING": "Laddar ner …",
     "CODE_LINK": "Titta på källkod",
     "BY": "av",
     "ADD_THIS": "Lägg till modul",
@@ -57,7 +57,7 @@
 
     "DONE": "Klart.",
     "ERROR": "Fel!",
-    "LOADING": "Laddar &hellip;",
+    "LOADING": "Laddar …",
 
 	"UPDATE_MENU_NAME" : "Uppdateringar",
 	"UPDATEMM" : "Uppdatera MagicMirror²",

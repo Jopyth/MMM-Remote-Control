@@ -22,10 +22,10 @@
     "HIDEALL": "Tutto",
 
     "ADD_MODULE": "Aggiungi modulo",
-    "SEARCH": "Cerca &hellip;",
+    "SEARCH": "Cerca …",
     "INSTALLED": "Installati",
     "DOWNLOAD": "Scarica",
-    "DOWNLOADING": "Sto scaricando &hellip;",
+    "DOWNLOADING": "Sto scaricando …",
     "CODE_LINK": "Vedi sorgente",
     "BY": "di",
     "ADD_THIS": "Aggiungi questo modulo",
@@ -57,7 +57,7 @@
 
     "DONE": "Fatto.",
     "ERROR": "Errore!",
-    "LOADING": "Sto caricando &hellip;",
+    "LOADING": "Sto caricando …",
 
     "LOCKSTRING_WARNING": "Questo modulo è stato nascosto da LIST_OF_MODULES e non può essere mostrato.",
     "FORCE_SHOW": "Procedi comunque.",

@@ -22,10 +22,10 @@
     "HIDEALL": "Alles",
 
     "ADD_MODULE": "Module toevoegen",
-    "SEARCH": "Zoeken &hellip;",
+    "SEARCH": "Zoeken …",
     "INSTALLED": "Gëinstalleerd",
     "DOWNLOAD": "Download",
-    "DOWNLOADING": "Downloaden &hellip;",
+    "DOWNLOADING": "Downloaden …",
     "CODE_LINK": "View code",
     "BY": "door",
     "ADD_THIS": "Voeg deze module toe",
@@ -57,7 +57,7 @@
 
     "DONE": "Klaar.",
     "ERROR": "Fout!",
-    "LOADING": "Laden &hellip;",
+    "LOADING": "Laden …",
 
 	"UPDATE_MENU_NAME" : "Updates",
 	"UPDATEMM" : "MagicMirror² updaten",

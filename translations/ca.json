@@ -25,10 +25,10 @@
     "HIDEALL": "Amagar Tots",
 
     "ADD_MODULE": "Afegir mòdul",
-    "SEARCH": "Buscar &hellip;",
+    "SEARCH": "Buscar …",
     "INSTALLED": "Instal.lat",
     "DOWNLOAD": "Descarrega",
-    "DOWNLOADING": "Descarregant &hellip;",
+    "DOWNLOADING": "Descarregant …",
     "CODE_LINK": "Veure còdig",
     "BY": "per",
     "ADD_THIS": "Afegir aquest mòdul",
@@ -60,7 +60,7 @@
 
     "DONE": "Fet.",
     "ERROR": "Error!",
-    "LOADING": "Carregant &hellip;",
+    "LOADING": "Carregant …",
 
     "LOCKSTRING_WARNING": "Aquest mòdul ha estat ocultat per LIST_OF_MODULES, no pot ser mostrat.",
     "FORCE_SHOW": "Fes-ho igualment.",
