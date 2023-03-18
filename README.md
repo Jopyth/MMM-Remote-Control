@@ -26,7 +26,7 @@ bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/m
 - (1) Clone this repository in your `modules` folder, and install dependencies:
 ```bash
 cd ~/MagicMirror/modules # adapt directory if you are using a different one
-git clone https://github.com/Jopyth/MMM-Remote-Control.git
+git clone https://github.com/Jopyth/MMM-Remote-Control
 cd MMM-Remote-Control
 npm install
 ```
