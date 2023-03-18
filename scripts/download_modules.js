@@ -26,7 +26,7 @@ var downloadModules = {
         callback: function(result) { console.log(result); }         // Callback to run on success or failure
     },
 
-    init: function(config) {
+    init(config) {
         if (!config) { config = {}; }
         this.config = Object.assign({}, this.defaults, config);
 
@@ -53,9 +53,9 @@ var downloadModules = {
         return modules;
     },
 
-    getPackages: function() {
+    getPackages() {
         fetch(this.config.sourceUrl)
-        .then(response => {
+        .then((response) => {
             if (response.status === 200) {
                 return response;
             } else if (response.statusCode === 401) {
@@ -68,8 +68,8 @@ var downloadModules = {
                 return;
             }
         })
-        .then(response => response.text())
-        .then(body => {
+        .then((response) => response.text())
+        .then((body) => {
             let modules = this.parseList(body);
             var json = JSON.stringify(modules, undefined, 2);
             var jsonPath = this.config.modulesFile;
@@ -82,7 +82,7 @@ var downloadModules = {
                 }
             });
         })
-        .catch(error => {
+        .catch((error) => {
             console.error("MODULE LIST ERROR: Could not load data.", error);
             this.config.callback("ERROR_LOADING_DATA");
             return;
@@ -90,7 +90,7 @@ var downloadModules = {
         return;
     },
 
-    checkLastModified: function() {
+    checkLastModified() {
         fs.stat(this.config.modulesFile, (err, stats) => {
             let mtime = Math.round(new Date(util.inspect(stats.mtime)).getTime() / 1000);
             let updatedAfter = new Date(Math.round(new Date().getTime() / 1000) - this.config.refreshRate).getTime();
@@ -106,7 +106,7 @@ var downloadModules = {
 };
 
 if (typeof module !== "undefined") {
-    module.exports = function(config) {
+    module.exports = function (config) {
         downloadModules.init(config);
         downloadModules.checkLastModified();
         return;
