@@ -17,6 +17,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 
 If you followed the default installation instructions for the [MagicMirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer.
 The following command will download the installer and execute it:
+
 ```bash
 bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh)"
 ```
@@ -24,6 +25,7 @@ bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/m
 ### Manual install
 
 - (1) Clone this repository in your `modules` folder, and install dependencies:
+
 ```bash
 cd ~/MagicMirror/modules # adapt directory if you are using a different one
 git clone https://github.com/Jopyth/MMM-Remote-Control
@@ -32,6 +34,7 @@ npm install
 ```
 
 - (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
+
 ```js
 {
     module: 'MMM-Remote-Control',
@@ -53,13 +56,16 @@ npm install
 - (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is *not* reachable externally.
 To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MichMich/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
 For example change `address` to `0.0.0.0` and add two allowed devices with IP-Adresses `192.168.0.42` and `192.168.0.50`:
-```
+
+```js
     address : '0.0.0.0',
     port: 8080,
     ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.42", "::ffff:192.168.0.50"],"
 ```
+
 You can also add multiple devices in an IP range (e.g. all devices with `192.168.0.X`):
-```
+
+```js
     ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.1/120", "192.168.0.1/24"],
 ```
 
@@ -80,6 +86,7 @@ npm install # install (new) dependencies
 ```
 
 Alternatively you can run the `installer.sh` script again:
+
 ```bash
 ~/MagicMirror/modules/MMM-Remote-Control/installer.sh
 ```
@@ -88,6 +95,7 @@ Alternatively you can run the `installer.sh` script again:
 
 You can check out specific versions in the following way.
 First look at which versions are available:
+
 ```bash
 cd MagicMirror/modules/MMM-Remote-Control # or wherever you installed the Mirror and the module
 git fetch # fetch all tags
@@ -95,12 +103,14 @@ git tag # display them
 ```
 
 The output should look similar to this:
+
 ```
 v1.0.0
 v1.1.0
 v1.1.1
 v1.1.2
 ```
+
 Then you can checkout that version with, for example `git checkout v1.0.0`, or use `git checkout master` to checkout the most recent version.
 
 ## Known limitations
@@ -112,16 +122,18 @@ If this happens, simply reconfigure and save it again.
 ## Call methods from other modules
 
 You can call any of the methods provided in the UI directly through a GET request, or a module notification.
-For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button. 
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button.
 
 ### Examples
 
 - Example for a REST API GET request to trigger a RaspberryPi restart:
+
 ```
 http://192.168.xxx.xxx:8080/api/restart
 ```
 
 - Example to trigger a RaspberryPi restart in your module:
+
 ```
 this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 ```
@@ -130,7 +142,7 @@ See some specific examples for controlling your mirror from other modules and ad
 
 ### List of actions
 
-#### System Control:
+#### System Control
 
 | Action | Description |
 | :-: | ------------- |
@@ -141,7 +153,7 @@ See some specific examples for controlling your mirror from other modules and ad
 | MONITORTOGGLE | Toggle the display on or off (with respective `"USER_PRESENCE"` notification. |
 | MONITORSTATUS | Report back the monitor status (on or off) |
 
-#### MagicMirror² Control:
+#### MagicMirror² Control
 
 | Action | Description |
 | :-: | ------------- |
@@ -151,7 +163,7 @@ See some specific examples for controlling your mirror from other modules and ad
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 
-#### MagicMirror² Electron Browser Window Control:
+#### MagicMirror² Electron Browser Window Control
 
 | Action | Description |
 | :-: | ------------- |
@@ -159,7 +171,7 @@ See some specific examples for controlling your mirror from other modules and ad
 | TOGGLEFULLSCREEN | Toggle fullscreen mode on and off. |
 | DEVTOOLS | Open the DevTools console window. |
 
-#### Module Control:
+#### Module Control
 
 | Action | Description |
 | :-: | ------------- |
@@ -169,7 +181,7 @@ See some specific examples for controlling your mirror from other modules and ad
 | FORCE | Force a module to show (see above for how to specify which one). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
 
-#### Alerts and Notifications:
+#### Alerts and Notifications
 
 | Action | Description |
 | :-: | ------------- |
@@ -253,7 +265,7 @@ You can create your own customized menu items by providing creating a JSON file 
 
 An example menu is provided in this module's folder, titled `custom_menu.example.json`. You can copy this to the `/config` folder and modify as you need.
 
-#### Key Components:
+#### Key Components
 
 | Name | Description |
 | :-: | - |

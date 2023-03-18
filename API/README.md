@@ -17,15 +17,15 @@ All URLs will be of the form: `http://magicmirrorip:8080/api/{your command}` and
 ### Basic examples for showing an Alert on the screen
 
 ```bash
-$ curl -X GET http://magicmirrorip:8080/api/module/alert/showalert?message=Hello&timer=2000
+curl -X GET http://magicmirrorip:8080/api/module/alert/showalert?message=Hello&timer=2000
 ```
 
 ```bash
 $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
   -H 'content-type: application/json' \
-  -d '{ 
-    "title": "Hello World!", 
-    "message": "Alert Successfully Shown!", 
+  -d '{
+    "title": "Hello World!",
+    "message": "Alert Successfully Shown!",
     "timer": 2000
     }'
 ```
@@ -33,14 +33,14 @@ $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
 ### Basic examples of sending a Module Notification
 
 ```bash
-$ curl -X GET http://magicmirrorip:8080/api/notification/HELLO_WORLD
+curl -X GET http://magicmirrorip:8080/api/notification/HELLO_WORLD
 ```
 
 ```bash
 $ curl -X POST http://magicmirrorip:8080/api/notification/HELLO_WORLD \
   -H 'content-type: application/json' \
-  -d '{ 
-    "mypayload": "Hello World!", 
+  -d '{
+    "mypayload": "Hello World!",
     "somthingelse": "Wooo!"
     }'
 ```
@@ -52,6 +52,7 @@ Providing an API key is recommended; however, remains optional. If you wish to u
 If you ran the `installer.sh` script when you installed the module, a non-canoical UUID is generated for you to use; you can use this unique code, or use any string you wish.
 
 ### Example Config Section
+
 ```js
 {
     module: 'MMM-Remote-Control'
@@ -64,18 +65,20 @@ If you ran the `installer.sh` script when you installed the module, a non-canoic
 ### Passing your API key
 
 The API Key can be passed in one of two ways, either as part of the query string at the end of the URL:
+
 ```bash
-$ curl -X GET http://magicmirrorip:8080/api/module/alert/showalert?message=Hello&timer=2000&apiKey=bc2e979db92f4741afad01d5d18eb8e2
+curl -X GET http://magicmirrorip:8080/api/module/alert/showalert?message=Hello&timer=2000&apiKey=bc2e979db92f4741afad01d5d18eb8e2
 ```
 
 It can also be passed as an Authorization Header:
+
 ```bash
 $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
   -H 'content-type: application/json' \
   -H 'Authorization: apiKey bc2e979db92f4741afad01d5d18eb8e2' \
-  -d '{ 
-    "title": "Hello World!", 
-    "message": "Alert Successfully Shown!", 
+  -d '{
+    "title": "Hello World!",
+    "message": "Alert Successfully Shown!",
     "timer": 2000
     }'
 ```
@@ -83,6 +86,7 @@ $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
 ***For convenience, the remainder of the examples omit the API Key***
 
 ## Secure Endpoints
+
 Since 2.2.0, and in a way to prevent malicious actions on your mirror, a new config was added. This config allow you to, in case you don't use an apikey or never use the API at all, prevent some endpoints to work without an apikey.
 As usual, this option can be disabled, but this will expose your Mirror to potentials hackers, so it's up to you to turn it off.
 
@@ -105,7 +109,7 @@ There are three general categories of API commands:
 **1. MMM-Remote-Control Internal Commands** -- these are used to call the existing commands that MMM-Remote-Control already exposes.  For example, to turn off the monitor ("MONITOROFF"):
 
 ```bash
-            $ curl -X GET http://magicmirrorip:8080/api/monitor/off
+            curl -X GET http://magicmirrorip:8080/api/monitor/off
 ```
 
 **2. External APIs (Guessed)** -- when this module first loads, it parses all of the installed modules' source code and checks for any custom notifications that are used.  From this basic search, it tries to "guess" notification actions that may be valid, without them being explicitly defined anywhere else.  For example, the "alert" command examples above are not defined within this module, the 'alert' module just looks for a notification, "SHOW_ALERT"--this is exposed as a `/module/alert/showalert` action in the External API processor.  Full credit to this idea goes to `juzim` from the MMM-Api module.
@@ -118,7 +122,7 @@ The majority of MMM-Remote-Control's abilities are extended to the API (this is 
 
 Review the API documentation online [here](https://ezeholz.github.io/MMM-Remote-Control/)
 
-Or check it in your own installation using http://ip-of-your-mirror:8080/api/docs
+Or check it in your own installation using <http://ip-of-your-mirror:8080/api/docs>
 
 ### 2. External APIs (Guessed)
 
@@ -131,13 +135,13 @@ As discussed above, these methods are guessed based on your currently installed 
 
 - *NOTE:* Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want. Consult each modules' README for details on what notifications can be used and how.
 
-#### Example:
+#### Example
 
 ```bash
-$ curl -X GET http://magicmirrorip:8080/api/module/newsfeed
+curl -X GET http://magicmirrorip:8080/api/module/newsfeed
 ```
 
-#### Returns:
+#### Returns
 
 ```json
 {
@@ -187,17 +191,17 @@ If correctly formated, any details sent here will override the "guessed" action 
 
 ```js
 let payload = {
-  module: this.name, 
-  path: "modulename", 
-  actions: {   
-    actionName: { 
-        method: "GET", 
-        notification: "NOTIFICATION_TO_SEND", 
-        payload: ObjectToSend, 
+  module: this.name,
+  path: "modulename",
+  actions: {
+    actionName: {
+        method: "GET",
+        notification: "NOTIFICATION_TO_SEND",
+        payload: ObjectToSend,
         prettyName: "Action Name"
     },
-    anotherActionName: { 
-        method: "POST", 
+    anotherActionName: {
+        method: "POST",
         notification: "NOTIFICATION_TO_SEND"
     }
   }
@@ -216,7 +220,7 @@ this.sendNotification("REGISTER_API", payload);
 | `prettyName` | *Optional:* You can specify a Formatted Name to use in dynamic menus, like the MMM-Remote-Control Module Control menu, otherwise one will be guessed based on the Notification text.
 | `payload` | *Optional:* If you always want the module to send the same `payload`, you can provide an `Object` here. It will be merged into the `payload` sent with the notification, which will also include:<br>1. URL Parameter, if used. See notes on `payload` Object below.<br>2. Query String, if used. API key will be removed.<br>3. Request body, if `POST` method is used and a body sent.<br>4. Finally, this parameter.
 
-#### About the `payload` Object 
+#### About the `payload` Object
 
 Your module will be sent a `payload` with the notification, depending on the request details, and if you provided a `payload` Object to send. It is a merged object, containing one or more of the following inputs.
 
