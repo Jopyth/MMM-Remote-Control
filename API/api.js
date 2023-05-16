@@ -15,7 +15,7 @@ const bodyParser = require("body-parser");
 const express = require("express");
 
 module.exports = {
-    /* getApiKey 
+    /* getApiKey
      * Middleware method for ExpressJS to check if an API key is provided.
      * Only checks for an API key if one is defined in the module's config section.
      */
@@ -36,7 +36,7 @@ module.exports = {
                 this.secureEndpoints = true;
             }
         }
-        
+
     },
 
 
@@ -112,11 +112,11 @@ module.exports = {
 
         this.expressApp.use(bodyParser.urlencoded({ extended: true }));
         this.expressApp.use(bodyParser.json());
-        
+
         this.expressApp.use('/api/docs', express.static(path.join(__dirname, '../docs'))); // Docs without apikey
 
         this.expressRouter = express.Router();
-        
+
         // Route for testing the api at http://mirror:8080/api/test
         this.expressRouter.route(['/test','/']) // Test without apiKey
             .get((req, res) => {
@@ -183,7 +183,7 @@ module.exports = {
             console.log(req.path);
             self.executeQuery(this.checkDelay({ action: r }, req), res);
         });
-        
+
         this.expressRouter.route('/classes/:value')
             .get((req, res) => {
                 var classes = self.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
@@ -194,7 +194,7 @@ module.exports = {
                		res.status(400).json({ success: false, message: `Invalid value ${val} provided in request. Use /api/classes to see actual values` });
                	}
             });
-            
+
         this.expressRouter.route('/command/:value')
             .get((req, res) => {
                 if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
@@ -238,7 +238,7 @@ module.exports = {
                     res.status(400).json({ success: false, message: "Invalid URL provided in request body" });
                 }
             });
-        
+
         //edit config, payload is completely new config object with your changes(edits).
         this.expressRouter.route('/config/edit')
             .get((req, res) => {
@@ -326,12 +326,12 @@ module.exports = {
         }
         return query;
     },
-    
+
     mergeData: function() {
         var extApiRoutes = this.externalApiRoutes;
         var modules = this.configData.moduleData
         var query = {success: true, data: []};
-        
+
         modules.forEach((mod) => {
             if (extApiRoutes[mod.name] === undefined) {
                 query.data.push(mod);
@@ -339,25 +339,25 @@ module.exports = {
                 query.data.push(Object.assign({},mod, {actions: extApiRoutes[mod.name].actions}));
             }
         })
-        
+
         return query;
     },
 
     answerModuleApi: function(req, res) {
         if (!this.checkInititialized(res)) { return; }
         var dataMerged = this.mergeData().data
-        
+
         if (!req.params.moduleName) {
             res.json({ success: true, data: dataMerged });
             return;
         }
-        
+
         let modData = [];
         if(req.params.moduleName !== 'all') {
             modData = dataMerged.filter(m => {
                 return (req.params.moduleName.includes(m.identifier));
             });
-            if (!modData) {
+            if (!modData.length) {
                 modData = dataMerged.filter(m => {
                     return (req.params.moduleName.includes(m.name));
                 });
@@ -365,26 +365,26 @@ module.exports = {
         } else {
             modData = dataMerged;
         }
-    
+
         if (!modData.length) {
             res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
             return;
-        } 
-        
+        }
+
         if (!req.params.action) {
             res.json({ success: true, data: modData });
             return;
         }
-        
+
         var action = req.params.action.toUpperCase();
-        
+
         if (["SHOW", "HIDE", "FORCE", "TOGGLE", "DEFAULTS"].indexOf(action) !== -1) { // /api/modules part of the code
-            
+
             if (action === "DEFAULTS") {
                 this.answerGet({ data: "defaultConfig", module: mod.name }, res);
                 return;
             }
-            
+
             if (req.params.moduleName === "all") {
                 let query = { module: "all" };
                 if (action === "FORCE") {
@@ -396,7 +396,7 @@ module.exports = {
                 this.executeQuery(this.checkDelay(query, req), res);
                 return;
             }
-            
+
             modData.forEach(mod => {
                 let query = { module: mod.identifier };
                 if (action === "FORCE") {
@@ -410,9 +410,9 @@ module.exports = {
             this.sendSocketNotification("UPDATE");
             return;
         }
-        
+
         action = modData[0].actions[req.params.action]
-        
+
         if (action) {
             if ("method" in action && action.method !== req.method) {
                 res.status(400).json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
@@ -420,9 +420,9 @@ module.exports = {
             }
             this.answerNotifyApi(req, res, action);
         }
-        
+
     },
-    
+
     answerNotifyApi: function(req, res, action) {
         // Build the payload to send with our notification.
         let n = "";
