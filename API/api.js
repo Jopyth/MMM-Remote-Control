@@ -357,7 +357,7 @@ module.exports = {
             modData = dataMerged.filter(m => {
                 return (req.params.moduleName.includes(m.identifier));
             });
-            if (!modData) {
+            if (!modData.length) {
                 modData = dataMerged.filter(m => {
                     return (req.params.moduleName.includes(m.name));
                 });
