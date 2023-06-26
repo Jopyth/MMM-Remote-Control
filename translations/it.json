@@ -1,10 +1,10 @@
 {
-    "TITLE": "Menù MagicMirror",
+    "TITLE": "Menù MagicMirror²",
 
     "EDIT_MENU_NAME": "Modifica vista",
     "SHUTDOWN_MENU_NAME": "Alimentazione",
     "CONFIGURE_MENU_NAME": "Modifica config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Indietro",
 
@@ -15,17 +15,17 @@
     "MONITORON": "Accendi il monitor",
     "MONITORTIMED": "Accendi brevemente il monitor",
     "RESTART": "Riavvia",
-    "RESTARTMM": "Riavvia MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Riavvia MagicMirror²",
     "SHUTDOWN": "Spegni",
 
     "SHOWALL": "Tutto",
     "HIDEALL": "Tutto",
 
     "ADD_MODULE": "Aggiungi modulo",
-    "SEARCH": "Cerca &hellip;",
+    "SEARCH": "Cerca …",
     "INSTALLED": "Installati",
     "DOWNLOAD": "Scarica",
-    "DOWNLOADING": "Sto scaricando &hellip;",
+    "DOWNLOADING": "Sto scaricando …",
     "CODE_LINK": "Vedi sorgente",
     "BY": "di",
     "ADD_THIS": "Aggiungi questo modulo",
@@ -57,13 +57,13 @@
 
     "DONE": "Fatto.",
     "ERROR": "Errore!",
-    "LOADING": "Sto caricando &hellip;",
+    "LOADING": "Sto caricando …",
 
     "LOCKSTRING_WARNING": "Questo modulo è stato nascosto da LIST_OF_MODULES e non può essere mostrato.",
     "FORCE_SHOW": "Procedi comunque.",
 
     "UPDATE_MENU_NAME" : "Aggiornamenti",
-    "UPDATEMM" : "Aggiorna MagicMirror<sup>2</sup>",
+    "UPDATEMM" : "Aggiorna MagicMirror²",
     "UPDATE_AVAILABLE" : "Aggiornamento disponibile",
 
     "ALERT_MENU_NAME" : "Avviso",

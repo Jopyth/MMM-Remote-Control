@@ -31,7 +31,7 @@ body:
       required: true
   - type: input
     attributes:
-      label: MagicMirror Version
+      label: MagicMirror² Version
       description: |
         example:
         - MM: 2.16.0

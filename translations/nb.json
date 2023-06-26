@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Meny",
+    "TITLE": "MagicMirror² Meny",
 
     "EDIT_MENU_NAME": "Rediger visning",
     "SHUTDOWN_MENU_NAME": "Strøm",
     "CONFIGURE_MENU_NAME": "Rediger config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Tilbake",
 
@@ -15,17 +15,17 @@
     "MONITORON": "Slå på skjermen",
     "MONITORTIMED": "Slå skjermen på kort",
     "RESTART": "Omstart",
-    "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Restart MagicMirror²",
     "SHUTDOWN": "Slå av",
 
     "SHOWALL": "Alle",
     "HIDEALL": "Alle",
 
     "ADD_MODULE": "Legg til modul",
-    "SEARCH": "Søk &hellip;",
+    "SEARCH": "Søk …",
     "INSTALLED": "Installert",
     "DOWNLOAD": "Last ned",
-    "DOWNLOADING": "Laster ned &hellip;",
+    "DOWNLOADING": "Laster ned …",
     "CODE_LINK": "Se kildekode",
     "BY": "av",
     "ADD_THIS": "Legg til denne modulen",
@@ -57,13 +57,13 @@
 
     "DONE": "Ferdig.",
     "ERROR": "Feil!",
-    "LOADING": "Laster &hellip;",
+    "LOADING": "Laster …",
 
     "LOCKSTRING_WARNING": "Denne modulen ble skjult av LIST_OF_MODULES, det kan ikke vises.",
     "FORCE_SHOW": "Gjør det likevel.",
 
 	"UPDATE_MENU_NAME" : "Oppdateringer",
-	"UPDATEMM" : "Oppdater MagicMirror<sup>2</sup>",
+	"UPDATEMM" : "Oppdater MagicMirror²",
     "UPDATE_AVAILABLE" : "Oppdatering tilgjengelig",
 
 	"ALERT_MENU_NAME" : "Varsling",

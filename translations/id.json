@@ -1,10 +1,10 @@
 {
-    "TITLE": "Menu Magic Mirror",
+    "TITLE": "Menu MagicMirror²",
 
     "EDIT_MENU_NAME": "Sunting tampilan",
     "SHUTDOWN_MENU_NAME": "Power",
     "CONFIGURE_MENU_NAME": "Sunting config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Kembali",
 
@@ -15,17 +15,17 @@
     "MONITORON": "Nyalakan monitor",
     "MONITORTIMED": "Nyalakan monitor sebentar",
     "RESTART": "Restart",
-    "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Restart MagicMirror²",
     "SHUTDOWN": "Matikan",
 
     "SHOWALL": "Semua",
     "HIDEALL": "Semua",
 
     "ADD_MODULE": "Tambah modul",
-    "SEARCH": "Cari &hellip;",
+    "SEARCH": "Cari …",
     "INSTALLED": "Terinstal",
     "DOWNLOAD": "Unduh",
-    "DOWNLOADING": "Sedang mengunduh &hellip;",
+    "DOWNLOADING": "Sedang mengunduh …",
     "CODE_LINK": "Lihat kode",
     "BY": "oleh",
     "ADD_THIS": "Tambahkan modul ini",
@@ -57,10 +57,10 @@
 
     "DONE": "Selesai.",
     "ERROR": "Error!",
-    "LOADING": "Memuat &hellip;",
+    "LOADING": "Memuat …",
 
 	"UPDATE_MENU_NAME" : "Pembaharuan",
-	"UPDATEMM" : "Perbarui MagicMirror<sup>2</sup>",
+	"UPDATEMM" : "Perbarui MagicMirror²",
     "UPDATE_AVAILABLE" : "Pembaharuan tersedia",
 
 	"ALERT_MENU_NAME" : "Peringatan",

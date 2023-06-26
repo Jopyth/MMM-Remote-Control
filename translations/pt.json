@@ -1,10 +1,10 @@
 {
-    "TITLE": "Menu do Magic Mirror",
+    "TITLE": "Menu do MagicMirror²",
 
     "EDIT_MENU_NAME": "Editar a aparência",
     "SHUTDOWN_MENU_NAME": "Ligar/Desligar",
     "CONFIGURE_MENU_NAME": "Editar o config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Voltar",
 
@@ -15,17 +15,17 @@
     "MONITORON": "Ligar o monitor",
     "MONITORTIMED": "Ligar o monitor temporariamente",
     "RESTART": "Reiniciar",
-    "RESTARTMM": "Reiniciar o MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Reiniciar o MagicMirror²",
     "SHUTDOWN": "Desligar",
 
     "SHOWALL": "Todos",
     "HIDEALL": "Todos",
 
     "ADD_MODULE": "Adicionar módulo",
-    "SEARCH": "Procurar &hellip;",
+    "SEARCH": "Procurar …",
     "INSTALLED": "Instalado",
     "DOWNLOAD": "Descarregar",
-    "DOWNLOADING": "A descarregar &hellip;",
+    "DOWNLOADING": "A descarregar …",
     "CODE_LINK": "Ver o código",
     "BY": "por",
     "ADD_THIS": "Adicionar este módulo",
@@ -57,10 +57,10 @@
 
     "DONE": "Concluído.",
     "ERROR": "Erro!",
-    "LOADING": "A carregar &hellip;",
+    "LOADING": "A carregar …",
 
 	"UPDATE_MENU_NAME" : "Atualizações",
-	"UPDATEMM" : "Atualizar o MagicMirror<sup>2</sup>",
+	"UPDATEMM" : "Atualizar o MagicMirror²",
     "UPDATE_AVAILABLE" : "Atualização disponível",
 
 	"ALERT_MENU_NAME" : "Alerta",
