@@ -334,7 +334,7 @@ module.exports = {
             if (extApiRoutes[mod.name] === undefined) {
                 query.data.push(mod);
             } else {
-                query.data.push(Object.assign({},mod, {actions: extApiRoutes[mod.name].actions}));
+                query.data.push(Object.assign({}, mod, {actions: extApiRoutes[mod.name].actions, urlpath: extApiRoutes[mod.name].path}));
             }
         })
 
@@ -350,16 +350,12 @@ module.exports = {
             return;
         }
 
-        let modData = [];
-        if(req.params.moduleName !== 'all') {
+        let modData;
+        if (req.params.moduleName !== 'all') {
             modData = dataMerged.filter(m => {
-                return (req.params.moduleName.includes(m.identifier));
+                const name = req.params.moduleName;
+                return name.includes(m.identifier) || name.includes(m.name) || name.includes(m.urlpath);
             });
-            if (!modData) {
-                modData = dataMerged.filter(m => {
-                    return (req.params.moduleName.includes(m.name));
-                });
-            }
         } else {
             modData = dataMerged;
         }
