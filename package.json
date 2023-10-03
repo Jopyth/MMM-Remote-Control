@@ -1,6 +1,6 @@
 {
   "name": "Magic-Mirror-Module-Remote-Control",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "description": "This module for the Magic Mirror allows you to shutdown and configure your mirror through a web browser.",
   "repository": {
     "type": "git",
@@ -22,8 +22,9 @@
   "homepage": "git+https://github.com/jopyth/MMM-Remote-Control#readme",
   "dependencies": {
     "body-parser": "latest",
-    "simple-git": "latest",
     "lodash": "latest",
+    "node-fetch": "^2.7.0",
+    "simple-git": "latest",
     "uuid": "^3.3.2"
   }
 }
