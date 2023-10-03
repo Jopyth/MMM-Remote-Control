@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Menu 魔镜菜单",
+    "TITLE": "MagicMirror² Menu 魔镜菜单",
 
     "EDIT_MENU_NAME": "编辑界面",
     "SHUTDOWN_MENU_NAME": "电源",
     "CONFIGURE_MENU_NAME": "编辑 config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "返回",
 
@@ -15,7 +15,7 @@
     "MONITORON": "打开显示器",
     "MONITORTIMED": "短暂打开显示器",
     "RESTART": "重启",
-    "RESTARTMM": "重启 MagicMirror<sup>2</sup>",
+    "RESTARTMM": "重启 MagicMirror²",
     "SHUTDOWN": "关闭",
     "FULLSCREEN": "切换全屏",
     "MINIMIZE": "最小化魔镜",
@@ -25,10 +25,10 @@
     "HIDEALL": "关闭全部",
 
     "ADD_MODULE": "添加模块",
-    "SEARCH": "搜索 &hellip;",
+    "SEARCH": "搜索 …",
     "INSTALLED": "安装",
     "DOWNLOAD": "下载",
-    "DOWNLOADING": "下载中 &hellip;",
+    "DOWNLOADING": "下载中 …",
     "CODE_LINK": "查看代码",
     "BY": "by",
     "ADD_THIS": "添加此模块",
@@ -60,13 +60,13 @@
 
     "DONE": "完成.",
     "ERROR": "错误!",
-    "LOADING": "加载中 &hellip;",
+    "LOADING": "加载中 …",
 
     "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
     "FORCE_SHOW": "继续.",
 
 	"UPDATE_MENU_NAME" : "更新",
-	"UPDATEMM" : "更新 MagicMirror<sup>2</sup>",
+	"UPDATEMM" : "更新 MagicMirror²",
     "UPDATE_AVAILABLE" : "更新可用",
 
 	"ALERT_MENU_NAME" : "通知",
@@ -82,7 +82,7 @@
     "FORM_SECONDS" : "显示时长(秒):",
 
 
-    "RESPONSE_ERROR": "操作失败. 查看 MagicMirror<sup>2</sup> 日志获取更多信息",
+    "RESPONSE_ERROR": "操作失败. 查看 MagicMirror² 日志获取更多信息",
     "MODULE_CONTROLS": "模块控制",
     "CUSTOM_MENU": "自定义菜单"
 }

@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Men&uuml;",
+    "TITLE": "MagicMirror² Menü",
 
     "EDIT_MENU_NAME": "Ansicht editieren",
     "SHUTDOWN_MENU_NAME": "Energieoptionen",
     "CONFIGURE_MENU_NAME": "Einstellungen",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Zurück",
 
@@ -14,29 +14,29 @@
     "MONITOROFF": "Bildschirm ausschalten",
     "MONITORON": "Bildschirm einschalten",
     "RESTART": "Neu starten",
-    "RESTARTMM": "Starte MagicMirror<sup>2</sup> neu",
+    "RESTARTMM": "Starte MagicMirror² neu",
     "SHUTDOWN": "Ausschalten",
 
     "SHOWALL": "Alle",
     "HIDEALL": "Alle",
 
     "ADD_MODULE": "Neues Modul",
-    "SEARCH": "Suchen &hellip;",
+    "SEARCH": "Suchen …",
     "INSTALLED": "Installiert",
     "DOWNLOAD": "Download",
-    "DOWNLOADING": "Downloading &hellip;",
+    "DOWNLOADING": "Downloading …",
     "CODE_LINK": "Code ansehen",
     "BY": "von",
-    "ADD_THIS": "Hinzuf&uuml;gen",
+    "ADD_THIS": "Hinzufügen",
     "HELP": "Hilfe",
-    "MENU": "Men&uuml;",
+    "MENU": "Menü",
     "RESET": "Reset",
     "NO_HEADER": "(kein Header)",
     "NO_POSITION": "(unsichtbar)",
     "ADD_ENTRY": "Neuer Eintrag",
     "NEW_ENTRY_NAME": "(Name eintragen)",
-    "DELETE_ENTRY": "L&ouml;schen",
-    "UNSAVED_CHANGES": "Nicht gespeicherte &Auml;nderungen",
+    "DELETE_ENTRY": "Löschen",
+    "UNSAVED_CHANGES": "Nicht gespeicherte Änderungen",
     "OK": "Ok",
     "DISCARD": "Verwerfen",
     "CANCEL": "Abbrechen",
@@ -44,7 +44,7 @@
     "NO_MODULES_LOADED": "Keine Module geladen.",
     "SAVE": "Speichern",
 
-    "EXPERIMENTAL": "Dies ist ein experimentelles Feature, es k&ouml;nnte Probleme verursachen. Mache ein Backup von deiner config!<br>Weiter machen?",
+    "EXPERIMENTAL": "Dies ist ein experimentelles Feature, es könnte Probleme verursachen. Mache ein Backup von deiner config!<br>Weiter machen?",
     "PANIC": "Lieber nicht.",
     "NO_RISK_NO_FUN": "Ich liebe das Risiko!",
 
@@ -56,13 +56,11 @@
 
     "DONE": "Fertig.",
     "ERROR": "Fehler!",
-    "LOADING": "Lade &hellip;",
+    "LOADING": "Lade …",
 
     "UPDATE_MENU_NAME" : "Updates",
-    "UPDATEMM" : "Update MagicMirror<sup>2</sup>",
-    "UPDATE_AVAILABLE" : "Update verf&uuml;gbar",
-
-    "REFRESHMM" : "Refresh Browser",
+    "UPDATEMM" : "Update MagicMirror²",
+    "UPDATE_AVAILABLE" : "Update verfügbar",
 
     "ALERT_MENU_NAME" : "Alert",
     "SENDALERT" : "Senden",

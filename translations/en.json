@@ -1,10 +1,10 @@
 {
-    "TITLE": "Magic Mirror Menu",
+    "TITLE": "MagicMirror² Menu",
 
     "EDIT_MENU_NAME": "Edit view",
     "SHUTDOWN_MENU_NAME": "Power",
     "CONFIGURE_MENU_NAME": "Edit config.js",
-    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+    "VIEW_MIRROR": "MagicMirror²",
 
     "BACK": "Back",
 
@@ -15,7 +15,7 @@
     "MONITORON": "Turn monitor ON",
     "MONITORTIMED": "Turn monitor ON briefly",
     "RESTART": "Restart",
-    "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
+    "RESTARTMM": "Restart MagicMirror²",
     "SHUTDOWN": "Shutdown",
     "FULLSCREEN": "Toggle Fullscreen",
     "MINIMIZE": "Minimize Browser",
@@ -25,10 +25,10 @@
     "HIDEALL": "All",
 
     "ADD_MODULE": "Add module",
-    "SEARCH": "Search &hellip;",
+    "SEARCH": "Search …",
     "INSTALLED": "Installed",
     "DOWNLOAD": "Download",
-    "DOWNLOADING": "Downloading &hellip;",
+    "DOWNLOADING": "Downloading …",
     "CODE_LINK": "View code",
     "BY": "by",
     "ADD_THIS": "Add this module",
@@ -60,13 +60,13 @@
 
     "DONE": "Done.",
     "ERROR": "Error!",
-    "LOADING": "Loading &hellip;",
+    "LOADING": "Loading …",
 
     "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
     "FORCE_SHOW": "Do it anyway.",
 
 	"UPDATE_MENU_NAME" : "Updates",
-	"UPDATEMM" : "Update MagicMirror<sup>2</sup>",
+	"UPDATEMM" : "Update MagicMirror²",
     "UPDATE_AVAILABLE" : "Update available",
 
 	"ALERT_MENU_NAME" : "Alert",

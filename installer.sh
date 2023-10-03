@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# This is an experimental installer script for MagicMirror2 Remote-Control
+# This is an experimental installer script for MagicMirror² Remote-Control
 
 echo ""
-echo "Installation for the MagicMirror2 Remote-Control module started!"
+echo "Installation for the MagicMirror² Remote-Control module started!"
 echo ""
 echo "Notice: This script and the installed software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software."
 echo ""
@@ -49,7 +49,7 @@ else
         # found it again
         echo -n ""
     else
-        echo "Could not find MagicMirror2 installation directory."
+        echo "Could not find MagicMirror² installation directory."
         echo "Please start this script again from the MagicMirror directory."
         exit 1
     fi
@@ -101,7 +101,7 @@ if [ -d "$MM_HOME/modules/$MODULE_NAME" ] ; then
         echo "Already installed, not upgrading."
     fi
 else
-    echo "MagicMirror2 detected in: $MM_HOME"
+    echo "MagicMirror² detected in: $MM_HOME"
     echo ""
     if check_yes "Is this correct and do you want to start installation?"; then
             echo ""
@@ -198,6 +198,6 @@ echo ""
 echo "   Github : https://github.com/$FORK/$MODULE_NAME"
 echo "   Forum  : http://forum.magicmirror.builders"
 echo ""
-echo "Do not forget to restart your MagicMirror2 to activate the module! Installation finished."
+echo "Do not forget to restart your MagicMirror² to activate the module! Installation finished."
 echo ""
 exit 0

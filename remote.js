@@ -29,7 +29,7 @@ var Remote = {
      * Returns a socket object. If it doesn"t exist, it"s created.
      * It also registers the notification callback.
      */
-    socket: function() {
+    socket() {
         if (typeof this._socket === "undefined") {
             this._socket = this._socket = new MMSocket(this.name);
         }
@@ -48,7 +48,7 @@ var Remote = {
      * argument notification string - The identifier of the notification.
      * argument payload mixed - The payload of the notification.
      */
-    sendSocketNotification: function(notification, payload) {
+    sendSocketNotification(notification, payload) {
         this.socket().sendNotification(notification, payload);
     },
 
@@ -58,7 +58,7 @@ var Remote = {
      * argument notification string - The identifier of the notification.
      * argument payload mixed - The payload of the notification.
      */
-    socketNotificationReceived: function(notification, payload) {
+    socketNotificationReceived(notification, payload) {
         if (notification === "REMOTE_ACTION_RESULT") {
             // console.log("Result received:", JSON.stringify(payload, undefined, 4));
             if ("action" in payload && payload.action === "INSTALL") {
@@ -120,34 +120,34 @@ var Remote = {
         }
     },
 
-    loadButtons: function(buttons) {
+    loadButtons(buttons) {
         Object.keys(buttons).forEach(key => {
             document.getElementById(key).addEventListener("click", buttons[key], false);
         });
         console.log("buttons loaded");
     },
 
-    translate: function(pattern) {
+    translate(pattern) {
         return this.translations[pattern];
     },
 
-    hasClass: function(element, name) {
+    hasClass(element, name) {
         return (" " + element.className + " ").indexOf(" " + name + " ") > -1;
     },
 
-    hide: function(element) {
+    hide(element) {
         if (!this.hasClass(element, "hidden")) {
             element.className += " hidden";
         }
     },
 
-    show: function(element) {
+    show(element) {
         if (this.hasClass(element, "hidden")) {
             element.className = element.className.replace(/ ?hidden/, "");
         }
     },
 
-    loadToggleButton: function(element, toggleCallback) {
+    loadToggleButton(element, toggleCallback) {
         var self = this;
 
         element.addEventListener("click", function(event) {
@@ -163,7 +163,7 @@ var Remote = {
         }, false);
     },
 
-    filter: function(pattern) {
+    filter(pattern) {
         var filterInstalled = false;
         if ("installed".indexOf(pattern) !== -1) {
             filterInstalled = true;
@@ -204,16 +204,16 @@ var Remote = {
         }
     },
 
-    closePopup: function() {
+    closePopup() {
         $("#popup-container").hide();
         $("#popup-contents").empty();
     },
 
-    showPopup: function() {
+    showPopup() {
         $("#popup-container").show();
     },
 
-    getPopupContent: function(clear) {
+    getPopupContent(clear) {
         if (clear === undefined) {
             clear = true;
         }
@@ -223,7 +223,7 @@ var Remote = {
         return $("#popup-contents")[0];
     },
 
-    loadOtherElements: function() {
+    loadOtherElements() {
         var self = this;
 
         var slider = document.getElementById("brightness-slider");
@@ -252,7 +252,7 @@ var Remote = {
         console.log("loadOtherElements loaded");
     },
 
-    showMenu: function(newMenu) {
+    showMenu(newMenu) {
         var self = this;
         if (this.currentMenu === "settings-menu") {
             // check for unsaved changes
@@ -341,7 +341,7 @@ var Remote = {
         this.currentMenu = newMenu;
     },
 
-    setStatus: function(status, message, customContent) {
+    setStatus(status, message, customContent) {
         var self = this;
 
         if (this.autoHideTimer !== undefined) {
@@ -405,7 +405,7 @@ var Remote = {
         this.show(document.getElementById("result"));
     },
 
-    getWithStatus: function(params, callback) {
+    getWithStatus(params, callback) {
         var self = this;
 
         self.setStatus("loading");
@@ -427,7 +427,7 @@ var Remote = {
         });
     },
 
-    showModule: function(id, force) {
+    showModule(id, force) {
         if (force) {
             this.sendSocketNotification("REMOTE_ACTION", { action: "SHOW", force: true, module: id });
         } else {
@@ -435,11 +435,11 @@ var Remote = {
         }
     },
 
-    hideModule: function(id) {
+    hideModule(id) {
         this.sendSocketNotification("REMOTE_ACTION", { action: "HIDE", module: id });
     },
 
-    install: function(url, index) {
+    install(url, index) {
         var self = this;
 
         var $downloadButton = $("#download-button");
@@ -448,7 +448,7 @@ var Remote = {
         this.sendSocketNotification("REMOTE_ACTION", { action: "INSTALL", url: url, index: index });
     },
 
-    installCallback: function(result) {
+    installCallback(result) {
         if (result.success) {
             var bgElement = document.getElementById("install-module-" + result.index);
             bgElement.firstChild.className = "fa fa-fw fa-check-circle";
@@ -460,7 +460,7 @@ var Remote = {
         }
     },
 
-    get: function(route, params, callback, timeout) {
+    get(route, params, callback, timeout) {
         var req = new XMLHttpRequest();
         var url = route + "?" + params;
         req.open("GET", url, true);
@@ -482,7 +482,7 @@ var Remote = {
         req.send(null);
     },
 
-    loadList: function(listname, dataId, callback) {
+    loadList(listname, dataId, callback) {
         var self = this;
 
         var loadingIndicator = document.getElementById(listname + "-loading");
@@ -496,7 +496,7 @@ var Remote = {
         self.sendSocketNotification("REMOTE_ACTION", { data: dataId, listname: listname });
     },
 
-    loadListCallback: function(result) {
+    loadListCallback(result) {
         var self = this;
 
         var loadingIndicator = document.getElementById(result.query.listname + "-loading");
@@ -522,7 +522,7 @@ var Remote = {
         }
     },
 
-    formatName: function(string) {
+    formatName(string) {
         string = string.replace(/MMM?-/ig, "").replace(/_/g, " ").replace(/-/g, " ");
         string = string.replace(/([a-z])([A-Z])/g, function(txt) {
             // insert space into camel case
@@ -535,17 +535,17 @@ var Remote = {
         return string.charAt(0).toUpperCase() + string.slice(1);
     },
 
-    formatLabel: function(string) {
+    formatLabel(string) {
         // var result = string.replace(/([A-Z])/g, " $1" );
         // return result.charAt(0).toUpperCase() + result.slice(1);
         return string;
     },
 
-    formatPosition: function(string) {
+    formatPosition(string) {
         return string.replace("_", " ").replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
     },
 
-    getVisibilityStatus: function(data) {
+    getVisibilityStatus(data) {
         var status = "toggled-on";
         var modules = [];
         if (data.hidden) {
@@ -563,7 +563,7 @@ var Remote = {
         return { status: status, modules: modules.join(", ") };
     },
 
-    addToggleElements: function(parent) {
+    addToggleElements(parent) {
         var outerSpan = document.createElement("span");
         outerSpan.className = "stack fa-fw";
 
@@ -582,14 +582,14 @@ var Remote = {
         parent.appendChild(outerSpan);
     },
 
-    loadBrightness: function() {
+    loadBrightness() {
         var self = this;
 
         console.log("Load brightness...");
         this.sendSocketNotification("REMOTE_ACTION", { data: "brightness" });
     },
 
-    makeToggleButton: function(moduleBox, visibilityStatus) {
+    makeToggleButton(moduleBox, visibilityStatus) {
         var self = this;
 
         self.loadToggleButton(moduleBox, function(toggledOn, event) {
@@ -626,7 +626,7 @@ var Remote = {
         });
     },
 
-    loadVisibleModules: function() {
+    loadVisibleModules() {
         var self = this;
 
         console.log("Load visible modules...");
@@ -660,7 +660,7 @@ var Remote = {
         });
     },
 
-    createSymbolText: function(symbol, text, eventListener, element) {
+    createSymbolText(symbol, text, eventListener, element) {
         if (element === undefined) {
             element = "div";
         }
@@ -681,7 +681,7 @@ var Remote = {
         return wrapper;
     },
 
-    recreateConfigElement: function(key, previousType, newType) {
+    recreateConfigElement(key, previousType, newType) {
         var input = document.getElementById(key);
         var oldGUI = input.parentNode;
         if (previousType === "array" || previousType === "object") {
@@ -699,7 +699,7 @@ var Remote = {
         oldGUI.parentNode.replaceChild(newGUI, oldGUI);
     },
 
-    createTypeEditSelection: function(key, parent, type, oldElement) {
+    createTypeEditSelection(key, parent, type, oldElement) {
         var self = this;
 
         var previousType = oldElement.children[1].innerHTML.slice(1).toLowerCase();
@@ -727,7 +727,7 @@ var Remote = {
         return select;
     },
 
-    createConfigLabel: function(key, name, type, forcedType, symbol) {
+    createConfigLabel(key, name, type, forcedType, symbol) {
         var self = this;
 
         if (symbol === undefined) {
@@ -765,7 +765,7 @@ var Remote = {
         return label;
     },
 
-    createConfigInput: function(key, value, omitValue, element) {
+    createConfigInput(key, value, omitValue, element) {
         if (element === undefined) {
             element = "input";
         }
@@ -787,13 +787,13 @@ var Remote = {
         return input;
     },
 
-    createVisualCheckbox: function(key, wrapper, input, className, value) {
+    createVisualCheckbox(key, wrapper, input, className, value) {
         var visualCheckbox = document.createElement("span");
         visualCheckbox.className = "visual-checkbox fa fa-fw " + className;
         wrapper.appendChild(visualCheckbox);
     },
 
-    createConfigElement: function(type) {
+    createConfigElement(type) {
         var self = this;
 
         return {
@@ -877,8 +877,8 @@ var Remote = {
         } [type];
     },
 
-    getTypeAsString: function(dataToEdit, path) {
-        var type = typeof dataToEdit;
+    getTypeAsString(dataToEdit, path) {
+        let type = typeof dataToEdit;
         if (path === "<root>/position") {
             type = "position";
         }
@@ -897,8 +897,8 @@ var Remote = {
         return "object";
     },
 
-    hasForcedType: function(path) {
-        var forcedType = false;
+    hasForcedType(path) {
+        let forcedType = false;
         if ((path.match(/\//g) || []).length === 1) {
             // disable type editing in root layer
             forcedType = true;
@@ -906,7 +906,7 @@ var Remote = {
         return forcedType;
     },
 
-    createObjectGUI: function(path, name, dataToEdit) {
+    createObjectGUI(path, name, dataToEdit) {
         var self = this;
 
         var type = this.getTypeAsString(dataToEdit, path);
@@ -999,7 +999,7 @@ var Remote = {
         return wrapper;
     },
 
-    appendConfigMenu: function(index, wrapper) {
+    appendConfigMenu(index, wrapper) {
         var self = this;
 
         var menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), function(event) {
@@ -1045,7 +1045,7 @@ var Remote = {
         wrapper.appendChild(line);
     },
 
-    setValue: function(parent, name, value) {
+    setValue(parent, name, value) {
         if (name.indexOf("#") !== -1) {
             parent.push(value);
         } else {
@@ -1053,7 +1053,7 @@ var Remote = {
         }
     },
 
-    navigate: function(parent, name) {
+    navigate(parent, name) {
         if (name.indexOf("#") !== -1) {
             return parent[parent.length - 1];
         } else {
@@ -1061,7 +1061,7 @@ var Remote = {
         }
     },
 
-    getModuleConfigFromUI: function() {
+    getModuleConfigFromUI() {
         var rootElement = {};
         var elements = document.getElementsByClassName("config-input");
         for (var i = 0; i < elements.length; i++) {
@@ -1104,7 +1104,7 @@ var Remote = {
         return rootElement;
     },
 
-    createConfigPopup: function(index) {
+    createConfigPopup(index) {
         var self = this;
         if (typeof index === "string") {
             index = parseInt(index);
@@ -1144,7 +1144,7 @@ var Remote = {
         this.showPopup();
     },
 
-    createChangedWarning: function() {
+    createChangedWarning() {
         var self = this;
         var changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), function() {
             var saveButton = document.getElementById("save-config");
@@ -1156,7 +1156,7 @@ var Remote = {
         return changed;
     },
 
-    appendModuleEditElements: function(wrapper, moduleData) {
+    appendModuleEditElements(wrapper, moduleData) {
         var self = this;
         for (var i = 0; i < moduleData.length; i++) {
             var innerWrapper = document.createElement("div");
@@ -1186,7 +1186,7 @@ var Remote = {
         }
     },
 
-    loadConfigModules: function() {
+    loadConfigModules() {
         var self = this;
 
         console.log("Loading modules in config...");
@@ -1212,7 +1212,7 @@ var Remote = {
         });
     },
     
-    loadClasses: function() {
+    loadClasses() {
     	var self = this;
     	
     	console.log("Loading classes...");
@@ -1239,7 +1239,7 @@ var Remote = {
     	})
     },
 
-    createAddingPopup: function(index) {
+    createAddingPopup(index) {
         var self = this;
         if (typeof index === "string") {
             index = parseInt(index);
@@ -1296,7 +1296,7 @@ var Remote = {
         this.showPopup();
     },
 
-    loadModulesToAdd: function() {
+    loadModulesToAdd() {
         var self = this;
 
         console.log("Loading modules to add...");
@@ -1319,7 +1319,7 @@ var Remote = {
         });
     },
 
-    offerRestart: function(message) {
+    offerRestart(message) {
         var wrapper = document.createElement("div");
 
         var info = document.createElement("span");
@@ -1331,8 +1331,8 @@ var Remote = {
         wrapper.appendChild(restart);
         this.setStatus("success", false, wrapper);
     },
-    
-    offerReload: function(message) {
+
+    offerReload(message) {
         var wrapper = document.createElement("div");
 
         var info = document.createElement("span");
@@ -1366,11 +1366,11 @@ var Remote = {
         this.setStatus("success", false, wrapper);
     },
 
-    updateModule: function(module) {
+    updateModule(module) {
         this.sendSocketNotification("REMOTE_ACTION", { action: "UPDATE", module: module });
     },
 
-    mmUpdateCallback: function(result) {
+    mmUpdateCallback(result) {
         if (window.location.hash.substring(1) == "update-menu") {
             var element = document.getElementById("update-mm-status");
             var updateButton = document.getElementById("update-mm-button");
@@ -1384,7 +1384,7 @@ var Remote = {
         }
     },
 
-    loadModulesToUpdate: function() {
+    loadModulesToUpdate() {
         var self = this;
 
         console.log("Loading modules to update...");
@@ -1418,8 +1418,8 @@ var Remote = {
             }
         });
     },
-    
-    undoConfigMenu: function() {
+
+    undoConfigMenu() {
     	var self = this;
 
         if (this.saving) {
@@ -1430,8 +1430,8 @@ var Remote = {
         this.setStatus("loading");
         this.sendSocketNotification("REMOTE_ACTION", {data: "saves"});
     },
-    
-    undoConfigMenuCallback: function(result) {
+
+    undoConfigMenuCallback(result) {
     	var self = this;
 
         if (result.success) {
@@ -1447,8 +1447,8 @@ var Remote = {
             self.setStatus("error");
         }
     },
-    
-    undoConfig: function(date) {
+
+    undoConfig(date) {
     	var self = this;
 
         // prevent saving before current saving is finished
@@ -1457,11 +1457,11 @@ var Remote = {
         }
         this.saving = true;
         this.setStatus("loading");
-        
+
         this.sendSocketNotification("UNDO_CONFIG", date);
     },
 
-    saveConfig: function() {
+    saveConfig() {
         var self = this;
 
         // prevent saving before current saving is finished
@@ -1486,7 +1486,7 @@ var Remote = {
         this.sendSocketNotification("NEW_CONFIG", configData);
     },
 
-    saveConfigCallback: function(result) {
+    saveConfigCallback(result) {
         var self = this;
 
         if (result.success) {
@@ -1498,11 +1498,11 @@ var Remote = {
         self.loadConfigModules();
     },
 
-    onTranslationsLoaded: function() {
+    onTranslationsLoaded() {
         this.createDynamicMenu();
     },
 
-    createMenuElement: function(content, menu, $insertAfter) {
+    createMenuElement(content, menu, $insertAfter) {
         if (!content) { return; }
         $item = $("<div>").attr("id", `${content.id}-button`).addClass(`menu-element button ${menu}-menu`);
         let $mcmIcon = $('<span>').addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
@@ -1562,7 +1562,7 @@ var Remote = {
         return $item;
     },
 
-    createDynamicMenu: function(content) {
+    createDynamicMenu(content) {
         if (content && $(`#${content.id}-button`)) {
             $(`#${content.id}-button`).remove();
             $(`div`).remove(`.${content.id}-menu`);
@@ -1576,13 +1576,13 @@ var Remote = {
 
 var buttons = {
     // navigation buttons
-    "power-button": function() {
+    "power-button": function () {
         window.location.hash = "power-menu";
     },
-    "edit-button": function() {
+    "edit-button": function () {
         window.location.hash = "edit-menu";
     },
-    "settings-button": function() {
+    "settings-button": function () {
         var self = Remote;
 
         var wrapper = document.createElement("div");
@@ -1602,10 +1602,10 @@ var buttons = {
 
         self.setStatus(false, false, wrapper);
     },
-    "mirror-link-button": function() {
+    "mirror-link-button": function () {
         window.open("/", "_blank");
     },
-    "classes-button": function() {
+    "classes-button": function () {
     	window.location.hash = "classes-menu";
     },
     "back-button": function() {
@@ -1619,22 +1619,22 @@ var buttons = {
         }
         window.location.hash = "main-menu";
     },
-    "update-button": function() {
+    "update-button": function () {
         window.location.hash = "update-menu";
     },
-    "alert-button": function() {
+    "alert-button": function () {
         window.location.hash = "alert-menu";
     },
 
     // settings menu buttons
-    "brightness-reset": function() {
+    "brightness-reset": function () {
         var element = document.getElementById("brightness-slider");
         element.value = 100;
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: 100 });
     },
 
     // edit menu buttons
-    "show-all-button": function() {
+    "show-all-button": function () {
         var parent = document.getElementById("visible-modules-results");
         var buttons = parent.children;
         for (var i = 0; i < buttons.length; i++) {
@@ -1645,7 +1645,7 @@ var buttons = {
             Remote.showModule(buttons[i].id);
         }
     },
-    "hide-all-button": function() {
+    "hide-all-button": function () {
         var parent = document.getElementById("visible-modules-results");
         var buttons = parent.children;
         for (var i = 0; i < buttons.length; i++) {
@@ -1655,7 +1655,7 @@ var buttons = {
     },
 
     // power menu buttons
-    "shut-down-button": function() {
+    "shut-down-button": function () {
         var self = Remote;
 
         var wrapper = document.createElement("div");
@@ -1695,61 +1695,61 @@ var buttons = {
 
         self.setStatus(false, false, wrapper);
     },
-    "restart-mm-button": function() {
+    "restart-mm-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "RESTART" });
         setTimeout(function() {
             document.location.reload();
             console.log("Delayed REFRESH");
         }, 60000);
     },
-    "monitor-on-button": function() {
+    "monitor-on-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "MONITORON" });
     },
-    "monitor-off-button": function() {
+    "monitor-off-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "MONITOROFF" });
     },
-    "refresh-mm-button": function() {
+    "refresh-mm-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "REFRESH" });
     },
-    "fullscreen-button": function() {
+    "fullscreen-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "TOGGLEFULLSCREEN" });
     },
-    "minimize-button": function() {
+    "minimize-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "MINIMIZE" });
     },
-    "devtools-button": function() {
+    "devtools-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "DEVTOOLS" });
     },
 
     // config menu buttons
-    "add-module": function() {
+    "add-module": function () {
         window.location.hash = "add-module-menu";
     },
-    "save-config": function() {
+    "save-config": function () {
         Remote.saveConfig();
     },
 
-    "undo-config": function() {
+    "undo-config": function () {
         Remote.undoConfigMenu();
     },
     // main menu
-    "save-button": function() {
+    "save-button": function () {
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "SAVE" });
     },
-    "close-popup": function() {
+    "close-popup": function () {
         Remote.closePopup();
     },
-    "close-result": function() {
+    "close-result": function () {
         Remote.setStatus("none");
     },
 
     // update Menu
-    "update-mm-button": function() {
+    "update-mm-button": function () {
         Remote.updateModule(undefined);
     },
 
     // alert menu
-    "send-alert-button": function() {
+    "send-alert-button": function () {
         var kvpairs = {};
         var form = document.getElementById("alert");
         for (var i = 0; i < form.elements.length; i++) {
@@ -1777,7 +1777,7 @@ if (window.location.hash) {
     Remote.showMenu("main-menu");
 }
 
-window.onhashchange = function() {
+window.onhashchange = function () {
     if (Remote.skipHashChange) {
         Remote.skipHashChange = false;
         return;

@@ -1,4 +1,4 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module Extension: Remote Control API
  *
  * By shbatm
@@ -15,11 +15,11 @@ const bodyParser = require("body-parser");
 const express = require("express");
 
 module.exports = {
-    /* getApiKey 
+    /* getApiKey
      * Middleware method for ExpressJS to check if an API key is provided.
      * Only checks for an API key if one is defined in the module's config section.
      */
-    getApiKey: function() {
+    getApiKey() {
         let thisConfig = this.configOnHd.modules.find(x => x.module === "MMM-Remote-Control");
         if (typeof "thisConfig" !== "undefined" &&
             "config" in thisConfig){
@@ -36,9 +36,7 @@ module.exports = {
                 this.secureEndpoints = true;
             }
         }
-        
     },
-
 
     /* getExternalApiByGuessing()
      * This method is called when an API call is made to /module or /modules
@@ -47,7 +45,7 @@ module.exports = {
      *
      * @updates this.externalApiRoutes
      */
-    getExternalApiByGuessing: function() {
+    getExternalApiByGuessing() {
         if (!this.configOnHd) { return undefined; }
 
         let getActions = function(content) {
@@ -105,18 +103,18 @@ module.exports = {
         this.updateModuleApiMenu();
     },
 
-    createApiRoutes: function() {
+    createApiRoutes() {
         var self = this;
 
         this.getApiKey();
 
         this.expressApp.use(bodyParser.urlencoded({ extended: true }));
         this.expressApp.use(bodyParser.json());
-        
+
         this.expressApp.use('/api/docs', express.static(path.join(__dirname, '../docs'))); // Docs without apikey
 
         this.expressRouter = express.Router();
-        
+
         // Route for testing the api at http://mirror:8080/api/test
         this.expressRouter.route(['/test','/']) // Test without apiKey
             .get((req, res) => {
@@ -178,12 +176,12 @@ module.exports = {
             '/togglefullscreen',
             '/devtools'
         ]).get((req, res) => {
-            if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+            if (!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
             let r = req.path.split("/")[1].toUpperCase();
             console.log(req.path);
             self.executeQuery(this.checkDelay({ action: r }, req), res);
         });
-        
+
         this.expressRouter.route('/classes/:value')
             .get((req, res) => {
                 var classes = self.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
@@ -194,10 +192,10 @@ module.exports = {
                		res.status(400).json({ success: false, message: `Invalid value ${val} provided in request. Use /api/classes to see actual values` });
                	}
             });
-            
+
         this.expressRouter.route('/command/:value')
             .get((req, res) => {
-                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                if (!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 const val = decodeURIComponent(req.params.value)
                 self.executeQuery({ action: "COMMAND", command: req.params.value }, res);
             });
@@ -217,9 +215,9 @@ module.exports = {
 
         this.expressRouter.route('/update/:moduleName?')
             .get((req, res) => {
-                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
-                if(!req.params.moduleName) return self.answerGet({ data: 'mmUpdateAvailable' }, res);
-                switch(req.params.moduleName) {
+                if (!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                if (!req.params.moduleName) return self.answerGet({ data: 'mmUpdateAvailable' }, res);
+                switch (req.params.moduleName) {
                     case 'mm': case 'MM': self.answerGet({ data: 'mmUpdateAvailable' }, res); break;
                     case 'rc': case 'RC': this.updateModule('MMM-Remote-Control', res); break;
                     default: this.updateModule(req.params.moduleName, res); break;
@@ -231,40 +229,40 @@ module.exports = {
                 res.status(400).json({ success: false, message: "Invalid method, use POST" });
             })
             .post((req, res) => {
-                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                if (!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 if (typeof req.body !== 'undefined' && "url" in req.body) {
                     this.installModule(req.body.url, res);
                 } else {
                     res.status(400).json({ success: false, message: "Invalid URL provided in request body" });
                 }
             });
-        
-        //edit config, payload is completely new config object with your changes(edits).
+
+        // edit config, payload is completely new config object with your changes(edits).
         this.expressRouter.route('/config/edit')
             .get((req, res) => {
                 res.status(400).json({ success: false, message: "Invalid method, use POST" });
             })
             .post((req, res) => {
-                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                if (!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 if (typeof req.body !== 'undefined' && "payload" in req.body) {
                     this.answerPost({ data: "config" }, { body: req.body.payload }, res);
                 } else {
                     res.status(400).json({ success: false, message: "Invalid URL provided in request body" });
                 }
             });
-        //edit config
+        // edit config
 
         this.expressRouter.route('/notification/:notification/:p?/:delayed?')
             .get((req, res) => {
-                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                if (!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 this.answerNotifyApi(req, res);
             })
             .post((req, res) => {
-                if(!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
+                if (!this.apiKey && this.secureEndpoints) return res.status(403).json({ success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message" });
                 req.params = {
-                    ... req.params,
-                    ... req.body
-                }
+                    ...req.params,
+                    ...req.body
+                };
                 this.answerNotifyApi(req, res);
             });
 
@@ -274,9 +272,9 @@ module.exports = {
             })
             .post((req, res) => {
                 req.params = {
-                    ... req.params,
-                    ... req.body
-                }
+                    ...req.params,
+                    ...req.body
+                };
                 this.answerModuleApi(req, res);
             });
 
@@ -289,7 +287,7 @@ module.exports = {
             .post((req, res) => {
                 var actionName = "STATUS";
                 if (typeof req.body !== 'undefined' && "monitor" in req.body) {
-                    if(["OFF","ON","TOGGLE"].includes(req.body.monitor.toUpperCase())) {
+                    if (["OFF", "ON", "TOGGLE"].includes(req.body.monitor.toUpperCase())) {
                         actionName = req.body.monitor.toUpperCase();
                     }
                 } else {
@@ -326,8 +324,8 @@ module.exports = {
         }
         return query;
     },
-    
-    mergeData: function() {
+
+    mergeData() {
         var extApiRoutes = this.externalApiRoutes;
         var modules = this.configData.moduleData
         var query = {success: true, data: []};
@@ -338,12 +336,12 @@ module.exports = {
             } else {
                 query.data.push(Object.assign({},mod, {actions: extApiRoutes[mod.name].actions}));
             }
-        })
-        
+        });
+
         return query;
     },
 
-    answerModuleApi: function(req, res) {
+    answerModuleApi(req, res) {
         if (!this.checkInititialized(res)) { return; }
         var dataMerged = this.mergeData().data
         
@@ -351,13 +349,13 @@ module.exports = {
             res.json({ success: true, data: dataMerged });
             return;
         }
-        
+
         let modData = [];
         if(req.params.moduleName !== 'all') {
             modData = dataMerged.filter(m => {
                 return (req.params.moduleName.includes(m.identifier));
             });
-            if (!modData) {
+            if (!modData.length) {
                 modData = dataMerged.filter(m => {
                     return (req.params.moduleName.includes(m.name));
                 });
@@ -365,26 +363,25 @@ module.exports = {
         } else {
             modData = dataMerged;
         }
-    
+
         if (!modData.length) {
             res.status(400).json({ success: false, message: "Module Name or Identifier Not Found!" });
             return;
-        } 
-        
+        }
+
         if (!req.params.action) {
             res.json({ success: true, data: modData });
             return;
         }
-        
+
         var action = req.params.action.toUpperCase();
-        
+
         if (["SHOW", "HIDE", "FORCE", "TOGGLE", "DEFAULTS"].indexOf(action) !== -1) { // /api/modules part of the code
-            
             if (action === "DEFAULTS") {
                 this.answerGet({ data: "defaultConfig", module: mod.name }, res);
                 return;
             }
-            
+
             if (req.params.moduleName === "all") {
                 let query = { module: "all" };
                 if (action === "FORCE") {
@@ -396,7 +393,7 @@ module.exports = {
                 this.executeQuery(this.checkDelay(query, req), res);
                 return;
             }
-            
+
             modData.forEach(mod => {
                 let query = { module: mod.identifier };
                 if (action === "FORCE") {
@@ -410,9 +407,9 @@ module.exports = {
             this.sendSocketNotification("UPDATE");
             return;
         }
-        
-        action = modData[0].actions[req.params.action]
-        
+
+        action = modData[0].actions[req.params.action];
+
         if (action) {
             if ("method" in action && action.method !== req.method) {
                 res.status(400).json({ success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.` });
@@ -420,10 +417,9 @@ module.exports = {
             }
             this.answerNotifyApi(req, res, action);
         }
-        
     },
-    
-    answerNotifyApi: function(req, res, action) {
+
+    answerNotifyApi(req, res, action) {
         // Build the payload to send with our notification.
         let n = "";
         if (action) { n = action.notification; } else if ("notification" in req.params) {
@@ -482,15 +478,15 @@ module.exports = {
         return;
     },
 
-    checkInititialized: function(res) {
+    checkInititialized(res) {
         if (!this.initialized) {
-            this.sendResponse(res, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror?");
+            this.sendResponse(res, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror²?");
             return false;
         }
         return true;
     },
 
-    updateModuleApiMenu: function() {
+    updateModuleApiMenu() {
         if (!this.thisConfig.showModuleApiMenu) { return; }
 
         this.moduleApiMenu = {

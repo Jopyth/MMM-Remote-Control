@@ -1,6 +1,6 @@
 /* global Module, Log, MM, config */
 
-/* Magic Mirror
+/* MagicMirror²
  * Module: Remote Control
  *
  * By Joseph Bethge
@@ -19,7 +19,7 @@ Module.register("MMM-Remote-Control", {
     },
 
     // Define start sequence.
-    start: function() {
+    start() {
         Log.info("Starting module: " + this.name);
 
         this.settingsVersion = 2;
@@ -30,11 +30,11 @@ Module.register("MMM-Remote-Control", {
         this.brightness = 100;
     },
 
-    getStyles: function() {
+    getStyles() {
         return ["remote-control.css"];
     },
 
-    notificationReceived: function(notification, payload, sender) {
+    notificationReceived(notification, payload, sender) {
         // Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
         if (notification === "DOM_OBJECTS_CREATED") {
             this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
@@ -52,10 +52,10 @@ Module.register("MMM-Remote-Control", {
     },
 
     // Override socket notification handler.
-    socketNotificationReceived: function(notification, payload) {
+    socketNotificationReceived(notification, payload) {
         if (notification === "UPDATE") {
             this.sendCurrentData();
-        }  
+        }
         if (notification === "IP_ADDRESSES") {
             this.addresses = payload;
             if (this.data.position) {
@@ -68,7 +68,7 @@ Module.register("MMM-Remote-Control", {
                 this.updateDom();
             }
         }
-        
+
         if (notification === "USER_PRESENCE") {
             this.sendNotification(notification, payload);
         }
@@ -117,7 +117,7 @@ Module.register("MMM-Remote-Control", {
         if (notification === "RESTART") {
             setTimeout(function() {
                 document.location.reload();
-                console.log('Delayed REFRESH');
+                Log.log('Delayed REFRESH');
             }, 60000);
         }
         if (notification === "SHOW_ALERT") {
@@ -138,11 +138,11 @@ Module.register("MMM-Remote-Control", {
                         else x = ''
                         return true;
                     }
-                }),MM.getModules().filter(m => {
-                    if(m) {
+                }), MM.getModules().filter(m => {
+                    if (m) {
                         return x.includes(m.name);
                     }
-                }))
+                }));
             } else {
                 modules = MM.getModules()
             }
@@ -162,7 +162,7 @@ Module.register("MMM-Remote-Control", {
         }
     },
 
-    buildCssContent: function(brightness) {
+    buildCssContent(brightness) {
         var css = "";
 
         var defaults = {
@@ -191,7 +191,7 @@ Module.register("MMM-Remote-Control", {
         return css;
     },
 
-    setBrightness: function(newBrightnessValue) {
+    setBrightness(newBrightnessValue) {
         if (newBrightnessValue < 10) {
             newBrightnessValue = 10;
         }
@@ -226,7 +226,7 @@ Module.register("MMM-Remote-Control", {
         this.removeOverlay();
     },
 
-    createOverlay: function(brightness) {
+    createOverlay(brightness) {
         var overlay = document.getElementById('remote-control-overlay');
         if (!overlay) {
             // if not existing, create overlay
@@ -239,7 +239,7 @@ Module.register("MMM-Remote-Control", {
         overlay.style.backgroundColor = bgColor;
     },
 
-    removeOverlay: function() {
+    removeOverlay() {
         var overlay = document.getElementById('remote-control-overlay');
         if (overlay) {
             var parent = document.body;
@@ -247,7 +247,7 @@ Module.register("MMM-Remote-Control", {
         }
     },
 
-    getDom: function() {
+    getDom() {
         var wrapper = document.createElement("div");
         var portToShow = ''
         if (this.addresses.length === 0) {
@@ -263,7 +263,7 @@ Module.register("MMM-Remote-Control", {
         return wrapper;
     },
 
-    sendCurrentData: function() {
+    sendCurrentData() {
         var self = this;
 
         var modules = MM.getModules();

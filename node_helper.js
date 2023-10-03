@@ -1,4 +1,4 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module: Remote Control
  *
  * By Joseph Bethge
@@ -12,6 +12,7 @@ const url = require("url");
 const fs = require("fs");
 const util = require("util");
 const exec = require("child_process").exec;
+const Log = require("logger");
 const os = require("os");
 const simpleGit = require("simple-git");
 const bodyParser = require("body-parser");
@@ -23,7 +24,7 @@ var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodule
 Module = {
     configDefaults: {},
     notificationHandler: {},
-    register: function(name, moduleDefinition) {
+    register(name, moduleDefinition) {
         Module.configDefaults[name] = moduleDefinition.defaults;
         /* API EXTENSION - Added v2.0.0 */
         Module.notificationHandler[name] = ("notificationReceived" in moduleDefinition) ?
@@ -37,7 +38,7 @@ module.exports = NodeHelper.create(Object.assign({
             var self = this;
 
             this.initialized = false;
-            console.log("Starting node helper for: " + self.name);
+            Log.log("Starting node helper for: " + self.name);
 
             // load fall back translation
             self.loadTranslation("en");
@@ -66,14 +67,14 @@ module.exports = NodeHelper.create(Object.assign({
             this.moduleApiMenu = {};
         },
 
-        stop: function() {
+        stop() {
             // Clear all timeouts for clean shutdown
             Object.keys(this.delayedQueryTimers).forEach(t => {
                 clearTimeout(this.delayedQueryTimers[t]);
             });
         },
 
-        onModulesLoaded: function() {
+        onModulesLoaded() {
             /* CALLED AFTER MODULES AND CONFIG DATA ARE LOADED */
             /* API EXTENSION - Added v2.0.0 */
             this.createApiRoutes();
@@ -81,7 +82,7 @@ module.exports = NodeHelper.create(Object.assign({
 	    	this.loadTimers();
 	    },
 
-		loadTimers: function() {
+		loadTimers() {
             var delay = 24*3600;
             
             var self = this;
@@ -93,7 +94,7 @@ module.exports = NodeHelper.create(Object.assign({
             }, delay*1000);
         },
 
-        combineConfig: function() {
+        combineConfig() {
             // function copied from MichMich (MIT)
             var defaults = require(__dirname + "/../../js/defaults.js");
             var configFilename = path.resolve(__dirname + "/../../config/config.js");
@@ -130,7 +131,7 @@ module.exports = NodeHelper.create(Object.assign({
             this.loadTranslation(this.configOnHd.language);
         },
 
-        createRoutes: function() {
+        createRoutes() {
             var self = this;
 
             this.expressApp.get("/remote.html", function(req, res) {
@@ -174,18 +175,18 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        capitalizeFirst: function(string) {
+        capitalizeFirst(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         },
 
-        formatName: function(string) {
+        formatName(string) {
             string = string.replace(/MMM-/g, '').replace(/([a-z])([A-Z])/g, "$1 $2").replace(/(^|[-_])(\w)/g, function($0, $1, $2) {
                 return ($1 && ' ') + $2.toUpperCase();
             });
             return string;
         },
 
-        updateModuleList: function(force) {
+        updateModuleList(force) {
             var self = this;
             var downloadModules = require('./scripts/download_modules');
             downloadModules({
@@ -197,7 +198,7 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        readModuleData: function() {
+        readModuleData() {
             var self = this;
 
             fs.readFile(path.resolve(__dirname + "/modules.json"), (err, data) => {
@@ -234,7 +235,7 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        addModule: function(folderName, lastOne) {
+        addModule(folderName, lastOne) {
             var self = this;
 
             var modulePath = this.configOnHd.paths.modules + "/" + folderName;
@@ -287,7 +288,7 @@ module.exports = NodeHelper.create(Object.assign({
                     if (!isInList) {
                         sg.getRemotes(true, function(error, result) {
                             if (error) {
-                                console.log(error);
+                                Log.error(error);
                             }
                             try {
                                 var baseUrl = result[0].refs.fetch;
@@ -305,7 +306,7 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        loadModuleDefaultConfig: function(module, modulePath, lastOne) {
+        loadModuleDefaultConfig(module, modulePath, lastOne) {
             // function copied from MichMich (MIT)
             var filename = path.resolve(modulePath + "/" + module.longname + ".js");
             try {
@@ -325,14 +326,14 @@ module.exports = NodeHelper.create(Object.assign({
             if (lastOne) { this.onModulesLoaded(); }
         },
 
-        answerConfigHelp: function(query, res) {
+        answerConfigHelp(query, res) {
             if (defaultModules.indexOf(query.module) !== -1) {
                 // default module
                 var dir = path.resolve(__dirname + "/..");
                 let git = simpleGit(dir);
                 git.revparse(["HEAD"], function(error, result) {
                     if (error) {
-                        console.log(error);
+                        Log.error(error);
                     }
                     res.writeHead(302, { 'Location': "https://github.com/MichMich/MagicMirror/tree/" + result.trim() + "/modules/default/" + query.module });
                     res.end();
@@ -343,7 +344,7 @@ module.exports = NodeHelper.create(Object.assign({
             let git = simpleGit(modulePath);
             git.getRemotes(true, function(error, result) {
                 if (error) {
-                    console.log(error);
+                    Log.error(error);
                 }
                 var baseUrl = result[0].refs.fetch;
                 // replacements
@@ -352,7 +353,7 @@ module.exports = NodeHelper.create(Object.assign({
                 baseUrl = baseUrl.replace("git@", "https://");
                 git.revparse(["HEAD"], function(error, result) {
                     if (error) {
-                        console.log(error);
+                        Log.error(error);
                     }
                     res.writeHead(302, { 'Location': baseUrl + "/tree/" + result.trim() });
                     res.end();
@@ -360,7 +361,7 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        getConfig: function() {
+        getConfig() {
             var config = this.configOnHd;
             for (let i = 0; i < config.modules.length; i++) {
                 var current = config.modules[i];
@@ -380,7 +381,7 @@ module.exports = NodeHelper.create(Object.assign({
             return config;
         },
 
-        removeDefaultValues: function(config) {
+        removeDefaultValues(config) {
             // remove cached version
             delete require.cache[require.resolve(__dirname + "/../../js/defaults.js")];
             // then reload default config
@@ -403,18 +404,18 @@ module.exports = NodeHelper.create(Object.assign({
                         delete current.config[key];
                     }
                 }
-                // console.log(current.config);
+                // Log.log(current.config);
                 if (current.config === {}) {
                     delete current[config];
                     continue;
                 }
-                // console.log(current);
+                // Log.log(current);
             }
 
             return config;
         },
 
-        answerPost: function(query, req, res) {
+        answerPost(query, req, res) {
             var self = this;
 
             if (query.data === "config") {
@@ -478,7 +479,7 @@ module.exports = NodeHelper.create(Object.assign({
             }
         },
 
-        answerGet: function(query, res) {
+        answerGet(query, res) {
             var self = this;
 
             if (query.data === "moduleAvailable") {
@@ -569,7 +570,7 @@ module.exports = NodeHelper.create(Object.assign({
             this.sendResponse(res, "Unknown or Bad Command.", query);
         },
 
-        callAfterUpdate: function(callback, timeout) {
+        callAfterUpdate(callback, timeout) {
             if (timeout === undefined) {
                 timeout = 3000;
             }
@@ -593,7 +594,7 @@ module.exports = NodeHelper.create(Object.assign({
             }, timeout);
         },
 
-        delayedQuery: function(query, res) {
+        delayedQuery(query, res) {
             if (query.did in this.delayedQueryTimers) {
                 clearTimeout(this.delayedQueryTimers[query.did]);
                 delete this.delayedQueryTimers[query.did];
@@ -607,13 +608,12 @@ module.exports = NodeHelper.create(Object.assign({
             this.sendResponse(res, undefined, query);
         },
 
-
-        sendResponse: function(res, error, data) {
+        sendResponse(res, error, data) {
             let response = { success: true };
             let status = 200;
             let result = true;
             if (error) {
-                console.log(error);
+                Log.error(error);
                 response = { success: false, status: "error", reason: "unknown", info: error };
                 status = 400;
                 result = false;
@@ -631,7 +631,7 @@ module.exports = NodeHelper.create(Object.assign({
             return result;
         },
 
-        monitorControl: function(action, opts, res) {
+        monitorControl(action, opts, res) {
             let status = "unknown";
             let offArr = ["false","TV is off","standby","display_power=0"];
             let monitorOnCommand = (this.initialized && "monitorOnCommand" in this.thisConfig.customCommand) ?
@@ -670,7 +670,7 @@ module.exports = NodeHelper.create(Object.assign({
             }
         },
 
-        shutdownControl: function(action, opts, res) {
+        shutdownControl(action, opts, res) {
             let shutdownCommand = (this.initialized && "shutdownCommand" in this.thisConfig.customCommand) ?
                 this.thisConfig.customCommand.shutdownCommand :
                 "sudo shutdown -h now";
@@ -685,7 +685,7 @@ module.exports = NodeHelper.create(Object.assign({
             }
         },
 
-        executeQuery: function(query, res) {
+        executeQuery(query, res) {
             var self = this;
             var opts = { timeout: 15000 };
 
@@ -790,7 +790,7 @@ module.exports = NodeHelper.create(Object.assign({
                     this.sendResponse(res);
                     return true;
                 } catch (err) {
-                    console.log("ERROR: ", err);
+                    Log.error("ERROR: ", err);
                     this.sendResponse(res, err, { reason: err.message });
                     return true;
                 }
@@ -821,7 +821,7 @@ module.exports = NodeHelper.create(Object.assign({
                 try {
                     let electron = require("electron").BrowserWindow;
                     if (!electron) { throw "Could not get Electron window instance."; }
-                    let win = electron.getFocusedWindow();
+                    let win = electron.getAllWindows()[0]
                     switch (query.action) {
                         case "MINIMIZE":
                             win.minimize();
@@ -863,18 +863,18 @@ module.exports = NodeHelper.create(Object.assign({
             return false;
         },
 
-        installModule: function(url, res, data) {
+        installModule(url, res, data) {
             var self = this;
 
             simpleGit(path.resolve(__dirname + "/..")).clone(url, path.basename(url), function(error, result) {
                 if (error) {
-                    console.log(error);
+                    Log.error(error);
                     self.sendResponse(res, error);
                 } else {
                     var workDir = path.resolve(__dirname + "/../" + path.basename(url));
                     exec("npm install", { cwd: workDir, timeout: 120000 }, (error, stdout, stderr) => {
                         if (error) {
-                            console.log(error);
+                            Log.error(error);
                             self.sendResponse(res, error, Object.assign({ stdout: stdout, stderr: stderr }, data));
                         } else {
                             // success part
@@ -886,8 +886,8 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        updateModule: function(module, res) {
-            console.log("UPDATE " + (module || "MagicMirror"));
+        updateModule(module, res) {
+            Log.log("UPDATE " + (module || "MagicMirror"));
 
             var self = this;
 
@@ -907,20 +907,20 @@ module.exports = NodeHelper.create(Object.assign({
                 }
             }
 
-            console.log("path: " + path + " name: " + name);
+            Log.log("path: " + path + " name: " + name);
 
             var git = simpleGit(path);
             git.reset('hard').then(() => {
                 git.pull((error, result) => {
                     if (error) {
-                        console.log(error);
+                        Log.error(error);
                         self.sendResponse(res, error);
                         return;
                     }
                     if (result.summary.changes) {
                         exec("npm install", { cwd: path, timeout: 120000 }, (error, stdout, stderr) => {
                             if (error) {
-                                console.log(error);
+                                Log.error(error);
                                 self.sendResponse(res, error, { stdout: stdout, stderr: stderr });
                             } else {
                                 // success part
@@ -945,12 +945,12 @@ module.exports = NodeHelper.create(Object.assign({
             
         },
 
-        checkForExecError: function(error, stdout, stderr, res, data) {
-            if(error) console.log(stderr);
+        checkForExecError(error, stdout, stderr, res, data) {
+            if(error) Log.error(stderr);
             this.sendResponse(res, error, data);
         },
 
-        controlPm2: function(res, query) {
+        controlPm2(res, query) {
             try {require('pm2')} catch (err) {
                 this.sendResponse(res, err, { reason: "PM2 not installed or unlinked" });
                 return;
@@ -965,7 +965,7 @@ module.exports = NodeHelper.create(Object.assign({
                 }
 
                 var actionName = query.action.toLowerCase();
-                console.log(`PM2 process: ${actionName} ${processName}`);
+                Log.log(`PM2 process: ${actionName} ${processName}`);
 
                 switch (actionName) {
                     case 'restart':
@@ -985,7 +985,7 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        translate: function(data) {
+        translate(data) {
             Object.keys(this.translation).forEach(t => {
                 let pattern = "%%TRANSLATE:" + t + "%%";
                 let re = new RegExp(pattern, "g");
@@ -994,7 +994,7 @@ module.exports = NodeHelper.create(Object.assign({
             return data;
         },
 
-        saveDefaultSettings: function() {
+        saveDefaultSettings() {
             var moduleData = this.configData.moduleData;
             var simpleModuleData = [];
             for (var k = 0; k < moduleData.length; k++) {
@@ -1017,11 +1017,11 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        in: function(pattern, string) {
+        in(pattern, string) {
             return string.indexOf(pattern) !== -1;
         },
 
-        loadDefaultSettings: function() {
+        loadDefaultSettings() {
             var self = this;
 
             fs.readFile(path.resolve(__dirname + "/settings.json"), function(err, data) {
@@ -1029,7 +1029,7 @@ module.exports = NodeHelper.create(Object.assign({
                     if (self.in("no such file or directory", err.message)) {
                         return;
                     }
-                    console.log(err);
+                    Log.error(err);
                 } else {
                     data = JSON.parse(data.toString());
                     self.sendSocketNotification("DEFAULT_SETTINGS", data);
@@ -1037,11 +1037,11 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        fillTemplates: function(data) {
+        fillTemplates(data) {
             return this.translate(data);
         },
 
-        loadTranslation: function(language) {
+        loadTranslation(language) {
             var self = this;
 
             fs.readFile(path.resolve(__dirname + "/translations/" + language + ".json"), function(err, data) {
@@ -1053,11 +1053,11 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
-        loadCustomMenus: function() {
+        loadCustomMenus() {
             if ("customMenu" in this.thisConfig) {
                 let menuPath = path.resolve(__dirname + "/../../config/" + this.thisConfig.customMenu);
                 if (!fs.existsSync(menuPath)) {
-                    console.log(`MMM-Remote-Control customMenu Requested, but file:${menuPath} was not found`);
+                    Log.log(`MMM-Remote-Control customMenu Requested, but file:${menuPath} was not found`);
                     return;
                 }
                 fs.readFile(menuPath, (err, data) => {
@@ -1071,7 +1071,7 @@ module.exports = NodeHelper.create(Object.assign({
             }
         },
 
-        getIpAddresses: function() {
+        getIpAddresses() {
             // module started, answer with current IP address
             var interfaces = os.networkInterfaces();
             var addresses = [];
@@ -1086,7 +1086,7 @@ module.exports = NodeHelper.create(Object.assign({
             return addresses;
         },
 
-        socketNotificationReceived: function(notification, payload) {
+        socketNotificationReceived(notification, payload) {
             var self = this;
 
             if (notification === "CURRENT_STATUS") {
