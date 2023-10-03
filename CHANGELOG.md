@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.8] - 2023-10-03
+
+### Added
+
+- `node-fetch` now added to package.json (#293)
+
+### Fixed
+
+- Module name lookup now working as expected (#289)
+- QOL Code Cleaning (#287)
+
 ## [2.3.7] - 2022-10-13
 
 ### Added
