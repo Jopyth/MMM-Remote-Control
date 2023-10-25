@@ -47,6 +47,7 @@ module.exports = NodeHelper.create(Object.assign({
             this.configData = {};
 
             this.waiting = [];
+            this.waitforresponses = {};
 
             this.template = "";
             this.modulesAvailable = [];
@@ -772,7 +773,8 @@ module.exports = NodeHelper.create(Object.assign({
                 self.updateModule(decodeURI(query.module), res);
                 return true;
             }
-            if (query.action === 'NOTIFICATION') {
+            if (query.action === 'NOTIFICATION' || query.action === 'MMMRC_RESPONSE') {
+            	  //Log.log(["MMMRC executeQuery "+query.action,query]);
                 try {
                     var payload = {}; // Assume empty JSON-object if no payload is provided
                     if (typeof query.payload === 'undefined') {
@@ -786,8 +788,80 @@ module.exports = NodeHelper.create(Object.assign({
                             payload = query.payload;
                         }
                     }
-                    this.sendSocketNotification(query.action, { 'notification': query.notification, 'payload': payload });
-                    this.sendResponse(res);
+                    var mmmrc_options={};
+                    if (typeof payload.mmmrc_options !== 'undefined') {
+                    	 mmmrc_options=payload.mmmrc_options;
+                    	 if (typeof payload.mmmrc_options  === 'string') {
+ 													if (payload.mmmrc_options.startsWith("{")) {
+                            payload = JSON.parse(query.payload);
+                        	}
+                       }
+                       if (typeof mmmrc_options.timeout === 'undefined') {
+                       	  mmmrc_options.timeout=1000;
+                       }
+                       if ((typeof mmmrc_options.wait !== 'undefined') && (mmmrc_options.wait===true)) {
+                       		mmmrc_options.type="request";
+                       		delete mmmrc_options.wait;
+                       }
+
+                  	}
+                  	var immediateresponse=true;
+                  	var immediatenotification=true;
+
+                  	if (mmmrc_options.type) {
+                  		//Log.log(["MMMRC executeQuery "+query.action+" mmmrc_options ",mmmrc_options]);
+                  		if (mmmrc_options.type=="request") {
+                       	if (typeof mmmrc_options.id === 'undefined') {
+                       		mmmrc_options.id="ID"+Date.now().toString(36) + Math.floor(Math.pow(10, 12) + Math.random() * 9*Math.pow(10, 12)).toString(36);
+                       	}
+                  			if (typeof mmmrc_options.responsecount === 'undefined') {
+                  				mmmrc_options.responsecount=1;
+                  			}
+                  			this.waitforresponses[mmmrc_options.id]={ mmmrc_options: mmmrc_options, res: res, responses: [] }
+                  			var that=this;
+                  			setTimeout(function(id=mmmrc_options.id) {
+                  				if (typeof(that.waitforresponses[id]) !== 'undefined') {
+														// else it's already gone
+                  					var waitforresponse=that.waitforresponses[id];
+                  					//Log.log(["MMMRC "+mmmrc_options.id+" timeout",waitforresponse]);
+                  					var data=waitforresponse.responses;
+                  					var error=false;
+                  					if (waitforresponse.mmmrc_options.responsecount > waitforresponse.responses.length) {
+	                  					error="timeout"
+  	                				}
+    	              				that.sendResponse(waitforresponse.res,error,data);
+      	            				delete that.waitforresponses[id];
+      	            			}
+                  			},mmmrc_options.timeout);
+                  			//Log.log(["MMMRC "+mmmrc_options.id+" new request",this.waitforresponses[mmmrc_options.id]]);
+                  			immediateresponse=false;
+                  		}
+                  		if (mmmrc_options.type=="response") {
+                       	if (typeof mmmrc_options.id === 'undefined') {
+                       		throw "invalid response, no ID";
+                       	} else {
+                       		var id=mmmrc_options.id;
+                       		if (typeof this.waitforresponses[id] === 'undefined') {
+                       			throw "invalid ID:"+id;
+                       		} else {
+                       			this.waitforresponses[id].responses.push(payload.response);
+                       			if (this.waitforresponses[id].responses.length >= this.waitforresponses[id].mmmrc_options.responsecount) {
+                       				//Log.log(["MMMRC "+id+" response",this.waitforresponses[id]]);
+                       				this.sendResponse(this.waitforresponses[id].res,false,{ "responses" : this.waitforresponses[id].responses,"mmmrc_options" : mmmrc_options});
+                       				delete this.waitforresponses[id];
+                       			}
+                       			immediatenotification=false;
+                       		}
+                       	}
+                      }
+                  	}
+
+                    if (immediatenotification) {
+                    	this.sendSocketNotification(query.action, { 'notification': query.notification, 'payload': payload });
+                    }
+                    if (immediateresponse) {
+                    	this.sendResponse(res);
+                    }
                     return true;
                 } catch (err) {
                     Log.error("ERROR: ", err);
@@ -1113,6 +1187,10 @@ module.exports = NodeHelper.create(Object.assign({
                 } else if ("data" in payload) {
                     this.answerGet(payload, { isSocket: true });
                 }
+            }
+            if (notification === "MMMRC_RESPONSE") {
+                var query=payload; query.action=notification;
+                this.executeQuery(query, { isSocket: true });
             }
             if (notification === "UNDO_CONFIG") {
             	var backupHistorySize = 5;
