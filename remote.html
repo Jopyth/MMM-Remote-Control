@@ -75,38 +75,69 @@
               <span class="fa fa-fw fa-toggle-off" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:HIDEALL%%</span>
             </div>
-            <div class="menu-element hidden edit-menu one-line">
-              <span class="stack fa-fw">
+            <div class="menu-element-container">
+              <div class="menu-element hidden edit-menu one-line">
+                <span class="stack fa-fw">
+                  <span
+                    class="fa fa-fw fa-sun-o outer-label fa-stack-1x"
+                    aria-hidden="true"
+                  ></span>
+                  <span
+                    class="fa fa-fw fa-adjust inner-label fa-stack-1x"
+                    aria-hidden="true"
+                  ></span>
+                </span>
+                <div
+                  id="brightness-container"
+                  class="slider-container menu-element hidden button edit-menu"
+                >
+                  <input
+                    id="brightness-slider"
+                    type="range"
+                    min="10"
+                    max="200"
+                    step="10"
+                    value="100"
+                    class="slider"
+                  />
+                </div>
                 <span
-                  class="fa fa-fw fa-sun-o outer-label fa-stack-1x"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="fa fa-fw fa-adjust inner-label fa-stack-1x"
-                  aria-hidden="true"
-                ></span>
-              </span>
-              <div
-                id="brightness-container"
-                class="slider-container menu-element hidden button edit-menu"
-              >
-                <input
-                  id="brightness-slider"
-                  type="range"
-                  min="10"
-                  max="200"
-                  step="10"
-                  value="100"
-                  class="slider"
-                />
+                  id="brightness-reset"
+                  class="inline-menu-element hidden button edit-menu"
+                >
+                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                </span>
               </div>
-              <span
-                id="brightness-reset"
-                class="inline-menu-element hidden button edit-menu"
-              >
-                <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
-              </span>
+              <div class="menu-element hidden edit-menu one-line">
+                <span class="stack fa-fw">
+                  <span
+                    class="fa fa-fw fa-thermometer-three-quarters"
+                    aria-hidden="true"
+                  ></span>
+                </span>
+                <div
+                  id="temp-container"
+                  class="slider-container menu-element hidden button edit-menu"
+                >
+                  <input
+                    id="temp-slider"
+                    type="range"
+                    min="150"
+                    max="500"
+                    step="25"
+                    value="325"
+                    class="slider"
+                  />
+                </div>
+                <span
+                  id="temp-reset"
+                  class="inline-menu-element hidden button edit-menu"
+                >
+                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                </span>
+              </div>
             </div>
+
             <!-- module menu -->
             <div
               id="add-module"

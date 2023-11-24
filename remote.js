@@ -249,6 +249,11 @@ const Remote = {
       self.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: slider.value});
     }, false);
 
+    const slider2 = document.getElementById("temp-slider");
+    slider2.addEventListener("change", function () {
+      self.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: slider2.value});
+    }, false);
+
     const input = document.getElementById("add-module-search");
     const deleteButton = document.getElementById("delete-search-input");
 
@@ -318,6 +323,7 @@ const Remote = {
     if (newMenu === "edit-menu") {
       this.loadVisibleModules();
       this.loadBrightness();
+      this.loadTemp();
     }
     if (newMenu === "settings-menu") {
       this.loadConfigModules();
@@ -604,6 +610,11 @@ const Remote = {
   loadBrightness () {
     console.log("Load brightness...");
     this.sendSocketNotification("REMOTE_ACTION", {data: "brightness"});
+  },
+
+  loadTemp () {
+    console.log("Load color temperature...");
+    this.sendSocketNotification("REMOTE_ACTION", {data: "temp"});
   },
 
   makeToggleButton (moduleBox, visibilityStatus) {
@@ -1523,6 +1534,7 @@ const Remote = {
     $item = $("<div>").attr("id", `${content.id}-button`).addClass(`menu-element button ${menu}-menu`);
     const $mcmIcon = $("<span>").addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
     const $mcmText = $("<span>").addClass("text").text(content.text);
+    $item.append($mcmIcon).append($mcmText);
     if (content.icon) $item.append($mcmIcon);
     if (content.type === "menu") {
       if (content.text) $item.append($mcmText);
@@ -1646,7 +1658,13 @@ const buttons = {
   "brightness-reset": function () {
     const element = document.getElementById("brightness-slider");
     element.value = 100;
-    Remote.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: 100});
+    Remote.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: element.value});
+  },
+
+  "temp-reset": function () {
+    const element = document.getElementById("temp-slider");
+    element.value = 327;
+    Remote.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: element.value});
   },
 
   // edit menu buttons

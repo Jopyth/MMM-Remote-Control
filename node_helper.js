@@ -600,6 +600,13 @@ module.exports = NodeHelper.create(Object.assign(
         });
         return;
       }
+      if (query.data === "temp") {
+        if (!this.checkInitialized(res)) { return; }
+        this.callAfterUpdate(() => {
+          this.sendResponse(res, undefined, {query: query, result: self.configData.temp});
+        });
+        return;
+      }
       if (query.data === "userPresence") {
         this.sendResponse(res, undefined, {query: query, result: this.userPresence});
         return;
@@ -738,10 +745,7 @@ module.exports = NodeHelper.create(Object.assign(
       const self = this;
       const opts = {timeout: 15000};
 
-      if ([
-        "SHUTDOWN",
-        "REBOOT"
-      ].indexOf(query.action) !== -1) {
+      if (["SHUTDOWN", "REBOOT"].indexOf(query.action) !== -1) {
         this.shutdownControl(query.action, opts, res);
         return true;
       }
@@ -765,12 +769,7 @@ module.exports = NodeHelper.create(Object.assign(
         this.sendResponse(res, undefined, query);
         return true;
       }
-      if ([
-        "MONITORON",
-        "MONITOROFF",
-        "MONITORTOGGLE",
-        "MONITORSTATUS"
-      ].indexOf(query.action) !== -1) {
+      if (["MONITORON", "MONITOROFF", "MONITORTOGGLE", "MONITORSTATUS"].indexOf(query.action) !== -1) {
         this.monitorControl(query.action, opts, res);
         return true;
       }
@@ -780,6 +779,11 @@ module.exports = NodeHelper.create(Object.assign(
         return true;
       }
       if (query.action === "BRIGHTNESS") {
+        self.sendResponse(res);
+        self.sendSocketNotification(query.action, query.value);
+        return true;
+      }
+      if (query.action === "TEMP") {
         self.sendResponse(res);
         self.sendSocketNotification(query.action, query.value);
         return true;
@@ -1086,6 +1090,7 @@ module.exports = NodeHelper.create(Object.assign(
       const text = JSON.stringify({
         moduleData: simpleModuleData,
         brightness: this.configData.brightness,
+        temp: this.configData.temp,
         settingsVersion: this.configData.settingsVersion
       });
 
@@ -1172,7 +1177,7 @@ module.exports = NodeHelper.create(Object.assign(
         this.configData = payload;
         this.thisConfig = payload.remoteConfig;
         if (!this.initialized) {
-        // Do anything else required to initialize
+          // Do anything else required to initialize
           this.initialized = true;
         } else {
           this.waiting.forEach((o) => { o.run(); });
@@ -1180,11 +1185,9 @@ module.exports = NodeHelper.create(Object.assign(
         }
       }
       if (notification === "REQUEST_DEFAULT_SETTINGS") {
-      // module started, answer with current ip addresses
+        // module started, answer with current ip addresses
         self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
-        self.sendSocketNotification("LOAD_PORT", self.configOnHd.port
-          ? self.configOnHd.port
-          : "");
+        self.sendSocketNotification("LOAD_PORT", self.configOnHd.port ? self.configOnHd.port : "");
         // check if we have got saved default settings
         self.loadDefaultSettings();
       }
@@ -1240,11 +1243,11 @@ module.exports = NodeHelper.create(Object.assign(
       /* API EXTENSION -- added v2.0.0 */
       if (notification === "REGISTER_API") {
         if ("module" in payload) {
-          if ("actions" in payload && payload.actions !== {}) {
-            this.externalApiRoutes[payload.module] = payload;
+          if ("actions" in payload) {
+            this.externalApiRoutes[payload.path] = payload;
           } else {
-          // Blank actions means the module has requested to be removed from API
-            delete this.externalApiRoutes[payload.module];
+            // Blank actions means the module has requested to be removed from API
+            delete this.externalApiRoutes[payload.path];
           }
           this.updateModuleApiMenu();
         }
