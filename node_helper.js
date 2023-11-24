@@ -404,12 +404,6 @@ module.exports = NodeHelper.create(Object.assign({
                         delete current.config[key];
                     }
                 }
-                // Log.log(current.config);
-                if (current.config === {}) {
-                    delete current[config];
-                    continue;
-                }
-                // Log.log(current);
             }
 
             return config;
@@ -559,6 +553,14 @@ module.exports = NodeHelper.create(Object.assign({
                 if (!this.checkInititialized(res)) { return; }
                 this.callAfterUpdate(() => {
                     this.sendResponse(res, undefined, { query: query, result: self.configData.brightness });
+                });
+                return;
+            }
+
+            if (query.data === "temp") {
+                if (!this.checkInititialized(res)) { return; }
+                this.callAfterUpdate(() => {
+                    this.sendResponse(res, undefined, { query: query, result: self.configData.temp });
                 });
                 return;
             }
@@ -723,6 +725,11 @@ module.exports = NodeHelper.create(Object.assign({
                 return true;
             }
             if (query.action === "BRIGHTNESS") {
+                self.sendResponse(res);
+                self.sendSocketNotification(query.action, query.value);
+                return true;
+            }
+            if (query.action === "TEMP") {
                 self.sendResponse(res);
                 self.sendSocketNotification(query.action, query.value);
                 return true;
@@ -1007,6 +1014,7 @@ module.exports = NodeHelper.create(Object.assign({
             var text = JSON.stringify({
                 moduleData: simpleModuleData,
                 brightness: this.configData.brightness,
+                temp: this.configData.temp,
                 settingsVersion: this.configData.settingsVersion
             });
 
@@ -1158,7 +1166,7 @@ module.exports = NodeHelper.create(Object.assign({
             /* API EXTENSION -- added v2.0.0 */
             if (notification === "REGISTER_API") {
                 if ("module" in payload) {
-                    if ("actions" in payload && payload.actions !== {}) {
+                    if ("actions" in payload ) {
                         this.externalApiRoutes[payload.path] = payload;
                     } else {
                         // Blank actions means the module has requested to be removed from API
