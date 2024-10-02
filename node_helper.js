@@ -19,7 +19,7 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const _ = require("lodash");
 
-var defaultModules = require(path.resolve(__dirname + "/../default/defaultmodules.js"));
+var defaultModules = require(path.resolve(__dirname + "/../../modules/default/defaultmodules.js"));
 
 Module = {
     configDefaults: {},
@@ -221,7 +221,7 @@ module.exports = NodeHelper.create(Object.assign({
                         url: "https://docs.magicmirror.builders/modules/introduction.html"
                     });
                     var module = self.modulesAvailable[self.modulesAvailable.length - 1];
-                    var modulePath = self.configOnHd.paths.modules + "/default/" + defaultModules[i];
+                    var modulePath = "modules/default/" + defaultModules[i];
                     self.loadModuleDefaultConfig(module, modulePath, i === defaultModules.length-1);
                 }
 
@@ -235,10 +235,14 @@ module.exports = NodeHelper.create(Object.assign({
             });
         },
 
+        getModuleDir() {
+            return this.configOnHd.foreignModulesDir ? this.configOnHd.foreignModulesDir : (this.configOnHd.paths ? this.configOnHd.paths.modules : "modules");
+        },
+
         addModule(folderName, lastOne) {
             var self = this;
 
-            var modulePath = this.configOnHd.paths.modules + "/" + folderName;
+            var modulePath = this.getModuleDir() + "/" + folderName;
             fs.stat(modulePath, (err, stats) => {
                 if (stats.isDirectory()) {
                     var isInList = false;
@@ -340,7 +344,7 @@ module.exports = NodeHelper.create(Object.assign({
                 });
                 return;
             }
-            var modulePath = this.configOnHd.paths.modules + "/" + query.module;
+            var modulePath = this.getModuleDir() + "/" + query.module;
             let git = simpleGit(modulePath);
             git.getRemotes(true, function(error, result) {
                 if (error) {
