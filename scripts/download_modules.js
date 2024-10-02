@@ -20,7 +20,7 @@ const util = require("util");
 var downloadModules = {
     defaults: {
         modulesFile: path.resolve(__dirname, "../modules.json"),    // Path to modules file
-        sourceUrl: 'https://raw.githubusercontent.com/wiki/MichMich/MagicMirror/3rd-Party-Modules.md', // Source url
+        sourceUrl: 'https://raw.githubusercontent.com/wiki/MagicMirrorOrg/MagicMirror/3rd-Party-Modules.md', // Source url
         refreshRate: 24 * 3600,                                     // Max Refresh of One Day
         force: false,                                               // Force the update
         callback: function(result) { console.log(result); }         // Callback to run on success or failure

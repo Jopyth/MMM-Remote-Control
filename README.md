@@ -1,6 +1,6 @@
 # MagicMirror² Module: Remote Control w/ RESTful API
 
-This module for the [MagicMirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
+This module for the [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
 Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug everytime, am I right?
 Additionally you can hide and show modules on your mirror and do other cool stuff.
@@ -15,7 +15,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 
 ### Quick install
 
-If you followed the default installation instructions for the [MagicMirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer.
+If you followed the default installation instructions for the [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) project, you should be able to use the automatic installer.
 The following command will download the installer and execute it:
 
 ```bash
@@ -54,7 +54,7 @@ npm install
 ```
 
 - (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is *not* reachable externally.
-To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MichMich/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
+To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
 For example change `address` to `0.0.0.0` and add two allowed devices with IP-Adresses `192.168.0.42` and `192.168.0.50`:
 
 ```js
@@ -200,7 +200,7 @@ The response will be in the JSON format, here is an example:
 "moduleData":[
     {"hidden":false,"name":"alert","identifier":"module_0_alert"},
     {"hidden":true,"name":"clock","identifier":"module_1_clock","position":"bottom_right"},
-    {"hidden":false,"name":"currentweather","identifier":"module_2_currentweather","position":"top_right"}
+    {"hidden":false,"name":"weather","identifier":"module_2_weather","position":"top_right"}
 ],
 "brightness":40,
 "settingsVersion":1

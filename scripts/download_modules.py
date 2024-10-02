@@ -71,7 +71,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='command line utility to download current modules')
-    parser.add_argument('-u', '--url', nargs='?', default='https://raw.githubusercontent.com/wiki/michmich/MagicMirror/MagicMirror%C2%B2-Modules.md', help='url to extract modules from')
+    parser.add_argument('-u', '--url', nargs='?', default='https://raw.githubusercontent.com/wiki/MagicMirrorOrg/MagicMirror/3rd-Party-Modules.md', help='url to extract modules from')
     parser.add_argument('-o', '--outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout, help='write output to a file (default stdout)')
     args = parser.parse_args()
 

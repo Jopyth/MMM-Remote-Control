@@ -95,7 +95,7 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         combineConfig() {
-            // function copied from MichMich (MIT)
+            // function copied from MagicMirrorOrg (MIT)
             var defaults = require(__dirname + "/../../js/defaults.js");
             var configFilename = path.resolve(__dirname + "/../../config/config.js");
             if (typeof(global.configuration_file) !== "undefined") {
@@ -215,10 +215,10 @@ module.exports = NodeHelper.create(Object.assign({
                         name: self.capitalizeFirst(defaultModules[i]),
                         isDefaultModule: true,
                         installed: true,
-                        author: "MichMich",
+                        author: "MagicMirrorOrg",
                         desc: "",
-                        id: "MichMich/MagicMirror",
-                        url: "https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules#default-modules"
+                        id: "MagicMirrorOrg/MagicMirror",
+                        url: "https://docs.magicmirror.builders/modules/introduction.html"
                     });
                     var module = self.modulesAvailable[self.modulesAvailable.length - 1];
                     var modulePath = self.configOnHd.paths.modules + "/default/" + defaultModules[i];
@@ -307,7 +307,7 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         loadModuleDefaultConfig(module, modulePath, lastOne) {
-            // function copied from MichMich (MIT)
+            // function copied from MagicMirrorOrg (MIT)
             var filename = path.resolve(modulePath + "/" + module.longname + ".js");
             try {
                 fs.accessSync(filename, fs.F_OK);
@@ -335,7 +335,7 @@ module.exports = NodeHelper.create(Object.assign({
                     if (error) {
                         Log.error(error);
                     }
-                    res.writeHead(302, { 'Location': "https://github.com/MichMich/MagicMirror/tree/" + result.trim() + "/modules/default/" + query.module });
+                    res.writeHead(302, { 'Location': "https://github.com/MagicMirrorOrg/MagicMirror/tree/" + result.trim() + "/modules/default/" + query.module });
                     res.end();
                 });
                 return;

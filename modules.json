@@ -1124,7 +1124,7 @@
     "id": "sebastianhodapp/MMM-IndoorTemp",
     "url": "https://github.com/sebastianhodapp/MMM-IndoorTemp",
     "author": "sebastianhodapp",
-    "desc": "The module emits the notification \"INDOOR_TEMPERATURE\" to display the indoor temperature received via a subscribed MQTT topic in the default [Current Weather module](https://github.com/MichMich/MagicMirror/tree/develop/modules/default/currentweather)."
+    "desc": "The module emits the notification \"INDOOR_TEMPERATURE\" to display the indoor temperature received via a subscribed MQTT topic in the default [Weather module](https://github.com/MichMich/MagicMirror/tree/develop/modules/default/weather)."
   },
   {
     "longname": "MMM-meteoblueCurrent",
