@@ -37,8 +37,8 @@ MM_HOME=$HOME/MagicMirror
 MODULE_NAME=MMM-Remote-Control
 FORK=Jopyth
 
-# check if we are correct by searching for https://github.com/MichMich/MagicMirror in package.json
-TEST_STRING="\"url\": \"git+https://github.com/MichMich/MagicMirror.git\""
+# check if we are correct by searching for https://github.com/MagicMirrorOrg/MagicMirror in package.json
+TEST_STRING="\"url\": \"git+https://github.com/MagicMirrorOrg/MagicMirror.git\""
 if grep -sq "$TEST_STRING" "$MM_HOME/package.json"; then
     # we found it
     echo -n ""
