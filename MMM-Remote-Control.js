@@ -7,8 +7,6 @@
  * MIT Licensed.
  */
 
-/* jshint esversion:6 */
-
 Module.register("MMM-Remote-Control", {
 
     requiresVersion: "2.12.0",

@@ -4,7 +4,6 @@
  * By shbatm
  * MIT Licensed.
  */
-/* jshint node: true, esversion: 6 */
 
 const path = require("path");
 const url = require("url");
@@ -51,7 +50,7 @@ module.exports = {
         let getActions = function(content) {
             let re = /notification \=\=\=? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
             let m;
-            let availabeActions = [];
+            let availableActions = [];
             if (re.test(content)) {
                 content.match(re).forEach((match) => {
                     let n = match.replace(re, '$1');
@@ -62,11 +61,11 @@ module.exports = {
                             'KEYPRESS_MODE_CHANGED',
                             'USER_PRESENCE'
                         ].indexOf(n) === -1) {
-                        availabeActions.push(n);
+                        availableActions.push(n);
                     }
                 });
             }
-            return availabeActions;
+            return availableActions;
         };
 
         let skippedModules = ['clock', 'compliments', 'MMM-Remote-Control'];
@@ -118,7 +117,7 @@ module.exports = {
         // Route for testing the api at http://mirror:8080/api/test
         this.expressRouter.route(['/test','/']) // Test without apiKey
             .get((req, res) => {
-                if (!this.checkInititialized(res)) { return; }
+                if (!this.checkInitialized(res)) { return; }
                 res.json({ success: true });
             });
 
@@ -342,7 +341,7 @@ module.exports = {
     },
 
     answerModuleApi(req, res) {
-        if (!this.checkInititialized(res)) { return; }
+        if (!this.checkInitialized(res)) { return; }
         var dataMerged = this.mergeData().data
         
         if (!req.params.moduleName) {
@@ -427,7 +426,7 @@ module.exports = {
         }
         // If only a URL Parameter is passed, it will be sent as a string
         // If we have either a query string or a payload already provided w the action,
-        //  then the paramteter will be inside the payload.param property.
+        //  then the parameter will be inside the payload.param property.
         delete req.query.apiKey;
         let query = { notification: n };
         if (req.params.p && req.params.p === "delay") {
@@ -478,7 +477,7 @@ module.exports = {
         return;
     },
 
-    checkInititialized(res) {
+    checkInitialized(res) {
         if (!this.initialized) {
             this.sendResponse(res, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror²?");
             return false;

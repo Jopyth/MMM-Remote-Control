@@ -4,7 +4,6 @@
  * By Joseph Bethge
  * MIT Licensed.
  */
-/* jshint node: true, esversion: 6 */
 
 const NodeHelper = require("node_helper");
 const path = require("path");
@@ -315,7 +314,7 @@ module.exports = NodeHelper.create(Object.assign({
             var filename = path.resolve(modulePath + "/" + module.longname + ".js");
             try {
                 fs.accessSync(filename, fs.F_OK);
-                var jsfile = require(filename);
+                var jsFile = require(filename);
                 /* Defaults are stored when Module.register is called during require(filename); */
             } catch (e) {
                 if (e.code == "ENOENT") {
@@ -524,8 +523,8 @@ module.exports = NodeHelper.create(Object.assign({
                 return;
             }
             if (query.data === "classes") {
-            	var thisconfig = this.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
-            	this.sendResponse(res, undefined, { query: query, data: thisconfig.classes ? thisconfig.classes : {} });
+            	var thisConfig = this.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
+            	this.sendResponse(res, undefined, { query: query, data: thisConfig.classes ? thisConfig.classes : {} });
                 return;
             }
             if (query.data === "saves") {
@@ -553,14 +552,14 @@ module.exports = NodeHelper.create(Object.assign({
                 return;
             }
             if (query.data === "modules") {
-                if (!this.checkInititialized(res)) { return; }
+                if (!this.checkInitialized(res)) { return; }
                 this.callAfterUpdate(() => {
                     this.sendResponse(res, undefined, { query: query, data: self.configData.moduleData });
                 });
                 return;
             }
             if (query.data === "brightness") {
-                if (!this.checkInititialized(res)) { return; }
+                if (!this.checkInitialized(res)) { return; }
                 this.callAfterUpdate(() => {
                     this.sendResponse(res, undefined, { query: query, result: self.configData.brightness });
                 });

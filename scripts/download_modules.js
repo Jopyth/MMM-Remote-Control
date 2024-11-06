@@ -11,7 +11,6 @@
  * MIT Licensed.
  */
 
-/* jshint esversion:6, node: true */
 const fetch = require("node-fetch");
 const path = require("path");
 const fs = require("fs");
