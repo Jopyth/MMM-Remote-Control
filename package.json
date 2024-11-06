@@ -26,5 +26,11 @@
     "node-fetch": "^2.7.0",
     "simple-git": "latest",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "cspell": "^8.15.7"
+  },
+  "scripts": {
+    "test": "cspell ."
   }
 }
