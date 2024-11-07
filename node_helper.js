@@ -109,6 +109,13 @@ module.exports = NodeHelper.create(Object.assign({
                 var config = Object.assign({}, defaults, c);
                 this.configOnHd = config;
                 // Get the configuration for this module.
+                if(this.configOnHd.paths== undefined){
+                    // we are located in that location too
+                    // get our parent foldername
+                    // all the non-default module are here too
+                    this.configOnHd.paths={modules: __dirname.split(path.sep).slice(-2,-1)[0]}
+                    this.configOnHd.foreignModulesDir= null
+                }
                 if ("modules" in this.configOnHd) {
                     let thisModule = this.configOnHd.modules.find(m => m.module === 'MMM-Remote-Control');
                     if (thisModule && "config" in thisModule) {
@@ -117,13 +124,13 @@ module.exports = NodeHelper.create(Object.assign({
                 }
             } catch (e) {
                 if (e.code == "ENOENT") {
-                    console.error("MMM-Remote-Control WARNING! Could not find config file. Please create one. Starting with default configuration.");
+                    console.error(this.name+"  WARNING! Could not find config file. Please create one. Starting with default configuration.");
                     this.configOnHd = defaults;
                 } else if (e instanceof ReferenceError || e instanceof SyntaxError) {
-                    console.error("MMM-Remote-Control WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
+                    console.error(this.name+"  WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
                     this.configOnHd = defaults;
                 } else {
-                    console.error("MMM-Remote-Control WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
+                    console.error(this.name+"  WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
                     this.configOnHd = defaults;
                 }
             }
@@ -237,6 +244,7 @@ module.exports = NodeHelper.create(Object.assign({
 
         getModuleDir() {
             return this.configOnHd.foreignModulesDir ? this.configOnHd.foreignModulesDir : (this.configOnHd.paths ? this.configOnHd.paths.modules : "modules");
+
         },
 
         addModule(folderName, lastOne) {
@@ -244,68 +252,72 @@ module.exports = NodeHelper.create(Object.assign({
 
             var modulePath = this.getModuleDir() + "/" + folderName;
             fs.stat(modulePath, (err, stats) => {
-                if (stats.isDirectory()) {
-                    var isInList = false;
-                    var currentModule;
-                    self.modulesInstalled.push(folderName);
-                    for (var i = 0; i < self.modulesAvailable.length; i++) {
-                        if (self.modulesAvailable[i].longname === folderName) {
-                            isInList = true;
-                            self.modulesAvailable[i].installed = true;
-                            currentModule = self.modulesAvailable[i];
-                        }
-                    }
-                    if (!isInList) {
-                        var newModule = {
-                            longname: folderName,
-                            name: self.formatName(folderName),
-                            isDefaultModule: false,
-                            installed: true,
-                            author: "unknown",
-                            desc: "",
-                            id: "local/" + folderName,
-                            url: ""
-                        };
-                        self.modulesAvailable.push(newModule);
-                        currentModule = newModule;
-                    }
-                    self.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
-
-                    // check for available updates
-                    var stat;
-                    try {
-                        stat = fs.statSync(path.join(modulePath, '.git'));
-                    } catch (err) {
-                        // Error when directory .git doesn't exist
-                        // This module is not managed with git, skip
-                        return;
-                    }
-
-                    var sg = simpleGit(modulePath);
-                    sg.fetch().status(function(err, data) {
-                        if (!err) {
-                            if (data.behind > 0) {
-                                currentModule.updateAvailable = true;
+                if(!err){
+                    if (stats.isDirectory()) {
+                        var isInList = false;
+                        var currentModule;
+                        self.modulesInstalled.push(folderName);
+                        for (var i = 0; i < self.modulesAvailable.length; i++) {
+                            if (self.modulesAvailable[i].longname === folderName) {
+                                isInList = true;
+                                self.modulesAvailable[i].installed = true;
+                                currentModule = self.modulesAvailable[i];
                             }
                         }
-                    });
-                    if (!isInList) {
-                        sg.getRemotes(true, function(error, result) {
-                            if (error) {
-                                Log.error(error);
-                            }
-                            try {
-                                var baseUrl = result[0].refs.fetch;
-                                // replacements
-                                baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
-                                // if cloned with ssh
-                                currentModule.url = baseUrl.replace("git@", "https://");
-                            } catch (e) {
-                                // Something happened. Skip it.
-                                return;
+                        if (!isInList) {
+                            var newModule = {
+                                longname: folderName,
+                                name: self.formatName(folderName),
+                                isDefaultModule: false,
+                                installed: true,
+                                author: "unknown",
+                                desc: "",
+                                id: "local/" + folderName,
+                                url: ""
+                            };
+                            self.modulesAvailable.push(newModule);
+                            currentModule = newModule;
+                        }
+                        self.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
+
+                        // check for available updates
+                        var stat;
+                        try {
+                            stat = fs.statSync(path.join(modulePath, '.git'));
+                        } catch (err) {
+                            // Error when directory .git doesn't exist
+                            // This module is not managed with git, skip
+                            return;
+                        }
+
+                        var sg = simpleGit(modulePath);
+                        sg.fetch().status(function(err, data) {
+                            if (!err) {
+                                if (data.behind > 0) {
+                                    currentModule.updateAvailable = true;
+                                }
                             }
                         });
+                        if (!isInList) {
+                            sg.getRemotes(true, function(error, result) {
+                                if (error) {
+                                    Log.error(error);
+                                }
+                                try {
+                                    var baseUrl = result[0].refs.fetch;
+                                    // replacements
+                                    baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
+                                    // if cloned with ssh
+                                    currentModule.url = baseUrl.replace("git@", "https://");
+                                } catch (e) {
+                                    // Something happened. Skip it.
+                                    return;
+                                }
+                            });
+                        }
                     }
+                } else {
+                    console.error(this.name+"  module path stats error=",err)
                 }
             });
         },
@@ -319,12 +331,12 @@ module.exports = NodeHelper.create(Object.assign({
                 /* Defaults are stored when Module.register is called during require(filename); */
             } catch (e) {
                 if (e.code == "ENOENT") {
-                    console.error("ERROR! Could not find main module js file for " + module.longname);
+                    console.error(this.name+" ERROR! Could not find main module js file for module folder " +modulePath + "/" +module.longname);
                 } else if (e instanceof ReferenceError || e instanceof SyntaxError) {
-                    console.error("ERROR! Could not validate main module js file.");
-                    console.error(e);
+                    console.error(this.name+" ERROR! Could not validate main module js file.");
+                    //console.error(e);
                 } else {
-                    console.error("ERROR! Could not load main module js file. Error found: " + e);
+                    console.error(this.name+" ERROR! Could not load main module js file. Error found: " + e);
                 }
             }
             if (lastOne) { this.onModulesLoaded(); }
@@ -446,7 +458,7 @@ module.exports = NodeHelper.create(Object.assign({
                 }
                 if (best === -1) {
                     // can not backup, panic!
-                    console.error("MMM-Remote-Control Error! Backing up config failed, not saving!");
+                    console.error(this.name+" Error! Backing up config failed, not saving!");
                     self.sendResponse(res, new Error("Backing up config failed, not saving!"), { query: query });
                     return;
                 }
@@ -474,8 +486,8 @@ module.exports = NodeHelper.create(Object.assign({
                             if (error) {
                                 self.sendResponse(res, error, { query: query, backup: backupPath, data: self.configOnHd });
                             }
-                            console.info("MMM-Remote-Control saved new config!");
-                            console.info("Used backup: " + backupPath);
+                            console.info(this.name+" saved new config!");
+                            console.info(this.name+" Used backup: " + backupPath);
                             self.sendResponse(res, undefined, { query: query, backup: backupPath, data: self.configOnHd });
                         }
                     );
