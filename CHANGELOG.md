@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Added a spell checker and fixed problems that were found (#308).
 - Added JavaScript linting (for the start with soft rules).
+- Added GitHub workflow for linting and spell checking on every push and pull request.
 
 ## [2.4.0] - 2024-10-08
 
