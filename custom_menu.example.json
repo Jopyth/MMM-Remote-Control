@@ -10,7 +10,7 @@
          "text": "Menu Item 1",
          "action": "NOTIFICATION",
          "content": {
-            "notification": "NOTIFCATION_TEXT_1",
+            "notification": "NOTIFICATION_TEXT_1",
             "payload": "This notification requires a string payload"
          }
       },
@@ -21,7 +21,7 @@
          "text": "Menu Item 2",
          "action": "NOTIFICATION",
          "content": {
-            "notification": "NOTIFCATION_TEXT_2",
+            "notification": "NOTIFICATION_TEXT_2",
             "payload": {
                "title": "Payload Object",
                "message": "This notification requires a payload object"
@@ -35,7 +35,7 @@
          "text": "Menu Item 3",
          "action": "NOTIFICATION",
          "content": {
-            "notification": "NOTIFCATION_TEXT_3",
+            "notification": "NOTIFICATION_TEXT_3",
             "payload": null
          }
       },
@@ -52,7 +52,7 @@
                "text": "Sub-Menu Item 1",
                "action": "NOTIFICATION",
                "content": {
-                  "notification": "NOTIFCATION_TEXT_4",
+                  "notification": "NOTIFICATION_TEXT_4",
                   "payload": "This notification requires a string payload"
                }
             },
@@ -63,7 +63,7 @@
                "text": "Sub-Menu Item 2",
                "action": "NOTIFICATION",
                "content": {
-                  "notification": "NOTIFCATION_TEXT_5",
+                  "notification": "NOTIFICATION_TEXT_5",
                   "payload": {
                      "title": "Payload Object",
                      "message": "This notification requires a payload object"

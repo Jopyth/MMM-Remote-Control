@@ -2,11 +2,11 @@
 
 ## Introduction
 
-The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the MagicMirror² using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules.  In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notificiation.
+The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the MagicMirror² using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules.  In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notification.
 
 This expansion was developed by [shbatm](https://github.com/shbatm) using [juzim's MMM-Api](https://github.com/juzim/MMM-Api) and of-course, [jopyth's MMM-Remote-Control](https://github.com/jopyth/MMM-Remote-Control).
 
-Modified by [ezeholz](https://github.com/ezeholz) in the 2.2.0+, in the efford of making a more simplified version for everyone to use it.
+Modified by [ezeholz](https://github.com/ezeholz) in the 2.2.0+, in the effort of making a more simplified version for everyone to use it.
 
 ## Overview
 
@@ -49,7 +49,7 @@ $ curl -X POST http://magicmirrorip:8080/api/notification/HELLO_WORLD \
 
 Providing an API key is recommended; however, remains optional. If you wish to use an API key to authenticate, add an `apiKey:` option to the config section for this module.
 
-If you ran the `installer.sh` script when you installed the module, a non-canoical UUID is generated for you to use; you can use this unique code, or use any string you wish.
+If you ran the `installer.sh` script when you installed the module, a non-canonical UUID is generated for you to use; you can use this unique code, or use any string you wish.
 
 ### Example Config Section
 
@@ -185,14 +185,14 @@ curl -X GET http://magicmirrorip:8080/api/module/newsfeed
 
 ### 3. External APIs (Explicit) - Extending Another Module with this API
 
-For module developers, you can extend the API to accomodate your needs by sending a "REGISTER_API" module notification. Below is an example and details.
+For module developers, you can extend the API to accommodate your needs by sending a "REGISTER_API" module notification. Below is an example and details.
 
-If correctly formated, any details sent here will override the "guessed" action by #2 above.
+If correctly formatted, any details sent here will override the "guessed" action by #2 above.
 
 ```js
 let payload = {
   module: this.name,
-  path: "modulename",
+  path: "mymodulename",
   actions: {
     actionName: {
         method: "GET",
@@ -220,12 +220,12 @@ this.sendNotification("REGISTER_API", payload);
 | `prettyName` | *Optional:* You can specify a Formatted Name to use in dynamic menus, like the MMM-Remote-Control Module Control menu, otherwise one will be guessed based on the Notification text.
 | `payload` | *Optional:* If you always want the module to send the same `payload`, you can provide an `Object` here. It will be merged into the `payload` sent with the notification, which will also include:<br>1. URL Parameter, if used. See notes on `payload` Object below.<br>2. Query String, if used. API key will be removed.<br>3. Request body, if `POST` method is used and a body sent.<br>4. Finally, this parameter.
 
-#### About the `payload` Object
+#### About the `payload` object
 
 Your module will be sent a `payload` with the notification, depending on the request details, and if you provided a `payload` Object to send. It is a merged object, containing one or more of the following inputs.
 
-1. URL Parameter. (e.g. `/api/module/mymodulename/action/:p`, where `:p` is the parameter). If nothing else below is passed or provided, this will be returned as a string. If anything else below is sent, this will be provided at `payload.param` in the notification's `payload` Object.
-2. Query String. Anything passed to the query string, except the API Key (if used) will be passed through `payload`. For example, `/api/module/mymodulename/action?param1=Something&param2=Else` will be passed in `payload` as `{ param1: "Something", param2: "Else" }`
+1. URL parameter. (e.g. `/api/module/mymodulename/action/:p`, where `:p` is the parameter). If nothing else below is passed or provided, this will be returned as a string. If anything else below is sent, this will be provided at `payload.param` in the notification's `payload` Object.
+2. Query String. Anything passed to the query string, except the API key (if used) will be passed through `payload`. For example, `/api/module/mymodulename/action?param1=Something&param2=Else` will be passed in `payload` as `{ param1: "Something", param2: "Else" }`
 3. `POST` Body. Same as query string above.
 4. Custom Payload. Any `Object` provided with the `payload:` key when you send the initial "REGISTER_API" notification.
 

@@ -1,5 +1,4 @@
 // main javascript file for the remote control page
-/* jshint esversion: 6 */
 
 var Remote = {
     name: "MMM-Remote-Control",
@@ -26,7 +25,7 @@ var Remote = {
     autoHideDelay: 1000, // ms
 
     /* socket()
-     * Returns a socket object. If it doesn"t exist, it"s created.
+     * Returns a socket object. If it doesn't exist, it's created.
      * It also registers the notification callback.
      */
     socket() {

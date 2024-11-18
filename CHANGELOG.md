@@ -2,8 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [2.5.0] - Unreleased (`develop` branch)
+
+### Added
+
+- Added a spell checker and fixed problems that were found.
 
 ## [2.4.0] - 2024-10-08
 
@@ -120,7 +126,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Updates now show if there's an update available every day (#52)
-- Templates for issues and PRs, and also stale for automanagement of issues.
+- Templates for issues and PRs, and also stale for auto management of issues.
 - Close Dev Tools (#119)
 - Undo Config Implementation [Beta]
 - Classes to show, hide or toggle multiple modules at once (#34)
@@ -150,7 +156,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.1.0] - 2020-11-01
 
-Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just thinked that some things needed to be fixed ASAP.
+Hello! Ezequiel here. Just wanted to say thanks for trust in me, in the past days I made a lot of changes into the code, adding some functions that'll surely be in a future release, and also putting everything together in my fork. I answered almost every issue raised, and tried to help every person that use this module. Today, I'm glad to be able to share everything I learned to all of you. I apologize for some fast and uncommented commits, I just thought that some things needed to be fixed ASAP.
 See you in future commits, issues and PRs :D
 
 ### Fixed
@@ -162,7 +168,7 @@ See you in future commits, issues and PRs :D
 - IP now showing (#194)
 - MM restart button don't just stop anymore (#126)
 - Saving config should work as expected now (#153)
-- installer.sh now detects where's the node instalation (#222)
+- installer.sh now detects where's the node installation (#222)
 
 ### Added
 
@@ -178,7 +184,7 @@ See you in future commits, issues and PRs :D
 
 ## [2.0.1] - 2020-10-28
 
-**Huge thanks to [@ezeholz](https://github.com/ezeholz)** who has offered to maintain the module fron now on!
+**Huge thanks to [@ezeholz](https://github.com/ezeholz)** who has offered to maintain the module from now on!
 Credit for this (and future) versions and releases goes to @ezeholz (unless noted otherwise).
 
 Now requires MagicMirror² version 2.7.
@@ -191,7 +197,7 @@ Now requires MagicMirror² version 2.7.
 
 ## [2.0.0] - 2019-02-21
 
-Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:
+Huge shout out to [shbatm](https://github.com/shbatm) for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:
 
 ### Added
 
@@ -307,7 +313,7 @@ Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new ma
 - Menu to change the `config.js`
   - Modules can be installed, added, removed, configured
   - There will be backups of the five last versions of the `config.js` in the `config` folder
-  - Some of these parts are hidden behind an "exprimental" warning, do **not** ignore that warning
+  - Some of these parts are hidden behind an "experimental" warning, do **not** ignore that warning
 - NOTIFICATION action, see [README.md](README.md#notification-request) for details
 
 ### Changed
