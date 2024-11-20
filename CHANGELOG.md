@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [2.5.0] - Unreleased (`develop` branch)
+## [2.5.0] - 2024-11-20
 
 ### Added
 
 - Added a spell checker and fixed problems that were found (#308).
-- Added JavaScript linting (for the start with soft rules).
-- Added GitHub workflow for linting and spell checking on every push and pull request.
+- Added JavaScript linting (for the start with soft rules) (#310).
+- Added GitHub workflow for linting and spell checking on every push and pull request (#310).
+- Added Turkish language (#305)
 
 ## [2.4.0] - 2024-10-08
 
