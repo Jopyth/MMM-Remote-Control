@@ -1,0 +1,30 @@
+name: Automated Tests
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  run-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - run: echo "Starting automated tests for ${{ github.repository }} on ${{ github.ref }}"
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Check spelling
+        run: npm run test:spelling
+      - name: Check linting
+        run: npm run lint
+      - run: echo "Test job status is ${{ job.status }}."

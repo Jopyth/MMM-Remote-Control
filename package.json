@@ -1,7 +1,7 @@
 {
   "name": "Magic-Mirror-Module-Remote-Control",
-  "version": "2.4.0",
-  "description": "This module for the Magic Mirror allows you to shutdown and configure your mirror through a web browser.",
+  "version": "2.5.0",
+  "description": "This module for the MagicMirror allows you to shutdown and configure your mirror through a web browser.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jopyth/MMM-Remote-Control"
@@ -26,5 +26,18 @@
     "node-fetch": "^2.7.0",
     "simple-git": "latest",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "cspell": "^8.16.0",
+    "eslint": "^9.15.0",
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^15.12.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run lint && npm run test:spelling",
+    "test:spelling": "cspell ."
   }
 }

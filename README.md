@@ -2,7 +2,7 @@
 
 This module for the [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
-Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug everytime, am I right?
+Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug every time, am I right?
 Additionally you can hide and show modules on your mirror and do other cool stuff.
 
 ![The Main Menu](.github/main.png)
@@ -55,7 +55,7 @@ npm install
 
 - (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is *not* reachable externally.
 To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
-For example change `address` to `0.0.0.0` and add two allowed devices with IP-Adresses `192.168.0.42` and `192.168.0.50`:
+For example change `address` to `0.0.0.0` and add two allowed devices with IP addresses `192.168.0.42` and `192.168.0.50`:
 
 ```js
     address : '0.0.0.0',
@@ -122,7 +122,7 @@ If this happens, simply reconfigure and save it again.
 ## Call methods from other modules
 
 You can call any of the methods provided in the UI directly through a GET request, or a module notification.
-For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button.
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RaspberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button.
 
 ### Examples
 
@@ -177,7 +177,7 @@ See some specific examples for controlling your mirror from other modules and ad
 | :-: | ------------- |
 | HIDE | Hide a module, with the name (or identifier--see `MODULE_DATA` action) specified by `module` in the payload. You can also send `module: "all"` to hide all modules. |
 | SHOW | Show a module (see above for how to specify which one). |
-| TOGGLE | Toggle a module's visiblity (see above for how to specify which one). |
+| TOGGLE | Toggle a module's visibility (see above for how to specify which one). |
 | FORCE | Force a module to show (see above for how to specify which one). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
 
@@ -243,7 +243,7 @@ Depending on your installation, some `shell` commands used by this module are no
 ### Custom Classes
 
 You probably wanna hide or show some modules at the same time, right? It's everything that we want this module for, of course.
-Well, now you can add as many classes as you like, and define whether they show themself, hide or toggle between the two stages!
+Well, now you can add as many classes as you like, and define whether they show themselves, hide or toggle between the two stages!
 
 ```js
     classes: {
