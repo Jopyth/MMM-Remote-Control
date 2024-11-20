@@ -290,7 +290,7 @@ module.exports = {
                         actionName = req.body.monitor.toUpperCase();
                     }
                 } else {
-                    var actionName = req.params.action ? req.params.action.toUpperCase() : "STATUS";
+                    actionName = req.params.action ? req.params.action.toUpperCase() : "STATUS";
                 }
                 this.executeQuery(this.checkDelay({ action: `MONITOR${actionName}` }, req), res);
             });
