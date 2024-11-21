@@ -26,6 +26,7 @@ Module.register("MMM-Remote-Control", {
         this.port = '';
 
         this.brightness = 100;
+        this.temp = 327;
     },
 
     getStyles() {
@@ -80,6 +81,7 @@ Module.register("MMM-Remote-Control", {
                 if (settingsVersion === 0) {
                     // move old data into moduleData
                     payload = { moduleData: payload, brightness: 100 };
+                    payload = { moduleData: payload, temp: 370 };
                 }
             }
 
@@ -105,9 +107,13 @@ Module.register("MMM-Remote-Control", {
             });
 
             this.setBrightness(payload.brightness);
+            this.setTemp(payload.temp);
         }
         if (notification === "BRIGHTNESS") {
             this.setBrightness(parseInt(payload));
+        }
+        if (notification === "TEMP") {
+            this.setTemp(parseInt(payload));
         }
         if (notification === "REFRESH") {
             document.location.reload();
@@ -191,10 +197,10 @@ Module.register("MMM-Remote-Control", {
 
     setBrightness(newBrightnessValue) {
         if (newBrightnessValue < 10) {
-            newBrightnessValue = 10;
+            newBrightnessValue = 0;  // Setting Brightness to 0 turns off some displays backlight, it's neat for powersaving
         }
-        if (newBrightnessValue > 200) {
-            newBrightnessValue = 200;
+        if (newBrightnessValue > 100) {
+            newBrightnessValue = 100;
         }
 
         this.brightness = newBrightnessValue;
@@ -214,14 +220,11 @@ Module.register("MMM-Remote-Control", {
             this.createOverlay(newBrightnessValue);
             return;
         }
-        if (newBrightnessValue > 100) {
+        if (newBrightnessValue >= 100) {
             style.innerHTML = this.buildCssContent(newBrightnessValue);
             this.removeOverlay();
             return;
         }
-        // default brightness
-        style.innerHTML = "";
-        this.removeOverlay();
     },
 
     createOverlay(brightness) {
@@ -245,7 +248,78 @@ Module.register("MMM-Remote-Control", {
         }
     },
 
-    getDom() {
+    buildCssContentTemp: function(temp) {
+        var css = "";
+
+        var defaults = {
+            "body": parseInt("aa", 16),
+            "header": parseInt("99", 16),
+            ".dimmed": parseInt("66", 16),
+            ".normal": parseInt("99", 16),
+            ".bright": parseInt("ff", 16)
+        };
+
+        for (var key in defaults) {
+            var value = defaults[key] / 100 * temp;
+            value = Math.round(value);
+            value = Math.min(value, 255);
+            if (value < 16) {
+                value = "0" + value.toString(16);
+            } else {
+                value = value.toString(16);
+            }
+            var extra = "";
+            if (key === "header") {
+                extra = "border-bottom: 1px solid #" + value + value + value + ";";
+            }
+            css += key + " { color: #" + value + value + value + "; " + extra + "} ";
+        }
+        return css;
+    },
+
+    setTemp(newTempValue) {
+        if (newTempValue < 154) {
+            newTempValue = 154;
+        }
+
+        this.temp = newTempValue;
+
+        var style = document.getElementById('remote-control-styles');
+        if (!style) {
+            // create custom css if not existing
+            style = document.createElement('style');
+            style.type = 'text/css';
+            style.id = 'remote-control-styles';
+            var parent = document.getElementsByTagName('head')[0];
+            parent.appendChild(style);
+        }
+
+        if (newTempValue) {
+          style.innerHTML = "";
+            //style.innerHTML = this.buildCssContentTemp(newTempValue);
+            this.createOverlayTemp(newTempValue);
+            return;
+        }
+    },
+
+    createOverlayTemp(temp) {
+        var overlay = document.getElementById('remote-control-overlay-temp');
+        if (!overlay) {
+            // if not existing, create overlay
+            overlay = document.createElement("div");
+            overlay.id = "remote-control-overlay-temp";
+            var parent = document.body;
+            parent.insertBefore(overlay, parent.firstChild);
+        }
+
+         if (temp > 327) {
+          overlay.style.backgroundColor = 'rgba(255,215,0,' + (temp-325) / 865 + ')'
+        } else {
+          overlay.style.backgroundColor = 'rgba(0, 150, 255,' + (325-temp) / 865 + ')'
+    }
+    },
+
+    getDom: function() {
         var wrapper = document.createElement("div");
         var portToShow = ''
         if (this.addresses.length === 0) {
@@ -276,6 +350,7 @@ Module.register("MMM-Remote-Control", {
         var configData = {
             moduleData: currentModuleData,
             brightness: this.brightness,
+            temp: this.temp,
             settingsVersion: this.settingsVersion,
             remoteConfig: this.config
         };
