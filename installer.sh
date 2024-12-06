@@ -196,7 +196,7 @@ fi
 echo "Have fun with the module, if you have any problems, please search for help on github or in the forum:"
 echo ""
 echo "   Github : https://github.com/$FORK/$MODULE_NAME"
-echo "   Forum  : http://forum.magicmirror.builders"
+echo "   Forum  : https://forum.magicmirror.builders"
 echo ""
 echo "Do not forget to restart your MagicMirror² to activate the module! Installation finished."
 echo ""
