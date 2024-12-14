@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.x.x] - UNRELEASED
+
+### Fixed
+
+- Updated TEST_STRING in `installer.sh`. Since MagicMirror² v2.27.0, the string has changed and the installer script was not able to detect the MagicMirror² directory.
+
 ## [2.5.0] - 2024-11-20
 
 ### Added
