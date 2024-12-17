@@ -38,7 +38,7 @@ MODULE_NAME=MMM-Remote-Control
 FORK=Jopyth
 
 # check if we are correct by searching for https://github.com/MagicMirrorOrg/MagicMirror in package.json
-TEST_STRING="\"url\": \"git+https://github.com/MagicMirrorOrg/MagicMirror.git\""
+TEST_STRING="\"url\": \"https://github.com/MagicMirrorOrg/MagicMirror\""
 if grep -sq "$TEST_STRING" "$MM_HOME/package.json"; then
     # we found it
     echo -n ""
@@ -196,7 +196,7 @@ fi
 echo "Have fun with the module, if you have any problems, please search for help on github or in the forum:"
 echo ""
 echo "   Github : https://github.com/$FORK/$MODULE_NAME"
-echo "   Forum  : http://forum.magicmirror.builders"
+echo "   Forum  : https://forum.magicmirror.builders"
 echo ""
 echo "Do not forget to restart your MagicMirror² to activate the module! Installation finished."
 echo ""
