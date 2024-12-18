@@ -19,7 +19,7 @@
   "bugs": {
     "url": "git+https://github.com/jopyth/MMM-Remote-Control/issues"
   },
-  "homepage": "git+https://github.com/jopyth/MMM-Remote-Control#readme",
+  "homepage": "https://github.com/jopyth/MMM-Remote-Control#readme",
   "dependencies": {
     "body-parser": "latest",
     "node-fetch": "^2.7.0",
