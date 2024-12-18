@@ -94,7 +94,7 @@ body:
       description: |
         Paste the log you're getting, and possibly the error.
         **Please, make sure that none of your personal information, such as IP or passwords are exposed.**
-      render: shell
+      render: Shell
     validations:
       required: true
   - type: textarea
@@ -107,7 +107,7 @@ body:
         - IPs from MM instance, or the ones that are whitelisted. Please, replace them with *** so we're totally sure that you have set them.
         - API keys, Tokens from different modules, URL to private calendars.
         - Directions or Personal data.
-      render: javascript
+      render: JavaScript
     validations:
       required: true
   - type: textarea
