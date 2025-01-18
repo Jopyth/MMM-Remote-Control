@@ -117,13 +117,13 @@ module.exports = NodeHelper.create(Object.assign({
                 }
             } catch (e) {
                 if (e.code == "ENOENT") {
-                    console.error("MMM-Remote-Control WARNING! Could not find config file. Please create one. Starting with default configuration.");
+                    Log.error("MMM-Remote-Control WARNING! Could not find config file. Please create one. Starting with default configuration.");
                     this.configOnHd = defaults;
                 } else if (e instanceof ReferenceError || e instanceof SyntaxError) {
-                    console.error("MMM-Remote-Control WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
+                    Log.error("MMM-Remote-Control WARNING! Could not validate config file. Please correct syntax errors. Starting with default configuration.");
                     this.configOnHd = defaults;
                 } else {
-                    console.error("MMM-Remote-Control WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
+                    Log.error("MMM-Remote-Control WARNING! Could not load config file. Starting with default configuration. Error found: " + e);
                     this.configOnHd = defaults;
                 }
             }
@@ -192,7 +192,7 @@ module.exports = NodeHelper.create(Object.assign({
             downloadModules({
                 force: force,
                 callback: (result) => {
-                    if (result && result.startsWith("ERROR")) { console.error(result); }
+                    if (result && result.startsWith("ERROR")) { Log.error(result); }
                     this.readModuleData();
                 }
             });
@@ -331,15 +331,15 @@ module.exports = NodeHelper.create(Object.assign({
                         // Delete the temporary file
                         fs.unlinkSync(tempFilename);
                     } catch (e) {
-                        console.error("ERROR! Could not load main module js file. Error found: " + e.message || e);
+                        Log.error("ERROR! Could not load main module js file. Error found: " + e.message || e);
                     }
                 } else if (e.code == "ENOENT") {
-                    console.error("ERROR! Could not find main module js file for " + module.longname);
+                    Log.error("ERROR! Could not find main module js file for " + module.longname);
                 } else if (e instanceof SyntaxError) {
-                    console.error("ERROR! Could not validate main module js file.");
-                    console.error(e);
+                    Log.error("ERROR! Could not validate main module js file.");
+                    Log.error(e);
                 } else {
-                    console.error("ERROR! Could not load main module js file. Error found: " + e);
+                    Log.error("ERROR! Could not load main module js file. Error found: " + e);
                 }
             }
             if (lastOne) { this.onModulesLoaded(); }
@@ -461,7 +461,7 @@ module.exports = NodeHelper.create(Object.assign({
                 }
                 if (best === -1) {
                     // can not backup, panic!
-                    console.error("MMM-Remote-Control Error! Backing up config failed, not saving!");
+                    Log.error("MMM-Remote-Control Error! Backing up config failed, not saving!");
                     self.sendResponse(res, new Error("Backing up config failed, not saving!"), { query: query });
                     return;
                 }
@@ -489,8 +489,8 @@ module.exports = NodeHelper.create(Object.assign({
                             if (error) {
                                 self.sendResponse(res, error, { query: query, backup: backupPath, data: self.configOnHd });
                             }
-                            console.info("MMM-Remote-Control saved new config!");
-                            console.info("Used backup: " + backupPath);
+                            Log.info("MMM-Remote-Control saved new config!");
+                            Log.info("Used backup: " + backupPath);
                             self.sendResponse(res, undefined, { query: query, backup: backupPath, data: self.configOnHd });
                         }
                     );
