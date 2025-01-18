@@ -1,3 +1,5 @@
+/* global Module */
+
 /* MagicMirror²
  * Module: Remote Control
  *
@@ -18,6 +20,7 @@ const _ = require("lodash");
 
 let defaultModules = require(path.resolve(__dirname + "/../../modules/default/defaultmodules.js"));
 
+// eslint-disable-next-line no-global-assign
 Module = {
     configDefaults: {},
     notificationHandler: {},
@@ -914,7 +917,7 @@ module.exports = NodeHelper.create(Object.assign({
                 if (self.modulesAvailable) {
                     let modData = self.modulesAvailable.find(m => m.longname === module);
                     if (modData === undefined) {
-                        this.sendResponse(res, new Error("Unknown Module"), { info: modules });
+                        this.sendResponse(res, new Error("Unknown Module"), { info: module });
                         return;
                     }
 
