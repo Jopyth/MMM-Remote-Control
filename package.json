@@ -34,8 +34,8 @@
     "globals": "^15.14.0"
   },
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "npm run lint && npm run test:spelling",
     "test:spelling": "cspell ."
   }
