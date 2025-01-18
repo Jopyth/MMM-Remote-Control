@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.5.2] - 2025-01-18
+
+### Fixed
+
+- Fixed an issue with bundled modules (reported in #302) - the defaults of some bundled modules could not be read.
+- Fixed/Updated some URLs.
+
+### Changed
+
+- Replaced `lodash` with built-in JavaScript functions.
+- Format and handle some linting issues in `node_helper.js`.
+- Switch LICENSE file to markdown for better readability.
+- Update `devDependencies`.
+
 ## [2.5.1] - 2024-12-17
 
 ### Fixed
