@@ -1,7 +1,7 @@
 {
-  "name": "Magic-Mirror-Module-Remote-Control",
-  "version": "2.5.1",
-  "description": "This module for the MagicMirror allows you to shutdown and configure your mirror through a web browser.",
+  "name": "mmm-remote-control",
+  "version": "2.5.2",
+  "description": "This module for the MagicMirror² allows you to shutdown and configure your mirror through a web browser.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jopyth/MMM-Remote-Control"
@@ -19,24 +19,23 @@
   "bugs": {
     "url": "git+https://github.com/jopyth/MMM-Remote-Control/issues"
   },
-  "homepage": "git+https://github.com/jopyth/MMM-Remote-Control#readme",
+  "homepage": "https://github.com/jopyth/MMM-Remote-Control#readme",
   "dependencies": {
     "body-parser": "latest",
-    "lodash": "latest",
     "node-fetch": "^2.7.0",
     "simple-git": "latest",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.15.0",
-    "cspell": "^8.16.0",
-    "eslint": "^9.15.0",
+    "@eslint/js": "^9.18.0",
+    "cspell": "^8.17.2",
+    "eslint": "^9.18.0",
     "eslint-plugin-import": "^2.31.0",
-    "globals": "^15.12.0"
+    "globals": "^15.14.0"
   },
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "npm run lint && npm run test:spelling",
     "test:spelling": "cspell ."
   }

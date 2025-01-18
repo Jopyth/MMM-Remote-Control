@@ -36,21 +36,21 @@ npm install
 - (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
 
 ```js
-{
-    module: 'MMM-Remote-Control',
-    // uncomment the following line to show the URL of the remote control on the mirror
-    // position: 'bottom_left',
-    // you can hide this module afterwards from the remote control itself
-    config: {
-        customCommand: {},  // Optional, See "Using Custom Commands" below
-        showModuleApiMenu: true, // Optional, Enable the Module Controls menu
-        secureEndpoints: true, // Optional, See API/README.md
-        // uncomment any of the lines below if you're gonna use it
-        // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
-        // apiKey: "", // Optional, See API/README.md for details
-        // classes: {} // Optional, See "Custom Classes" below
-    }
-},
+    {
+        module: 'MMM-Remote-Control',
+        // uncomment the following line to show the URL of the remote control on the mirror
+        // position: 'bottom_left',
+        // you can hide this module afterwards from the remote control itself
+        config: {
+            customCommand: {},  // Optional, See "Using Custom Commands" below
+            showModuleApiMenu: true, // Optional, Enable the Module Controls menu
+            secureEndpoints: true, // Optional, See API/README.md
+            // uncomment any of the lines below if you're gonna use it
+            // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
+            // apiKey: "", // Optional, See API/README.md for details
+            // classes: {} // Optional, See "Custom Classes" below
+        }
+    },
 ```
 
 - (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is *not* reachable externally.
@@ -279,20 +279,4 @@ An example menu is provided in this module's folder, titled `custom_menu.example
 
 ## License
 
-### The MIT License (MIT)
-
-Copyright © 2016 Joseph Bethge
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the “Software”), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-**The software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.**
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
