@@ -5,17 +5,15 @@
  * MIT Licensed.
  */
 
-const NodeHelper = require("node_helper");
-const path = require("path");
-const url = require("url");
-const fs = require("fs");
-const util = require("util");
-const exec = require("child_process").exec;
 const Log = require("logger");
-const os = require("os");
+const NodeHelper = require("node_helper");
+const exec = require("node:child_process").exec;
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
+const url = require("node:url");
+const util = require("node:util");
 const simpleGit = require("simple-git");
-const bodyParser = require("body-parser");
-const express = require("express");
 const _ = require("lodash");
 
 var defaultModules = require(path.resolve(__dirname + "/../../modules/default/defaultmodules.js"));
