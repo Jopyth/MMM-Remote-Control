@@ -310,16 +310,31 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         loadModuleDefaultConfig(module, modulePath, lastOne) {
-            // function copied from MagicMirrorOrg (MIT)
-            var filename = path.resolve(modulePath + "/" + module.longname + ".js");
+            const filename = path.resolve(modulePath + "/" + module.longname + ".js");
+            const tempFilename = path.resolve("./modules/temp.js");
+
             try {
                 fs.accessSync(filename, fs.F_OK);
-                var jsFile = require(filename);
                 /* Defaults are stored when Module.register is called during require(filename); */
+                require(filename);
             } catch (e) {
-                if (e.code == "ENOENT") {
+                if (e instanceof ReferenceError) {
+                    try {
+                        fs.accessSync(filename, fs.F_OK);
+                        // Add new line at the beginning of the file (this is necessary for modules which are bundled)
+                        const newContent = "const Log = console;const document = navigator = window = {};document.createElement = function() { return {}; };\n" + fs.readFileSync(filename, 'utf8');
+                        // Write the new content to the temporary file
+                        fs.writeFileSync(tempFilename, newContent, 'utf8');
+                        /* Defaults are stored when Module.register is called during require(filename); */
+                        require(tempFilename);
+                        // Delete the temporary file
+                        fs.unlinkSync(tempFilename);
+                    } catch (e) {
+                        console.error("ERROR! Could not load main module js file. Error found: " + e.message || e);
+                    }
+                } else if (e.code == "ENOENT") {
                     console.error("ERROR! Could not find main module js file for " + module.longname);
-                } else if (e instanceof ReferenceError || e instanceof SyntaxError) {
+                } else if (e instanceof SyntaxError) {
                     console.error("ERROR! Could not validate main module js file.");
                     console.error(e);
                 } else {
