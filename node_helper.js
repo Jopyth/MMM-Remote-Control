@@ -186,8 +186,7 @@ module.exports = NodeHelper.create(Object.assign({
         },
 
         updateModuleList(force) {
-            let self = this;
-            let downloadModules = require('./scripts/download_modules');
+            const downloadModules = require('./scripts/download_modules');
             downloadModules({
                 force: force,
                 callback: (result) => {

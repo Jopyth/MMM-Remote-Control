@@ -2,7 +2,7 @@
  * Module: Remote Control
  *
  * Usage: 
- *   var downloadModules = require('./download_modules');
+ *   const downloadModules = require('./download_modules');
  *   downloadModules({ callback: function(result) { console.log(result); }});
  *      downloadModules accepts a CONFIG object which will overwrite the values
  *        in the defaults section below.
@@ -11,12 +11,10 @@
  * MIT Licensed.
  */
 
-const fetch = require("node-fetch");
-const path = require("path");
-const fs = require("fs");
-const util = require("util");
+const path = require("node:path");
+const fs = require("node:fs");
 
-var downloadModules = {
+const downloadModules = {
     defaults: {
         modulesFile: path.resolve(__dirname, "../modules.json"),    // Path to modules file
         sourceUrl: 'https://raw.githubusercontent.com/wiki/MagicMirrorOrg/MagicMirror/3rd-Party-Modules.md', // Source url
@@ -33,12 +31,12 @@ var downloadModules = {
     },
 
     parseList: function(content) {
-        let re = /\|\s?\[(.*?)\]\((.*?)\)\s?\|(.*?)\|(.*)\|?/g;
-        let modules = [];
+        const re = /\|\s?\[(.*?)\]\((.*?)\)\s?\|(.*?)\|(.*)\|?/g;
+        const modules = [];
 
         content.match(re).forEach((line) => {
             line.replace(re, (match, name, url, author, desc) => {
-                let modDetail = {
+                const modDetail = {
                     longname: name.trim(),
                     id: url.replace(".git", "").replace(/.*\/(.*?\/.*?)$/, "$1").trim(),
                     url: url.replace(".git", "").trim(),
@@ -52,54 +50,50 @@ var downloadModules = {
         return modules;
     },
 
-    getPackages() {
-        fetch(this.config.sourceUrl)
-        .then((response) => {
+    async getPackages() {
+        try {
+            const response = await fetch(this.config.sourceUrl);
             if (response.status === 200) {
-                return response;
-            } else if (response.statusCode === 401) {
+                const body = await response.text();
+                const modules = this.parseList(body);
+                const json = JSON.stringify(modules, undefined, 2);
+                const jsonPath = this.config.modulesFile;
+                fs.writeFile(jsonPath, json, "utf8", (err) => {
+                    if (err) {
+                        console.error("MODULE LIST ERROR: modules.json updating fail:" + err.message);
+                        this.config.callback("ERROR_UPDATING");
+                    } else {
+                        this.config.callback("UPDATED");
+                    }
+                });
+            } else if (response.status === 401) {
                 console.error("MODULE LIST ERROR: Could not load module data from wiki. 401 Error");
                 this.config.callback("ERROR_401");
-                return;
             } else {
-                console.error("MODULE LIST ERROR: Could not load data.", statusText);
+                console.error("MODULE LIST ERROR: Could not load data.", response.statusText);
                 this.config.callback("ERROR_LOADING_DATA");
-                return;
             }
-        })
-        .then((response) => response.text())
-        .then((body) => {
-            let modules = this.parseList(body);
-            var json = JSON.stringify(modules, undefined, 2);
-            var jsonPath = this.config.modulesFile;
-            fs.writeFile(jsonPath, json, "utf8", (err, data) => {
-                if (err) {
-                    console.error("MODULE LIST ERROR: modules.json updating fail:" + err.message);
-                    this.config.callback("ERROR_UPDATING");
-                } else {
-                    this.config.callback("UPDATED");
-                }
-            });
-        })
-        .catch((error) => {
+        } catch (error) {
             console.error("MODULE LIST ERROR: Could not load data.", error);
             this.config.callback("ERROR_LOADING_DATA");
-            return;
-        });
-        return;
+        }
     },
 
-    checkLastModified() {
-        fs.stat(this.config.modulesFile, (err, stats) => {
-            let mtime = Math.round(new Date(util.inspect(stats.mtime)).getTime() / 1000);
-            let updatedAfter = new Date(Math.round(new Date().getTime() / 1000) - this.config.refreshRate).getTime();
-            let needsUpdate = mtime <= updatedAfter;
+    async checkLastModified() {
+        try {
+            const stats = await fs.promises.stat(this.config.modulesFile);
+            const mtime = Math.round(stats.mtime.getTime() / 1000);
+            const updatedAfter = Date.now() - this.config.refreshRate * 1000;
+            const needsUpdate = mtime <= updatedAfter;
             if (needsUpdate || this.config.force) { 
                 this.getPackages(); 
             } else {
                 this.config.callback("NO_UPDATE_REQUIRED");
             }
-        });
+        } catch (err) {
+            console.error("MODULE LIST ERROR: Could not check last modified time.", err);
+            this.config.callback("ERROR_CHECKING_LAST_MODIFIED");
+        }
         return;
     }
 };

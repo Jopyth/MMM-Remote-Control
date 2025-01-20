@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.x.x] - UNRELEASED
+
+### Fixed
+
+- Fix `download_modules.js` script to automatically download the modules list from the MagicMirror² wiki.
+
+### Changed
+
+- Replace `node-fetch` by internal fetch API
+- Replace old python 2 script `download_modules.py` by JavaScript script, you can run it with `npm run download_modules` to download the modules list from the MagicMirror² wiki.
+
 ## [2.5.2] - 2025-01-18
 
 ### Fixed
