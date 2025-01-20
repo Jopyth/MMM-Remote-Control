@@ -10,7 +10,7 @@ body:
 
         Also, you accept that, if this issue it's invalid in any way, will be discarded without receiving any response about it.
         If you're not sure if it's a bug, please [ask here](https://github.com/Jopyth/MMM-Remote-Control/discussions).
-        
+
         Thanks for taking the time to help Remote Control get better every day!
   - type: input
     attributes:
@@ -26,7 +26,7 @@ body:
       description: |
         example:
         - NodeJS: 14.17.5
-      placeholder: '14.17.5'
+      placeholder: "14.17.5"
     validations:
       required: true
   - type: input
@@ -35,7 +35,7 @@ body:
       description: |
         example:
         - MM: 2.16.0
-      placeholder: '2.16.0'
+      placeholder: "2.16.0"
     validations:
       required: true
   - type: input
@@ -44,15 +44,15 @@ body:
       description: |
         example:
         - Remote Control: 2.3.6
-      placeholder: '2.3.6'
+      placeholder: "2.3.6"
     validations:
       required: true
   - type: checkboxes
     attributes:
       label: Did you try using just Remote Control alone with MM?
       options:
-      - label: I have and the error still happening
-        required: true
+        - label: I have and the error still happening
+          required: true
   - type: textarea
     attributes:
       label: Description

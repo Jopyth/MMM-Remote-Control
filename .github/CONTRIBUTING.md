@@ -9,6 +9,7 @@ We ask you to keep contributing, and feel free to open as many issues and PR as 
 
 ## Developer commands
 
+- `npm run download_modules` - Download module list manually.
 - `npm run lint` - Run linting checks.
 - `npm run lint:fix` - Fix linting issues.
 - `npm run test` - Run linting and formatter checks + Run spelling check.

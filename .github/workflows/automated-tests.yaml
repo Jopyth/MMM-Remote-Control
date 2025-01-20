@@ -9,11 +9,11 @@ permissions:
   contents: read
 
 jobs:
-  run-lint:
+  code-quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
-      - run: echo "Starting automated tests for ${{ github.repository }} on ${{ github.ref }}"
+      - run: "echo '🚀 Starting code quality checks for ${{ github.repository }} (ref: ${{ github.ref }})'"
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Use Node.js
@@ -27,4 +27,4 @@ jobs:
         run: npm run test:spelling
       - name: Check linting
         run: npm run lint
-      - run: echo "Test job status is ${{ job.status }}."
+      - run: "echo '✨ Code quality checks completed with status: ${{ job.status }}.'"
