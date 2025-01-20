@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/jopyth/MMM-Remote-Control#readme",
   "dependencies": {
-    "body-parser": "latest",
-    "simple-git": "latest",
-    "uuid": "^3.3.2"
+    "body-parser": "^1.20.3",
+    "simple-git": "^3.27.0",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

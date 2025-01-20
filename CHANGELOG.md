@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- Fix `download_modules.js` script to automatically download the modules list from the MagicMirror² wiki.
+- Fix `download_modules.js` script to automatically download the modules list from the MagicMirror² wiki. This will fix #301.
 
 ### Changed
 
 - Replace `node-fetch` by internal fetch API
 - Replace old python 2 script `download_modules.py` by JavaScript script, you can run it with `npm run download_modules` to download the modules list from the MagicMirror² wiki.
+- Update `uuid`. This will fix #318.
 
 ## [2.5.2] - 2025-01-18
 

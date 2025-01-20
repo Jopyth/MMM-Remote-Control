@@ -7,9 +7,7 @@
 
 const path = require("path");
 const url = require("url");
-const fs = require("fs");
-const os = require("os");
-const uuid = require("uuid/v4");
+const { v4: uuid } = require('uuid');
 const bodyParser = require("body-parser");
 const express = require("express");
 
@@ -20,7 +18,7 @@ module.exports = {
      */
     getApiKey() {
         let thisConfig = this.configOnHd.modules.find(x => x.module === "MMM-Remote-Control");
-        if (typeof "thisConfig" !== "undefined" &&
+        if (typeof thisConfig !== "undefined" &&
             "config" in thisConfig){
             if ("apiKey" in thisConfig.config &&
                 thisConfig.config.apiKey !== '') {
