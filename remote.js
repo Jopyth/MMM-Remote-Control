@@ -71,6 +71,9 @@ var Remote = {
                 	this.undoConfigMenuCallback(payload)
                 } else if (payload.query.data === "mmUpdateAvailable") {
                     this.mmUpdateCallback(payload.result);
+                } else if (payload.query.data === "temp") {
+                    var slider2 = document.getElementById("temp-slider");
+                    slider2.value = payload.result;
                 } else if (payload.query.data === "brightness") {
                     var slider = document.getElementById("brightness-slider");
                     slider.value = payload.result;
@@ -225,6 +228,11 @@ var Remote = {
     loadOtherElements() {
         var self = this;
 
+        var slider2 = document.getElementById("temp-slider");
+        slider2.addEventListener("change", function(event) {
+            self.sendSocketNotification("REMOTE_ACTION", { action: "TEMP", value: slider2.value });
+        }, false);
+
         var slider = document.getElementById("brightness-slider");
         slider.addEventListener("change", function(event) {
             self.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: slider.value });
@@ -299,6 +307,7 @@ var Remote = {
         if (newMenu === "edit-menu") {
             this.loadVisibleModules();
             this.loadBrightness();
+            this.loadTemp();
         }
         if (newMenu === "settings-menu") {
             this.loadConfigModules();
@@ -586,6 +595,13 @@ var Remote = {
 
         console.log("Load brightness...");
         this.sendSocketNotification("REMOTE_ACTION", { data: "brightness" });
+    },
+
+    loadTemp() {
+        var self = this;
+
+        console.log("Load color temperature...");
+        this.sendSocketNotification("REMOTE_ACTION", { data: "temp" });
     },
 
     makeToggleButton(moduleBox, visibilityStatus) {
@@ -1506,6 +1522,7 @@ var Remote = {
         $item = $("<div>").attr("id", `${content.id}-button`).addClass(`menu-element button ${menu}-menu`);
         let $mcmIcon = $('<span>').addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
         let $mcmText = $('<span>').addClass('text').text(content.text);
+        $item.append($mcmIcon).append($mcmText);
         if (content.icon) $item.append($mcmIcon)
         if (content.type === "menu") {
             if (content.text) $item.append($mcmText);
@@ -1631,6 +1648,13 @@ var buttons = {
         element.value = 100;
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: 100 });
     },
+
+    "temp-reset": function () {
+        var element = document.getElementById("temp-slider");
+        element.value = 327;
+        Remote.sendSocketNotification("REMOTE_ACTION", { action: "TEMP", value: 327 });
+    },
+
 
     // edit menu buttons
     "show-all-button": function () {

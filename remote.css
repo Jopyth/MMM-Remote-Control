@@ -84,6 +84,12 @@ a {
     margin-bottom: 2em;
 }
 
+.menu-element-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+}
+
 .one-line {
     flex: 1 0 auto;
     display: flex;
@@ -614,4 +620,9 @@ pre {
 	max-height: 30vh;
 	font-size: small;
 	overflow: scroll;
+}
+
+#temp-slider,
+#temp-reset {
+    display: block;
 }
