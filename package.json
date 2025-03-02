@@ -2,13 +2,6 @@
   "name": "mmm-remote-control",
   "version": "2.5.3",
   "description": "This module for the MagicMirror² allows you to shutdown and configure your mirror through a web browser.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jopyth/MMM-Remote-Control"
-  },
-  "engines": {
-    "node": ">=18"
-  },
   "keywords": [
     "magic mirror",
     "smart mirror",
@@ -16,13 +9,26 @@
     "remote control",
     "control"
   ],
-  "author": "Joseph Bethge",
-  "contributors": ["https://github.com/jopyth/MMM-Remote-Control/graphs/contributors"],
-  "license": "MIT",
+  "homepage": "https://github.com/jopyth/MMM-Remote-Control#readme",
   "bugs": {
     "url": "git+https://github.com/jopyth/MMM-Remote-Control/issues"
   },
-  "homepage": "https://github.com/jopyth/MMM-Remote-Control#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jopyth/MMM-Remote-Control"
+  },
+  "license": "MIT",
+  "author": "Joseph Bethge",
+  "contributors": [
+    "https://github.com/jopyth/MMM-Remote-Control/graphs/contributors"
+  ],
+  "scripts": {
+    "download_modules": "node ./scripts/download_modules_manually.mjs",
+    "lint": "eslint && stylelint **/*.css && markdownlint . --ignore node_modules && prettier . --check",
+    "lint:fix": "eslint --fix && stylelint **/*.css --fix && markdownlint . --ignore node_modules --fix && prettier . --write",
+    "test": "npm run lint && npm run test:spelling",
+    "test:spelling": "cspell ."
+  },
   "dependencies": {
     "body-parser": "^1.20.3",
     "simple-git": "^3.27.0",
@@ -33,13 +39,14 @@
     "cspell": "^8.17.2",
     "eslint": "^9.18.0",
     "eslint-plugin-import": "^2.31.0",
-    "globals": "^15.14.0"
+    "globals": "^15.14.0",
+    "markdownlint-cli": "^0.43.0",
+    "prettier": "^3.5.2",
+    "stylelint": "^16.15.0",
+    "stylelint-config-standard": "^37.0.0",
+    "stylelint-prettier": "^5.0.3"
   },
-  "scripts": {
-    "download_modules": "node ./scripts/download_modules_manually.mjs",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "test": "npm run lint && npm run test:spelling",
-    "test:spelling": "cspell ."
+  "engines": {
+    "node": ">=18"
   }
 }
