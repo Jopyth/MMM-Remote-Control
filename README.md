@@ -53,9 +53,9 @@ npm install
     },
 ```
 
-- (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is *not* reachable externally.
-To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
-For example change `address` to `0.0.0.0` and add two allowed devices with IP addresses `192.168.0.42` and `192.168.0.50`:
+- (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is _not_ reachable externally.
+  To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
+  For example change `address` to `0.0.0.0` and add two allowed devices with IP addresses `192.168.0.42` and `192.168.0.50`:
 
 ```js
     address : '0.0.0.0',
@@ -73,7 +73,7 @@ You can also add multiple devices in an IP range (e.g. all devices with `192.168
 
 - (5) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
 
-Note: If your user does not have `sudo` rights, the shutdown does not work (it *should* work for everyone who did not change anything on this matter).
+Note: If your user does not have `sudo` rights, the shutdown does not work (it _should_ work for everyone who did not change anything on this matter).
 
 ### Update
 
@@ -104,7 +104,7 @@ git tag # display them
 
 The output should look similar to this:
 
-```
+```bash
 v1.0.0
 v1.1.0
 v1.1.1
@@ -122,20 +122,18 @@ If this happens, simply reconfigure and save it again.
 ## Call methods from other modules
 
 You can call any of the methods provided in the UI directly through a GET request, or a module notification.
-For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RaspberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button.
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RaspberryPi at a certain time, or integrate it with home automation systems. Or use [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button.
 
 ### Examples
 
 - Example for a REST API GET request to trigger a RaspberryPi restart:
 
-```
-http://192.168.xxx.xxx:8080/api/restart
-```
+`http://192.168.xxx.xxx:8080/api/restart`
 
 - Example to trigger a RaspberryPi restart in your module:
 
-```
-this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
+```js
+this.sendNotification("REMOTE_ACTION", { action: "RESTART" });
 ```
 
 See some specific examples for controlling your mirror from other modules and add your own examples [in the Wiki page here](https://github.com/shbatm/MMM-Remote-Control/wiki/Examples-for-Controlling-from-Another-Module)
@@ -144,52 +142,52 @@ See some specific examples for controlling your mirror from other modules and ad
 
 #### System Control
 
-| Action | Description |
-| :-: | ------------- |
-| SHUTDOWN | Shutdown your RaspberryPi |
-| REBOOT | Restart your RaspberryPi |
-| MONITORON | Switch your display on. Also sends a `"USER_PRESENCE": true` notification. |
-| MONITOROFF | Switch your display off. Also sends a `"USER_PRESENCE": false` notification. |
+|    Action     | Description                                                                   |
+| :-----------: | ----------------------------------------------------------------------------- |
+|   SHUTDOWN    | Shutdown your RaspberryPi                                                     |
+|    REBOOT     | Restart your RaspberryPi                                                      |
+|   MONITORON   | Switch your display on. Also sends a `"USER_PRESENCE": true` notification.    |
+|  MONITOROFF   | Switch your display off. Also sends a `"USER_PRESENCE": false` notification.  |
 | MONITORTOGGLE | Toggle the display on or off (with respective `"USER_PRESENCE"` notification. |
-| MONITORSTATUS | Report back the monitor status (on or off) |
+| MONITORSTATUS | Report back the monitor status (on or off)                                    |
 
 #### MagicMirror² Control
 
-| Action | Description |
-| :-: | ------------- |
-| RESTART | Restart your MagicMirror² |
-| REFRESH | Refresh mirror page |
-| UPDATE | Update MagicMirror² and any of it's modules |
-| SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
+|   Action   | Description                                                                                                                            |
+| :--------: | -------------------------------------------------------------------------------------------------------------------------------------- |
+|  RESTART   | Restart your MagicMirror²                                                                                                              |
+|  REFRESH   | Refresh mirror page                                                                                                                    |
+|   UPDATE   | Update MagicMirror² and any of it's modules                                                                                            |
+|    SAVE    | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts              |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
 
 #### MagicMirror² Electron Browser Window Control
 
-| Action | Description |
-| :-: | ------------- |
-| MINIMIZE | Minimize the browser window. |
+|      Action      | Description                        |
+| :--------------: | ---------------------------------- |
+|     MINIMIZE     | Minimize the browser window.       |
 | TOGGLEFULLSCREEN | Toggle fullscreen mode on and off. |
-| DEVTOOLS | Open the DevTools console window. |
+|     DEVTOOLS     | Open the DevTools console window.  |
 
 #### Module Control
 
-| Action | Description |
-| :-: | ------------- |
-| HIDE | Hide a module, with the name (or identifier--see `MODULE_DATA` action) specified by `module` in the payload. You can also send `module: "all"` to hide all modules. |
-| SHOW | Show a module (see above for how to specify which one). |
-| TOGGLE | Toggle a module's visibility (see above for how to specify which one). |
-| FORCE | Force a module to show (see above for how to specify which one). |
-| MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
+|   Action    | Description                                                                                                                                                         |
+| :---------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    HIDE     | Hide a module, with the name (or identifier--see `MODULE_DATA` action) specified by `module` in the payload. You can also send `module: "all"` to hide all modules. |
+|    SHOW     | Show a module (see above for how to specify which one).                                                                                                             |
+|   TOGGLE    | Toggle a module's visibility (see above for how to specify which one).                                                                                              |
+|    FORCE    | Force a module to show (see above for how to specify which one).                                                                                                    |
+| MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action.                                            |
 
 #### Alerts and Notifications
 
-| Action | Description |
-| :-: | ------------- |
-| SHOW_ALERT | Show Default Alert/Notification |
-| HIDE_ALERT | Hide Default Alert/Notification |
-| USER_PRESENCE | Will send a notification "USER_PRESENCE" = true or false (according to "value" to all other modules. See examples above|
-| NOTIFICATION | To send a notification to all modules, see the example in the [API README](API/README.md) |
-| DELAYED | Send any of the above nested inside a "DELAYED" call to delay the action. Default is 10s. See Delayed Actions below. |
+|    Action     | Description                                                                                                             |
+| :-----------: | ----------------------------------------------------------------------------------------------------------------------- |
+|  SHOW_ALERT   | Show Default Alert/Notification                                                                                         |
+|  HIDE_ALERT   | Hide Default Alert/Notification                                                                                         |
+| USER_PRESENCE | Will send a notification "USER_PRESENCE" = true or false (according to "value" to all other modules. See examples above |
+| NOTIFICATION  | To send a notification to all modules, see the example in the [API README](API/README.md)                               |
+|    DELAYED    | Send any of the above nested inside a "DELAYED" call to delay the action. Default is 10s. See Delayed Actions below.    |
 
 ### Format of module data response
 
@@ -197,13 +195,23 @@ The response will be in the JSON format, here is an example:
 
 ```json
 {
-"moduleData":[
-    {"hidden":false,"name":"alert","identifier":"module_0_alert"},
-    {"hidden":true,"name":"clock","identifier":"module_1_clock","position":"bottom_right"},
-    {"hidden":false,"name":"weather","identifier":"module_2_weather","position":"top_right"}
-],
-"brightness":40,
-"settingsVersion":1
+  "moduleData": [
+    { "hidden": false, "name": "alert", "identifier": "module_0_alert" },
+    {
+      "hidden": true,
+      "name": "clock",
+      "identifier": "module_1_clock",
+      "position": "bottom_right"
+    },
+    {
+      "hidden": false,
+      "name": "weather",
+      "identifier": "module_2_weather",
+      "position": "top_right"
+    }
+  ],
+  "brightness": 40,
+  "settingsVersion": 1
 }
 ```
 
@@ -212,23 +220,22 @@ The response will be in the JSON format, here is an example:
 You can delay an action by sending the notification nested inside of a `"DELAYED"` notification. Below is an example of turning off the monitor in 60s.
 
 ```js
-this.sendSocketNotification("REMOTE_ACTION",
-    {
-        action: "DELAYED",
-        did: "SOME_UNIQUE_ID", // Optional; Some string, in case you want to cancel later.
-        timeout: 60,  // Optional; Default 10s
-        abort: false, // Optional; send true to cancel an existing timer
-        query: {
-            action: "MONITOROFF"
-        }
-    });
+this.sendSocketNotification("REMOTE_ACTION", {
+  action: "DELAYED",
+  did: "SOME_UNIQUE_ID", // Optional; Some string, in case you want to cancel later.
+  timeout: 60, // Optional; Default 10s
+  abort: false, // Optional; send true to cancel an existing timer
+  query: {
+    action: "MONITOROFF"
+  }
+});
 ```
 
 Can also be used with the [API](https://documenter.getpostman.com/view/6167403/Rzfni66c) by adding `/delay?timeout=10s&did=something` to some routes.
 
 ### Using Custom Commands
 
-Depending on your installation, some `shell` commands used by this module are not appropriate and can be overwritten by something that will work for you. To overwrite the commands, add a `customCommand` object to your config section.  The following commands are supported:
+Depending on your installation, some `shell` commands used by this module are not appropriate and can be overwritten by something that will work for you. To overwrite the commands, add a `customCommand` object to your config section. The following commands are supported:
 
 ```js
     customCommand: {
@@ -267,15 +274,15 @@ An example menu is provided in this module's folder, titled `custom_menu.example
 
 #### Key Components
 
-| Name | Description |
-| :-: | - |
-| `id` | The HTML id prefix to use for the menu item.
-| `type` | The item type, either `'menu'` or `'item'`. `'menu'` is used to indicate the item is a sub-menu and has an ``items`` array. `'item'` is used for single menu items and will send a socket "REMOTE_ACTION" notification back to the server.  This requires `action:` and `content:` parameters before it can do anything.
-| `text` | The text to display.  You can use the translate string `'%%TRANSLATE:YOUR_KEY_HERE%%'`, but remember to also update the appropriate file in `/translations`.
-| `icon` | The [FontAwesome](https://fontawesome.com/v4.7.0/icons/) icon to use (without the leading `-fa`)
-| `items` | An array of sub-menu items to use with `"type":"menu"`. Should be the same format as the top level menu (i.e. the menu structure is recursive).
-| `action` | The `REMOTE_ACTION` notification action name, usually `NOTIFICATION`. Required for `"type":"item"` items to be able to do anything.
-| `content` | The `REMOTE_ACTION` action payload to send.  Usually for `"NOTIFICATION"`, this is of the form `{ "notification": "NOTIFICATION_TO_SEND", "payload": "PAYLOAD_TO_SEND"}`
+|   Name    | Description                                                                                                                                                                                                                                                                                                           |
+| :-------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   `id`    | The HTML id prefix to use for the menu item.                                                                                                                                                                                                                                                                          |
+|  `type`   | The item type, either `'menu'` or `'item'`. `'menu'` is used to indicate the item is a sub-menu and has an `items` array. `'item'` is used for single menu items and will send a socket "REMOTE_ACTION" notification back to the server. This requires `action:` and `content:` parameters before it can do anything. |
+|  `text`   | The text to display. You can use the translate string `'%%TRANSLATE:YOUR_KEY_HERE%%'`, but remember to also update the appropriate file in `/translations`.                                                                                                                                                           |
+|  `icon`   | The [FontAwesome](https://fontawesome.com/v4.7.0/icons/) icon to use (without the leading `-fa`).                                                                                                                                                                                                                     |
+|  `items`  | An array of sub-menu items to use with `"type":"menu"`. Should be the same format as the top level menu (i.e. the menu structure is recursive).                                                                                                                                                                       |
+| `action`  | The `REMOTE_ACTION` notification action name, usually `NOTIFICATION`. Required for `"type":"item"` items to be able to do anything.                                                                                                                                                                                   |
+| `content` | The `REMOTE_ACTION` action payload to send. Usually for `"NOTIFICATION"`, this is of the form `{ "notification": "NOTIFICATION_TO_SEND", "payload": "PAYLOAD_TO_SEND"}`.                                                                                                                                              |
 
 ## License
 

@@ -161,9 +161,9 @@ Module.register("MMM-Remote-Control", {
     },
 
     buildCssContent(brightness) {
-        var css = "";
+        let css = "";
 
-        var defaults = {
+        let defaults = {
             "body": parseInt("aa", 16),
             "header": parseInt("99", 16),
             ".dimmed": parseInt("66", 16),
@@ -171,8 +171,8 @@ Module.register("MMM-Remote-Control", {
             ".bright": parseInt("ff", 16)
         };
 
-        for (var key in defaults) {
-            var value = defaults[key] / 100 * brightness;
+        for (let key in defaults) {
+            let value = defaults[key] / 100 * brightness;
             value = Math.round(value);
             value = Math.min(value, 255);
             if (value < 16) {
@@ -180,7 +180,7 @@ Module.register("MMM-Remote-Control", {
             } else {
                 value = value.toString(16);
             }
-            var extra = "";
+            let extra = "";
             if (key === "header") {
                 extra = "border-bottom: 1px solid #" + value + value + value + ";";
             }
@@ -199,13 +199,13 @@ Module.register("MMM-Remote-Control", {
 
         this.brightness = newBrightnessValue;
 
-        var style = document.getElementById('remote-control-styles');
+        let style = document.getElementById('remote-control-styles');
         if (!style) {
             // create custom css if not existing
             style = document.createElement('style');
             style.type = 'text/css';
             style.id = 'remote-control-styles';
-            var parent = document.getElementsByTagName('head')[0];
+            let parent = document.getElementsByTagName('head')[0];
             parent.appendChild(style);
         }
 
@@ -225,29 +225,29 @@ Module.register("MMM-Remote-Control", {
     },
 
     createOverlay(brightness) {
-        var overlay = document.getElementById('remote-control-overlay');
+        let overlay = document.getElementById('remote-control-overlay');
         if (!overlay) {
             // if not existing, create overlay
             overlay = document.createElement("div");
             overlay.id = "remote-control-overlay";
-            var parent = document.body;
+            let parent = document.body;
             parent.insertBefore(overlay, parent.firstChild);
         }
-        var bgColor = "rgba(0,0,0," + (100 - brightness) / 100 + ")";
+        let bgColor = "rgba(0,0,0," + (100 - brightness) / 100 + ")";
         overlay.style.backgroundColor = bgColor;
     },
 
     removeOverlay() {
-        var overlay = document.getElementById('remote-control-overlay');
+        let overlay = document.getElementById('remote-control-overlay');
         if (overlay) {
-            var parent = document.body;
+            let parent = document.body;
             parent.removeChild(overlay);
         }
     },
 
     getDom() {
-        var wrapper = document.createElement("div");
-        var portToShow = ''
+        let wrapper = document.createElement("div");
+        let portToShow = ''
         if (this.addresses.length === 0) {
             this.addresses = ["ip-of-your-mirror"];
         }
@@ -262,10 +262,10 @@ Module.register("MMM-Remote-Control", {
     },
 
     sendCurrentData() {
-        var self = this;
+        let self = this;
 
-        var modules = MM.getModules();
-        var currentModuleData = [];
+        let modules = MM.getModules();
+        let currentModuleData = [];
         modules.enumerate(function(module) {
             let modData = Object.assign({}, module.data);
             modData.hidden = module.hidden;
@@ -273,7 +273,7 @@ Module.register("MMM-Remote-Control", {
             modData.config = module.config;
             currentModuleData.push(modData);
         });
-        var configData = {
+        let configData = {
             moduleData: currentModuleData,
             brightness: this.brightness,
             settingsVersion: this.settingsVersion,

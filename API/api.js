@@ -101,7 +101,7 @@ module.exports = {
     },
 
     createApiRoutes() {
-        var self = this;
+        let self = this;
 
         this.getApiKey();
 
@@ -126,7 +126,7 @@ module.exports = {
             if (typeof this.apiKey !== "undefined") {
                 if (!("authorization" in req.headers) || req.headers.authorization.search(/(apikey|bearer)/gi) === -1) {
                     // API Key was not provided as a header. Check the URL.
-                    var query = url.parse(req.url, true).query;
+                    let query = url.parse(req.url, true).query;
                     if ("apiKey" in query) {
                         if (query.apiKey !== this.apiKey) {
                             return res.status(401).json({ success: false, message: "Unauthorized: Wrong API Key Provided!" });
@@ -181,7 +181,7 @@ module.exports = {
 
         this.expressRouter.route('/classes/:value')
             .get((req, res) => {
-                var classes = self.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
+                let classes = self.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
                 const val = decodeURIComponent(req.params.value)
                 if(classes.classes && classes.classes[val]) {
                 	self.executeQuery({ action: "MANAGE_CLASSES", payload: { classes: req.params.value} }, res);
@@ -278,11 +278,11 @@ module.exports = {
         this.expressRouter.route('/monitor/:action?/:delayed?')
             .get((req, res) => {
                 if (!req.params.action) { req.params.action = "STATUS"; }
-                var actionName = req.params.action.toUpperCase();
+                let actionName = req.params.action.toUpperCase();
                 this.executeQuery(this.checkDelay({ action: `MONITOR${actionName}` }, req), res);
             })
             .post((req, res) => {
-                var actionName = "STATUS";
+                let actionName = "STATUS";
                 if (typeof req.body !== 'undefined' && "monitor" in req.body) {
                     if (["OFF", "ON", "TOGGLE"].includes(req.body.monitor.toUpperCase())) {
                         actionName = req.body.monitor.toUpperCase();
@@ -323,9 +323,9 @@ module.exports = {
     },
 
     mergeData() {
-        var extApiRoutes = this.externalApiRoutes;
-        var modules = this.configData.moduleData
-        var query = {success: true, data: []};
+        let extApiRoutes = this.externalApiRoutes;
+        let modules = this.configData.moduleData
+        let query = {success: true, data: []};
         
         modules.forEach((mod) => {
             if (extApiRoutes[mod.name] === undefined) {
@@ -340,7 +340,7 @@ module.exports = {
 
     answerModuleApi(req, res) {
         if (!this.checkInitialized(res)) { return; }
-        var dataMerged = this.mergeData().data
+        let dataMerged = this.mergeData().data
         
         if (!req.params.moduleName) {
             res.json({ success: true, data: dataMerged });
@@ -371,7 +371,7 @@ module.exports = {
             return;
         }
 
-        var action = req.params.action.toUpperCase();
+        let action = req.params.action.toUpperCase();
 
         if (["SHOW", "HIDE", "FORCE", "TOGGLE", "DEFAULTS"].indexOf(action) !== -1) { // /api/modules part of the code
             if (action === "DEFAULTS") {

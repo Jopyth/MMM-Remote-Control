@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the MagicMirror² using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules.  In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notification.
+The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the MagicMirror² using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules. In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notification.
 
 This expansion was developed by [shbatm](https://github.com/shbatm) using [juzim's MMM-Api](https://github.com/juzim/MMM-Api) and of-course, [jopyth's MMM-Remote-Control](https://github.com/jopyth/MMM-Remote-Control).
 
@@ -54,12 +54,12 @@ If you ran the `installer.sh` script when you installed the module, a non-canoni
 ### Example Config Section
 
 ```js
-{
-    module: 'MMM-Remote-Control'
-    config: {
-        apiKey: 'bc2e979db92f4741afad01d5d18eb8e2'
-    }
-},
+    {
+        module: 'MMM-Remote-Control'
+        config: {
+            apiKey: 'bc2e979db92f4741afad01d5d18eb8e2'
+        }
+    },
 ```
 
 ### Passing your API key
@@ -83,7 +83,7 @@ $ curl -X POST http://magicmirrorip:8080/api/module/alert/showalert \
     }'
 ```
 
-***For convenience, the remainder of the examples omit the API Key***
+**_For convenience, the remainder of the examples omit the API Key_**
 
 ## Secure Endpoints
 
@@ -91,12 +91,12 @@ Since 2.2.0, and in a way to prevent malicious actions on your mirror, a new con
 As usual, this option can be disabled, but this will expose your Mirror to potentials hackers, so it's up to you to turn it off.
 
 ```js
-{
-    module: 'MMM-Remote-Control'
-    config: {
-        secureEndpoints: true
-    }
-},
+    {
+        module: 'MMM-Remote-Control'
+        config: {
+            secureEndpoints: true
+        }
+    },
 ```
 
 By default, secureEndpoints it's true, defending commands like shutdown or install modules when no apikey it's present.
@@ -106,13 +106,13 @@ Setting secureEndpoints to false allow every endpoint to be reachable externally
 
 There are three general categories of API commands:
 
-**1. MMM-Remote-Control Internal Commands** -- these are used to call the existing commands that MMM-Remote-Control already exposes.  For example, to turn off the monitor ("MONITOROFF"):
+**1. MMM-Remote-Control Internal Commands** -- these are used to call the existing commands that MMM-Remote-Control already exposes. For example, to turn off the monitor ("MONITOROFF"):
 
 ```bash
-            curl -X GET http://magicmirrorip:8080/api/monitor/off
+curl -X GET http://magicmirrorip:8080/api/monitor/off
 ```
 
-**2. External APIs (Guessed)** -- when this module first loads, it parses all of the installed modules' source code and checks for any custom notifications that are used.  From this basic search, it tries to "guess" notification actions that may be valid, without them being explicitly defined anywhere else.  For example, the "alert" command examples above are not defined within this module, the 'alert' module just looks for a notification, "SHOW_ALERT"--this is exposed as a `/module/alert/showalert` action in the External API processor.  Full credit to this idea goes to `juzim` from the MMM-Api module.
+**2. External APIs (Guessed)** -- when this module first loads, it parses all of the installed modules' source code and checks for any custom notifications that are used. From this basic search, it tries to "guess" notification actions that may be valid, without them being explicitly defined anywhere else. For example, the "alert" command examples above are not defined within this module, the 'alert' module just looks for a notification, "SHOW_ALERT"--this is exposed as a `/module/alert/showalert` action in the External API processor. Full credit to this idea goes to `juzim` from the MMM-Api module.
 
 **3. External APIs (Explicit)** -- these commands are developed when a module loads and sends a "REGISTER_API" notification with command details to this module. These commands will overwrite any "guessed" commands and can provide a way for a module to define its own API, but still use the same routes already in place.
 
@@ -128,12 +128,12 @@ Or check it in your own installation using <http://ip-of-your-mirror:8080/api/do
 
 As discussed above, these methods are guessed based on your currently installed modules. To see what actions are available on your particular installation:
 
-| Method | URL | Description |
-| ------ | --- | ------- |
-| GET | /api/module | Return a list of all external API actions registered.
-| GET | /api/module/:moduleName | Returns registered API actions for a given module<br>`:moduleName`: Name or Identifier for an installed & activated module.
+| Method | URL                     | Description                                                                                                                 |
+| ------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| GET    | /api/module             | Return a list of all external API actions registered.                                                                       |
+| GET    | /api/module/:moduleName | Returns registered API actions for a given module<br>`:moduleName`: Name or Identifier for an installed & activated module. |
 
-- *NOTE:* Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want. Consult each modules' README for details on what notifications can be used and how.
+- _NOTE:_ Just because an action appears in this list, does not necessarily mean it is valid and the related module will do what you want. Consult each modules' README for details on what notifications can be used and how.
 
 #### Example
 
@@ -145,43 +145,43 @@ curl -X GET http://magicmirrorip:8080/api/module/newsfeed
 
 ```json
 {
-    "success": true,
-    "module": "newsfeed",
-    "path": "newsfeed",
-    "actions": {
-        "newsitems": {
-            "notification": "NEWS_ITEMS"
-        },
-        "articlenext": {
-            "notification": "ARTICLE_NEXT"
-        },
-        "articleprevious": {
-            "notification": "ARTICLE_PREVIOUS"
-        },
-        "articlemoredetails": {
-            "notification": "ARTICLE_MORE_DETAILS"
-        },
-        "articlescrollup": {
-            "notification": "ARTICLE_SCROLL_UP"
-        },
-        "articlelessdetails": {
-            "notification": "ARTICLE_LESS_DETAILS"
-        },
-        "articletogglefull": {
-            "notification": "ARTICLE_TOGGLE_FULL"
-        }
+  "success": true,
+  "module": "newsfeed",
+  "path": "newsfeed",
+  "actions": {
+    "newsitems": {
+      "notification": "NEWS_ITEMS"
     },
-    "guessed": true
+    "articlenext": {
+      "notification": "ARTICLE_NEXT"
+    },
+    "articleprevious": {
+      "notification": "ARTICLE_PREVIOUS"
+    },
+    "articlemoredetails": {
+      "notification": "ARTICLE_MORE_DETAILS"
+    },
+    "articlescrollup": {
+      "notification": "ARTICLE_SCROLL_UP"
+    },
+    "articlelessdetails": {
+      "notification": "ARTICLE_LESS_DETAILS"
+    },
+    "articletogglefull": {
+      "notification": "ARTICLE_TOGGLE_FULL"
+    }
+  },
+  "guessed": true
 }
 ```
 
-| Parameter | Description |
-| :-: | -- |
-| `"success"` | Result of the GET call
-| `"module"` | Module name
-| `"path"` | API path to use.  All lower case, with "MMM-" and "-"s removed (e.g. MMM-Remote-Control's path if it had one would be `/api/module/remotecontrol/`). Can be customized for explicit External APIs.
-| `"actions"` | The list of actions registered, along with the respective notifications that they will call.<br>For example, `GET /api/module/newsfeed/articlenext` will send a `"ARTICLE_NEXT"` notification to the `newsfeed` module
-| `"guessed"` | Whether or not the API actions were guessed (not all are reliable) or if they were explicitly provided by the module.
+|  Parameter  | Description                                                                                                                                                                                                             |
+| :---------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"success"` | Result of the GET call                                                                                                                                                                                                  |
+| `"module"`  | Module name                                                                                                                                                                                                             |
+|  `"path"`   | API path to use. All lower case, with "MMM-" and "-"s removed (e.g. MMM-Remote-Control's path if it had one would be `/api/module/remotecontrol/`). Can be customized for explicit External APIs.                       |
+| `"actions"` | The list of actions registered, along with the respective notifications that they will call.<br>For example, `GET /api/module/newsfeed/articlenext` will send a `"ARTICLE_NEXT"` notification to the `newsfeed` module. |
+| `"guessed"` | Whether or not the API actions were guessed (not all are reliable) or if they were explicitly provided by the module.                                                                                                   |
 
 ### 3. External APIs (Explicit) - Extending Another Module with this API
 
@@ -192,40 +192,40 @@ If correctly formatted, any details sent here will override the "guessed" action
 ```js
 let payload = {
   module: this.name,
-  path: "mymodulename",
+  path: "myModuleName",
   actions: {
     actionName: {
-        method: "GET",
-        notification: "NOTIFICATION_TO_SEND",
-        payload: ObjectToSend,
-        prettyName: "Action Name"
+      method: "GET",
+      notification: "NOTIFICATION_TO_SEND",
+      payload: ObjectToSend,
+      prettyName: "Action Name"
     },
     anotherActionName: {
-        method: "POST",
-        notification: "NOTIFICATION_TO_SEND"
+      method: "POST",
+      notification: "NOTIFICATION_TO_SEND"
     }
   }
 };
 this.sendNotification("REGISTER_API", payload);
 ```
 
-| Parameter | Description |
-| :-: | - |
-| `module` | Actual Name of your Module (e.g. "MMM-Your-Module-Name, or just use `this.name`)
-| `path` | Path to use in the API (e.g. `path: "mymodulename"`) translates to `/api/module/mymodulename`
-| `actions` | An `Object` defining the actions you want to expose. See below for details.
-| `actionName` | The name for your action (e.g. called from `/api/module/mymodulename/actionName`).
-| `method` | *Optional:* The HTTP Method to use.<br>Valid options are: `"GET"` or `"POST"`. If `method` is not provided in an action, then both `"GET"` or `"POST"` methods will be treated as valid.
-| `notification` | The notification to send to your module. When the API receives a valid action, it passes a Module Notification to your module. It is your responsibility to do something with that notification to make the action work.
-| `prettyName` | *Optional:* You can specify a Formatted Name to use in dynamic menus, like the MMM-Remote-Control Module Control menu, otherwise one will be guessed based on the Notification text.
-| `payload` | *Optional:* If you always want the module to send the same `payload`, you can provide an `Object` here. It will be merged into the `payload` sent with the notification, which will also include:<br>1. URL Parameter, if used. See notes on `payload` Object below.<br>2. Query String, if used. API key will be removed.<br>3. Request body, if `POST` method is used and a body sent.<br>4. Finally, this parameter.
+|   Parameter    | Description                                                                                                                                                                                                                                                                                                                                                                                                             |
+| :------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    `module`    | Actual Name of your Module (e.g. "MMM-Your-Module-Name, or just use `this.name`).                                                                                                                                                                                                                                                                                                                                       |
+|     `path`     | Path to use in the API (e.g. `path: "myModuleName"`) translates to `/api/module/myModuleName`.                                                                                                                                                                                                                                                                                                                          |
+|   `actions`    | An `Object` defining the actions you want to expose. See below for details.                                                                                                                                                                                                                                                                                                                                             |
+|  `actionName`  | The name for your action (e.g. called from `/api/module/myModuleName/actionName`).                                                                                                                                                                                                                                                                                                                                      |
+|    `method`    | _Optional:_ The HTTP Method to use.<br>Valid options are: `"GET"` or `"POST"`. If `method` is not provided in an action, then both `"GET"` or `"POST"` methods will be treated as valid.                                                                                                                                                                                                                                |
+| `notification` | The notification to send to your module. When the API receives a valid action, it passes a Module Notification to your module. It is your responsibility to do something with that notification to make the action work.                                                                                                                                                                                                |
+|  `prettyName`  | _Optional:_ You can specify a Formatted Name to use in dynamic menus, like the MMM-Remote-Control Module Control menu, otherwise one will be guessed based on the Notification text.                                                                                                                                                                                                                                    |
+|   `payload`    | _Optional:_ If you always want the module to send the same `payload`, you can provide an `Object` here. It will be merged into the `payload` sent with the notification, which will also include:<br>1. URL Parameter, if used. See notes on `payload` Object below.<br>2. Query String, if used. API key will be removed.<br>3. Request body, if `POST` method is used and a body sent.<br>4. Finally, this parameter. |
 
 #### About the `payload` object
 
 Your module will be sent a `payload` with the notification, depending on the request details, and if you provided a `payload` Object to send. It is a merged object, containing one or more of the following inputs.
 
-1. URL parameter. (e.g. `/api/module/mymodulename/action/:p`, where `:p` is the parameter). If nothing else below is passed or provided, this will be returned as a string. If anything else below is sent, this will be provided at `payload.param` in the notification's `payload` Object.
-2. Query String. Anything passed to the query string, except the API key (if used) will be passed through `payload`. For example, `/api/module/mymodulename/action?param1=Something&param2=Else` will be passed in `payload` as `{ param1: "Something", param2: "Else" }`
+1. URL parameter. (e.g. `/api/module/myModuleName/action/:p`, where `:p` is the parameter). If nothing else below is passed or provided, this will be returned as a string. If anything else below is sent, this will be provided at `payload.param` in the notification's `payload` Object.
+2. Query String. Anything passed to the query string, except the API key (if used) will be passed through `payload`. For example, `/api/module/myModuleName/action?param1=Something&param2=Else` will be passed in `payload` as `{ param1: "Something", param2: "Else" }`
 3. `POST` Body. Same as query string above.
 4. Custom Payload. Any `Object` provided with the `payload:` key when you send the initial "REGISTER_API" notification.
 
