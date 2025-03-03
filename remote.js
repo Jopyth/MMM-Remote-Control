@@ -1,3 +1,5 @@
+/* global showdown */
+
 // main javascript file for the remote control page
 
 var Remote = {
