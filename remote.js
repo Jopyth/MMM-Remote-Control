@@ -2,7 +2,7 @@
 
 // main javascript file for the remote control page
 
-let Remote = {
+const Remote = {
     name: "MMM-Remote-Control",
     currentMenu: "main-menu",
     types: ["string", "number", "boolean", "array", "object", "null", "undefined"],
@@ -35,7 +35,7 @@ let Remote = {
             this._socket = this._socket = new MMSocket(this.name);
         }
 
-        let self = this;
+        const self = this;
         this._socket.setNotificationCallback(function(notification, payload) {
             self.socketNotificationReceived(notification, payload);
         });
@@ -74,7 +74,7 @@ let Remote = {
                 } else if (payload.query.data === "mmUpdateAvailable") {
                     this.mmUpdateCallback(payload.result);
                 } else if (payload.query.data === "brightness") {
-                    let slider = document.getElementById("brightness-slider");
+                    const slider = document.getElementById("brightness-slider");
                     slider.value = payload.result;
                 } else if (payload.query.data === "translations") {
                     this.translations = payload.data;
@@ -85,14 +85,14 @@ let Remote = {
                 return;
             }
             if ("code" in payload && payload.code === "restart") {
-            	let chlog = new showdown.Converter()
+            	const chlog = new showdown.Converter()
             	chlog.setFlavor('github')
                 this.offerRestart(payload.chlog ? payload.info + "<br><div id='changelog'>" + chlog.makeHtml(payload.chlog) + "</div>": payload.info);
                 return;
             }
             if ("success" in payload) {
                 if (!("status" in payload)) { payload.status = (payload.success) ? "success" : "error"; }
-                let message = (payload.status === "error") ? this.translate("RESPONSE_ERROR") +
+                const message = (payload.status === "error") ? this.translate("RESPONSE_ERROR") +
                     ": <br><pre><code>" + JSON.stringify(payload, undefined, 3) + "</code></pre>" : payload.info;
                 this.setStatus(payload.status, message);
                 return;
@@ -149,7 +149,7 @@ let Remote = {
     },
 
     loadToggleButton(element, toggleCallback) {
-        let self = this;
+        const self = this;
 
         element.addEventListener("click", function(event) {
             if (self.hasClass(event.currentTarget, "toggled-off")) {
@@ -172,14 +172,14 @@ let Remote = {
         }
         pattern = pattern.trim();
 
-        let regex = new RegExp(pattern, "i");
-        let searchIn = ["author", "desc", "longname", "name"];
+        const regex = new RegExp(pattern, "i");
+        const searchIn = ["author", "desc", "longname", "name"];
 
-        let data = this.savedData.moduleAvailable;
+        const data = this.savedData.moduleAvailable;
         for (let i = 0; i < data.length; i++) {
-            let currentData = data[i];
-            let id = "install-module-" + i;
-            let element = document.getElementById(id);
+            const currentData = data[i];
+            const id = "install-module-" + i;
+            const element = document.getElementById(id);
             if (pattern === "" || pattern === undefined) {
                 // cleared search input, show all
                 element.style.display = "";
@@ -191,7 +191,7 @@ let Remote = {
                 match = true;
             }
             for (let k = 0; k < searchIn.length; k++) {
-                let key = searchIn[k];
+                const key = searchIn[k];
                 if (match || (currentData[key] && currentData[key].match(regex))) {
                     match = true;
                     break;
@@ -225,15 +225,15 @@ let Remote = {
     },
 
     loadOtherElements() {
-        let self = this;
+        const self = this;
 
-        let slider = document.getElementById("brightness-slider");
+        const slider = document.getElementById("brightness-slider");
         slider.addEventListener("change", function() {
             self.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: slider.value });
         }, false);
 
-        let input = document.getElementById("add-module-search");
-        let deleteButton = document.getElementById("delete-search-input");
+        const input = document.getElementById("add-module-search");
+        const deleteButton = document.getElementById("delete-search-input");
 
         input.addEventListener("input", function() {
             self.filter(input.value);
@@ -254,22 +254,22 @@ let Remote = {
     },
 
     showMenu(newMenu) {
-        let self = this;
+        const self = this;
         if (this.currentMenu === "settings-menu") {
             // check for unsaved changes
-            let changes = this.deletedModules.length + this.changedModules.length;
+            const changes = this.deletedModules.length + this.changedModules.length;
             if (changes > 0) {
-                let wrapper = document.createElement("div");
-                let text = document.createElement("span");
+                const wrapper = document.createElement("div");
+                const text = document.createElement("span");
                 text.innerHTML = this.translate("UNSAVED_CHANGES");
                 wrapper.appendChild(text);
 
-                let ok = self.createSymbolText("fa fa-check-circle", this.translate("OK"), function() {
+                const ok = self.createSymbolText("fa fa-check-circle", this.translate("OK"), function() {
                     self.setStatus("none");
                 });
                 wrapper.appendChild(ok);
 
-                let discard = self.createSymbolText("fa fa-warning", this.translate("DISCARD"), function() {
+                const discard = self.createSymbolText("fa fa-warning", this.translate("DISCARD"), function() {
                     self.deletedModules = [];
                     self.changedModules = [];
                     window.location.hash = newMenu;
@@ -285,7 +285,7 @@ let Remote = {
             }
         }
 
-        let belowFold = document.getElementById("below-fold");
+        const belowFold = document.getElementById("below-fold");
         if (newMenu === "main-menu") {
             if (!this.hasClass(belowFold, "hide-border")) {
                 belowFold.className += " hide-border";
@@ -315,23 +315,23 @@ let Remote = {
         if (newMenu === "main-menu") {
         	this.loadList("config-modules", "config", function(parent,configData) {
                 
-        		let alertElem = document.getElementById("alert-button")
+        		const alertElem = document.getElementById("alert-button")
         		if(!configData.modules.find(m=>m.module==="alert") && alertElem !== undefined) alertElem.remove();
                 
-                let modConfig = configData.modules.find(m=>m.module==="MMM-Remote-Control").config
-                let classElem = document.getElementById("classes-button")
+                const modConfig = configData.modules.find(m=>m.module==="MMM-Remote-Control").config
+                const classElem = document.getElementById("classes-button")
                 if((!modConfig || !modConfig.classes) && classElem !== undefined) classElem.remove();
                 
         	})
         }
         
-        let allMenus = document.getElementsByClassName("menu-element");
+        const allMenus = document.getElementsByClassName("menu-element");
 
         for (let i = 0; i < allMenus.length; i++) {
             this.hide(allMenus[i]);
         }
 
-        let currentMenu = document.getElementsByClassName(newMenu);
+        const currentMenu = document.getElementsByClassName(newMenu);
 
         for (let i = 0; i < currentMenu.length; i++) {
             this.show(currentMenu[i]);
@@ -343,7 +343,7 @@ let Remote = {
     },
 
     setStatus(status, message, customContent) {
-        let self = this;
+        const self = this;
 
         if (this.autoHideTimer !== undefined) {
             clearTimeout(this.autoHideTimer);
@@ -356,7 +356,7 @@ let Remote = {
             return;
         }
 
-        let parent = document.getElementById("result-contents");
+        const parent = document.getElementById("result-contents");
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
@@ -407,14 +407,14 @@ let Remote = {
     },
 
     getWithStatus(params, callback) {
-        let self = this;
+        const self = this;
 
         self.setStatus("loading");
         self.get("remote", params, function(response) {
             if (callback) {
                 callback(response);
             } else {
-                let result = JSON.parse(response);
+                const result = JSON.parse(response);
                 if (result.success) {
                     if (result.info) {
                         self.setStatus("success", result.info);
@@ -441,9 +441,9 @@ let Remote = {
     },
 
     install(url, index) {
-        let self = this;
+        const self = this;
 
-        let $downloadButton = $("#download-button");
+        const $downloadButton = $("#download-button");
         $downloadButton.children(":first").removeClass("fa-download").addClass("fa-spinner fa-pulse");
         $downloadButton.children(":last").html(" " + self.translate("DOWNLOADING"));
         this.sendSocketNotification("REMOTE_ACTION", { action: "INSTALL", url: url, index: index });
@@ -451,7 +451,7 @@ let Remote = {
 
     installCallback(result) {
         if (result.success) {
-            let bgElement = document.getElementById("install-module-" + result.index);
+            const bgElement = document.getElementById("install-module-" + result.index);
             bgElement.firstChild.className = "fa fa-fw fa-check-circle";
             this.savedData.moduleAvailable[result.index].installed = true;
             this.createAddingPopup(result.index);
@@ -459,8 +459,8 @@ let Remote = {
     },
 
     get(route, params, callback, timeout) {
-        let req = new XMLHttpRequest();
-        let url = route + "?" + params;
+        const req = new XMLHttpRequest();
+        const url = route + "?" + params;
         req.open("GET", url, true);
 
         if (timeout) {
@@ -481,10 +481,10 @@ let Remote = {
     },
 
     loadList(listname, dataId, callback) {
-        let self = this;
+        const self = this;
 
-        let loadingIndicator = document.getElementById(listname + "-loading");
-        let parent = document.getElementById(listname + "-results");
+        const loadingIndicator = document.getElementById(listname + "-loading");
+        const parent = document.getElementById(listname + "-results");
 
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
@@ -495,11 +495,11 @@ let Remote = {
     },
 
     loadListCallback(result) {
-        let self = this;
+        const self = this;
 
-        let loadingIndicator = document.getElementById(result.query.listname + "-loading");
-        let emptyIndicator = document.getElementById(result.query.listname + "-empty");
-        let parent = document.getElementById(result.query.listname + "-results");
+        const loadingIndicator = document.getElementById(result.query.listname + "-loading");
+        const emptyIndicator = document.getElementById(result.query.listname + "-empty");
+        const parent = document.getElementById(result.query.listname + "-results");
 
         self.hide(loadingIndicator);
         self.savedData[result.query.data] = false;
@@ -546,7 +546,7 @@ let Remote = {
 
     getVisibilityStatus(data) {
         let status = "toggled-on";
-        let modules = [];
+        const modules = [];
         if (data.hidden) {
             status = "toggled-off";
             for (let i = 0; i < data.lockStrings.length; i++) {
@@ -563,17 +563,17 @@ let Remote = {
     },
 
     addToggleElements(parent) {
-        let outerSpan = document.createElement("span");
+        const outerSpan = document.createElement("span");
         outerSpan.className = "stack fa-fw";
 
-        let spanClasses = [
+        const spanClasses = [
             "fa fa-fw fa-toggle-on outer-label fa-stack-1x",
             "fa fa-fw fa-toggle-off outer-label fa-stack-1x",
             "fa fa-fw fa-lock inner-small-label fa-stack-1x"
         ];
 
         for (let i = 0; i < spanClasses.length; i++) {
-            let innerSpan = document.createElement("span");
+            const innerSpan = document.createElement("span");
             innerSpan.className = spanClasses[i];
             outerSpan.appendChild(innerSpan);
         }
@@ -587,22 +587,22 @@ let Remote = {
     },
 
     makeToggleButton(moduleBox, visibilityStatus) {
-        let self = this;
+        const self = this;
 
         self.loadToggleButton(moduleBox, function(toggledOn, event) {
             if (toggledOn) {
                 if (self.hasClass(event.currentTarget, "external-locked")) {
-                    let wrapper = document.createElement("div");
-                    let warning = document.createElement("span");
+                    const wrapper = document.createElement("div");
+                    const warning = document.createElement("span");
                     warning.innerHTML = self.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
                     wrapper.appendChild(warning);
 
-                    let ok = self.createSymbolText("fa fa-check-circle", self.translate("OK"), function() {
+                    const ok = self.createSymbolText("fa fa-check-circle", self.translate("OK"), function() {
                         self.setStatus("none");
                     });
                     wrapper.appendChild(ok);
 
-                    let force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), function(target) {
+                    const force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), function(target) {
                         return function() {
                             target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
                             self.showModule(target.id, true);
@@ -624,7 +624,7 @@ let Remote = {
     },
 
     loadVisibleModules() {
-        let self = this;
+        const self = this;
 
         console.log("Load visible modules...");
 
@@ -634,15 +634,15 @@ let Remote = {
                     // skip invisible modules
                     continue;
                 }
-                let visibilityStatus = self.getVisibilityStatus(moduleData[i]);
+                const visibilityStatus = self.getVisibilityStatus(moduleData[i]);
 
-                let moduleBox = document.createElement("div");
+                const moduleBox = document.createElement("div");
                 moduleBox.className = "button module-line " + visibilityStatus.status;
                 moduleBox.id = moduleData[i].identifier;
 
                 self.addToggleElements(moduleBox);
 
-                let text = document.createElement("span");
+                const text = document.createElement("span");
                 text.className = "text";
                 text.innerHTML = " " + self.formatName(moduleData[i].name);
                 if ("header" in moduleData[i]) {
@@ -661,14 +661,14 @@ let Remote = {
         if (element === undefined) {
             element = "div";
         }
-        let wrapper = document.createElement(element);
+        const wrapper = document.createElement(element);
         if (eventListener) {
             wrapper.className = "button";
         }
-        let symbolElement = document.createElement("span");
+        const symbolElement = document.createElement("span");
         symbolElement.className = symbol;
         wrapper.appendChild(symbolElement);
-        let textElement = document.createElement("span");
+        const textElement = document.createElement("span");
         textElement.innerHTML = text;
         textElement.className = "symbol-text-padding";
         wrapper.appendChild(textElement);
@@ -679,30 +679,30 @@ let Remote = {
     },
 
     recreateConfigElement(key, previousType, newType) {
-        let input = document.getElementById(key);
+        const input = document.getElementById(key);
         let oldGUI = input.parentNode;
         if (previousType === "array" || previousType === "object") {
             oldGUI = input;
         }
-        let path = key.split("/");
-        let name = path[path.length - 1];
+        const path = key.split("/");
+        const name = path[path.length - 1];
 
         let current = this.currentConfig;
         for (let i = 1; i < path.length - 1; i++) {
             current = current[path[i]];
         }
-        let initialValue = this.values[this.types.indexOf(newType)];
-        let newGUI = this.createObjectGUI(key, name, initialValue);
+        const initialValue = this.values[this.types.indexOf(newType)];
+        const newGUI = this.createObjectGUI(key, name, initialValue);
         oldGUI.parentNode.replaceChild(newGUI, oldGUI);
     },
 
     createTypeEditSelection(key, parent, type, oldElement) {
-        let self = this;
+        const self = this;
 
-        let previousType = oldElement.children[1].innerHTML.slice(1).toLowerCase();
-        let select = document.createElement("select");
+        const previousType = oldElement.children[1].innerHTML.slice(1).toLowerCase();
+        const select = document.createElement("select");
         for (let i = 0; i < this.types.length; i++) {
-            let option = document.createElement("option");
+            const option = document.createElement("option");
             option.innerHTML = this.formatName(this.types[i]);
             option.value = this.types[i];
             if (this.types[i] === type) {
@@ -711,7 +711,7 @@ let Remote = {
             select.appendChild(option);
         }
         select.addEventListener("change", function() {
-            let newType = select.options[select.selectedIndex].innerHTML.toLowerCase();
+            const newType = select.options[select.selectedIndex].innerHTML.toLowerCase();
             if (previousType !== newType) {
                 self.recreateConfigElement(key, previousType, newType);
             } else {
@@ -725,7 +725,7 @@ let Remote = {
     },
 
     createConfigLabel(key, name, type, forcedType, symbol) {
-        let self = this;
+        const self = this;
 
         if (symbol === undefined) {
             symbol = "fa-tag";
@@ -734,22 +734,22 @@ let Remote = {
             symbol = "fa-hashtag";
             name = name.substring(1);
         }
-        let label = document.createElement("label");
+        const label = document.createElement("label");
         label.htmlFor = key;
         label.className = "config-label";
-        let desc = Remote.createSymbolText("fa fa-fw " + symbol, this.formatLabel(name), false, "span");
+        const desc = Remote.createSymbolText("fa fa-fw " + symbol, this.formatLabel(name), false, "span");
         desc.className = "label-name";
         label.appendChild(desc);
 
         if (!forcedType) {
-            let typeLabel = Remote.createSymbolText("fa fa-fw fa-pencil", this.formatName(type), function(event) {
-                let thisElement = event.currentTarget;
+            const typeLabel = Remote.createSymbolText("fa fa-fw fa-pencil", this.formatName(type), function(event) {
+                const thisElement = event.currentTarget;
                 label.replaceChild(self.createTypeEditSelection(key, label, type, thisElement), thisElement);
             }, "span");
             typeLabel.className += " type-edit";
             label.appendChild(typeLabel);
 
-            let remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function(event) {
+            const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function(event) {
                 let thisElement = event.currentTarget;
                 if (type === "array" || type === "object") {
                     thisElement = thisElement.parentNode;
@@ -766,18 +766,18 @@ let Remote = {
         if (element === undefined) {
             element = "input";
         }
-        let input = document.createElement(element);
+        const input = document.createElement(element);
         input.className = "config-input";
         if (!omitValue) {
             input.value = value;
         }
         input.id = key;
         input.addEventListener("focus", function(event) {
-            let label = event.currentTarget.parentNode;
+            const label = event.currentTarget.parentNode;
             label.className = label.className + " highlight";
         }, false);
         input.addEventListener("blur", function(event) {
-            let label = event.currentTarget.parentNode;
+            const label = event.currentTarget.parentNode;
             label.className = label.className.replace(" highlight", "");
         }, false);
 
@@ -785,18 +785,18 @@ let Remote = {
     },
 
     createVisualCheckbox(key, wrapper, input, className) {
-        let visualCheckbox = document.createElement("span");
+        const visualCheckbox = document.createElement("span");
         visualCheckbox.className = "visual-checkbox fa fa-fw " + className;
         wrapper.appendChild(visualCheckbox);
     },
 
     createConfigElement(type) {
-        let self = this;
+        const self = this;
 
         return {
             string: function(key, name, value, type, forcedType) {
-                let label = self.createConfigLabel(key, name, type, forcedType);
-                let input = self.createConfigInput(key, value);
+                const label = self.createConfigLabel(key, name, type, forcedType);
+                const input = self.createConfigInput(key, value);
                 input.type = "text";
                 label.appendChild(input);
                 if (key === "<root>/header") {
@@ -805,8 +805,8 @@ let Remote = {
                 return label;
             },
             number: function(key, name, value, type, forcedType) {
-                let label = self.createConfigLabel(key, name, type, forcedType);
-                let input = self.createConfigInput(key, value);
+                const label = self.createConfigLabel(key, name, type, forcedType);
+                const input = self.createConfigInput(key, value);
                 input.type = "number";
                 if (value % 1 !== 0) {
                     input.step = 0.01;
@@ -815,9 +815,9 @@ let Remote = {
                 return label;
             },
             boolean: function(key, name, value, type, forcedType) {
-                let label = self.createConfigLabel(key, name, type, forcedType);
+                const label = self.createConfigLabel(key, name, type, forcedType);
 
-                let input = self.createConfigInput(key, value, true);
+                const input = self.createConfigInput(key, value, true);
                 input.type = "checkbox";
                 label.appendChild(input);
                 console.log(value);
@@ -831,8 +831,8 @@ let Remote = {
                 return label;
             },
             undefined: function(key, name, value, type, forcedType) {
-                let label = self.createConfigLabel(key, name, type, forcedType);
-                let input = self.createConfigInput(key, value);
+                const label = self.createConfigLabel(key, name, type, forcedType);
+                const input = self.createConfigInput(key, value);
                 input.type = "text";
                 input.disabled = "disabled";
                 input.className += " disabled undefined";
@@ -841,8 +841,8 @@ let Remote = {
                 return label;
             },
             null: function(key, name, value, type, forcedType) {
-                let label = self.createConfigLabel(key, name, type, forcedType);
-                let input = self.createConfigInput(key, value);
+                const label = self.createConfigLabel(key, name, type, forcedType);
+                const input = self.createConfigInput(key, value);
                 input.type = "text";
                 input.disabled = "disabled";
                 input.className += " disabled null";
@@ -851,12 +851,12 @@ let Remote = {
                 return label;
             },
             position: function(key, name, value, type, forcedType) {
-                let label = self.createConfigLabel(key, name, type, forcedType);
-                let select = self.createConfigInput(key, value, false, "select");
+                const label = self.createConfigLabel(key, name, type, forcedType);
+                const select = self.createConfigInput(key, value, false, "select");
                 select.className = "config-input";
                 select.id = key;
                 for (let i = 0; i < self.validPositions.length; i++) {
-                    let option = document.createElement("option");
+                    const option = document.createElement("option");
                     option.value = self.validPositions[i];
                     if (self.validPositions[i]) {
                         option.innerHTML = self.formatPosition(self.validPositions[i]);
@@ -904,34 +904,34 @@ let Remote = {
     },
 
     createObjectGUI(path, name, dataToEdit) {
-        let self = this;
+        const self = this;
 
-        let type = this.getTypeAsString(dataToEdit, path);
-        let forcedType = this.hasForcedType(path);
+        const type = this.getTypeAsString(dataToEdit, path);
+        const forcedType = this.hasForcedType(path);
         if (this.createConfigElement(type)) {
             // recursion stop
             return this.createConfigElement(type)(path, name, dataToEdit, type, forcedType);
         }
 
         // object and array
-        let wrapper = document.createElement("div");
+        const wrapper = document.createElement("div");
         wrapper.id = path;
         wrapper.className = "indent config-input " + type;
         if (type === "array") {
             // array
-            let add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_ENTRY"));
+            const add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_ENTRY"));
             add.className += " bottom-spacing button";
             wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ol"));
             wrapper.appendChild(add);
             for (let i = 0; i < dataToEdit.length; i++) {
-                let newName = "#" + i;
+                const newName = "#" + i;
                 wrapper.appendChild(this.createObjectGUI(path + "/" + newName, newName, dataToEdit[i]));
             }
             add.addEventListener("click", function() {
-                let lastIndex = dataToEdit.length - 1;
-                let lastType = self.getTypeAsString(path + "/#" + lastIndex, dataToEdit[lastIndex]);
+                const lastIndex = dataToEdit.length - 1;
+                const lastType = self.getTypeAsString(path + "/#" + lastIndex, dataToEdit[lastIndex]);
                 dataToEdit.push(self.values[self.types.indexOf(lastType)]);
-                let nextName = "#" + (lastIndex + 1);
+                const nextName = "#" + (lastIndex + 1);
                 wrapper.appendChild(self.createObjectGUI(path + "/" + nextName, nextName, dataToEdit[dataToEdit.length - 1]));
             }, false);
             return wrapper;
@@ -941,19 +941,19 @@ let Remote = {
         if (path !== "<root>") {
             wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ul"));
 
-            let addElement = self.createConfigLabel(path + "/<add>", this.translate("ADD_ENTRY"), type, true, "fa-plus");
+            const addElement = self.createConfigLabel(path + "/<add>", this.translate("ADD_ENTRY"), type, true, "fa-plus");
             addElement.className += " bottom-spacing";
-            let inputWrapper = document.createElement("div");
+            const inputWrapper = document.createElement("div");
             inputWrapper.className = "add-input-wrapper";
-            let input = self.createConfigInput(path + "/<add>", "");
+            const input = self.createConfigInput(path + "/<add>", "");
             input.type = "text";
             input.placeholder = this.translate("NEW_ENTRY_NAME");
             addElement.appendChild(inputWrapper);
             inputWrapper.appendChild(input);
-            let addFunction = function() {
-                let existingKey = Object.keys(dataToEdit)[0];
-                let lastType = self.getTypeAsString(path + "/" + existingKey, dataToEdit[existingKey]);
-                let key = input.value;
+            const addFunction = function() {
+                const existingKey = Object.keys(dataToEdit)[0];
+                const lastType = self.getTypeAsString(path + "/" + existingKey, dataToEdit[existingKey]);
+                const key = input.value;
                 if (key === "" || document.getElementById(path + "/" + key)) {
                     if (!self.hasClass(input, "input-error")) {
                         input.className += " input-error";
@@ -962,17 +962,17 @@ let Remote = {
                 }
                 input.className = input.className.replace(" input-error", "");
                 dataToEdit[key] = self.values[self.types.indexOf(lastType)];
-                let newElement = self.createObjectGUI(path + "/" + key, key, dataToEdit[key]);
+                const newElement = self.createObjectGUI(path + "/" + key, key, dataToEdit[key]);
                 wrapper.insertBefore(newElement, addElement.nextSibling);
                 input.value = "";
             };
-            let symbol = document.createElement("span");
+            const symbol = document.createElement("span");
             symbol.className = "fa fa-fw fa-plus-square button";
             symbol.addEventListener("click", addFunction, false);
             inputWrapper.appendChild(symbol);
             input.onkeypress = function(e) {
                 if (!e) e = window.event;
-                let keyCode = e.keyCode || e.which;
+                const keyCode = e.keyCode || e.which;
                 if (keyCode == "13") {
                     addFunction();
                 }
@@ -984,7 +984,7 @@ let Remote = {
             keys = ["module", "disabled", "position", "header", "config"];
         }
         for (let i = 0; i < keys.length; i++) {
-            let key = keys[i];
+            const key = keys[i];
             if (dataToEdit.hasOwnProperty(key)) {
                 wrapper.appendChild(this.createObjectGUI(path + "/" + key, key, dataToEdit[key]));
             }
@@ -997,12 +997,12 @@ let Remote = {
     },
 
     appendConfigMenu(index, wrapper) {
-        let self = this;
+        const self = this;
 
-        let menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), function() {
-            let elements = document.getElementsByClassName("sub-menu");
+        const menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), function() {
+            const elements = document.getElementsByClassName("sub-menu");
             for (let i = 0; i < elements.length; i++) {
-                let element = elements[i];
+                const element = elements[i];
                 if (self.hasClass(element, "hidden")) {
                     element.className = element.className.replace("hidden", "");
                 } else {
@@ -1013,21 +1013,21 @@ let Remote = {
         menuElement.className += " fixed-size";
         wrapper.appendChild(menuElement);
 
-        let menuDiv = document.createElement("div");
+        const menuDiv = document.createElement("div");
         menuDiv.className = "fixed-size sub-menu hidden";
 
-        let help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), function() {
+        const help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), function() {
             window.open("config-help.html?module=" + self.currentConfig.module, "_blank");
         });
         menuDiv.appendChild(help);
-        let undo = self.createSymbolText("fa fa-fw fa-undo", self.translate("RESET"), function() {
+        const undo = self.createSymbolText("fa fa-fw fa-undo", self.translate("RESET"), function() {
             self.createConfigPopup(index);
         });
         menuDiv.appendChild(undo);
-        let save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), function() {
+        const save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), function() {
             self.savedData.config.modules[index] = self.getModuleConfigFromUI();
             self.changedModules.push(index);
-            let parent = document.getElementById("edit-module-" + index).parentNode;
+            const parent = document.getElementById("edit-module-" + index).parentNode;
             if (parent.children.length === 2) {
                 parent.insertBefore(self.createChangedWarning(), parent.children[1]);
             }
@@ -1037,7 +1037,7 @@ let Remote = {
 
         wrapper.appendChild(menuDiv);
 
-        let line = document.createElement("header");
+        const line = document.createElement("header");
         line.className = "header";
         wrapper.appendChild(line);
     },
@@ -1059,16 +1059,16 @@ let Remote = {
     },
 
     getModuleConfigFromUI() {
-        let rootElement = {};
-        let elements = document.getElementsByClassName("config-input");
+        const rootElement = {};
+        const elements = document.getElementsByClassName("config-input");
         for (let i = 0; i < elements.length; i++) {
-            let path = elements[i].id;
-            let splitPath = path.split("/");
+            const path = elements[i].id;
+            const splitPath = path.split("/");
             let parent = rootElement;
             for (let k = 1; k < splitPath.length - 1; k++) {
                 parent = this.navigate(parent, splitPath[k]);
             }
-            let name = splitPath[splitPath.length - 1];
+            const name = splitPath[splitPath.length - 1];
             if (this.hasClass(elements[i], "null")) {
                 this.setValue(parent, name, null);
                 continue;
@@ -1102,13 +1102,13 @@ let Remote = {
     },
 
     createConfigPopup(index) {
-        let self = this;
+        const self = this;
         if (typeof index === "string") {
             index = parseInt(index);
         }
 
-        let moduleData = this.savedData.config.modules;
-        let data = moduleData[index];
+        const moduleData = this.savedData.config.modules;
+        const data = moduleData[index];
 
         self.currentConfig = data;
         if (!("header" in self.currentConfig)) {
@@ -1118,14 +1118,14 @@ let Remote = {
             self.currentConfig.position = "";
         }
 
-        let wrapper = this.getPopupContent();
+        const wrapper = this.getPopupContent();
 
-        let name = document.createElement("div");
+        const name = document.createElement("div");
         name.innerHTML = self.formatName(data.module);
         name.className = "bright title medium";
         wrapper.appendChild(name);
 
-        let n = document.createElement("div");
+        const n = document.createElement("div");
         n.innerHTML = data.module + " (#" + (index + 1) + ")";
         n.className = "subtitle xsmall dimmed";
         wrapper.appendChild(n);
@@ -1142,9 +1142,9 @@ let Remote = {
     },
 
     createChangedWarning() {
-        let self = this;
-        let changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), function() {
-            let saveButton = document.getElementById("save-config");
+        const self = this;
+        const changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), function() {
+            const saveButton = document.getElementById("save-config");
             if (!self.hasClass(saveButton, "highlight")) {
                 saveButton.className += " highlight";
             }
@@ -1154,13 +1154,13 @@ let Remote = {
     },
 
     appendModuleEditElements(wrapper, moduleData) {
-        let self = this;
+        const self = this;
         for (let i = 0; i < moduleData.length; i++) {
-            let innerWrapper = document.createElement("div");
+            const innerWrapper = document.createElement("div");
             innerWrapper.className = "module-line";
 
-            let moduleBox = self.createSymbolText("fa fa-fw fa-pencil", self.formatName(moduleData[i].module), function(event) {
-                let i = event.currentTarget.id.replace("edit-module-", "");
+            const moduleBox = self.createSymbolText("fa fa-fw fa-pencil", self.formatName(moduleData[i].module), function(event) {
+                const i = event.currentTarget.id.replace("edit-module-", "");
                 self.createConfigPopup(i);
             }, "span");
             moduleBox.id = "edit-module-" + i;
@@ -1170,10 +1170,10 @@ let Remote = {
                 innerWrapper.appendChild(self.createChangedWarning());
             }
 
-            let remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function(event) {
-                let i = event.currentTarget.parentNode.firstChild.id.replace("edit-module-", "");
+            const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), function(event) {
+                const i = event.currentTarget.parentNode.firstChild.id.replace("edit-module-", "");
                 self.deletedModules.push(parseInt(i));
-                let thisElement = event.currentTarget;
+                const thisElement = event.currentTarget;
                 thisElement.parentNode.parentNode.removeChild(thisElement.parentNode);
             }, "span");
             remove.className += " type-edit";
@@ -1184,20 +1184,20 @@ let Remote = {
     },
 
     loadConfigModules() {
-        let self = this;
+        const self = this;
 
         console.log("Loading modules in config...");
         this.changedModules = [];
 
         this.loadList("config-modules", "config", function(parent, configData) {
-            let moduleData = configData.modules;
+            const moduleData = configData.modules;
             if (self.addModule) {
-                let name = self.addModule;
+                const name = self.addModule;
                 // we came here from adding a module
                 self.get("get", "data=defaultConfig&module=" + name, function(response) {
-                    let newData = JSON.parse(response);
+                    const newData = JSON.parse(response);
                     moduleData.push({ module: name, config: newData });
-                    let index = moduleData.length - 1;
+                    const index = moduleData.length - 1;
                     self.changedModules.push(index);
                     self.appendModuleEditElements(parent, moduleData);
                     self.createConfigPopup(index);
@@ -1210,14 +1210,14 @@ let Remote = {
     },
     
     loadClasses() {
-    	let self = this;
+    	const self = this;
     	
     	console.log("Loading classes...");
     	this.loadList("classes", "classes", function(parent, classes) {
     		for(const i in classes) {
     			$node = $("<div>").attr("id", "classes-before-result").attr("hidden", "true")
     			$('#classes-results').append($node)
-    			let content = Object.assign({}, {
+    			const content = Object.assign({}, {
 						id: i,
 						text: i,
 						icon: "dot-circle-o",
@@ -1237,34 +1237,34 @@ let Remote = {
     },
 
     createAddingPopup(index) {
-        let self = this;
+        const self = this;
         if (typeof index === "string") {
             index = parseInt(index);
         }
 
-        let data = this.savedData.moduleAvailable[index];
-        let wrapper = this.getPopupContent();
+        const data = this.savedData.moduleAvailable[index];
+        const wrapper = this.getPopupContent();
 
-        let name = document.createElement("div");
+        const name = document.createElement("div");
         name.innerHTML = data.name;
         name.className = "bright title";
         wrapper.appendChild(name);
 
-        let author = document.createElement("div");
+        const author = document.createElement("div");
         author.innerHTML = self.translate("BY") + " " + data.author;
         author.className = "subtitle small";
         wrapper.appendChild(author);
 
-        let desc = document.createElement("div");
+        const desc = document.createElement("div");
         desc.innerHTML = data.desc;
         desc.className = "small flex-fill";
         wrapper.appendChild(desc);
 
-        let footer = document.createElement("div");
+        const footer = document.createElement("div");
         footer.className = "fixed-size sub-menu";
 
         if (data.installed) {
-            let add = self.createSymbolText("fa fa-fw fa-plus", self.translate("ADD_THIS"), function() {
+            const add = self.createSymbolText("fa fa-fw fa-plus", self.translate("ADD_THIS"), function() {
                 self.closePopup();
                 self.addModule = data.longname;
                 window.location.hash = "settings-menu";
@@ -1273,17 +1273,17 @@ let Remote = {
         }
 
         if (data.installed) {
-            let statusElement = self.createSymbolText("fa fa-fw fa-check-circle", self.translate("INSTALLED"));
+            const statusElement = self.createSymbolText("fa fa-fw fa-check-circle", self.translate("INSTALLED"));
             footer.appendChild(statusElement);
         } else {
-            let statusElement = self.createSymbolText("fa fa-fw fa-download", self.translate("DOWNLOAD"), function() {
+            const statusElement = self.createSymbolText("fa fa-fw fa-download", self.translate("DOWNLOAD"), function() {
                 self.install(data.url, index);
             });
             statusElement.id = "download-button";
             footer.appendChild(statusElement);
         }
 
-        let githubElement = self.createSymbolText("fa fa-fw fa-github", self.translate("CODE_LINK"), function() {
+        const githubElement = self.createSymbolText("fa fa-fw fa-github", self.translate("CODE_LINK"), function() {
             window.open(data.url, "_blank");
         });
         footer.appendChild(githubElement);
@@ -1294,7 +1294,7 @@ let Remote = {
     },
 
     loadModulesToAdd() {
-        let self = this;
+        const self = this;
 
         console.log("Loading modules to add...");
 
@@ -1305,8 +1305,8 @@ let Remote = {
                     symbol = "fa fa-fw fa-check-circle";
                 }
 
-                let moduleBox = self.createSymbolText(symbol, modules[i].name, function(event) {
-                    let index = event.currentTarget.id.replace("install-module-", "");
+                const moduleBox = self.createSymbolText(symbol, modules[i].name, function(event) {
+                    const index = event.currentTarget.id.replace("install-module-", "");
                     self.createAddingPopup(index);
                 });
                 moduleBox.className = "button module-line";
@@ -1317,30 +1317,30 @@ let Remote = {
     },
 
     offerRestart(message) {
-        let wrapper = document.createElement("div");
+        const wrapper = document.createElement("div");
 
-        let info = document.createElement("span");
+        const info = document.createElement("span");
         info.innerHTML = message;
         wrapper.appendChild(info);
 
-        let restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
+        const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
         restart.children[1].className += " text";
         wrapper.appendChild(restart);
         this.setStatus("success", false, wrapper);
     },
 
     offerReload(message) {
-        let wrapper = document.createElement("div");
+        const wrapper = document.createElement("div");
 
-        let info = document.createElement("span");
+        const info = document.createElement("span");
         info.innerHTML = message;
         wrapper.appendChild(info);
 		
-		let restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
+		const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
         restart.children[1].className += " text";
         wrapper.appendChild(restart);
 		
-        let reload = this.createSymbolText("fa fa-fw fa-globe", this.translate("REFRESHMM"), buttons["refresh-mm-button"]);
+        const reload = this.createSymbolText("fa fa-fw fa-globe", this.translate("REFRESHMM"), buttons["refresh-mm-button"]);
         reload.children[1].className += " text";
         wrapper.appendChild(reload);
         
@@ -1348,14 +1348,14 @@ let Remote = {
     },
     
     offerOptions: function(message, data) {
-    	let wrapper = document.createElement("div");
+    	const wrapper = document.createElement("div");
     	
-    	let info = document.createElement("span");
+    	const info = document.createElement("span");
         info.innerHTML = message;
         wrapper.appendChild(info);
         
         for(const b in data) {
-        	let restart = this.createSymbolText("fa fa-fw fa-recycle", b, data[b]);
+        	const restart = this.createSymbolText("fa fa-fw fa-recycle", b, data[b]);
         	restart.children[1].className += " text";
         	wrapper.appendChild(restart);
         }
@@ -1369,8 +1369,8 @@ let Remote = {
 
     mmUpdateCallback(result) {
         if (window.location.hash.substring(1) == "update-menu") {
-            let element = document.getElementById("update-mm-status");
-            let updateButton = document.getElementById("update-mm-button");
+            const element = document.getElementById("update-mm-status");
+            const updateButton = document.getElementById("update-mm-button");
             if (result) {
                 self.show(element);
                 updateButton.className += " bright";
@@ -1382,7 +1382,7 @@ let Remote = {
     },
 
     loadModulesToUpdate() {
-        let self = this;
+        const self = this;
 
         console.log("Loading modules to update...");
 
@@ -1391,12 +1391,12 @@ let Remote = {
 
         this.loadList("update-module", "moduleInstalled", function(parent, modules) {
             for (let i = 0; i < modules.length; i++) {
-                let symbol = "fa fa-fw fa-toggle-up";
-                let innerWrapper = document.createElement("div");
+                const symbol = "fa fa-fw fa-toggle-up";
+                const innerWrapper = document.createElement("div");
                 innerWrapper.className = "module-line";
 
-                let moduleBox = self.createSymbolText(symbol, modules[i].name, function(event) {
-                    let module = event.currentTarget.id.replace("update-module-", "");
+                const moduleBox = self.createSymbolText(symbol, modules[i].name, function(event) {
+                    const module = event.currentTarget.id.replace("update-module-", "");
                     self.updateModule(module);
                 });
                 moduleBox.className = "button";
@@ -1407,7 +1407,7 @@ let Remote = {
                 innerWrapper.appendChild(moduleBox);
 
                 if (modules[i].updateAvailable) {
-                    let moduleBox = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
+                    const moduleBox = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
                     innerWrapper.appendChild(moduleBox);
                 }
 
@@ -1420,17 +1420,17 @@ let Remote = {
         if (this.saving) {
             return;
         }
-        let undoButton = document.getElementById("undo-config");
+        const undoButton = document.getElementById("undo-config");
         undoButton.className = undoButton.className.replace(" highlight", "");
         this.setStatus("loading");
         this.sendSocketNotification("REMOTE_ACTION", {data: "saves"});
     },
 
     undoConfigMenuCallback(result) {
-    	let self = this;
+    	const self = this;
 
         if (result.success) {
-        	let dates = {};
+        	const dates = {};
         	for(const i in result.data) {
         		dates[new Date(result.data[i])] = function() {
         			console.log(result.data[i])
@@ -1459,12 +1459,12 @@ let Remote = {
         if (this.saving) {
             return;
         }
-        let saveButton = document.getElementById("save-config");
+        const saveButton = document.getElementById("save-config");
         saveButton.className = saveButton.className.replace(" highlight", "");
         this.saving = true;
         this.setStatus("loading");
-        let configData = this.savedData.config;
-        let remainingModules = [];
+        const configData = this.savedData.config;
+        const remainingModules = [];
         for (let i = 0; i < configData.modules.length; i++) {
             if (this.deletedModules.indexOf(i) !== -1) {
                 continue;
@@ -1478,7 +1478,7 @@ let Remote = {
     },
 
     saveConfigCallback(result) {
-        let self = this;
+        const self = this;
 
         if (result.success) {
             self.offerReload(self.translate("DONE"));
@@ -1496,12 +1496,12 @@ let Remote = {
     createMenuElement(content, menu, $insertAfter) {
         if (!content) { return; }
         $item = $("<div>").attr("id", `${content.id}-button`).addClass(`menu-element button ${menu}-menu`);
-        let $mcmIcon = $('<span>').addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
-        let $mcmText = $('<span>').addClass('text').text(content.text);
+        const $mcmIcon = $('<span>').addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
+        const $mcmText = $('<span>').addClass('text').text(content.text);
         if (content.icon) $item.append($mcmIcon)
         if (content.type === "menu") {
             if (content.text) $item.append($mcmText);
-            let $mcmArrow = $('<span>').addClass('fa fa-fw fa-angle-right').attr("aria-hidden", "true");
+            const $mcmArrow = $('<span>').addClass('fa fa-fw fa-angle-right').attr("aria-hidden", "true");
             $item.append($mcmArrow);
             $item.attr("data-parent", menu).attr("data-type", "menu");
             $('#back-button').addClass(`${content.id}-menu`);
@@ -1509,8 +1509,8 @@ let Remote = {
             $item.click(() => { window.location.hash = `${content.id}-menu`; });
         } else if (content.type === "slider") {
             if (content.text) $item.append($mcmText.attr("style", "flex: 0 1 auto"));
-            let $contain = $('<div>').attr("style", "flex: 1")
-            let $slide = $('<input>').attr("id", `${content.id}-slider`).addClass("slider")
+            const $contain = $('<div>').attr("style", "flex: 1")
+            const $slide = $('<input>').attr("id", `${content.id}-slider`).addClass("slider")
             $slide.attr({
                 "type": "range",
                 "min": content.min || 0,
@@ -1565,7 +1565,7 @@ let Remote = {
     }
 };
 
-let buttons = {
+const buttons = {
     // navigation buttons
     "power-button": function () {
         window.location.hash = "power-menu";
@@ -1574,19 +1574,19 @@ let buttons = {
         window.location.hash = "edit-menu";
     },
     "settings-button": function () {
-        let self = Remote;
+        const self = Remote;
 
-        let wrapper = document.createElement("div");
-        let text = document.createElement("span");
+        const wrapper = document.createElement("div");
+        const text = document.createElement("span");
         text.innerHTML = self.translate("EXPERIMENTAL");
         wrapper.appendChild(text);
 
-        let panic = self.createSymbolText("fa fa-life-ring", self.translate("PANIC"), function() {
+        const panic = self.createSymbolText("fa fa-life-ring", self.translate("PANIC"), function() {
             self.setStatus("none");
         });
         wrapper.appendChild(panic);
 
-        let danger = self.createSymbolText("fa fa-warning", self.translate("NO_RISK_NO_FUN"), function() {
+        const danger = self.createSymbolText("fa fa-warning", self.translate("NO_RISK_NO_FUN"), function() {
             window.location.hash = "settings-menu";
         });
         wrapper.appendChild(danger);
@@ -1619,15 +1619,15 @@ let buttons = {
 
     // settings menu buttons
     "brightness-reset": function () {
-        let element = document.getElementById("brightness-slider");
+        const element = document.getElementById("brightness-slider");
         element.value = 100;
         Remote.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: 100 });
     },
 
     // edit menu buttons
     "show-all-button": function () {
-        let parent = document.getElementById("visible-modules-results");
-        let buttons = parent.children;
+        const parent = document.getElementById("visible-modules-results");
+        const buttons = parent.children;
         for (let i = 0; i < buttons.length; i++) {
             if (Remote.hasClass(buttons[i], "external-locked")) {
                 continue;
@@ -1637,8 +1637,8 @@ let buttons = {
         }
     },
     "hide-all-button": function () {
-        let parent = document.getElementById("visible-modules-results");
-        let buttons = parent.children;
+        const parent = document.getElementById("visible-modules-results");
+        const buttons = parent.children;
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].className = buttons[i].className.replace("toggled-on", "toggled-off");
             Remote.hideModule(buttons[i].id);
@@ -1647,19 +1647,19 @@ let buttons = {
 
     // power menu buttons
     "shut-down-button": function () {
-        let self = Remote;
+        const self = Remote;
 
-        let wrapper = document.createElement("div");
-        let text = document.createElement("span");
+        const wrapper = document.createElement("div");
+        const text = document.createElement("span");
         text.innerHTML = self.translate("CONFIRM_SHUTDOWN");
         wrapper.appendChild(text);
 
-        let ok = self.createSymbolText("fa fa-power-off", self.translate("SHUTDOWN"), function() {
+        const ok = self.createSymbolText("fa fa-power-off", self.translate("SHUTDOWN"), function() {
             Remote.sendSocketNotification("REMOTE_ACTION", { action: "SHUTDOWN" });
         });
         wrapper.appendChild(ok);
 
-        let cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), function() {
+        const cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), function() {
             self.setStatus("none");
         });
         wrapper.appendChild(cancel);
@@ -1667,19 +1667,19 @@ let buttons = {
         self.setStatus(false, false, wrapper);
     },
     "restart-button": function() {
-        let self = Remote;
+        const self = Remote;
 
-        let wrapper = document.createElement("div");
-        let text = document.createElement("span");
+        const wrapper = document.createElement("div");
+        const text = document.createElement("span");
         text.innerHTML = self.translate("CONFIRM_RESTART");
         wrapper.appendChild(text);
 
-        let ok = self.createSymbolText("fa fa-refresh", self.translate("RESTART"), function() {
+        const ok = self.createSymbolText("fa fa-refresh", self.translate("RESTART"), function() {
             Remote.sendSocketNotification("REMOTE_ACTION", { action: "REBOOT" });
         });
         wrapper.appendChild(ok);
 
-        let cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), function() {
+        const cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), function() {
             self.setStatus("none");
         });
         wrapper.appendChild(cancel);
@@ -1741,10 +1741,10 @@ let buttons = {
 
     // alert menu
     "send-alert-button": function () {
-        let kvpairs = {};
-        let form = document.getElementById("alert");
+        const kvpairs = {};
+        const form = document.getElementById("alert");
         for (let i = 0; i < form.elements.length; i++) {
-            let e = form.elements[i];
+            const e = form.elements[i];
             kvpairs[e.name] = e.value;
         }
         Remote.sendSocketNotification("REMOTE_ACTION", kvpairs);
@@ -1781,5 +1781,5 @@ window.onhashchange = function () {
 };
 
 // loading successful, remove error message
-let loadError = document.getElementById("load-error");
+const loadError = document.getElementById("load-error");
 loadError.parentNode.removeChild(loadError);

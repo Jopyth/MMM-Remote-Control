@@ -83,8 +83,8 @@ Module.register("MMM-Remote-Control", {
                 }
             }
 
-            let moduleData = payload.moduleData;
-            let hideModules = {};
+            const moduleData = payload.moduleData;
+            const hideModules = {};
             for (let i = 0; i < moduleData.length; i++) {
                 for (let k = 0; k < moduleData[i].lockStrings.length; k++) {
                     if (moduleData[i].lockStrings[k].indexOf("MMM-Remote-Control") >= 0) {
@@ -94,9 +94,9 @@ Module.register("MMM-Remote-Control", {
                 }
             }
 
-            let modules = MM.getModules();
+            const modules = MM.getModules();
 
-            let options = { lockString: this.identifier };
+            const options = { lockString: this.identifier };
 
             modules.enumerate(function(module) {
                 if (Object.prototype.hasOwnProperty.call(hideModules, module.identifier)) {
@@ -125,7 +125,7 @@ Module.register("MMM-Remote-Control", {
             this.sendNotification(notification);
         }
         if (notification === "HIDE" || notification === "SHOW" || notification === "TOGGLE") {
-            let options = { lockString: this.identifier };
+            const options = { lockString: this.identifier };
             if (payload.force) { options.force = true; }
             let modules = []
             if(payload.module !== 'all') {
@@ -163,7 +163,7 @@ Module.register("MMM-Remote-Control", {
     buildCssContent(brightness) {
         let css = "";
 
-        let defaults = {
+        const defaults = {
             "body": parseInt("aa", 16),
             "header": parseInt("99", 16),
             ".dimmed": parseInt("66", 16),
@@ -171,7 +171,7 @@ Module.register("MMM-Remote-Control", {
             ".bright": parseInt("ff", 16)
         };
 
-        for (let key in defaults) {
+        for (const key in defaults) {
             let value = defaults[key] / 100 * brightness;
             value = Math.round(value);
             value = Math.min(value, 255);
@@ -205,7 +205,7 @@ Module.register("MMM-Remote-Control", {
             style = document.createElement('style');
             style.type = 'text/css';
             style.id = 'remote-control-styles';
-            let parent = document.getElementsByTagName('head')[0];
+            const parent = document.getElementsByTagName('head')[0];
             parent.appendChild(style);
         }
 
@@ -230,23 +230,23 @@ Module.register("MMM-Remote-Control", {
             // if not existing, create overlay
             overlay = document.createElement("div");
             overlay.id = "remote-control-overlay";
-            let parent = document.body;
+            const parent = document.body;
             parent.insertBefore(overlay, parent.firstChild);
         }
-        let bgColor = "rgba(0,0,0," + (100 - brightness) / 100 + ")";
+        const bgColor = "rgba(0,0,0," + (100 - brightness) / 100 + ")";
         overlay.style.backgroundColor = bgColor;
     },
 
     removeOverlay() {
-        let overlay = document.getElementById('remote-control-overlay');
+        const overlay = document.getElementById('remote-control-overlay');
         if (overlay) {
-            let parent = document.body;
+            const parent = document.body;
             parent.removeChild(overlay);
         }
     },
 
     getDom() {
-        let wrapper = document.createElement("div");
+        const wrapper = document.createElement("div");
         let portToShow = ''
         if (this.addresses.length === 0) {
             this.addresses = ["ip-of-your-mirror"];
@@ -262,17 +262,17 @@ Module.register("MMM-Remote-Control", {
     },
 
     sendCurrentData() {
-        let modules = MM.getModules();
-        let currentModuleData = [];
+        const modules = MM.getModules();
+        const currentModuleData = [];
         modules.enumerate(function(module) {
-            let modData = Object.assign({}, module.data);
+            const modData = Object.assign({}, module.data);
             modData.hidden = module.hidden;
             modData.lockStrings = module.lockStrings;
             modData.urlPath = module.name.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase();
             modData.config = module.config;
             currentModuleData.push(modData);
         });
-        let configData = {
+        const configData = {
             moduleData: currentModuleData,
             brightness: this.brightness,
             settingsVersion: this.settingsVersion,
