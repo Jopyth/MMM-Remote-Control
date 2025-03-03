@@ -1,8 +1,8 @@
-/* global showdown */
+/* global $ MMSocket showdown */
 
 // main javascript file for the remote control page
 
-var Remote = {
+let Remote = {
     name: "MMM-Remote-Control",
     currentMenu: "main-menu",
     types: ["string", "number", "boolean", "array", "object", "null", "undefined"],
@@ -228,14 +228,14 @@ var Remote = {
         let self = this;
 
         let slider = document.getElementById("brightness-slider");
-        slider.addEventListener("change", function(event) {
+        slider.addEventListener("change", function() {
             self.sendSocketNotification("REMOTE_ACTION", { action: "BRIGHTNESS", value: slider.value });
         }, false);
 
         let input = document.getElementById("add-module-search");
         let deleteButton = document.getElementById("delete-search-input");
 
-        input.addEventListener("input", function(event) {
+        input.addEventListener("input", function() {
             self.filter(input.value);
             if (input.value === "") {
                 deleteButton.style.display = "none";
@@ -244,7 +244,7 @@ var Remote = {
             }
         }, false);
 
-        deleteButton.addEventListener("click", function(event) {
+        deleteButton.addEventListener("click", function() {
             input.value = "";
             self.filter(input.value);
             deleteButton.style.display = "none";
@@ -376,7 +376,7 @@ var Remote = {
 
         let symbol;
         let text;
-        let close = true;
+        let onClick;
         if (status === "loading") {
             symbol = "fa-spinner fa-pulse";
             text = this.translate("LOADING");
@@ -455,9 +455,6 @@ var Remote = {
             bgElement.firstChild.className = "fa fa-fw fa-check-circle";
             this.savedData.moduleAvailable[result.index].installed = true;
             this.createAddingPopup(result.index);
-        } else {
-            symbol.className = "fa fa-fw fa-exclamation-circle";
-            text.innerHTML = " " + this.translate("ERROR");
         }
     },
 
@@ -518,7 +515,8 @@ var Remote = {
                 self.pendingCallback(parent, result.data);
                 delete self.pendingCallback;
             }
-        } catch (e) {
+        } catch (error) {
+            console.debug("Error loading list:", error);
             self.show(emptyIndicator);
         }
     },
@@ -537,7 +535,7 @@ var Remote = {
     },
 
     formatLabel(string) {
-        // var result = string.replace(/([A-Z])/g, " $1" );
+        // let result = string.replace(/([A-Z])/g, " $1" );
         // return result.charAt(0).toUpperCase() + result.slice(1);
         return string;
     },
@@ -568,7 +566,7 @@ var Remote = {
         let outerSpan = document.createElement("span");
         outerSpan.className = "stack fa-fw";
 
-        spanClasses = [
+        let spanClasses = [
             "fa fa-fw fa-toggle-on outer-label fa-stack-1x",
             "fa fa-fw fa-toggle-off outer-label fa-stack-1x",
             "fa fa-fw fa-lock inner-small-label fa-stack-1x"
@@ -584,8 +582,6 @@ var Remote = {
     },
 
     loadBrightness() {
-        let self = this;
-
         console.log("Load brightness...");
         this.sendSocketNotification("REMOTE_ACTION", { data: "brightness" });
     },
@@ -714,7 +710,7 @@ var Remote = {
             }
             select.appendChild(option);
         }
-        select.addEventListener("change", function(event) {
+        select.addEventListener("change", function() {
             let newType = select.options[select.selectedIndex].innerHTML.toLowerCase();
             if (previousType !== newType) {
                 self.recreateConfigElement(key, previousType, newType);
@@ -722,7 +718,7 @@ var Remote = {
                 parent.replaceChild(oldElement, select);
             }
         }, false);
-        select.addEventListener("blur", function(event) {
+        select.addEventListener("blur", function() {
             parent.replaceChild(oldElement, select);
         }, false);
         return select;
@@ -788,7 +784,7 @@ var Remote = {
         return input;
     },
 
-    createVisualCheckbox(key, wrapper, input, className, value) {
+    createVisualCheckbox(key, wrapper, input, className) {
         let visualCheckbox = document.createElement("span");
         visualCheckbox.className = "visual-checkbox fa fa-fw " + className;
         wrapper.appendChild(visualCheckbox);
@@ -1003,7 +999,7 @@ var Remote = {
     appendConfigMenu(index, wrapper) {
         let self = this;
 
-        let menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), function(event) {
+        let menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), function() {
             let elements = document.getElementsByClassName("sub-menu");
             for (let i = 0; i < elements.length; i++) {
                 let element = elements[i];
@@ -1020,15 +1016,15 @@ var Remote = {
         let menuDiv = document.createElement("div");
         menuDiv.className = "fixed-size sub-menu hidden";
 
-        let help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), function(event) {
+        let help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), function() {
             window.open("config-help.html?module=" + self.currentConfig.module, "_blank");
         });
         menuDiv.appendChild(help);
-        let undo = self.createSymbolText("fa fa-fw fa-undo", self.translate("RESET"), function(event) {
+        let undo = self.createSymbolText("fa fa-fw fa-undo", self.translate("RESET"), function() {
             self.createConfigPopup(index);
         });
         menuDiv.appendChild(undo);
-        let save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), function(event) {
+        let save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), function() {
             self.savedData.config.modules[index] = self.getModuleConfigFromUI();
             self.changedModules.push(index);
             let parent = document.getElementById("edit-module-" + index).parentNode;
@@ -1069,10 +1065,10 @@ var Remote = {
             let path = elements[i].id;
             let splitPath = path.split("/");
             let parent = rootElement;
-            for (var k = 1; k < splitPath.length - 1; k++) {
+            for (let k = 1; k < splitPath.length - 1; k++) {
                 parent = this.navigate(parent, splitPath[k]);
             }
-            let name = splitPath[k];
+            let name = splitPath[splitPath.length - 1];
             if (this.hasClass(elements[i], "null")) {
                 this.setValue(parent, name, null);
                 continue;
@@ -1268,7 +1264,7 @@ var Remote = {
         footer.className = "fixed-size sub-menu";
 
         if (data.installed) {
-            let add = self.createSymbolText("fa fa-fw fa-plus", self.translate("ADD_THIS"), function(event) {
+            let add = self.createSymbolText("fa fa-fw fa-plus", self.translate("ADD_THIS"), function() {
                 self.closePopup();
                 self.addModule = data.longname;
                 window.location.hash = "settings-menu";
@@ -1280,14 +1276,14 @@ var Remote = {
             let statusElement = self.createSymbolText("fa fa-fw fa-check-circle", self.translate("INSTALLED"));
             footer.appendChild(statusElement);
         } else {
-            let statusElement = self.createSymbolText("fa fa-fw fa-download", self.translate("DOWNLOAD"), function(event) {
+            let statusElement = self.createSymbolText("fa fa-fw fa-download", self.translate("DOWNLOAD"), function() {
                 self.install(data.url, index);
             });
             statusElement.id = "download-button";
             footer.appendChild(statusElement);
         }
 
-        let githubElement = self.createSymbolText("fa fa-fw fa-github", self.translate("CODE_LINK"), function(event) {
+        let githubElement = self.createSymbolText("fa fa-fw fa-github", self.translate("CODE_LINK"), function() {
             window.open(data.url, "_blank");
         });
         footer.appendChild(githubElement);
@@ -1421,8 +1417,6 @@ var Remote = {
     },
 
     undoConfigMenu() {
-    	let self = this;
-
         if (this.saving) {
             return;
         }
@@ -1450,8 +1444,6 @@ var Remote = {
     },
 
     undoConfig(date) {
-    	let self = this;
-
         // prevent saving before current saving is finished
         if (this.saving) {
             return;
@@ -1463,8 +1455,6 @@ var Remote = {
     },
 
     saveConfig() {
-        let self = this;
-
         // prevent saving before current saving is finished
         if (this.saving) {
             return;
@@ -1571,11 +1561,11 @@ var Remote = {
                 window.location.hash = "main-menu";
             }
         }
-        let $mcmBtn = this.createMenuElement(content, "main", $("#alert-button"));
+        this.createMenuElement(content, "main", $("#alert-button"));
     }
 };
 
-var buttons = {
+let buttons = {
     // navigation buttons
     "power-button": function () {
         window.location.hash = "power-menu";

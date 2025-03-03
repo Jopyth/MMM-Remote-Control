@@ -13,7 +13,9 @@ const config = [
     "languageOptions": {
       "globals": {
         ...globals.browser,
-        ...globals.node
+        ...globals.node,
+        "$item": "writable",
+        "$node": "writable"
       },
       "sourceType": "commonjs"
     },
@@ -21,8 +23,8 @@ const config = [
       "capitalized-comments": "off",
       "consistent-this": "off",
       "line-comment-position": "off",
-      "max-lines-per-function": ["warn", 200],
-      "max-statements": ["warn", 60],
+      "max-lines-per-function": ["warn", 205],
+      "max-statements": ["warn", 95],
       "multiline-comment-style": "off",
       "no-await-in-loop": "off",
       "no-constant-binary-expression": "warn",

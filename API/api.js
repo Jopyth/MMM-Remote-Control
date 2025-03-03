@@ -1,3 +1,5 @@
+/* global Module */
+
 /* MagicMirror²
  * Module Extension: Remote Control API
  *
@@ -47,7 +49,6 @@ module.exports = {
 
         let getActions = function(content) {
             let re = /notification \=\=\=? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
-            let m;
             let availableActions = [];
             if (re.test(content)) {
                 content.match(re).forEach((match) => {
