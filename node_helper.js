@@ -78,18 +78,18 @@ module.exports = NodeHelper.create(Object.assign({
             /* API EXTENSION - Added v2.0.0 */
             this.createApiRoutes();
 
-	    	this.loadTimers();
-	    },
+            this.loadTimers();
+        },
 
-		loadTimers() {
+        loadTimers() {
             const delay = 24*3600;
 
             const self = this;
 
             clearTimeout(this.delayedQueryTimers['update'])
             this.delayedQueryTimers['update'] = setTimeout(function () {
-            	self.updateModuleList();
-            	self.loadTimers();
+                self.updateModuleList();
+                self.loadTimers();
             }, delay*1000);
         },
 
@@ -537,8 +537,8 @@ module.exports = NodeHelper.create(Object.assign({
                 return;
             }
             if (query.data === "classes") {
-            	const thisConfig = this.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
-            	this.sendResponse(res, undefined, { query: query, data: thisConfig.classes ? thisConfig.classes : {} });
+                const thisConfig = this.getConfig().modules.find(m => m.module === "MMM-Remote-Control").config || {};
+                this.sendResponse(res, undefined, { query: query, data: thisConfig.classes ? thisConfig.classes : {} });
                 return;
             }
             if (query.data === "saves") {
@@ -813,7 +813,7 @@ module.exports = NodeHelper.create(Object.assign({
                 }
             }
             if (query.action === "MANAGE_CLASSES") {
-            	if (!query.payload || !query.payload.classes || !this.thisConfig || !this.thisConfig.classes) return;
+                if (!query.payload || !query.payload.classes || !this.thisConfig || !this.thisConfig.classes) return;
                 const classes = [];
                 switch (typeof query.payload.classes) {
                     case 'string': classes.push(this.thisConfig.classes[query.payload.classes]); break;
@@ -831,8 +831,8 @@ module.exports = NodeHelper.create(Object.assign({
                         }
                     }
                 })
-            	this.sendResponse(res);
-            	return;
+                this.sendResponse(res);
+                return;
             }
             if (["MINIMIZE", "TOGGLEFULLSCREEN", "DEVTOOLS"].indexOf(query.action) !== -1) {
                 try {
@@ -847,7 +847,7 @@ module.exports = NodeHelper.create(Object.assign({
                             win.setFullScreen(!win.isFullScreen());
                             break;
                         case "DEVTOOLS":
-                        	if (win.webContents.isDevToolsOpened()) win.webContents.closeDevTools();
+                            if (win.webContents.isDevToolsOpened()) win.webContents.closeDevTools();
                             else win.webContents.openDevTools();
                             break;
                         default:
@@ -943,12 +943,12 @@ module.exports = NodeHelper.create(Object.assign({
                                 // success part
                                 self.readModuleData();
                                 fs.readdir(path, function(err, files) {
-                                	if (files.includes("CHANGELOG.md")) {
-                                		const chlog = fs.readFileSync(path+"/CHANGELOG.md", 'utf-8')
-                                		self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: chlog });
-                                	} else {
-                                		self.sendResponse(res, undefined, { code: "restart", info: name + " updated."});
-                                	}
+                                    if (files.includes("CHANGELOG.md")) {
+                                        const chlog = fs.readFileSync(path+"/CHANGELOG.md", 'utf-8')
+                                        self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: chlog });
+                                    } else {
+                                        self.sendResponse(res, undefined, { code: "restart", info: name + " updated."});
+                                    }
                                 })
                                 //var chlog = fs.readFileSync(path+"/CHANGELOG.md")
                                 //self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: "" });
@@ -1133,29 +1133,29 @@ module.exports = NodeHelper.create(Object.assign({
                 }
             }
             if (notification === "UNDO_CONFIG") {
-            	const backupHistorySize = 5;
-            	let iteration = -1
+                const backupHistorySize = 5;
+                let iteration = -1
 
                 for (let i = backupHistorySize - 1; i > 0; i--) {
                     const backupPath = path.resolve("config/config.js.backup" + i);
                     try {
                         const stats = fs.statSync(backupPath);
                         if(stats.mtime.toISOString()==payload) {
-                        	iteration = i
-                        	i = -1
+                            iteration = i
+                            i = -1
                         }
                     } catch (e) {
                         continue;
                     }
                 }
                 if(iteration<0) {
-                	this.answerGet({data: "saves"}, { isSocket: true })
-                	return
+                    this.answerGet({data: "saves"}, { isSocket: true })
+                    return
                 }
                 const backupPath = path.resolve("config/config.js.backup" + iteration);
-            	const req = require(backupPath)
+                const req = require(backupPath)
 
-            	this.answerPost({ data: "config" }, { body: req }, { isSocket: true });
+                this.answerPost({ data: "config" }, { body: req }, { isSocket: true });
             }
             if (notification === "NEW_CONFIG") {
                 this.answerPost({ data: "config" }, { body: payload }, { isSocket: true });
