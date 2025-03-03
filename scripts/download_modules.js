@@ -56,7 +56,7 @@ const downloadModules = {
             if (response.status === 200) {
                 const body = await response.text();
                 const modules = this.parseList(body);
-                const json = JSON.stringify(modules, undefined, 2);
+                const json = JSON.stringify(modules, undefined, 2) + '\n';
                 const jsonPath = this.config.modulesFile;
                 fs.writeFile(jsonPath, json, "utf8", (err) => {
                     if (err) {
