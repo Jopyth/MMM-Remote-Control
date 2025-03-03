@@ -85,9 +85,9 @@
   },
   {
     "longname": "MMM-Dynamic-Modules",
-    "id": "Toreke/MMM-Dynamic-Modules",
-    "url": "https://github.com/Toreke/MMM-Dynamic-Modules",
-    "author": "Toreke",
+    "id": "gonzonia/MMM-Dynamic-Modules",
+    "url": "https://github.com/gonzonia/MMM-Dynamic-Modules",
+    "author": "gonzonia",
     "desc": "Change positions of modules."
   },
   {

@@ -1019,7 +1019,7 @@ module.exports = NodeHelper.create(Object.assign({
                 simpleModuleData[k].identifier = moduleData[k].identifier;
                 simpleModuleData[k].hidden = moduleData[k].hidden;
                 simpleModuleData[k].lockStrings = moduleData[k].lockStrings;
-                simpleModuleData[k].urlpath = moduleData[k].urlpath;
+                simpleModuleData[k].urlPath = moduleData[k].urlPath;
             }
 
             let text = JSON.stringify({
