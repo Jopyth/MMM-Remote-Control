@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# This is an experimental installer script for MagicMirror2 Remote-Control
+# This is an experimental installer script for MagicMirror² Remote-Control
 
 echo ""
-echo "Installation for the MagicMirror2 Remote-Control module started!"
+echo "Installation for the MagicMirror² Remote-Control module started!"
 echo ""
 echo "Notice: This script and the installed software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software."
 echo ""
@@ -37,8 +37,8 @@ MM_HOME=$HOME/MagicMirror
 MODULE_NAME=MMM-Remote-Control
 FORK=Jopyth
 
-# check if we are correct by searching for https://github.com/MichMich/MagicMirror in package.json
-TEST_STRING="\"url\": \"git+https://github.com/MichMich/MagicMirror.git\""
+# check if we are correct by searching for https://github.com/MagicMirrorOrg/MagicMirror in package.json
+TEST_STRING="\"url\": \"https://github.com/MagicMirrorOrg/MagicMirror\""
 if grep -sq "$TEST_STRING" "$MM_HOME/package.json"; then
     # we found it
     echo -n ""
@@ -49,7 +49,7 @@ else
         # found it again
         echo -n ""
     else
-        echo "Could not find MagicMirror2 installation directory."
+        echo "Could not find MagicMirror² installation directory."
         echo "Please start this script again from the MagicMirror directory."
         exit 1
     fi
@@ -101,7 +101,7 @@ if [ -d "$MM_HOME/modules/$MODULE_NAME" ] ; then
         echo "Already installed, not upgrading."
     fi
 else
-    echo "MagicMirror2 detected in: $MM_HOME"
+    echo "MagicMirror² detected in: $MM_HOME"
     echo ""
     if check_yes "Is this correct and do you want to start installation?"; then
             echo ""
@@ -146,7 +146,7 @@ fi
 
 # Get an UUID to use as an API key
 NODE_BIN=$(which node)
-APIKEY=$($NODE_BIN -e 'console.log(require("uuid/v4")().replace(/-/g, ""));');
+APIKEY=$($NODE_BIN -e 'console.log(require("uuid").v4().replace(/-/g, ""));');
 
 echo ""
 if check_no "Do you want to view instructions on how to configure the module?"; then
@@ -196,8 +196,8 @@ fi
 echo "Have fun with the module, if you have any problems, please search for help on github or in the forum:"
 echo ""
 echo "   Github : https://github.com/$FORK/$MODULE_NAME"
-echo "   Forum  : http://forum.magicmirror.builders"
+echo "   Forum  : https://forum.magicmirror.builders"
 echo ""
-echo "Do not forget to restart your MagicMirror2 to activate the module! Installation finished."
+echo "Do not forget to restart your MagicMirror² to activate the module! Installation finished."
 echo ""
 exit 0

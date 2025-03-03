@@ -1,0 +1,87 @@
+{
+  "TITLE": "MagicMirror² Menü",
+
+  "EDIT_MENU_NAME": "Görünümü Düzenle",
+  "SHUTDOWN_MENU_NAME": "Güç",
+  "CONFIGURE_MENU_NAME": "config.js dosyasını düzenle",
+  "VIEW_MIRROR": "MagicMirror²",
+
+  "BACK": "Geri",
+
+  "BRIGHTNESS": "Parlaklık",
+
+  "REFRESHMM": "Tarayıcıyı Yenile",
+  "MONITOROFF": "Monitörü KAPAT",
+  "MONITORON": "Monitörü AÇ",
+  "MONITORTIMED": "Turn monitor ON briefly",
+  "RESTART": "Yeniden Başlat",
+  "RESTARTMM": "MagicMirror²'u Yeniden Başlat",
+  "SHUTDOWN": "Kapat",
+  "FULLSCREEN": "Tam Ekran",
+  "MINIMIZE": "Tarayıcıyı Küçült",
+  "DEVTOOLS": "DevTools Aracını Çalıştır",
+
+  "SHOWALL": "Hepsi",
+  "HIDEALL": "Hepsi",
+
+  "ADD_MODULE": "Modül Ekle",
+  "SEARCH": "Ara …",
+  "INSTALLED": "Kurulu",
+  "DOWNLOAD": "İndir",
+  "DOWNLOADING": "İndiriliyor …",
+  "CODE_LINK": "Kodu Gör",
+  "BY": "by",
+  "ADD_THIS": "Bu modülü ekle",
+  "HELP": "Beni Oku dosyasını göster",
+  "MENU": "Menü",
+  "RESET": "Sıfırla",
+  "NO_HEADER": "(başlık yok)",
+  "NO_POSITION": "(görünmez)",
+  "ADD_ENTRY": "Giriş Ekle",
+  "NEW_ENTRY_NAME": "(ismini yazın)",
+  "DELETE_ENTRY": "Sil",
+  "UNSAVED_CHANGES": "Kaydedilmemiş Değişiklikler",
+  "OK": "Tama",
+  "DISCARD": "Değişikliklerden Vazgeç",
+  "CANCEL": "İptal",
+
+  "NO_MODULES_LOADED": "Modül yüklenmedi.",
+  "SAVE": "Kaydet",
+
+  "EXPERIMENTAL": "Bu deneysel bir özellik dolayısıyla config.js dosyanız zarar görebilir. Önce config.js dosyanızı yedekleyin!<br>Devam etmek istiyor musunuz?",
+  "PANIC": "Böyle zor bir kararı alamam. Ben vazgeçtim.",
+  "NO_RISK_NO_FUN": "Risk yoksa eğlence de yoktur! Devam et...",
+
+  "CONFIRM_SHUTDOWN": "Sistem kapatılacak.",
+  "CONFIRM_RESTART": "Sistem yeniden başlatılacak.",
+
+  "LOAD_ERROR": "Eğer bu mesajı görüyorsanız, javascript dosyası yüklenirken bir hata oluşmuş demektir. Lütfen aşağıdaki linke gidin ve tarayıcınızla yaşadığınız problemin daha önceden farkedilip edilmediğine bakın:",
+  "ISSUE_LINK": "Github Sorun Sayfası",
+
+  "DONE": "Tamamlandı.",
+  "ERROR": "Hata!",
+  "LOADING": "Yükleniyor …",
+
+  "LOCKSTRING_WARNING": "Bu modül LIST_OF_MODULES kısmında gizlendiği için gösterilemez.",
+  "FORCE_SHOW": "Yine de göster.",
+
+  "UPDATE_MENU_NAME": "Güncellemeler",
+  "UPDATEMM": "MagicMirror²'u Güncelle",
+  "UPDATE_AVAILABLE": "Güncelleme Var",
+
+  "ALERT_MENU_NAME": "Uyarı",
+  "SENDALERT": "Gönder",
+  "HIDEALERT": "Gizle",
+  "FORM_TYPE": "Tür:",
+  "FORM_ALERT": "Uyarı",
+  "FORM_NOTIFICATION": "Bilgilendirme",
+  "FORM_TITLE": "Başlık:",
+  "FORM_TITLE_PLACEHOLDER": "Başlığı yazın...",
+  "FORM_MESSAGE": "Mesaj:",
+  "FORM_MESSAGE_PLACEHOLDER": "Mesajı yazın...",
+  "FORM_SECONDS": "Saniye:",
+
+  "RESPONSE_ERROR": "Bu şu anda çalışmıyor, daha fazla bilgi için MM log kayıtlarına bakın",
+  "MODULE_CONTROLS": "Modül Kontrolleri",
+  "CUSTOM_MENU": "Kişisel Menü"
+}

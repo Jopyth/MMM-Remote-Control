@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "MagicMirror Remote Control API",
-    "description": "The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the Magic Mirror using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules. In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notification.",
+    "title": "MagicMirror² Remote Control API",
+    "description": "The MMM-Remote-Control Module for MagicMirror² implements a RESTful(-ish) API to control the MagicMirror² using the existing functionality built-in to MMM-Remote-Control, as well as the notifications commands built into most modules. In addition, the API creates a basic framework which allows for each module to expand or customize their own API by a simple notification.",
     "contact": {
       "name": "MMM-Remote-Control",
       "url": "https://github.com/Jopyth/MMM-Remote-Control"
@@ -20,7 +20,7 @@
   "tags": [
     {
       "name": "Mirror Control",
-      "description": "Control your Magic Mirror and RPi"
+      "description": "Control your MagicMirror² and RPi"
     },
     {
       "name": "Module Control",
@@ -38,10 +38,7 @@
   "paths": {
     "/api/test": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Test the API to make sure it's working.",
         "responses": {
           "200": {
@@ -64,9 +61,7 @@
     },
     "/api/saves": {
       "get": {
-        "tags": [
-          "API"
-        ],
+        "tags": ["API"],
         "summary": "Return backups of the config file",
         "security": [
           {
@@ -98,10 +93,7 @@
     },
     "/api/classes/{:value}": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "Show or use a class",
         "parameters": [
           {
@@ -154,10 +146,7 @@
     },
     "/api/command/{:value}": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Execute command saved in config",
         "parameters": [
           {
@@ -205,10 +194,8 @@
     },
     "/api/config": {
       "get": {
-        "tags": [
-          "API"
-        ],
-        "summary": "Return the current MagicMirror configuration",
+        "tags": ["API"],
+        "summary": "Return the current MagicMirror² configuration",
         "security": [
           {
             "apikey": []
@@ -249,11 +236,8 @@
     },
     "/api/config/edit": {
       "post": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
-        "summary": "Modify the current MagicMirror configuration",
+        "tags": ["Mirror Control", "API"],
+        "summary": "Modify the current MagicMirror² configuration",
         "security": [
           {
             "apikey": []
@@ -326,10 +310,7 @@
     },
     "/api/monitor/{:action}": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Control the connected display, turning it on or off.",
         "parameters": [
           {
@@ -382,10 +363,7 @@
     },
     "/api/monitor/": {
       "post": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Control the connected display, turning it on or off.",
         "security": [
           {
@@ -412,10 +390,7 @@
     },
     "/api/shutdown": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Shutdown the system",
         "security": [
           {
@@ -449,10 +424,7 @@
     },
     "/api/reboot": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Reboot the system",
         "security": [
           {
@@ -486,11 +458,8 @@
     },
     "/api/restart": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
-        "summary": "Restart your MagicMirror instance if using PM2 to control it.",
+        "tags": ["Mirror Control", "API"],
+        "summary": "Restart your MagicMirror² instance if using PM2 to control it.",
         "security": [
           {
             "apikey": []
@@ -523,10 +492,7 @@
     },
     "/api/minimize": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Minimize the browser instance (Electron)",
         "security": [
           {
@@ -560,10 +526,7 @@
     },
     "/api/togglefullscreen": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Toggle fullscreen (Electron)",
         "security": [
           {
@@ -597,10 +560,7 @@
     },
     "/api/devtools": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Toggle devtools (Electron)",
         "security": [
           {
@@ -634,9 +594,7 @@
     },
     "/api/translations": {
       "get": {
-        "tags": [
-          "API"
-        ],
+        "tags": ["API"],
         "summary": "Returns the currently translations file.",
         "security": [
           {
@@ -654,11 +612,11 @@
                     "data": "translations"
                   },
                   "data": {
-                    "TITLE": "Magic Mirror Menu",
+                    "TITLE": "MagicMirror² Menu",
                     "EDIT_MENU_NAME": "Edit view",
                     "SHUTDOWN_MENU_NAME": "Power",
                     "CONFIGURE_MENU_NAME": "Edit config.js",
-                    "VIEW_MIRROR": "MagicMirror<sup>2</sup>",
+                    "VIEW_MIRROR": "MagicMirror²",
                     "BACK": "Back",
                     "BRIGHTNESS": "Brightness",
                     "REFRESHMM": "Refresh Browser",
@@ -666,7 +624,7 @@
                     "MONITORON": "Turn monitor ON",
                     "MONITORTIMED": "Turn monitor ON briefly",
                     "RESTART": "Restart",
-                    "RESTARTMM": "Restart MagicMirror<sup>2</sup>",
+                    "RESTARTMM": "Restart MagicMirror²",
                     "SHUTDOWN": "Shutdown",
                     "FULLSCREEN": "Toggle Fullscreen",
                     "MINIMIZE": "Minimize Browser",
@@ -674,10 +632,10 @@
                     "SHOWALL": "All",
                     "HIDEALL": "All",
                     "ADD_MODULE": "Add module",
-                    "SEARCH": "Search &hellip;",
+                    "SEARCH": "Search …",
                     "INSTALLED": "Installed",
                     "DOWNLOAD": "Download",
-                    "DOWNLOADING": "Downloading &hellip;",
+                    "DOWNLOADING": "Downloading …",
                     "CODE_LINK": "View code",
                     "BY": "by",
                     "ADD_THIS": "Add this module",
@@ -700,15 +658,15 @@
                     "NO_RISK_NO_FUN": "No risk no fun!",
                     "CONFIRM_SHUTDOWN": "The system will shut down.",
                     "CONFIRM_RESTART": "The system will restart.",
-                    "LOAD_ERROR": "If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
+                    "LOAD_ERROR": "If you see this message, an error occurred when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
                     "ISSUE_LINK": "Github issue page",
                     "DONE": "Done.",
                     "ERROR": "Error!",
-                    "LOADING": "Loading &hellip;",
+                    "LOADING": "Loading …",
                     "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
                     "FORCE_SHOW": "Do it anyway.",
                     "UPDATE_MENU_NAME": "Updates",
-                    "UPDATEMM": "Update MagicMirror<sup>2</sup>",
+                    "UPDATEMM": "Update MagicMirror²",
                     "UPDATE_AVAILABLE": "Update available",
                     "ALERT_MENU_NAME": "Alert",
                     "SENDALERT": "Send",
@@ -734,11 +692,8 @@
     },
     "/api/refresh": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
-        "summary": "Refresh the screen of your MagicMirror instance.",
+        "tags": ["Mirror Control", "API"],
+        "summary": "Refresh the screen of your MagicMirror² instance.",
         "security": [
           {
             "apikey": []
@@ -760,9 +715,7 @@
     },
     "/api/save": {
       "get": {
-        "tags": [
-          "API"
-        ],
+        "tags": ["API"],
         "summary": "Saves the MMM-Remote-Control defaults to a file.",
         "security": [
           {
@@ -794,10 +747,7 @@
     },
     "/api/brightness/{:setting}": {
       "get": {
-        "tags": [
-          "Mirror Control",
-          "API"
-        ],
+        "tags": ["Mirror Control", "API"],
         "summary": "Get or set the brightness of the Mirror by passing a numerical value (1~100)",
         "parameters": [
           {
@@ -834,10 +784,7 @@
     },
     "/api/userpresence/{:value}": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "Get or set user presence status",
         "security": [
           {
@@ -873,10 +820,7 @@
     },
     "/api/module/{:moduleName}": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "See available actions for a module",
         "parameters": [
           {
@@ -929,10 +873,7 @@
     },
     "/api/module/{:moduleName*}/{:action}": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "Execute an action in the module.",
         "parameters": [
           {
@@ -974,10 +915,7 @@
     },
     "/api/module/installed": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "List of all modules currently installed on the machine",
         "security": [
           {
@@ -1015,10 +953,7 @@
     },
     "/api/module/available": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "List of modules available for installation",
         "security": [
           {
@@ -1056,10 +991,7 @@
     },
     "/api/update/{:moduleName}": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "Update the module",
         "parameters": [
           {
@@ -1121,10 +1053,7 @@
     },
     "/api/install": {
       "post": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "Install a module",
         "security": [
           {
@@ -1169,10 +1098,7 @@
     },
     "/api/notification/{:notification*}/{:p}": {
       "get": {
-        "tags": [
-          "Module Control",
-          "API"
-        ],
+        "tags": ["Module Control", "API"],
         "summary": "Send generic notifications to the API",
         "parameters": [
           {
@@ -1214,9 +1140,7 @@
     },
     "/config-help.html": {
       "get": {
-        "tags": [
-          "Legacy"
-        ],
+        "tags": ["Legacy"],
         "summary": "Send generic notifications to the API",
         "parameters": [
           {
@@ -1244,9 +1168,7 @@
     },
     "/remote": {
       "get": {
-        "tags": [
-          "Legacy"
-        ],
+        "tags": ["Legacy"],
         "summary": "Send generic notifications to the API",
         "parameters": [
           {
@@ -1274,9 +1196,7 @@
     },
     "/get": {
       "get": {
-        "tags": [
-          "Legacy"
-        ],
+        "tags": ["Legacy"],
         "summary": "Send generic notifications to the API",
         "parameters": [
           {
@@ -1304,9 +1224,7 @@
     },
     "/post": {
       "post": {
-        "tags": [
-          "Legacy"
-        ],
+        "tags": ["Legacy"],
         "summary": "Send generic notifications to the API",
         "parameters": [
           {
