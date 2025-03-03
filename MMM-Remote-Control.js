@@ -270,6 +270,7 @@ Module.register("MMM-Remote-Control", {
             let modData = Object.assign({}, module.data);
             modData.hidden = module.hidden;
             modData.lockStrings = module.lockStrings;
+            modData.urlpath = module.name.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase();
             modData.config = module.config;
             currentModuleData.push(modData);
         });

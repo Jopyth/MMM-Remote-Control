@@ -73,8 +73,6 @@ module.exports = {
                 let modActions = getActions(Module.notificationHandler[mod.module]);
 
                 if (modActions.length > 0) {
-                    let pathGuess = mod.module.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase();
-
                     // Generate formatted actions object
                     let actionsGuess = {};
 
@@ -82,10 +80,10 @@ module.exports = {
                         actionsGuess[a.replace(/[-_]/g, '').toLowerCase()] = { notification: a, guessed: true };
                     });
 
-                    if (pathGuess in this.externalApiRoutes) {
-                        this.externalApiRoutes[pathGuess].actions = Object.assign({}, actionsGuess, this.externalApiRoutes[pathGuess].actions);
+                    if (mod.module in this.externalApiRoutes) {
+                        this.externalApiRoutes[mod.module].actions = Object.assign({}, actionsGuess, this.externalApiRoutes[mod.module].actions);
                     } else {
-                        this.externalApiRoutes[pathGuess] = {
+                        this.externalApiRoutes[mod.module] = {
                             module: mod.module,
                             path: mod.module.replace(/MMM-/g, '').replace(/-/g, '').toLowerCase(),
                             actions: actionsGuess
@@ -326,12 +324,12 @@ module.exports = {
         let extApiRoutes = this.externalApiRoutes;
         let modules = this.configData.moduleData
         let query = {success: true, data: []};
-        
+
         modules.forEach((mod) => {
             if (extApiRoutes[mod.name] === undefined) {
                 query.data.push(mod);
             } else {
-                query.data.push(Object.assign({},mod, {actions: extApiRoutes[mod.name].actions}));
+                query.data.push(Object.assign({}, mod, {actions: extApiRoutes[mod.name].actions, urlpath: extApiRoutes[mod.name].path}));
             }
         });
 
@@ -341,7 +339,7 @@ module.exports = {
     answerModuleApi(req, res) {
         if (!this.checkInitialized(res)) { return; }
         let dataMerged = this.mergeData().data
-        
+
         if (!req.params.moduleName) {
             res.json({ success: true, data: dataMerged });
             return;
@@ -350,7 +348,8 @@ module.exports = {
         let modData = [];
         if(req.params.moduleName !== 'all') {
             modData = dataMerged.filter(m => {
-                return (req.params.moduleName.includes(m.identifier));
+                const name = req.params.moduleName;
+                return name.includes(m.identifier) || name.includes(m.name) || name.includes(m.urlpath);
             });
             if (!modData.length) {
                 modData = dataMerged.filter(m => {
@@ -493,26 +492,26 @@ module.exports = {
             icon: "window-restore",
             items: []
         };
-        Object.keys(this.externalApiRoutes).forEach(r => {
+        Object.values(this.externalApiRoutes).forEach(r => {
             let sub = {
-                id: "mc-" + r,
+                id: "mc-" + r.path,
                 type: "menu",
                 icon: "bars",
-                text: this.formatName(this.externalApiRoutes[r].module),
+                text: this.formatName(r.module),
                 items: []
             };
-            Object.keys(this.externalApiRoutes[r].actions).forEach(a => {
+            Object.keys(r.actions).forEach(a => {
                 let item = {
-                    id: `mc-${r}-${a}`,
+                    id: `mc-${r.path}-${a}`,
                     menu: "item",
                     icon: "dot-circle-o",
                     action: "NOTIFICATION",
-                    content: this.externalApiRoutes[r].actions[a]
+                    content: r.actions[a]
                 };
-                if ("prettyName" in this.externalApiRoutes[r].actions[a]) {
-                    item.text = this.translate(this.externalApiRoutes[r].actions[a].prettyName);
+                if ("prettyName" in r.actions[a]) {
+                    item.text = this.translate(r.actions[a].prettyName);
                 } else {
-                    item.text = this.translate(this.externalApiRoutes[r].actions[a].notification).toLowerCase().replace(/(^|_)(\w)/g, function($0, $1, $2) {
+                    item.text = this.translate(r.actions[a].notification).toLowerCase().replace(/(^|_)(\w)/g, function($0, $1, $2) {
                         return ($1 && ' ') + $2.toUpperCase();
                     });
                 }

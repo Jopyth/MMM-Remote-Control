@@ -83,9 +83,9 @@ module.exports = NodeHelper.create(Object.assign({
 
 		loadTimers() {
             let delay = 24*3600;
-            
+
             let self = this;
-            
+
             clearTimeout(this.delayedQueryTimers['update'])
             this.delayedQueryTimers['update'] = setTimeout(function () {
             	self.updateModuleList();
@@ -716,7 +716,7 @@ module.exports = NodeHelper.create(Object.assign({
             }
             if (query.action === "COMMAND") {
                 if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
-                    exec(this.thisConfig.customCommand[query.command], opts, (error, stdout, stderr) => { 
+                    exec(this.thisConfig.customCommand[query.command], opts, (error, stdout, stderr) => {
                         self.checkForExecError(error, stdout, stderr, res, { stdout: stdout });
                     });
                 } else {
@@ -859,7 +859,7 @@ module.exports = NodeHelper.create(Object.assign({
                 return;
             }
             if (query.action === "DELAYED") {
-                /* Expects a nested query object 
+                /* Expects a nested query object
                  *   {
                  *       action: "DELAYED",
                  *       did: "SOME_UNIQUE_ID",
@@ -959,7 +959,7 @@ module.exports = NodeHelper.create(Object.assign({
                     }
                 });
             });
-            
+
         },
 
         checkForExecError(error, stdout, stderr, res, data) {
@@ -1019,6 +1019,7 @@ module.exports = NodeHelper.create(Object.assign({
                 simpleModuleData[k].identifier = moduleData[k].identifier;
                 simpleModuleData[k].hidden = moduleData[k].hidden;
                 simpleModuleData[k].lockStrings = moduleData[k].lockStrings;
+                simpleModuleData[k].urlpath = moduleData[k].urlpath;
             }
 
             let text = JSON.stringify({
@@ -1153,7 +1154,7 @@ module.exports = NodeHelper.create(Object.assign({
                 }
                 let backupPath = path.resolve("config/config.js.backup" + iteration);
             	let req = require(backupPath)
-            	
+
             	this.answerPost({ data: "config" }, { body: req }, { isSocket: true });
             }
             if (notification === "NEW_CONFIG") {
@@ -1176,10 +1177,10 @@ module.exports = NodeHelper.create(Object.assign({
             if (notification === "REGISTER_API") {
                 if ("module" in payload) {
                     if ("actions" in payload && payload.actions !== {}) {
-                        this.externalApiRoutes[payload.path] = payload;
+                        this.externalApiRoutes[payload.module] = payload;
                     } else {
                         // Blank actions means the module has requested to be removed from API
-                        delete this.externalApiRoutes[payload.path];
+                        delete this.externalApiRoutes[payload.module];
                     }
                     this.updateModuleApiMenu();
                 }
