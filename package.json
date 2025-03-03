@@ -34,6 +34,7 @@
     "jquery": "^3.7.1",
     "showdown": "^2.1.0",
     "simple-git": "^3.27.0",
+    "swagger-ui": "^5.20.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
