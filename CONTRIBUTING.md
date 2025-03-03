@@ -7,6 +7,10 @@ Your contribution help us so much in a lot of ways.
 
 We ask you to keep contributing, and feel free to open as many issues and PR as you need.
 
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
 ## Developer commands
 
 - `npm run download_modules` - Download module list manually.
