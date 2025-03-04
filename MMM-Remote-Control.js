@@ -47,6 +47,9 @@ Module.register("MMM-Remote-Control", {
         if (notification === "USER_PRESENCE") {
             this.sendSocketNotification(notification, payload);
         }
+        if (notification === "MMMRC_RESPONSE") {
+            this.sendSocketNotification(notification, payload);
+        }
     },
 
     // Override socket notification handler.
