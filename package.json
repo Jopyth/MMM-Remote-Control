@@ -42,7 +42,7 @@
     "@stylistic/eslint-plugin": "^4.2.0",
     "cspell": "^8.17.5",
     "eslint": "^9.22.0",
-    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-import-x": "^4.6.1",
     "globals": "^16.0.0",
     "markdownlint-cli": "^0.44.0",
     "prettier": "^3.5.3",
