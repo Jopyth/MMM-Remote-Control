@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.0.1] - 2025-03-09
+
+### Fixed
+
+- Solve issue when not using standard config file #320
+
+### Changed
+
+- chore: Add @stylistic/eslint-plugin and handle linter issues
+- chore: Replace eslint-plugin-import with eslint-plugin-import-x
+- chore: Update devDependencies
+
 ## [3.0.0] - 2025-03-04
 
 There shouldn't be any breaking changes in this release. But since there are a some changes, which could lead to unexpected behavior, we decided to bump the major version.
@@ -418,6 +430,7 @@ Huge shout out to [shbatm](https://github.com/shbatm) for his work on this new m
 
 ### Initial release of the Remote Control module
 
+[3.0.1]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.4...v3.0.1
 [3.0.0]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.4...v3.0.0
 [2.5.4]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.3...v2.5.4
 [2.5.3]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.2...v2.5.3
