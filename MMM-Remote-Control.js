@@ -217,39 +217,19 @@ Module.register("MMM-Remote-Control", {
     }
 
     if (newBrightnessValue < 100) {
-      style.innerHTML = "";
-      this.createOverlay(newBrightnessValue);
+      const filterValue = `brightness(${newBrightnessValue}%)`;
+      document.body.style.filter = filterValue;
       return;
     }
     if (newBrightnessValue >= 100) {
       style.innerHTML = this.buildCssContent(newBrightnessValue);
-      this.removeOverlay();
+      const filterValue = "brightness(100%)";
+      document.body.style.filter = filterValue;
       return;
     }
   },
 
-  createOverlay (brightness) {
-    let overlay = document.getElementById("remote-control-overlay");
-    if (!overlay) {
-      // if not existing, create overlay
-      overlay = document.createElement("div");
-      overlay.id = "remote-control-overlay";
-      const parent = document.body;
-      parent.insertBefore(overlay, parent.firstChild);
-    }
-    const bgColor = `rgba(0,0,0,${(100 - brightness) / 100})`;
-    overlay.style.backgroundColor = bgColor;
-  },
-
-  removeOverlay () {
-    const overlay = document.getElementById("remote-control-overlay");
-    if (overlay) {
-      const parent = document.body;
-      parent.removeChild(overlay);
-    }
-  },
-
-  buildCssContentTemp: function (temp) {
+  buildCssContentTemp (temp) {
     let css = "";
 
     const defaults = {
@@ -297,7 +277,6 @@ Module.register("MMM-Remote-Control", {
 
     if (newTempValue) {
       style.innerHTML = "";
-      // style.innerHTML = this.buildCssContentTemp(newTempValue);
       this.createOverlayTemp(newTempValue);
       return;
     }
