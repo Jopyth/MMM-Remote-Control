@@ -35,7 +35,7 @@ Module.register("MMM-Remote-Control", {
   },
 
   notificationReceived (notification, payload, sender) {
-    Log.debug(`${this.name} received a module notification: ${notification} from sender: ${sender.name}`);
+    Log.debug(`${this.name} received a module notification: ${notification} from sender: ${sender}`);
     if (notification === "DOM_OBJECTS_CREATED") {
       this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
       this.sendCurrentData();
@@ -73,7 +73,7 @@ Module.register("MMM-Remote-Control", {
       this.sendNotification(notification, payload);
     }
     if (notification === "DEFAULT_SETTINGS") {
-      let settingsVersion = payload.settingsVersion;
+      let {settingsVersion} = payload;
 
       if (settingsVersion === undefined) {
         settingsVersion = 0;
@@ -86,7 +86,7 @@ Module.register("MMM-Remote-Control", {
         }
       }
 
-      const moduleData = payload.moduleData;
+      const {moduleData} = payload;
       const hideModules = {};
       for (let i = 0; i < moduleData.length; i++) {
         for (let k = 0; k < moduleData[i].lockStrings.length; k++) {
@@ -101,8 +101,8 @@ Module.register("MMM-Remote-Control", {
 
       const options = {lockString: this.identifier};
 
-      modules.enumerate(function (module) {
-        if (Object.prototype.hasOwnProperty.call(hideModules, module.identifier)) {
+      modules.enumerate((module) => {
+        if (Object.hasOwn(hideModules, module.identifier)) {
           module.hide(0, options);
         }
       });
@@ -120,7 +120,7 @@ Module.register("MMM-Remote-Control", {
       document.location.reload();
     }
     if (notification === "RESTART") {
-      setTimeout(function () {
+      setTimeout(() => {
         document.location.reload();
         Log.log("Delayed REFRESH");
       }, 60000);
@@ -139,8 +139,7 @@ Module.register("MMM-Remote-Control", {
         let x = payload.module;
         modules = modules.concat(MM.getModules().filter((m) => {
           if (m && x.includes(m.identifier)) {
-            if (typeof x == "object") x = x.filter((t) => t != m.identifier);
-            else x = "";
+            if (typeof x === "object") { x = x.filter((t) => t != m.identifier); } else { x = ""; }
             return true;
           }
         }), MM.getModules().filter((m) => {
@@ -225,7 +224,7 @@ Module.register("MMM-Remote-Control", {
       style.innerHTML = this.buildCssContent(newBrightnessValue);
       const filterValue = "brightness(100%)";
       document.body.style.filter = filterValue;
-      return;
+
     }
   },
 
@@ -278,7 +277,7 @@ Module.register("MMM-Remote-Control", {
     if (newTempValue) {
       style.innerHTML = "";
       this.createOverlayTemp(newTempValue);
-      return;
+
     }
   },
 
@@ -318,8 +317,8 @@ Module.register("MMM-Remote-Control", {
   sendCurrentData () {
     const modules = MM.getModules();
     const currentModuleData = [];
-    modules.enumerate(function (module) {
-      const modData = Object.assign({}, module.data);
+    modules.enumerate((module) => {
+      const modData = {...module.data};
       modData.hidden = module.hidden;
       modData.lockStrings = module.lockStrings;
       modData.urlPath = module.name.replace(/MMM-/g, "").replace(/-/g, "").toLowerCase();

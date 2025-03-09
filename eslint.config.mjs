@@ -35,7 +35,7 @@ const config = [
       "consistent-this": "off",
       "line-comment-position": "off",
       "max-lines-per-function": ["warn", 220],
-      "max-statements": ["warn", 100],
+      "max-statements": ["warn", 105],
       "multiline-comment-style": "off",
       "no-await-in-loop": "off",
       "no-inline-comments": "off",
