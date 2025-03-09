@@ -384,7 +384,7 @@ module.exports = {
 
     if (["SHOW", "HIDE", "FORCE", "TOGGLE", "DEFAULTS"].indexOf(action) !== -1) { // /api/modules part of the code
       if (action === "DEFAULTS") {
-        this.answerGet({data: "defaultConfig", module: mod.name}, res);
+        this.answerGet({data: "defaultConfig", module: req.params.moduleName}, res);
         return;
       }
 
@@ -418,7 +418,7 @@ module.exports = {
 
     if (action) {
       if ("method" in action && action.method !== req.method) {
-        res.status(400).json({success: false, info: `Method ${req.method} is not allowed for ${moduleName}/${req.params.action}.`});
+        res.status(400).json({success: false, info: `Method ${req.method} is not allowed for ${req.params.moduleName}/${req.params.action}.`});
         return;
       }
       this.answerNotifyApi(req, res, action);

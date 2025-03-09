@@ -42,7 +42,6 @@ const config = [
       "no-inline-comments": "off",
       "no-magic-numbers": "off",
       "no-plusplus": "off",
-      "no-undef": "warn",
       "no-var": "error",
       "one-var": "off",
       "prefer-const": "error",
