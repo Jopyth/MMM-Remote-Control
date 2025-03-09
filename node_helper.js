@@ -98,7 +98,7 @@ module.exports = NodeHelper.create(Object.assign({
             const defaults = require(__dirname + "/../../js/defaults.js");
             let configFilename = path.resolve(__dirname + "/../../config/config.js");
             if (typeof(global.configuration_file) !== "undefined") {
-                configFilename = global.configuration_file;
+                configFilename = path.resolve(__dirname + "/../../"+global.configuration_file);
             }
 
             this.thisConfig = {};
