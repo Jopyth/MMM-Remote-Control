@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.0] - 2025-03-09
+
+### Added
+
+- Added Color Temperature changing feature (#296) by @Andoramb
+
 ## [3.0.1] - 2025-03-09
 
 ### Fixed
 
-- Solve issue when not using standard config file #320
+- Solve issue when not using standard config file (#320) by @dangherve
 
 ### Changed
 
@@ -430,6 +436,7 @@ Huge shout out to [shbatm](https://github.com/shbatm) for his work on this new m
 
 ### Initial release of the Remote Control module
 
+[3.1.0]: https://github.com/jopyth/MMM-Remote-Control/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.4...v3.0.1
 [3.0.0]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.4...v3.0.0
 [2.5.4]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.3...v2.5.4
