@@ -52,7 +52,7 @@ module.exports = {
     if (!this.configOnHd) { return undefined; }
 
     const getActions = function (content) {
-      const re = /notification \=\=\=? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
+      const re = /notification ===? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
       const availableActions = [];
       if (re.test(content)) {
         content.match(re).forEach((match) => {

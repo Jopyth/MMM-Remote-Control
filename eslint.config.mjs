@@ -44,7 +44,6 @@ const config = [
       "no-plusplus": "off",
       "no-undef": "warn",
       "no-unused-vars": "warn",
-      "no-useless-escape": "warn",
       "no-var": "error",
       "one-var": "off",
       "prefer-const": "error",
