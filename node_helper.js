@@ -343,7 +343,7 @@ module.exports = NodeHelper.create(Object.assign(
             // Delete the temporary file
             fs.unlinkSync(tempFilename);
           } catch (e) {
-            Log.error(`ERROR! Could not load main module js file. Error found: ${e.message}` || e);
+            Log.error(`ERROR! Could not load main module js file. Error found: ${e.message || e}`);
           }
         } else if (e.code == "ENOENT") {
           Log.error(`ERROR! Could not find main module js file for ${module.longname}`);
@@ -436,7 +436,7 @@ module.exports = NodeHelper.create(Object.assign(
           }
         }
         // Log.log(current.config);
-        if (current.config === {}) {
+        if (Object.keys(current.config).length === 0) {
           delete current[config];
           continue;
         }
