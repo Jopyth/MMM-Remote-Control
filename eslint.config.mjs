@@ -43,7 +43,6 @@ const config = [
       "no-magic-numbers": "off",
       "no-plusplus": "off",
       "no-undef": "warn",
-      "no-unused-vars": "warn",
       "no-var": "error",
       "one-var": "off",
       "prefer-const": "error",

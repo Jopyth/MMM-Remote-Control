@@ -199,7 +199,6 @@ module.exports = {
     this.expressRouter.route("/command/:value").
       get((req, res) => {
         if (!this.apiKey && this.secureEndpoints) return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"});
-        const val = decodeURIComponent(req.params.value);
         self.executeQuery({action: "COMMAND", command: req.params.value}, res);
       });
 

@@ -35,7 +35,7 @@ Module.register("MMM-Remote-Control", {
   },
 
   notificationReceived (notification, payload, sender) {
-    // Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
+    Log.debug(`${this.name} received a module notification: ${notification} from sender: ${sender.name}`);
     if (notification === "DOM_OBJECTS_CREATED") {
       this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
       this.sendCurrentData();

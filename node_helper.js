@@ -235,7 +235,7 @@ module.exports = NodeHelper.create(Object.assign(
             "default",
             "README.md"
           ].indexOf(f) === -1);
-          installedModules.forEach((dir, i, a) => {
+          installedModules.forEach((dir, i) => {
             self.addModule(dir, i === installedModules.length - 1);
           });
         });
@@ -283,15 +283,10 @@ module.exports = NodeHelper.create(Object.assign(
           self.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
 
           // check for available updates
-          let stat;
           try {
-            stat = fs.statSync(path.join(modulePath, ".git"));
-          } catch (err) {
-
-            /*
-             * Error when directory .git doesn't exist
-             * This module is not managed with git, skip
-             */
+            fs.statSync(path.join(modulePath, ".git"));
+          } catch (error) {
+            Log.debug(`Module ${folderName} is not managed with git. Skip checking for updates: ${error}`);
             return;
           }
 
@@ -314,8 +309,9 @@ module.exports = NodeHelper.create(Object.assign(
                 baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
                 // if cloned with ssh
                 currentModule.url = baseUrl.replace("git@", "https://");
-              } catch (e) {
+              } catch (error) {
               // Something happened. Skip it.
+                Log.debug(`Could not get remote URL for module ${folderName}: ${error}`);
                 return;
               }
             });
@@ -571,7 +567,8 @@ module.exports = NodeHelper.create(Object.assign(
           try {
             const stats = fs.statSync(backupPath);
             times.push(stats.mtime);
-          } catch (e) {
+          } catch (error) {
+            Log.debug(`Backup ${i} does not exist: ${error}.`);
             continue;
           }
         }
@@ -704,7 +701,7 @@ module.exports = NodeHelper.create(Object.assign(
           return;
         });
           break;
-        case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
+        case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout) => {
           status = offArr.indexOf(stdout.trim()) !== -1
             ? "off"
             : "on";
@@ -726,7 +723,7 @@ module.exports = NodeHelper.create(Object.assign(
       }
     },
 
-    shutdownControl (action, opts, res) {
+    shutdownControl (action, opts) {
       const shutdownCommand = this.initialized && "shutdownCommand" in this.thisConfig.customCommand
         ? this.thisConfig.customCommand.shutdownCommand
         : "sudo shutdown -h now";
@@ -945,7 +942,7 @@ module.exports = NodeHelper.create(Object.assign(
     installModule (url, res, data) {
       const self = this;
 
-      simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), function (error, result) {
+      simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), function (error) {
         if (error) {
           Log.error(error);
           self.sendResponse(res, error);
@@ -1051,13 +1048,13 @@ module.exports = NodeHelper.create(Object.assign(
 
         switch (actionName) {
           case "restart":
-            pm2.restart(processName, (err, apps) => {
+            pm2.restart(processName, (err) => {
               this.sendResponse(res, undefined, {action: actionName, processName: processName});
               if (err) { this.sendResponse(res, err); }
             });
             break;
           case "stop":
-            pm2.stop(processName, (err, apps) => {
+            pm2.stop(processName, (err) => {
               this.sendResponse(res, undefined, {action: actionName, processName: processName});
               pm2.disconnect();
               if (err) { this.sendResponse(res, err); }
@@ -1210,7 +1207,8 @@ module.exports = NodeHelper.create(Object.assign(
               iteration = i;
               i = -1;
             }
-          } catch (e) {
+          } catch (error) {
+            Log.debug(`Backup ${i} does not exist: ${error}.`);
             continue;
           }
         }
