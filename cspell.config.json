@@ -2,6 +2,7 @@
   "version": "0.2",
   "language": "en",
   "words": [
+    "Andoramb",
     "apikey",
     "articlelessdetails",
     "articlemoredetails",
@@ -14,6 +15,7 @@
     "bokmål",
     "cambio",
     "chlog",
+    "dangherve",
     "defaultmodules",
     "Energieoptionen",
     "extdocs",
@@ -68,6 +70,7 @@
   "ignorePaths": [
     "modules.json",
     "node_modules/**",
+    "settings.json",
     "translations/**",
     "*.min.js"
   ],
