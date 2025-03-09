@@ -446,6 +446,7 @@ Huge shout out to [shbatm](https://github.com/shbatm) for his work on this new m
 
 ### Initial release of the Remote Control module
 
+[3.1.1]: https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.1...v3.1.1
 [3.1.0]: https://github.com/jopyth/MMM-Remote-Control/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.4...v3.0.1
 [3.0.0]: https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.4...v3.0.0
