@@ -1,10 +1,12 @@
 import eslintPluginImport from "eslint-plugin-import";
 import eslintPluginJs from "@eslint/js";
+import eslintPluginStylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
 
 const config = [
   eslintPluginImport.flatConfigs.recommended,
   eslintPluginJs.configs.recommended,
+  eslintPluginStylistic.configs.all,
   {
     "ignores": ["**/*.min.js"]
   },
@@ -20,10 +22,19 @@ const config = [
       "sourceType": "commonjs"
     },
     "rules": {
+      "@stylistic/array-element-newline": ["error", "consistent"],
+      "@stylistic/brace-style": ["error", "1tbs", {"allowSingleLine": true}],
+      "@stylistic/function-call-argument-newline": "off",
+      "@stylistic/indent": ["error", 2],
+      "@stylistic/multiline-ternary": "off",
+      "@stylistic/newline-per-chained-call": "off",
+      "@stylistic/object-property-newline": "off",
+      "@stylistic/padded-blocks": "off",
+      "@stylistic/quote-props": ["error", "consistent"],
       "capitalized-comments": "off",
       "consistent-this": "off",
       "line-comment-position": "off",
-      "max-lines-per-function": ["warn", 205],
+      "max-lines-per-function": ["warn", 220],
       "max-statements": ["warn", 95],
       "multiline-comment-style": "off",
       "no-await-in-loop": "off",
@@ -31,13 +42,13 @@ const config = [
       "no-inline-comments": "off",
       "no-magic-numbers": "off",
       "no-plusplus": "off",
-      "no-prototype-builtins": "warn",
       "no-undef": "warn",
       "no-unused-vars": "warn",
       "no-useless-escape": "warn",
       "no-var": "error",
       "one-var": "off",
       "prefer-const": "error",
+      "prefer-template": "error",
       "sort-keys": "off",
       "strict": "off"
     }
@@ -52,6 +63,8 @@ const config = [
       "sourceType": "module"
     },
     "rules": {
+      "@stylistic/array-element-newline": "off",
+      "@stylistic/indent": ["error", 2],
       "max-lines-per-function": ["error", 100],
       "no-magic-numbers": "off",
       "one-var": "off"

@@ -2482,7 +2482,7 @@
     "id": "KristjanESPERANTO/MMM-OneCallWeather",
     "url": "https://github.com/KristjanESPERANTO/MMM-OneCallWeather",
     "author": "KristjanESPERANTO",
-    "desc": "Display current and forecast weather based on the Openweathermap OneCall API data with alternative formatting."
+    "desc": "Display current and forecast weather based on Openweathermap OneCall API data with alternative formatting. With various icon sets, including an animated one."
   },
   {
     "longname": "MMM-OpenmapWeather",
@@ -2693,13 +2693,6 @@
     "url": "https://github.com/thariq-shanavas/MMM-uv-index",
     "author": "thariq-shanavas",
     "desc": "Displays UV Index from openweathermap.org OneCall API 3.0."
-  },
-  {
-    "longname": "mmm-uk-pollen-forecast",
-    "id": "szech/mmm-uk-pollen-forecast",
-    "url": "https://github.com/szech/mmm-uk-pollen-forecast",
-    "author": "szech",
-    "desc": "Displays pollen forecast for your area in the UK."
   },
   {
     "longname": "MMM-UKTide",
@@ -6006,13 +5999,6 @@
     "desc": "Am Lich - Lunar Date - Vietnamese Language."
   },
   {
-    "longname": "anniversarymodule",
-    "id": "marcomerens/anniversarymodule",
-    "url": "https://github.com/marcomerens/anniversarymodule",
-    "author": "marcomerens",
-    "desc": "Show a table of upcoming birthdays for a list of people you provided. Nice not to forget birthdays."
-  },
-  {
     "longname": "MMM-AoC",
     "id": "JonasTriki/MMM-AoC",
     "url": "https://github.com/JonasTriki/MMM-AoC",
@@ -6081,6 +6067,13 @@
     "url": "https://github.com/cgillinger/MMM-Birthday",
     "author": "cgillinger",
     "desc": "Celebrate birthdays with animated fireworks and confetti effects."
+  },
+  {
+    "longname": "MMM-Birthdays",
+    "id": "dennisklad/MMM-Birthdays",
+    "url": "https://github.com/dennisklad/MMM-Birthdays",
+    "author": "dennisklad",
+    "desc": "Show a table of upcoming birthdays for a list of people you provided. Nice not to forget birthdays."
   },
   {
     "longname": "MMM-BlaguesAPI",
@@ -6713,13 +6706,6 @@
     "desc": "Display recent Letterbox reviews from a list of users."
   },
   {
-    "longname": "MMM-LocalEvents",
-    "id": "dwoolridge/MMM-LocalEvents",
-    "url": "https://github.com/dwoolridge/MMM-LocalEvents",
-    "author": "dwoolridge",
-    "desc": "Upcoming events in your city from G**gle. Could be an update to the \"Eventful API\". Modular so additional event providers can be added."
-  },
-  {
     "longname": "MMM-lichess-daily",
     "id": "tonymorris/MMM-lichess-daily",
     "url": "https://github.com/tonymorris/MMM-lichess-daily",
@@ -6727,18 +6713,32 @@
     "desc": "The lichess.org daily puzzle."
   },
   {
-    "longname": "MMM-LunarDate",
-    "id": "MMRIZE/MMM-LunarDate",
-    "url": "https://github.com/MMRIZE/MMM-LunarDate",
-    "author": "MMRIZE",
-    "desc": "Displays the lunar date of today (Chinese Zodiac)."
-  },
-  {
     "longname": "MMM-LiveLyrics",
     "id": "Fabrizz/MMM-LiveLyrics",
     "url": "https://github.com/Fabrizz/MMM-LiveLyrics",
     "author": "Fabrizz",
     "desc": "Show the lyrics of your current Spotify track. Connects to [MMM-OnSpotify](https://github.com/Fabrizz/MMM-OnSpotify), customizable everything!"
+  },
+  {
+    "longname": "MMM-LocalEvents",
+    "id": "dwoolridge/MMM-LocalEvents",
+    "url": "https://github.com/dwoolridge/MMM-LocalEvents",
+    "author": "dwoolridge",
+    "desc": "Upcoming events in your city from G**gle. Could be an update to the \"Eventful API\". Modular so additional event providers can be added."
+  },
+  {
+    "longname": "MMM-LOTR-Quotes",
+    "id": "jaylingelbach/MMM-LOTR-Quotes",
+    "url": "https://github.com/jaylingelbach/MMM-LOTR-Quotes",
+    "author": "Jay Lingelbach",
+    "desc": "Displays random Lord of the rings quotes."
+  },
+  {
+    "longname": "MMM-LunarDate",
+    "id": "MMRIZE/MMM-LunarDate",
+    "url": "https://github.com/MMRIZE/MMM-LunarDate",
+    "author": "MMRIZE",
+    "desc": "Displays the lunar date of today (Chinese Zodiac)."
   },
   {
     "longname": "MMM-MagicSuperHero",
@@ -8538,6 +8538,13 @@
     "url": "https://github.com/whyjustin/magic-mirror-voice",
     "author": "whyjustin",
     "desc": "Voice control based on based on Sphinx and Alexa. Abandoned. No reactions to Pull Requests and issues since years. Seems not to work anymore. |"
+  },
+  {
+    "longname": "mmm-uk-pollen-forecast",
+    "id": "szech/mmm-uk-pollen-forecast",
+    "url": "https://github.com/szech/mmm-uk-pollen-forecast",
+    "author": "szech",
+    "desc": "Displays pollen forecast for your area in the UK. Abandoned |"
   },
   {
     "longname": "voicecontrol",
