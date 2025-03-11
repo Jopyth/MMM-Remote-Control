@@ -8,6 +8,8 @@
 
 #remote-control-overlay-temp {
   position: fixed;
+  top: 0;
+  left: 0;
   z-index: 2;
   background-color: rgb(0 0 0 / 10%);
   width: 100%;
