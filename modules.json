@@ -3843,6 +3843,13 @@
     "desc": "Track your GCP (Google Cloud Platform) activity."
   },
   {
+    "longname": "MMM-GetShellScript",
+    "id": "uphillcheddar/MMM-GetShellScript",
+    "url": "https://github.com/uphillcheddar/MMM-GetShellScript",
+    "author": "uphillcheddar",
+    "desc": "Simple HTTP endpoint to your MagicMirror installation for executing predefined shell scripts"
+  },
+  {
     "longname": "MMM-Grocy",
     "id": "B0neD0ct0r/MMM-Grocy-Mealplan",
     "url": "https://github.com/B0neD0ct0r/MMM-Grocy-Mealplan",
