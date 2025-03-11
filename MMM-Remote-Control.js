@@ -31,7 +31,7 @@ Module.register("MMM-Remote-Control", {
   },
 
   getStyles () {
-    return ["remote-control.css"];
+    return ["MMM-Remote-Control.css"];
   },
 
   notificationReceived (notification, payload, sender) {
