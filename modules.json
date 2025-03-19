@@ -336,13 +336,6 @@
     "desc": "Customize all the relative times in the default module (and others) that depend on moment.js"
   },
   {
-    "longname": "MMM-Remote-Control-Repository",
-    "id": "MMRIZE/MMM-Remote-Control-Repository",
-    "url": "https://github.com/MMRIZE/MMM-Remote-Control-Repository",
-    "author": "MMRIZE",
-    "desc": "Plugin for `MMM-Remote-Control` to update installable modules automatically."
-  },
-  {
     "longname": "MMM-Remote-Control",
     "id": "Jopyth/MMM-Remote-Control",
     "url": "https://github.com/Jopyth/MMM-Remote-Control",
@@ -399,13 +392,6 @@
     "desc": "Display a list of notifications that have been broadcast to all the modules."
   },
   {
-    "longname": "MMM-AVStock",
-    "id": "lavolp3/MMM-AVStock",
-    "url": "https://github.com/lavolp3/MMM-AVStock",
-    "author": "lavolp3",
-    "desc": "Display stock prices and charts using Yahoo Finance API."
-  },
-  {
     "longname": "MMM-bitcoin",
     "id": "valmassoi/MMM-bitcoin",
     "url": "https://github.com/valmassoi/MMM-bitcoin",
@@ -425,13 +411,6 @@
     "url": "https://github.com/brssaricicek/MMM-Binance",
     "author": "brssaricicek",
     "desc": "Display cryptocurrency information from the Binance website."
-  },
-  {
-    "longname": "MMM-bunq",
-    "id": "choffmann/MMM-bunq",
-    "url": "https://github.com/choffmann/MMM-bunq",
-    "author": "choffmann",
-    "desc": "Display your bunq account balance."
   },
   {
     "longname": "MMM-CoinGecko",
@@ -469,13 +448,6 @@
     "desc": "Displays real-time performance and balance of your cryptocurrency portfolio."
   },
   {
-    "longname": "MMM-CurrencyArg",
-    "id": "consus2903/MMM-CurrencyArg",
-    "url": "https://github.com/consus2903/MMM-CurrencyArg",
-    "author": "consus2903",
-    "desc": "Display the dollar price in real time."
-  },
-  {
     "longname": "MMM-ethereum",
     "id": "hansman84/MMM-ethereum",
     "url": "https://github.com/hansman84/MMM-ethereum",
@@ -488,6 +460,41 @@
     "url": "https://github.com/AjaxCarroway/MMM-ethermine",
     "author": "AjaxCarroway",
     "desc": "Displays Ethereum miner rig statistics for miners on the ethermine.org mining pool."
+  },
+  {
+    "longname": "MMM-NouncilVotes",
+    "id": "XppaiCyberr/MMM-NouncilVotes",
+    "url": "https://github.com/XppaiCyberr/MMM-NouncilVotes",
+    "author": "XppaiCyberr",
+    "desc": "This module displays Nouncil voting participation data."
+  },
+  {
+    "longname": "MMM-NounsAuction",
+    "id": "XppaiCyberr/MMM-NounsAuction",
+    "url": "https://github.com/XppaiCyberr/MMM-NounsAuction",
+    "author": "XppaiCyberr",
+    "desc": "This module displays real-time Nouns auction status."
+  },
+  {
+    "longname": "MMM-AVStock",
+    "id": "lavolp3/MMM-AVStock",
+    "url": "https://github.com/lavolp3/MMM-AVStock",
+    "author": "lavolp3",
+    "desc": "Display stock prices and charts using Yahoo Finance API."
+  },
+  {
+    "longname": "MMM-bunq",
+    "id": "choffmann/MMM-bunq",
+    "url": "https://github.com/choffmann/MMM-bunq",
+    "author": "choffmann",
+    "desc": "Display your bunq account balance."
+  },
+  {
+    "longname": "MMM-CurrencyArg",
+    "id": "consus2903/MMM-CurrencyArg",
+    "url": "https://github.com/consus2903/MMM-CurrencyArg",
+    "author": "consus2903",
+    "desc": "Display the dollar price in real time."
   },
   {
     "longname": "MMM-EUElectricityPrice",
@@ -2464,6 +2471,13 @@
     "desc": "Do I need an umbrella when i go out, or shall i take my chances? Shows rainintensity for a location in the Netherlands in the next hour."
   },
   {
+    "longname": "MMM-NOAA3",
+    "id": "mumblebaj/MMM-NOAA3",
+    "url": "https://github.com/mumblebaj/MMM-NOAA3",
+    "author": "mumblebaj",
+    "desc": "Different providers for users to choose from. Shows current plus 3 day forecast. Mouseover shows forecast, with Air, UV, Humidity, Sunrise and Set."
+  },
+  {
     "longname": "MMM-NOAAAlerts",
     "id": "mmtsweng/MMM-NOAAAlerts",
     "url": "https://github.com/mmtsweng/MMM-NOAAAlerts",
@@ -3847,7 +3861,7 @@
     "id": "uphillcheddar/MMM-GetShellScript",
     "url": "https://github.com/uphillcheddar/MMM-GetShellScript",
     "author": "uphillcheddar",
-    "desc": "Simple HTTP endpoint to your MagicMirror installation for executing predefined shell scripts"
+    "desc": "Simple HTTP endpoint to your MagicMirror installation for executing predefined shell scripts."
   },
   {
     "longname": "MMM-Grocy",
@@ -7595,27 +7609,6 @@
     "desc": "Quick Breathing Exercise to calm you down."
   },
   {
-    "longname": "MMM-COVID19",
-    "id": "bibaldo/MMM-COVID19",
-    "url": "https://github.com/bibaldo/MMM-COVID19",
-    "author": "bibaldo",
-    "desc": "Keep track of Corona Virus (COVID-19) cases via rapidapi API."
-  },
-  {
-    "longname": "MMM-COVID19-AMPEL",
-    "id": "magic21nrw/MMM-COVID19-AMPEL",
-    "url": "https://github.com/magic21nrw/MMM-COVID19-AMPEL",
-    "author": "magic21nrw",
-    "desc": "German Ampel for Incidence Value for your City."
-  },
-  {
-    "longname": "MMM-covid19",
-    "id": "0m4r/MMM-covid19",
-    "url": "https://github.com/0m4r/MMM-covid19",
-    "author": "0m4r",
-    "desc": "Live covid19 numbers provided via <https://covid19api.com/>."
-  },
-  {
     "longname": "MMM-DailyJuice",
     "id": "BerkSmash1984/MMM-DailyJuice",
     "url": "https://github.com/BerkSmash1984/MMM-DailyJuice",
@@ -7915,6 +7908,27 @@
     "url": "https://github.com/mlbonniec/MMM-Coinbase",
     "author": "mlbonniec",
     "desc": "Display your Bitcoin Coinbase balance. Abandoned. Repo has been archived at 2023-07-26. |"
+  },
+  {
+    "longname": "MMM-COVID19",
+    "id": "bibaldo/MMM-COVID19",
+    "url": "https://github.com/bibaldo/MMM-COVID19",
+    "author": "bibaldo",
+    "desc": "Keep track of Corona Virus (COVID-19) cases via rapidapi API. Abandoned. No reactions to issues since years. Seems not to work anymore. |"
+  },
+  {
+    "longname": "MMM-covid19",
+    "id": "0m4r/MMM-covid19",
+    "url": "https://github.com/0m4r/MMM-covid19",
+    "author": "0m4r",
+    "desc": "Live covid19 numbers provided via <https://covid19api.com/>. Deprecated. API no longer works. |"
+  },
+  {
+    "longname": "MMM-COVID19-AMPEL",
+    "id": "magic21nrw/MMM-COVID19-AMPEL",
+    "url": "https://github.com/magic21nrw/MMM-COVID19-AMPEL",
+    "author": "magic21nrw",
+    "desc": "German Ampel for Incidence Value for your City. Deprecated. API no longer works. |"
   },
   {
     "longname": "MMM-Covid19-Vaccination",
@@ -8316,13 +8330,6 @@
     "desc": "Shows departure times of Dutch public transport. Where you can sort on destination and group stops in one stop. Good for hubs where multiple lines and authorities merge, so yo have one stop instead of multiple. Abandoned. Repo has been archived at 2024-10-14. |"
   },
   {
-    "longname": "MMM-NOAA3",
-    "id": "cowboysdude/MMM-NOAA3",
-    "url": "https://github.com/cowboysdude/MMM-NOAA3",
-    "author": "cowboysdude",
-    "desc": "Different providers for users to choose from. Shows current plus 3 day forecast. Mouseover shows forecast, with Air, UV, Humidity, Sunrise and Set. Abandoned. No reactions to issues and PRs since years. |"
-  },
-  {
     "longname": "MMM-NowPlayingOnAIMP",
     "id": "jesmak/MMM-NowPlayingOnAIMP",
     "url": "https://github.com/jesmak/MMM-NowPlayingOnAIMP",
@@ -8383,7 +8390,7 @@
     "id": "alonsourbano/publika",
     "url": "https://github.com/alonsourbano/publika",
     "author": "alonsourbano",
-    "desc": "Display local transport for different regions of Finland (Helsinki, Hämeenlinna, Joensuu, Jyväskylä, Kajaani, Kotka, Kouvola, Kuopio, Lahti, Lappeenranta, Mikkeli, Tampere, Oulu, Rovaniemi, Turku, Vaasa) Abandoned. No reactions to issues since years. Missing instructions to install dependency 'node-fetch'. API not working without API key anymore. |"
+    "desc": "Display local transport for different regions of Finland (Helsinki, Hämeenlinna, Joensuu, Jyväskylä, Kajaani, Kotka, Kouvola, Kuopio, Lahti, Lappeenranta, Mikkeli, Tampere, Oulu, Rovaniemi, Turku, Vaasa) Abandoned. No reactions to issues since years. Missing instructions to install used dependency. API not working without API key anymore. |"
   },
   {
     "longname": "MMM-Pull",
@@ -8419,6 +8426,13 @@
     "url": "https://github.com/mrvanes/MMM-PVoutput",
     "author": "mrvanes",
     "desc": "Display Solar PV generation and consumption data based on pvoutput.org API.Abandoned. No updates since years. But may still work. |"
+  },
+  {
+    "longname": "MMM-Remote-Control-Repository",
+    "id": "MMRIZE/MMM-Remote-Control-Repository",
+    "url": "https://github.com/MMRIZE/MMM-Remote-Control-Repository",
+    "author": "MMRIZE",
+    "desc": "Plugin for `MMM-Remote-Control` to update installable modules automatically.  Obsolete. MMM-Remote-Control now updates it's modules.json itself. |"
   },
   {
     "longname": "MMM-Ring",
@@ -8551,7 +8565,7 @@
     "id": "szech/mmm-uk-pollen-forecast",
     "url": "https://github.com/szech/mmm-uk-pollen-forecast",
     "author": "szech",
-    "desc": "Displays pollen forecast for your area in the UK. Abandoned |"
+    "desc": "Displays pollen forecast for your area in the UK. Abandoned. No reactions to issues for a long time. Seems not to work anymore. |"
   },
   {
     "longname": "voicecontrol",
