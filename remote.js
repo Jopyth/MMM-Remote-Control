@@ -338,8 +338,8 @@ const Remote = {
         if (!configData.modules.find((m) => m.module === "alert") && alertElem !== undefined) { alertElem.remove(); }
 
         const modConfig = configData.modules.find((m) => m.module === "MMM-Remote-Control").config;
-        const classElem = document.getElementById("classes-button");
-        if ((!modConfig || !modConfig.classes) && classElem !== undefined) { classElem.remove(); }
+        const classesButton = document.getElementById("classes-button");
+        if ((!modConfig || !modConfig.classes) && classesButton) { classesButton.remove(); }
 
       });
     }
