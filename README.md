@@ -80,6 +80,8 @@ Note: If your user does not have `sudo` rights, the shutdown does not work (it _
 Update this module by navigating into its folder on the command line and using `git pull`:
 
 ```bash
+rm ~/MagicMirror/modules/modules.json # adapt directory if you are using a different one
+# the module changes modules.json, which prevents git pull from working properly unless the file is first removed
 cd ~/MagicMirror/modules/MMM-Remote-Control # adapt directory if you are using a different one
 git pull
 npm install # install (new) dependencies
@@ -88,6 +90,8 @@ npm install # install (new) dependencies
 Alternatively you can run the `installer.sh` script again:
 
 ```bash
+rm ~/MagicMirror/modules/modules.json # adapt directory if you are using a different one
+# the module changes modules.json, which prevents git pull from working properly unless the file is first removed
 ~/MagicMirror/modules/MMM-Remote-Control/installer.sh
 ```
 
