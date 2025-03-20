@@ -446,7 +446,7 @@ Huge shout out to [shbatm](https://github.com/shbatm) for his work on this new m
 
 - Issues coming from disabled modules since MM version 2.1.0
 
-## [1.0.0] - 2016-10-24
+## [1.0.0](https://github.com/jopyth/MMM-Remote-Control/compare/v0.1.0...v1.0.0) - 2016-10-24 - First Official Release
 
 ### Added
 
@@ -465,6 +465,6 @@ Huge shout out to [shbatm](https://github.com/shbatm) for his work on this new m
 - Symbols for display on and off
 - Internal changes in preparation for MagicMirror² version `2.1.0`
 
-## [0.1.0](https://github.com/jopyth/MMM-Remote-Control/compare/v0.1.0...v1.0.0) - 2016-09-30
+## [0.1.0](https://github.com/Jopyth/MMM-Remote-Control/releases/tag/v0.1.0) - 2016-09-30
 
 Initial release of the Remote Control module.
