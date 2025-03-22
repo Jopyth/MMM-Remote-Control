@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.4](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.3...v3.1.4) - 2025-03-22
+
+### Fixed
+
+- fix: Prevent merge conflicts with `modules.json` while updating MMM-Remote-Control via `git pull` (#323)
+
+### Changed
+
+- chore: Update devDependencies
+- chore: Refactor error logging in node_helper.js to include module context
+- chore: Update bug report template to reflect new version placeholders
+
 ## [3.1.3](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.2...v3.1.3) - 2025-03-20
 
 ### Fixed
