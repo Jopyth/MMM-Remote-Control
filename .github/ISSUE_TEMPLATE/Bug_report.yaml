@@ -25,8 +25,8 @@ body:
       label: NodeJS Version
       description: |
         example:
-        - NodeJS: 14.17.5
-      placeholder: "14.17.5"
+        - NodeJS: 22.0.0
+      placeholder: "22.x.x"
     validations:
       required: true
   - type: input
@@ -34,8 +34,8 @@ body:
       label: MagicMirror² Version
       description: |
         example:
-        - MM: 2.16.0
-      placeholder: "2.16.0"
+        - MM: 2.29.0
+      placeholder: "2.x.x"
     validations:
       required: true
   - type: input
@@ -43,8 +43,8 @@ body:
       label: Remote Control Version
       description: |
         example:
-        - Remote Control: 2.3.6
-      placeholder: "2.3.6"
+        - Remote Control: 3.0.0
+      placeholder: "3.x.x"
     validations:
       required: true
   - type: checkboxes
