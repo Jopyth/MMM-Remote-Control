@@ -41,13 +41,13 @@
   "devDependencies": {
     "@eslint/js": "^9.23.0",
     "@stylistic/eslint-plugin": "^4.2.0",
-    "cspell": "^8.17.5",
+    "cspell": "^8.18.0",
     "eslint": "^9.23.0",
-    "eslint-plugin-import-x": "^4.9.1",
+    "eslint-plugin-import-x": "^4.9.3",
     "globals": "^16.0.0",
     "markdownlint-cli": "^0.44.0",
     "prettier": "^3.5.3",
-    "stylelint": "^16.16.0",
+    "stylelint": "^16.17.0",
     "stylelint-config-standard": "^37.0.0",
     "stylelint-prettier": "^5.0.3"
   },
