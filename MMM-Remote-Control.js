@@ -166,122 +166,23 @@ Module.register("MMM-Remote-Control", {
     }
   },
 
-  buildCssContent (brightness) {
-    let css = "";
-
-    const defaults = {
-      "body": parseInt("aa", 16),
-      "header": parseInt("99", 16),
-      ".dimmed": parseInt("66", 16),
-      ".normal": parseInt("99", 16),
-      ".bright": parseInt("ff", 16)
-    };
-
-    for (const key in defaults) {
-      let value = defaults[key] / 100 * brightness;
-      value = Math.round(value);
-      value = Math.min(value, 255);
-      if (value < 16) {
-        value = `0${value.toString(16)}`;
-      } else {
-        value = value.toString(16);
-      }
-      let extra = "";
-      if (key === "header") {
-        extra = `border-bottom: 1px solid #${value}${value}${value};`;
-      }
-      css += `${key} { color: #${value}${value}${value}; ${extra}} `;
-    }
-    return css;
-  },
-
   setBrightness (newBrightnessValue) {
     if (newBrightnessValue < 10) {
       newBrightnessValue = 0; // Setting Brightness to 0 turns off some displays backlight, it's neat for power saving
-    }
-    if (newBrightnessValue > 200) {
+    } else if (newBrightnessValue > 200) {
       newBrightnessValue = 200;
     }
+    const filterValue = `brightness(${newBrightnessValue}%)`;
 
-    this.brightness = newBrightnessValue;
-
-    let style = document.getElementById("remote-control-styles");
-    if (!style) {
-      // create custom css if not existing
-      style = document.createElement("style");
-      style.type = "text/css";
-      style.id = "remote-control-styles";
-      const parent = document.getElementsByTagName("head")[0];
-      parent.appendChild(style);
-    }
-
-    if (newBrightnessValue < 100) {
-      const filterValue = `brightness(${newBrightnessValue}%)`;
-      document.body.style.filter = filterValue;
-      return;
-    }
-    if (newBrightnessValue >= 100) {
-      style.innerHTML = this.buildCssContent(newBrightnessValue);
-      const filterValue = "brightness(100%)";
-      document.body.style.filter = filterValue;
-
-    }
-  },
-
-  buildCssContentTemp (temp) {
-    let css = "";
-
-    const defaults = {
-      "body": parseInt("aa", 16),
-      "header": parseInt("99", 16),
-      ".dimmed": parseInt("66", 16),
-      ".normal": parseInt("99", 16),
-      ".bright": parseInt("ff", 16)
-    };
-
-    for (const key in defaults) {
-      let value = defaults[key] / 100 * temp;
-      value = Math.round(value);
-      value = Math.min(value, 255);
-      if (value < 16) {
-        value = `0${value.toString(16)}`;
-      } else {
-        value = value.toString(16);
+    const childNodesList = document.body.childNodes;
+    for (let i = 0; i < childNodesList.length; i++) {
+      if (childNodesList[i].nodeName !== "SCRIPT" && childNodesList[i].nodeName !== "#text") {
+        childNodesList[i].style.filter = filterValue;
       }
-      let extra = "";
-      if (key === "header") {
-        extra = `border-bottom: 1px solid #${value}${value}${value};`;
-      }
-      css += `${key} { color: #${value}${value}${value}; ${extra}} `;
-    }
-    return css;
-  },
-
-  setTemp (newTempValue) {
-    if (newTempValue < 154) {
-      newTempValue = 154;
-    }
-
-    this.temp = newTempValue;
-
-    let style = document.getElementById("remote-control-styles");
-    if (!style) {
-      // create custom css if not existing
-      style = document.createElement("style");
-      style.type = "text/css";
-      style.id = "remote-control-styles";
-      const parent = document.getElementsByTagName("head")[0];
-      parent.appendChild(style);
-    }
-
-    if (newTempValue) {
-      style.innerHTML = "";
-      this.createOverlayTemp(newTempValue);
-
     }
   },
 
-  createOverlayTemp (temp) {
+  setTemp (temp) {
     let overlay = document.getElementById("remote-control-overlay-temp");
     if (!overlay) {
       // if not existing, create overlay
@@ -294,6 +195,9 @@ Module.register("MMM-Remote-Control", {
     if (temp > 327) {
       overlay.style.backgroundColor = `rgba(255,215,0,${(temp - 325) / 865})`;
     } else {
+      if (temp < 154) {
+        temp = 154;
+      }
       overlay.style.backgroundColor = `rgba(0, 150, 255,${(325 - temp) / 865})`;
     }
   },
