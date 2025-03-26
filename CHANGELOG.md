@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.5](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.4...v3.1.5) - 2025-03-26
+
+### Fixed
+
+- fix: Refactor 'setBrightness' and 'setTemp'. To fix #322.
+
+### Changed
+
+- refactor: var -> let
+- chore: Update devDependencies
+- chore: Update modules.json.template
+
 ## [3.1.4](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.3...v3.1.4) - 2025-03-22
 
 ### Fixed
