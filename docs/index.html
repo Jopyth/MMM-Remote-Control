@@ -39,7 +39,7 @@
 
     <script>
       window.onload = async function () {
-        var spec = await fetch("./swagger.json").then((e) => e.json());
+        let spec = await fetch("./swagger.json").then((e) => e.json());
 
         // Build a system
         const ui = SwaggerUIBundle({
