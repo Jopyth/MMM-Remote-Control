@@ -253,10 +253,17 @@
   },
   {
     "longname": "MMM-pages",
+    "id": "edward-shen/MMM-pages",
+    "url": "https://github.com/edward-shen/MMM-pages",
+    "author": "edward-shen",
+    "desc": "Organize modules into multiple pages to display different information, with the option to automatically rotate through these pages."
+  },
+  {
+    "longname": "MMM-pages",
     "id": "sdetweil/MMM-pages",
     "url": "https://github.com/sdetweil/MMM-pages",
     "author": "sdetweil",
-    "desc": "Rotate out pages of modules."
+    "desc": "Rotate out pages of modules. This is a MMM-pages fork with a different approach of handling individual rotation times than the original project."
   },
   {
     "longname": "MMM-Pages-Screencast",
@@ -476,6 +483,27 @@
     "desc": "This module displays real-time Nouns auction status."
   },
   {
+    "longname": "MMM-NounsTreasury",
+    "id": "XppaiCyberr/MMM-NounsTreasury",
+    "url": "https://github.com/XppaiCyberr/MMM-NounsTreasury",
+    "author": "XppaiCyberr",
+    "desc": "This module displays the current value of the Nouns Treasury."
+  },
+  {
+    "longname": "MMM-NounsProposal",
+    "id": "XppaiCyberr/MMM-NounsProposal",
+    "url": "https://github.com/XppaiCyberr/MMM-NounsProposal",
+    "author": "XppaiCyberr",
+    "desc": "This module displays recent Nouns DAO governance proposals with voting information."
+  },
+  {
+    "longname": "MMM-LilNounsTreasury",
+    "id": "XppaiCyberr/MMM-LilNounsTreasury",
+    "url": "https://github.com/XppaiCyberr/MMM-LilNounsTreasury",
+    "author": "XppaiCyberr",
+    "desc": "This module displays the current value of the Lil Nouns Treasury."
+  },
+  {
     "longname": "MMM-AVStock",
     "id": "lavolp3/MMM-AVStock",
     "url": "https://github.com/lavolp3/MMM-AVStock",
@@ -606,7 +634,7 @@
     "id": "kahllenny/MMM-affluences",
     "url": "https://github.com/kahllenny/MMM-affluences",
     "author": "kahllenny",
-    "desc": "Module shows the occupancy rate of a place using affluences"
+    "desc": "Module shows the occupancy rate of a place using affluences."
   },
   {
     "longname": "MMM-air-raid-monitor-ua",
@@ -2528,9 +2556,9 @@
   },
   {
     "longname": "MMM-PirateSkyForecast",
-    "id": "dankerthrone/MMM-PirateSkyForecast",
-    "url": "https://github.com/dankerthrone/MMM-PirateSkyForecast",
-    "author": "dankerthrone",
+    "id": "b-reich/MMM-PirateSkyForecast",
+    "url": "https://github.com/b-reich/MMM-PirateSkyForecast",
+    "author": "b-reich",
     "desc": "A weather module that displays current, hourly and daily forecast information using data from the pirateweather API."
   },
   {
@@ -2819,13 +2847,6 @@
     "url": "https://github.com/fruestueck/MMM-WeatherDependentClothes",
     "author": "fruestueck",
     "desc": "Display clothing depending on the weather forecast and your personal preferences."
-  },
-  {
-    "longname": "MMM-weatherforecast",
-    "id": "jharttech/MMM-weatherforecast",
-    "url": "https://github.com/jharttech/MMM-weatherforecast",
-    "author": "jharttech",
-    "desc": "This is a new version of the weather forecast module. This one does not come as a default module. This version has been edited to allow the days of the week to span left to right, each with its own weather icon and details. Uses openweathermap.org API Key."
   },
   {
     "longname": "MMM-WeatherHourlyByDay",
@@ -3137,9 +3158,9 @@
   },
   {
     "longname": "MMM-MyStandings",
-    "id": "vincep5/MMM-MyStandings",
-    "url": "https://github.com/vincep5/MMM-MyStandings",
-    "author": "vincep5",
+    "id": "dathbe/MMM-MyStandings",
+    "url": "https://github.com/dathbe/MMM-MyStandings",
+    "author": "dathbe",
     "desc": "Display ESPN standings for major US Sports and international soccer leagues."
   },
   {
@@ -4620,6 +4641,13 @@
     "desc": "Subscribe to topics from MQTT message queues, and display the sensor results on a floor plan of your house."
   },
   {
+    "longname": "MMM-MQTTScreenOnOff",
+    "id": "olexs/MMM-MQTTScreenOnOff",
+    "url": "https://github.com/olexs/MMM-MQTTScreenOnOff",
+    "author": "olexs",
+    "desc": "Allows you to control the mirror screen on/off state using MQTT messages, for example from a smart home motion sensor via Zigbee2MQTT or any other MQTT-compatible source."
+  },
+  {
     "longname": "MMM-Memo",
     "id": "schnibel/MMM-Memo",
     "url": "https://github.com/schnibel/MMM-Memo",
@@ -5044,7 +5072,7 @@
     "id": "Coernel82/MMM-Pir",
     "url": "https://github.com/Coernel82/MMM-Pir",
     "author": "Coernel82",
-    "desc": "The rescued Pir module of Bugsounet. Coernel82 cannot give support! |"
+    "desc": "The rescued Pir module of Bugsounet. Coernel82 cannot give support! Try [MMM-Universal-Pir](https://gitlab.com/khassel/MMM-Universal-Pir) if you have any issues."
   },
   {
     "longname": "MMM-PiTemp",
@@ -6311,7 +6339,7 @@
     "id": "Ax-LED/MMM-Dreambox",
     "url": "https://github.com/Ax-LED/MMM-Dreambox",
     "author": "Ax-LED",
-    "desc": "Connect a Dreambox or a Enigma2 Receiver (like VU or VU+) to MagicMirror² and stream stations via omxplayer."
+    "desc": "Connect a Dreambox or a Enigma2 Receiver (like VU or VU+) to MagicMirror² and stream stations."
   },
   {
     "longname": "mmm-dropbox",
@@ -6637,9 +6665,9 @@
   },
   {
     "longname": "MMM-ImagesPhotos",
-    "id": "roramirez/MMM-ImagesPhotos",
-    "url": "https://github.com/roramirez/MMM-ImagesPhotos",
-    "author": "roramirez",
+    "id": "sdetweil/MMM-ImagesPhotos",
+    "url": "https://github.com/sdetweil/MMM-ImagesPhotos",
+    "author": "sdetweil",
     "desc": "Show images and photos."
   },
   {
@@ -6979,13 +7007,6 @@
     "desc": "The Dude from The Big Lebowski providing some laid-back commentary on the currently playing song on Spotify. Using OpenAI LLM."
   },
   {
-    "longname": "on-this-day",
-    "id": "elliefairholm/on-this-day",
-    "url": "https://github.com/elliefairholm/on-this-day",
-    "author": "elliefairholm",
-    "desc": "Make mirrors great again (?): a daily historical fact."
-  },
-  {
     "longname": "MM-orrery",
     "id": "hoyski/MM-orrery",
     "url": "https://github.com/hoyski/MM-orrery",
@@ -7074,7 +7095,7 @@
     "id": "Ax-LED/MMM-Podcast2",
     "url": "https://github.com/Ax-LED/MMM-Podcast2",
     "author": "Ax-LED",
-    "desc": "This module can stream the video of 100 Sekunden Tagesschau by using omxplayer. It can be controlled by MM notification system."
+    "desc": "This module can stream the video of 100 Sekunden Tagesschau. It can be controlled by MM notification system."
   },
   {
     "longname": "MMM-Podcast",
@@ -7844,7 +7865,7 @@
     "id": "jannekalliola/MMM-BMWConnected",
     "url": "https://github.com/jannekalliola/MMM-BMWConnected",
     "author": "jannekalliola",
-    "desc": "Displays information about your BMW from the BMW Connected Drive API. Abandoned. No longer works. Successor is MMM-MyBMW. Repo has been archived at 2024-04-05. |Apr 5, 2024 |"
+    "desc": "Displays information about your BMW from the BMW Connected Drive API. Abandoned. No longer works. Successor is MMM-MyBMW. Repo has been archived at 2024-04-05. |"
   },
   {
     "longname": "MMM-BMW-DS",
@@ -8418,7 +8439,7 @@
     "id": "MarcLandis/MMM-PIR-Sensor",
     "url": "https://github.com/MarcLandis/MMM-PIR-Sensor",
     "author": "MarcLandis",
-    "desc": "This module can monitor a PIR motion sensor and put your mirror to sleep if nobody uses it. Deprecated. The author no longer works on it and recommends using [MMM-Pir](https://github.com/bugsounet/MMM-Pir) instead. |"
+    "desc": "This module can monitor a PIR motion sensor and put your mirror to sleep if nobody uses it. Deprecated. The author no longer works on it. Try [MMM-Universal-Pir](https://gitlab.com/khassel/MMM-Universal-Pir) instead. |"
   },
   {
     "longname": "MMM-PVoutput",
@@ -8475,6 +8496,13 @@
     "url": "https://github.com/vikramraja1995/MMM-SFMuniBusTimes",
     "author": "vikramraja1995",
     "desc": "Displays the ETA of San Francisco's MUNI Bus and Rail systems based on the given stops and routes. Abandoned. The API used no longer works, there is a new API but the developer no longer seems to be active. |"
+  },
+  {
+    "longname": "MMM-ShoppingList",
+    "id": "miguelrflor/MMM-ShoppingList",
+    "url": "https://github.com/miguelrflor/MMM-ShoppingList",
+    "author": "miguelrflor",
+    "desc": "Display a shopping list and interact with it using MMM-GoogleAssistant.  Deprecated. MMM-GoogleAssistant doesn't work anymore. |"
   },
   {
     "longname": "MMM-Simple-Swiper",
@@ -8587,6 +8615,13 @@
     "url": "https://github.com/OscarVsp/MMM-VUB-Resto",
     "author": "Oscar Vsp",
     "desc": "Get the menu of day of the VUB restaurant (Vrije Universiteit Brussel). Based on MMM-json. Abandoned. Repo has been archived at 2023-09-20. |"
+  },
+  {
+    "longname": "MMM-weatherforecast",
+    "id": "jharttech/MMM-weatherforecast",
+    "url": "https://github.com/jharttech/MMM-weatherforecast",
+    "author": "jharttech",
+    "desc": "This is a new version of the weather forecast module. This one does not come as a default module. This version has been edited to allow the days of the week to span left to right, each with its own weather icon and details. Uses openweathermap.org API Key. Abandoned. The author no longer maintains this module. |"
   },
   {
     "longname": "wuforecast",
