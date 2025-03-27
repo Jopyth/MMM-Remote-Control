@@ -13,9 +13,13 @@
   "REFRESHMM": "Browser neu laden",
   "MONITOROFF": "Bildschirm ausschalten",
   "MONITORON": "Bildschirm einschalten",
+  "MONITORTIMED": "Bildschirm kurz einschalten",
   "RESTART": "Neu starten",
   "RESTARTMM": "Starte MagicMirror² neu",
   "SHUTDOWN": "Ausschalten",
+  "FULLSCREEN": "Vollbildmodus",
+  "MINIMIZE": "Browser minimieren",
+  "DEVTOOLS": "Entwicklerwerkzeuge",
 
   "SHOWALL": "Alle",
   "HIDEALL": "Alle",
@@ -52,15 +56,18 @@
   "CONFIRM_RESTART": "Das System wird neu starten.",
 
   "LOAD_ERROR": "Wenn du diese Nachricht lesen kannst, konnte die javascript Datei nicht korrekt geladen werden. Bitte folge dem Link, und sehe nach, ob dies ein bekanntes Problem mit deinem Browser ist:",
-  "ISSUE_LINK": "Github Issue Seite",
+  "ISSUE_LINK": "Github-Issue-Seite",
 
   "DONE": "Fertig.",
   "ERROR": "Fehler!",
   "LOADING": "Lade …",
 
-  "UPDATE_MENU_NAME": "Updates",
-  "UPDATEMM": "Update MagicMirror²",
-  "UPDATE_AVAILABLE": "Update verfügbar",
+  "LOCKSTRING_WARNING": "Dieses Modul wurde durch LIST_OF_MODULES versteckt, es kann nicht angezeigt werden.",
+  "FORCE_SHOW": "Mach es trootzdem!",
+
+  "UPDATE_MENU_NAME": "Aktualisierungen",
+  "UPDATEMM": "Aktualisiere MagicMirror²",
+  "UPDATE_AVAILABLE": "Aktualisierungen verfügbar",
 
   "ALERT_MENU_NAME": "Alert",
   "SENDALERT": "Senden",
@@ -72,5 +79,9 @@
   "FORM_TITLE_PLACEHOLDER": "Title eingeben...",
   "FORM_MESSAGE": "Nachricht:",
   "FORM_MESSAGE_PLACEHOLDER": "Nachricht eingeben...",
-  "FORM_SECONDS": "Sekunden:"
+  "FORM_SECONDS": "Sekunden:",
+
+  "RESPONSE_ERROR": "Dies hat nicht funktioniert. Schau dir die MM-Logs für weitere Details an.",
+  "MODULE_CONTROLS": "Modul-Steuerung",
+  "CUSTOM_MENU": "Mein eigenes Menü"
 }
