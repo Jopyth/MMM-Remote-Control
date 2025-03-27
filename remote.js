@@ -477,26 +477,45 @@ const Remote = {
     }
   },
 
-  get (route, params, callback, timeout) {
-    const req = new XMLHttpRequest();
+  async get (route, params, callback, timeout) {
     const url = `${route}?${params}`;
-    req.open("GET", url, true);
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     if (timeout) {
-      req.timeout = timeout; // time in milliseconds
+      setTimeout(() => controller.abort(), timeout); // Timeout in milliseconds
     }
 
-    // Send the proper header information along with the request
-    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded"
+        },
+        signal
+      });
 
-    req.onreadystatechange = function () {
-      if (req.readyState == 4 && req.status == 200) {
-        if (callback) {
-          callback(req.responseText);
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
       }
-    };
-    req.send(null);
+
+      const text = await response.text();
+      if (callback) {
+        console.error("Callback:", text);
+        callback(text);
+      }
+    } catch (error) {
+      if (error.name === "AbortError") {
+        console.error("Request was aborted.");
+        // Provide user feedback
+        const errorMessage = document.createElement("div");
+        errorMessage.className = "error-message";
+        errorMessage.innerText = "The request was aborted. Please try again.";
+        document.body.appendChild(errorMessage);
+      } else {
+        console.error("Fetch error:", error);
+      }
+    }
   },
 
   loadList (listname, dataId, callback) {
