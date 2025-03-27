@@ -19,7 +19,7 @@
   "SHUTDOWN": "Shutdown",
   "FULLSCREEN": "Toggle Fullscreen",
   "MINIMIZE": "Minimize Browser",
-  "DEVTOOLS": "Open DevTools",
+  "DEVTOOLS": "Toggle DevTools",
 
   "SHOWALL": "All",
   "HIDEALL": "All",
@@ -81,7 +81,7 @@
   "FORM_MESSAGE_PLACEHOLDER": "Enter message...",
   "FORM_SECONDS": "Seconds:",
 
-  "RESPONSE_ERROR": "Well that didn't work. Check the MM logs for more details",
+  "RESPONSE_ERROR": "Well that didn't work. Check the MM logs for more details.",
   "MODULE_CONTROLS": "Module Controls",
   "CUSTOM_MENU": "My Custom Menu"
 }
