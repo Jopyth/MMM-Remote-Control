@@ -340,7 +340,7 @@ module.exports = NodeHelper.create({
           // Delete the temporary file
           fs.unlinkSync(tempFilename);
         } catch (e) {
-          Log.error(`[MMM-Remote-Control] Could not load main module js file. Error found: ${e.message || e}`);
+          Log.error(`[MMM-Remote-Control] Could not load main module js file for ${module.longname}. Error found: ${e.message || e}`);
         }
       } else if (e.code == "ENOENT") {
         Log.error(`[MMM-Remote-Control] Could not find main module js file for ${module.longname}`);
@@ -348,7 +348,7 @@ module.exports = NodeHelper.create({
         Log.error("[MMM-Remote-Control] Could not validate main module js file.");
         Log.error(e);
       } else {
-        Log.error(`[MMM-Remote-Control] Could not load main module js file. Error found: ${e}`);
+        Log.error(`[MMM-Remote-Control] Could not load main module js file for ${module.longname}. Error found: ${e}`);
       }
     }
     if (lastOne) { this.onModulesLoaded(); }
