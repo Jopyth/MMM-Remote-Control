@@ -1,21 +1,23 @@
-# MagicMirror² Module: Remote Control w/ RESTful API
+# MMM-Remote-Control
 
-This module for the [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
-The website should work fine on any device (desktop, smart phone, tablet, ...).
-Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we properly shut down before pulling the power plug every time, am I right?
-Additionally you can hide and show modules on your mirror and do other cool stuff.
+**_MMM-Remote-Control_** is a module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) that allows you to use a browser, to quickly shut down your mirror, hide and show modules on your mirror and do other cool stuff.
+
+The website should work fine on any device (desktop, smartphone, tablet, ...).
+
+Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we shut down properly every time before unplugging, right?
 
 ![The Main Menu](.github/main.png)
 ![The Power Menu](.github/power.png)
 ![Hide and Show a Module](.github/hide_show_module.gif)
 
-**New in Version 2.0.0:** The module now includes a more RESTful API for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
+The module also includes a **RESTful API** for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
 
 ## Installation
 
 ### Quick install
 
 If you followed the default installation instructions for the [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) project, you should be able to use the automatic installer.
+
 The following command will download the installer and execute it:
 
 ```bash
