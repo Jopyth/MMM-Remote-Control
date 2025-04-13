@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.6](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.5...v3.1.6) - 2025-04-13
+
+### Changed
+
+- refactor: replace XMLHttpRequest by fetch
+- chore: update English and German translations
+- chore: more detailed logging
+- chore: update dependencies
+- chore: update ESLint configuration to use new import plugin structure
+- chore: adjust ESLint rules
+- docs: rephrase introduction in README
+
 ## [3.1.5](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.4...v3.1.5) - 2025-03-26
 
 ### Fixed
