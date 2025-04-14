@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## unreleased
+
+### Changed
+
+- refactor: remove jQuery dependency and replace with vanilla JavaScript
+
 ## [3.1.6](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.5...v3.1.6) - 2025-04-13
 
 ### Changed
@@ -102,7 +108,7 @@ There shouldn't be any breaking changes in this release. But since there are a s
 
 ### Changed
 
-- Use npm package for jquery, showdown and swagger-ui (and switch to current versions)
+- Use npm package for jQuery, showdown and swagger-ui (and switch to current versions)
 - Update dependencies
 - Handle some linter issues
 - Drop Google fonts for API page

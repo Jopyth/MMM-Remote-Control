@@ -1,4 +1,4 @@
-/* global $ MMSocket showdown */
+/* global MMSocket showdown */
 
 // main javascript file for the remote control page
 
@@ -221,12 +221,15 @@ const Remote = {
   },
 
   closePopup () {
-    $("#popup-container").hide();
-    $("#popup-contents").empty();
+    const popupContainer = document.getElementById("popup-container");
+    const popupContents = document.getElementById("popup-contents");
+    if (popupContainer) popupContainer.style.display = "none";
+    if (popupContents) popupContents.innerHTML = "";
   },
 
   showPopup () {
-    $("#popup-container").show();
+    const popupContainer = document.getElementById("popup-container");
+    if (popupContainer) popupContainer.style.display = "block";
   },
 
   getPopupContent (clear) {
@@ -236,7 +239,7 @@ const Remote = {
     if (clear) {
       this.closePopup();
     }
-    return $("#popup-contents")[0];
+    return document.getElementById("popup-contents");
   },
 
   loadOtherElements () {
@@ -370,8 +373,9 @@ const Remote = {
 
     // Simple status update
     if (status === "success" && !message && !customContent) {
-      $("#success-popup").show();
-      this.autoHideTimer = setTimeout(() => { $("#success-popup").hide(); }, this.autoHideDelay);
+      const successPopup = document.getElementById("success-popup");
+      successPopup.style.display = "block";
+      this.autoHideTimer = setTimeout(() => { successPopup.style.display = "none"; }, this.autoHideDelay);
       return;
     }
 
@@ -462,9 +466,19 @@ const Remote = {
   install (url, index) {
     const self = this;
 
-    const $downloadButton = $("#download-button");
-    $downloadButton.children(":first").removeClass("fa-download").addClass("fa-spinner fa-pulse");
-    $downloadButton.children(":last").html(` ${self.translate("DOWNLOADING")}`);
+    const downloadButton = document.getElementById("download-button");
+    const icon = downloadButton.querySelector("span:first-child");
+    const text = downloadButton.querySelector("span:last-child");
+
+    if (icon) {
+      icon.classList.remove("fa-download");
+      icon.classList.add("fa-spinner", "fa-pulse");
+    }
+
+    if (text) {
+      text.innerHTML = ` ${self.translate("DOWNLOADING")}`;
+    }
+
     this.sendSocketNotification("REMOTE_ACTION", {action: "INSTALL", url, index});
   },
 
@@ -1267,19 +1281,30 @@ const Remote = {
     console.log("Loading classes...");
     this.loadList("classes", "classes", (parent, classes) => {
       for (const i in classes) {
-        $node = $("<div>").attr("id", "classes-before-result").attr("hidden", "true");
-        $("#classes-results").append($node);
-        const content = {id: i,
+        const node = document.createElement("div");
+        node.id = "classes-before-result";
+        node.hidden = true;
+        document.getElementById("classes-results").appendChild(node);
+
+        const content = {
+          id: i,
           text: i,
           icon: "dot-circle-o",
           type: "item",
-          action: "MANAGE_CLASSES", content: {
+          action: "MANAGE_CLASSES",
+          content: {
             payload: {
               classes: i
             }
-          }};
-        if ($(`#${content.id}-button`)) { $(`#${content.id}-button`).remove(); }
-        self.createMenuElement(content, "classes", $("#classes-before-result"));
+          }
+        };
+
+        const existingButton = document.getElementById(`${content.id}-button`);
+        if (existingButton) {
+          existingButton.remove();
+        }
+
+        self.createMenuElement(content, "classes", node);
       }
     });
   },
@@ -1540,76 +1565,127 @@ const Remote = {
     this.createDynamicMenu();
   },
 
-  createMenuElement (content, menu, $insertAfter) {
+  createMenuElement (content, menu, insertAfter) {
     if (!content) { return; }
-    $item = $("<div>").attr("id", `${content.id}-button`).addClass(`menu-element button ${menu}-menu`);
-    const $mcmIcon = $("<span>").addClass(`fa fa-fw fa-${content.icon}`).attr("aria-hidden", "true");
-    const $mcmText = $("<span>").addClass("text").text(content.text);
-    $item.append($mcmIcon).append($mcmText);
-    if (content.icon) { $item.append($mcmIcon); }
+    const item = document.createElement("div");
+    item.id = `${content.id}-button`;
+    item.className = `menu-element button ${menu}-menu`;
+
+    if (content.icon) {
+      const mcmIcon = document.createElement("span");
+      mcmIcon.className = `fa fa-fw fa-${content.icon}`;
+      mcmIcon.setAttribute("aria-hidden", "true");
+      item.appendChild(mcmIcon);
+    }
+
+    if (content.text) {
+      const mcmText = document.createElement("span");
+      mcmText.className = "text";
+      mcmText.textContent = content.text;
+      item.appendChild(mcmText);
+    }
+
     if (content.type === "menu") {
-      if (content.text) { $item.append($mcmText); }
-      const $mcmArrow = $("<span>").addClass("fa fa-fw fa-angle-right").attr("aria-hidden", "true");
-      $item.append($mcmArrow);
-      $item.attr("data-parent", menu).attr("data-type", "menu");
-      $("#back-button").addClass(`${content.id}-menu`);
-      $("#below-fold").addClass(`${content.id}-menu`);
-      $item.click(() => { window.location.hash = `${content.id}-menu`; });
+      const mcmArrow = document.createElement("span");
+      mcmArrow.className = "fa fa-fw fa-angle-right";
+      mcmArrow.setAttribute("aria-hidden", "true");
+      item.appendChild(mcmArrow);
+      item.setAttribute("data-parent", menu);
+      item.setAttribute("data-type", "menu");
+      document.getElementById("back-button").classList.add(`${content.id}-menu`);
+      document.getElementById("below-fold").classList.add(`${content.id}-menu`);
+      item.addEventListener("click", () => {
+        window.location.hash = `${content.id}-menu`;
+      });
     } else if (content.type === "slider") {
-      if (content.text) { $item.append($mcmText.attr("style", "flex: 0 1 auto")); }
-      const $contain = $("<div>").attr("style", "flex: 1");
-      const $slide = $("<input>").attr("id", `${content.id}-slider`).addClass("slider");
-      $slide.attr({
-        "type": "range",
-        "min": content.min || 0,
-        "max": content.max || 100,
-        "step": content.step || 10,
-        "value": content.defaultValue || 50
+      const contain = document.createElement("div");
+      contain.style.flex = "1";
+
+      const slide = document.createElement("input");
+      slide.id = `${content.id}-slider`;
+      slide.className = "slider";
+      slide.type = "range";
+      slide.min = content.min || 0;
+      slide.max = content.max || 100;
+      slide.step = content.step || 10;
+      slide.value = content.defaultValue || 50;
+
+      slide.addEventListener("change", () => {
+        this.sendSocketNotification("REMOTE_ACTION", {
+          action: content.action.toUpperCase(),
+          ...content.content,
+          payload: {
+            ...content.content === undefined ? {} : typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload,
+            value: slide.value
+          },
+          value: slide.value
+        });
       });
-      $slide.change(() => {
-        this.sendSocketNotification("REMOTE_ACTION", {action: content.action.toUpperCase(), ...content.content, payload: {...content.content == undefined ? {} : typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload, value: document.getElementById(`${content.id}-slider`).value}, value: document.getElementById(`${content.id}-slider`).value});
-      });
-      $contain.append($slide);
-      $item.append($contain);
+
+      contain.appendChild(slide);
+      item.appendChild(contain);
     } else if (content.type === "input") {
-      $item = $("<input>").addClass(`menu-element ${menu}-menu medium`).attr({
-        "id": `${content.id}-input`,
-        "type": "text",
-        "placeholder": content.text || ""
+      const input = document.createElement("input");
+      input.id = `${content.id}-input`;
+      input.className = `menu-element ${menu}-menu medium`;
+      input.type = "text";
+      input.placeholder = content.text || "";
+
+      input.addEventListener("focusout", () => {
+        this.sendSocketNotification("REMOTE_ACTION", {
+          action: content.action.toUpperCase(),
+          ...content.content,
+          payload: {
+            ...content.content === undefined ? {} : typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload,
+            value: input.value
+          },
+          value: input.value
+        });
       });
-      $item.focusout(() => {
-        this.sendSocketNotification("REMOTE_ACTION", {action: content.action.toUpperCase(), ...content.content, payload: {...content.content == undefined ? {} : typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload, value: document.getElementById(`${content.id}-input`).value}, value: document.getElementById(`${content.id}-input`).value});
-      });
+
+      return input;
     } else if (content.action && content.content) {
-      if (content.text) { $item.append($mcmText); }
-      $item.attr("data-type", "item");
-      // let payload = content.content.payload || {};
-      $item.click(() => {
-        this.sendSocketNotification("REMOTE_ACTION", {action: content.action.toUpperCase(), payload: {}, ...content.content});
+      item.setAttribute("data-type", "item");
+      item.addEventListener("click", () => {
+        this.sendSocketNotification("REMOTE_ACTION", {
+          action: content.action.toUpperCase(),
+          payload: {},
+          ...content.content
+        });
       });
     }
+
     if (!window.location.hash && menu !== "main" ||
       window.location.hash && window.location.hash.substring(1) !== `${menu}-menu`) {
-      $item.addClass("hidden");
+      item.classList.add("hidden");
     }
-    $item.insertAfter($insertAfter);
+
+    insertAfter.parentNode.insertBefore(item, insertAfter.nextSibling);
+
     if ("items" in content) {
       content.items.forEach((i) => {
-        this.createMenuElement(i, content.id, $item);
+        this.createMenuElement(i, content.id, item);
       });
     }
-    return $item;
+
+    return item;
   },
 
   createDynamicMenu (content) {
-    if (content && $(`#${content.id}-button`)) {
-      $(`#${content.id}-button`).remove();
-      $("div").remove(`.${content.id}-menu`);
-      if (window.location.hash === `${content.id}-menu`) {
+    if (content) {
+      const buttonElement = document.getElementById(`${content.id}-button`);
+      if (buttonElement) {
+        buttonElement.remove();
+      }
+
+      const menuElements = document.querySelectorAll(`.${content.id}-menu`);
+      menuElements.forEach((menuElement) => menuElement.remove());
+
+      if (window.location.hash === `#${content.id}-menu`) {
         window.location.hash = "main-menu";
       }
     }
-    this.createMenuElement(content, "main", $("#alert-button"));
+    this.createMenuElement(content, "main", document.getElementById("alert-button"));
   }
 };
 
@@ -1652,8 +1728,9 @@ const buttons = {
       window.location.hash = "settings-menu";
       return;
     }
-    if ($(window.location.hash.replace("-menu", "-button")).data("parent")) {
-      window.location.hash = `${$(window.location.hash.replace("-menu", "-button")).data("parent")}-menu`;
+    const currentButton = document.querySelector(window.location.hash.replace("-menu", "-button"));
+    if (currentButton && currentButton.dataset.parent) {
+      window.location.hash = `${currentButton.dataset.parent}-menu`;
       return;
     }
     window.location.hash = "main-menu";

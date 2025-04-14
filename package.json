@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "body-parser": "^2.2.0",
-    "jquery": "^3.7.1",
     "showdown": "^2.1.0",
     "simple-git": "^3.27.0",
     "swagger-ui": "^5.21.0",
