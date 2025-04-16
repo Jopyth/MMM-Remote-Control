@@ -331,7 +331,11 @@ module.exports = NodeHelper.create({
         try {
           fs.accessSync(filename, fs.F_OK);
           // Add new line at the beginning of the file (this is necessary for modules which are bundled)
-          const newContent = `const Log = console;const document = navigator = window = {};document.createElement = function() { return {}; };\n${fs.readFileSync(filename, "utf8")}`;
+          var fileContent = fs.readFileSync(filename, "utf8");
+          if (fileContent.endsWith('}(Log);\n')) {
+            fileContent = fileContent.substring(0, fileContent.length - 7) + ';\n';
+          }
+          const newContent = `const Log = console;const document = navigator = window = {};document.createElement = function() { return {}; };\n${fileContent}`;
           // Write the new content to the temporary file
           fs.writeFileSync(tempFilename, newContent, "utf8");
 
