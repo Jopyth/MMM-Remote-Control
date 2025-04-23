@@ -207,16 +207,6 @@ a {
   background-color: #000;
 }
 
-#alert input {
-  box-sizing: border-box;
-  width: 100%;
-}
-
-#alert textarea {
-  box-sizing: border-box;
-  width: 100%;
-}
-
 input,
 select,
 textarea {
@@ -243,6 +233,16 @@ textarea:focus {
 
 input:focus.input-error {
   border: 2px solid #f44;
+}
+
+#alert input {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#alert textarea {
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .config-label {
