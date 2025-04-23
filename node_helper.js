@@ -940,7 +940,7 @@ module.exports = NodeHelper.create({
         self.sendResponse(res, error);
       } else {
         const workDir = path.resolve(`${__dirname}/../${path.basename(url)}`);
-        exec("npm install", {cwd: workDir, timeout: 120000}, (error, stdout, stderr) => {
+        exec("npm ci --omit=dev", {cwd: workDir, timeout: 120000}, (error, stdout, stderr) => {
           if (error) {
             Log.error("[MMM-Remote-Control]", error);
             self.sendResponse(res, error, {stdout, stderr, ...data});
@@ -986,7 +986,7 @@ module.exports = NodeHelper.create({
           return;
         }
         if (result.summary.changes) {
-          exec("npm install", {cwd: path, timeout: 120000}, (error, stdout, stderr) => {
+          exec("npm ci --omit=dev", {cwd: path, timeout: 120000}, (error, stdout, stderr) => {
             if (error) {
               Log.error("[MMM-Remote-Control]", error);
               self.sendResponse(res, error, {stdout, stderr});

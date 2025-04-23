@@ -13,6 +13,7 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Developer commands
 
+- `npm install` - Install all dependencies.
 - `npm run download_modules` - Download module list manually.
 - `npm run lint` - Run linting and formatter checks.
 - `npm run lint:fix` - Fix linting and formatter issues.

@@ -29,10 +29,10 @@ bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/m
 - (1) Clone this repository in your `modules` folder, and install dependencies:
 
 ```bash
-cd ~/MagicMirror/modules # adapt directory if you are using a different one
+cd ~/MagicMirror/modules
 git clone https://github.com/Jopyth/MMM-Remote-Control
 cd MMM-Remote-Control
-npm install
+npm ci --omit=dev
 ```
 
 - (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
@@ -82,9 +82,9 @@ Note: If your user does not have `sudo` rights, the shutdown does not work (it _
 Update this module by navigating into its folder on the command line and using `git pull`:
 
 ```bash
-cd ~/MagicMirror/modules/MMM-Remote-Control # adapt directory if you are using a different one
+cd ~/MagicMirror/modules/MMM-Remote-Control
 git pull
-npm install # install (new) dependencies
+npm ci --omit=dev
 ```
 
 Alternatively you can run the `installer.sh` script again:

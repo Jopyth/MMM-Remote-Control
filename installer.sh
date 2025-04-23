@@ -89,7 +89,7 @@ if [ -d "$MM_HOME/modules/$MODULE_NAME" ] ; then
         echo ""
         echo "Checking for new dependencies to install..."
         echo ""
-        npm install
+        npm ci --omit=dev
         if [ $? -ne 0 ]; then
             echo "Failed to install new dependencies."
             exit 1;
@@ -131,7 +131,7 @@ else
             echo ""
             echo "Installing dependencies..."
             echo ""
-            npm install
+            npm ci --omit=dev
             if [ $? -ne 0 ]; then
                 echo "Failed to install dependencies."
                 exit 1;
