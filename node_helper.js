@@ -432,12 +432,17 @@ module.exports = NodeHelper.create({
           delete current.config[key];
         }
       }
-      // Log.log(current.config);
+
       if (Object.keys(current.config).length === 0) {
         delete current[config];
         continue;
       }
-      // Log.log(current);
+
+      if (current.config["position"] === "") {
+        delete current.config["position"];
+      }
+
+      Log.debug(current);
     }
 
     return config;
