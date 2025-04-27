@@ -940,16 +940,31 @@ module.exports = NodeHelper.create({
         self.sendResponse(res, error);
       } else {
         const workDir = path.resolve(`${__dirname}/../${path.basename(url)}`);
-        exec("npm ci --omit=dev", {cwd: workDir, timeout: 120000}, (error, stdout, stderr) => {
-          if (error) {
-            Log.error("[MMM-Remote-Control]", error);
-            self.sendResponse(res, error, {stdout, stderr, ...data});
-          } else {
-            // success part
-            self.readModuleData();
-            self.sendResponse(res, undefined, {stdout, ...data});
+        const packageJsonExists = fs.existsSync(`${workDir}/package.json`);
+        if (packageJsonExists) {
+          const packageJson = JSON.parse(fs.readFileSync(`${workDir}/package.json`, "utf8"));
+          const installNecessary = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
+          if (installNecessary) {
+            const packageLockExists = fs.existsSync(`${workDir}/package-lock.json`);
+            const command = packageLockExists
+              ? "npm ci --omit=dev"
+              : "npm install --omit=dev";
+
+            exec(command, {cwd: workDir, timeout: 120000}, (error, stdout, stderr) => {
+              if (error) {
+                Log.error("[MMM-Remote-Control]", error);
+                self.sendResponse(res, error, {stdout, stderr, ...data});
+              } else {
+                // success part
+                self.readModuleData();
+                self.sendResponse(res, undefined, {stdout, ...data});
+              }
+            });
           }
-        });
+        } else {
+          self.readModuleData();
+          self.sendResponse(res, undefined, {stdout: "Module installed.", ...data});
+        }
       }
     });
   },
@@ -986,30 +1001,37 @@ module.exports = NodeHelper.create({
           return;
         }
         if (result.summary.changes) {
-          exec("npm ci --omit=dev", {cwd: path, timeout: 120000}, (error, stdout, stderr) => {
-            if (error) {
-              Log.error("[MMM-Remote-Control]", error);
-              self.sendResponse(res, error, {stdout, stderr});
-            } else {
-              // success part
-              self.readModuleData();
-              fs.readdir(path, (err, files) => {
-                if (files.includes("CHANGELOG.md")) {
-                  const chlog = fs.readFileSync(`${path}/CHANGELOG.md`, "utf-8");
-                  self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`, chlog});
+          const packageJsonExists = fs.existsSync(`${path}/package.json`);
+          if (packageJsonExists) {
+            const packageJson = JSON.parse(fs.readFileSync(`${path}/package.json`, "utf8"));
+            const installNecessary = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
+            if (installNecessary) {
+              const packageLockExists = fs.existsSync(`${path}/package-lock.json`);
+              const command = packageLockExists
+                ? "npm ci --omit=dev"
+                : "npm install --omit=dev";
+
+              exec(command, {cwd: path, timeout: 120000}, (error, stdout, stderr) => {
+                if (error) {
+                  Log.error("[MMM-Remote-Control]", error);
+                  self.sendResponse(res, error, {stdout, stderr});
                 } else {
-                  self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`});
+                  // success part
+                  self.readModuleData();
+
+                  const changelogExists = fs.existsSync(`${path}/CHANGELOG.md`);
+                  if (changelogExists) {
+                    const changelog = fs.readFileSync(`${path}/CHANGELOG.md`, "utf-8");
+                    self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`, chlog: changelog});
+                  } else {
+                    self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`});
+                  }
                 }
               });
-
-              /*
-               * let chlog = fs.readFileSync(path+"/CHANGELOG.md")
-               * self.sendResponse(res, undefined, { code: "restart", info: name + " updated.", chlog: "" });
-               */
+            } else {
+              self.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
             }
-          });
-        } else {
-          self.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
+          }
         }
       });
     });
