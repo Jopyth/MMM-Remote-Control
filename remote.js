@@ -1262,7 +1262,7 @@ const Remote = {
         // we came here from adding a module
         self.get("get", `data=defaultConfig&module=${name}`, (response) => {
           const newData = JSON.parse(response);
-          moduleData.push({module: name, config: newData});
+          moduleData.push({module: name, config: newData.data});
           const index = moduleData.length - 1;
           self.changedModules.push(index);
           self.appendModuleEditElements(parent, moduleData);
