@@ -5,11 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## unreleased
+## [3.1.7](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.6...v3.1.7) - 2025-04-27
 
 ### Changed
 
-- refactor: remove jQuery dependency and replace with vanilla JavaScript
+- refactor: replace jQuery with vanilla JavaScript
+- refactor: reorder `#alert` styles to remove rule from stylelint config
+- chore: replace `npm install` with `npm ci --omit=dev` for less update issues and improved performance
+- chore: update devDependencies
 
 ## [3.1.6](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.5...v3.1.6) - 2025-04-13
 
