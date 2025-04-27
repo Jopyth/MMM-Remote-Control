@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.8](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.7...v3.1.8) - 2025-04-27
+
+### Changed
+
+- refactor: choose installation command depending on the existence of `package-lock.json` and `package.json` This also fixes a problem that occurred with modules with `package.json` but without `package-lock.json` during installation with `npm ci`.
+- refactor: don't save `header` to config file if not set
+- refactor: get module defaults also from browser to handle bundled modules better (this will fix [#331](https://github.com/Jopyth/MMM-Remote-Control/issues/331))
+- chore: update devDependencies
+
+### Fixed
+
+- fix: get default config while adding a module
+- fix: don't save module position if not set. Since MM meanwhile checks the position values, an error message appears without this fix.
+
 ## [3.1.7](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.6...v3.1.7) - 2025-04-27
 
 ### Changed
@@ -30,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- fix: Refactor 'setBrightness' and 'setTemp'. To fix #322.
+- fix: Refactor `setBrightness` and `setTemp`. To fix #322.
 
 ### Changed
 
@@ -54,12 +68,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- fix: Only remove 'classesButton' when it's there. There was a console error when returning to the main menu from a sub page.
+- fix: Only remove `classesButton` when it's there. There was a console error when returning to the main menu from a sub page.
 
 ### Changed
 
-- chore: Remove unused 'background-color' from 'MMM-Remote-Control.css'
-- chore: Use vw and vh instead of 100% in 'MMM-Remote-Control.css'
+- chore: Remove unused `background-color` from `MMM-Remote-Control.css`
+- chore: Use vw and vh instead of 100% in `MMM-Remote-Control.css`
 
 ## [3.1.2](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.1...v3.1.2) - 2025-03-11
 
