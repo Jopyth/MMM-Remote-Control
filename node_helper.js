@@ -319,7 +319,6 @@ module.exports = NodeHelper.create({
 
   loadModuleDefaultConfig (module, modulePath, lastOne) {
     const filename = path.resolve(`${modulePath}/${module.longname}.js`);
-    const tempFilename = path.resolve("./modules/temp.js");
 
     try {
       fs.accessSync(filename, fs.F_OK);
@@ -328,20 +327,7 @@ module.exports = NodeHelper.create({
       require(filename);
     } catch (e) {
       if (e instanceof ReferenceError) {
-        try {
-          fs.accessSync(filename, fs.F_OK);
-          // Add new line at the beginning of the file (this is necessary for modules which are bundled)
-          const newContent = `const Log = console;const document = navigator = window = {};document.createElement = function() { return {}; };\n${fs.readFileSync(filename, "utf8")}`;
-          // Write the new content to the temporary file
-          fs.writeFileSync(tempFilename, newContent, "utf8");
-
-          /* Defaults are stored when Module.register is called during require(filename); */
-          require(tempFilename);
-          // Delete the temporary file
-          fs.unlinkSync(tempFilename);
-        } catch (e) {
-          Log.error(`[MMM-Remote-Control] Could not load main module js file for ${module.longname}. Error found: ${e.message || e}`);
-        }
+        Log.log(`[MMM-Remote-Control] Could not get defaults for ${module.longname}. See #331.`);
       } else if (e.code == "ENOENT") {
         Log.error(`[MMM-Remote-Control] Could not find main module js file for ${module.longname}`);
       } else if (e instanceof SyntaxError) {
@@ -393,16 +379,16 @@ module.exports = NodeHelper.create({
     const config = this.configOnHd;
     for (let i = 0; i < config.modules.length; i++) {
       const current = config.modules[i];
-      let def = Module.configDefaults[current.module];
-      if (!("config" in current)) {
-        current.config = {};
-      }
-      if (!def) {
-        def = {};
-      }
-      for (const key in def) {
+      const moduleDefaultsFromRequire = Module.configDefaults[current.module];
+      // We need moduleDataFromBrowser for bundled modules like MMM-RAIN-MAP. See #331.
+      const moduleDataFromBrowser = this.configData.moduleData.find((item) => item.name === current.module);
+
+      const moduleConfig = moduleDefaultsFromRequire || moduleDataFromBrowser?.config || {};
+
+      if (!current.config) current.config = {};
+      for (const key in moduleConfig) {
         if (!(key in current.config)) {
-          current.config[key] = def[key];
+          current.config[key] = moduleConfig[key];
         }
       }
     }
@@ -423,19 +409,18 @@ module.exports = NodeHelper.create({
 
     for (let i = 0; i < config.modules.length; i++) {
       const current = config.modules[i];
-      let def = Module.configDefaults[current.module];
-      if (!def) {
-        def = {};
-      }
-      for (const key in def) {
-        if (Object.hasOwn(def, key) && Object.hasOwn(current.config, key) && JSON.stringify(def[key]) === JSON.stringify(current.config[key])) {
-          delete current.config[key];
-        }
-      }
+      const moduleDefaultsFromRequire = Module.configDefaults[current.module];
+      // We need moduleDataFromBrowser for bundled modules like MMM-RAIN-MAP. See #331.
+      const moduleDataFromBrowser = this.configData.moduleData.find((item) => item.name === current.module);
+      const moduleDefaults = moduleDefaultsFromRequire || moduleDataFromBrowser?.defaults;
 
-      if (Object.keys(current.config).length === 0) {
-        delete current[config];
-        continue;
+      if (!current.config) current.config = {};
+      if (moduleDefaults) {
+        for (const key in moduleDefaults) {
+          if (Object.hasOwn(moduleDefaults, key) && Object.hasOwn(current.config, key) && JSON.stringify(moduleDefaults[key]) === JSON.stringify(current.config[key])) {
+            delete current.config[key];
+          }
+        }
       }
 
       if (current.config["position"] === "") {

@@ -227,6 +227,8 @@ Module.register("MMM-Remote-Control", {
       modData.lockStrings = module.lockStrings;
       modData.urlPath = module.name.replace(/MMM-/g, "").replace(/-/g, "").toLowerCase();
       modData.config = module.config;
+      const modPrototype = Object.getPrototypeOf(module);
+      modData.defaults = modPrototype.defaults;
       currentModuleData.push(modData);
     });
     const configData = {
