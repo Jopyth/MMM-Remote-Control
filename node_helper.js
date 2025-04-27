@@ -442,6 +442,10 @@ module.exports = NodeHelper.create({
         delete current.config["position"];
       }
 
+      if (current.header === "") {
+        delete current.header;
+      }
+
       Log.debug(current);
     }
 
