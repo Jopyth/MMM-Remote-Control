@@ -138,7 +138,7 @@ For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders
 this.sendNotification("REMOTE_ACTION", { action: "RESTART" });
 ```
 
-See some specific examples for controlling your mirror from other modules and add your own examples [in the Wiki page here](https://github.com/shbatm/MMM-Remote-Control/wiki/Examples-for-Controlling-from-Another-Module)
+See some specific examples for controlling your mirror from other modules and add your own examples [in the Wiki page here](https://github.com/Jopyth/MMM-Remote-Control/wiki/Examples-for-Controlling-from-Another-Module)
 
 ### List of actions
 
