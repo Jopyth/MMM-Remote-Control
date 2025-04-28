@@ -327,11 +327,11 @@ module.exports = NodeHelper.create({
       require(filename);
     } catch (e) {
       if (e instanceof ReferenceError) {
-        Log.log(`[MMM-Remote-Control] Could not get defaults for ${module.longname}. See #331.`);
+        Log.log(`[MMM-Remote-Control] Could not get defaults for ${module.longname}. See #335.`);
       } else if (e.code == "ENOENT") {
         Log.error(`[MMM-Remote-Control] Could not find main module js file for ${module.longname}`);
       } else if (e instanceof SyntaxError) {
-        Log.error("[MMM-Remote-Control] Could not validate main module js file.");
+        Log.error(`[MMM-Remote-Control] Could not validate main module js file for ${module.longname}`);
         Log.error(e);
       } else {
         Log.error(`[MMM-Remote-Control] Could not load main module js file for ${module.longname}. Error found: ${e}`);
