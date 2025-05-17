@@ -6,9 +6,9 @@ The website should work fine on any device (desktop, smartphone, tablet, ...).
 
 Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we shut down properly every time before unplugging, right?
 
-![The Main Menu](.github/main.png)
-![The Power Menu](.github/power.png)
-![Hide and Show a Module](.github/hide_show_module.gif)
+![The Main Menu](img/main.png)
+![The Power Menu](img/power.png)
+![Hide and Show a Module](img/hide_show_module.gif)
 
 The module also includes a **RESTful API** for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
 
