@@ -170,10 +170,10 @@ module.exports = {
     });
 
     this.expressRouter.route([
-      "/refresh/:delayed?",
-      "/shutdown/:delayed?",
-      "/reboot/:delayed?",
-      "/restart/:delayed?",
+      "/refresh{/:delayed}",
+      "/shutdown{/:delayed}",
+      "/reboot{/:delayed}",
+      "/restart{/:delayed}",
       "/save",
       "/minimize",
       "/togglefullscreen",
@@ -202,7 +202,7 @@ module.exports = {
         self.executeQuery({action: "COMMAND", command: req.params.value}, res);
       });
 
-    this.expressRouter.route("/userpresence/:value?").
+    this.expressRouter.route("/userpresence{/:value}").
       get((req, res) => {
         if (req.params.value) {
           if (req.params.value === "true" || req.params.value === "false") {
@@ -215,7 +215,7 @@ module.exports = {
         }
       });
 
-    this.expressRouter.route("/update/:moduleName?").
+    this.expressRouter.route("/update{/:moduleName}").
       get((req, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         if (!req.params.moduleName) { return self.answerGet({data: "mmUpdateAvailable"}, res); }
@@ -254,7 +254,7 @@ module.exports = {
       });
     // edit config
 
-    this.expressRouter.route("/notification/:notification/:p?/:delayed?").
+    this.expressRouter.route("/notification/:notification{/:p}{/:delayed}").
       get((req, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         this.answerNotifyApi(req, res);
@@ -268,7 +268,7 @@ module.exports = {
         this.answerNotifyApi(req, res);
       });
 
-    this.expressRouter.route("/module/:moduleName?/:action?/:delayed?").
+    this.expressRouter.route("/module{/:moduleName}{/:action}{/:delayed}").
       get((req, res) => {
         this.answerModuleApi(req, res);
       }).
@@ -280,7 +280,7 @@ module.exports = {
         this.answerModuleApi(req, res);
       });
 
-    this.expressRouter.route("/monitor/:action?/:delayed?").
+    this.expressRouter.route("/monitor{/:action}{/:delayed}").
       get((req, res) => {
         if (!req.params.action) { req.params.action = "STATUS"; }
         const actionName = req.params.action.toUpperCase();
@@ -298,8 +298,12 @@ module.exports = {
         this.executeQuery(this.checkDelay({action: `MONITOR${actionName}`}, req), res);
       });
 
-    this.expressRouter.route("/brightness/:setting(\\d+)").
+    this.expressRouter.route(["/brightness/:setting"]).
       get((req, res) => {
+      // Only allow numeric settings, otherwise return 400
+        if (!(/^\d+$/).test(req.params.setting)) {
+          return res.status(400).json({success: false, message: "Invalid brightness setting"});
+        }
         this.executeQuery({action: "BRIGHTNESS", value: req.params.setting}, res);
       });
 

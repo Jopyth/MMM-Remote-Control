@@ -139,7 +139,7 @@ module.exports = NodeHelper.create({
 
     this.expressApp.get("/remote.html", (req, res) => {
       if (self.template === "") {
-        res.send(503);
+        res.sendStatus(503);
       } else {
         res.contentType("text/html");
         res.set("Content-Security-Policy", "frame-ancestors http://*:*");
