@@ -11,7 +11,6 @@
 const path = require("path");
 const url = require("url");
 const {v4: uuid} = require("uuid");
-const bodyParser = require("body-parser");
 const express = require("express");
 
 module.exports = {
@@ -109,8 +108,8 @@ module.exports = {
 
     this.getApiKey();
 
-    this.expressApp.use(bodyParser.urlencoded({extended: true}));
-    this.expressApp.use(bodyParser.json());
+    this.expressApp.use(express.urlencoded({extended: true}));
+    this.expressApp.use(express.json());
 
     this.expressApp.use("/api/docs", express.static(path.join(__dirname, "../docs"))); // Docs without apikey
 
