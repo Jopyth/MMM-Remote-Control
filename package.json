@@ -27,7 +27,7 @@
     "lint": "eslint && stylelint **/*.css && markdownlint . --ignore node_modules && prettier . --check",
     "lint:fix": "eslint --fix && stylelint **/*.css --fix && markdownlint . --ignore node_modules --fix && prettier . --write",
     "postinstall": "cp modules.json.template modules.json",
-    "test": "npm run lint && npm run test:spelling",
+    "test": "node --run lint && node --run test:spelling",
     "test:spelling": "cspell ."
   },
   "dependencies": {

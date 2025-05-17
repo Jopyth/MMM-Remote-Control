@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Check spelling
-        run: npm run test:spelling
+        run: node --run test:spelling
       - name: Check linting
-        run: npm run lint
+        run: node --run lint
       - run: "echo '✨ Code quality checks completed with status: ${{ job.status }}.'"

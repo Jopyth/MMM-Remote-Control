@@ -14,8 +14,8 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 ## Developer commands
 
 - `npm install` - Install all dependencies.
-- `npm run download_modules` - Download module list manually.
-- `npm run lint` - Run linting and formatter checks.
-- `npm run lint:fix` - Fix linting and formatter issues.
-- `npm run test` - Run linting and formatter checks + Run spelling check.
-- `npm run test:spelling` - Run spelling check.
+- `node --run download_modules` - Download module list manually.
+- `node --run lint` - Run linting and formatter checks.
+- `node --run lint:fix` - Fix linting and formatter issues.
+- `node --run test` - Run linting and formatter checks + Run spelling check.
+- `node --run test:spelling` - Run spelling check.
