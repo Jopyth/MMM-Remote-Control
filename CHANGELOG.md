@@ -307,7 +307,7 @@ There shouldn't be any breaking changes in this release. But since there are a s
 - Updates now show if there's an update available every day (#52)
 - Templates for issues and PRs, and also stale for auto management of issues.
 - Close Dev Tools (#119)
-- Undo Config Implementation [Beta]
+- Undo Config Implementation (Beta)
 - Classes to show, hide or toggle multiple modules at once (#34)
 - Classes and saves API
 - Changelog of every module updated

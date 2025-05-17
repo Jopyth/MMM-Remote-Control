@@ -605,7 +605,7 @@ kbd {
 
 pre code {
   line-height: 0.6em;
-  font-size: -50%;
+  font-size: 0.5rem;
 }
 
 pre {
