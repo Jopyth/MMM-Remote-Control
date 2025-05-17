@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.9](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.8...v3.1.9) - 2025-05-17
+
+### Changed
+
+- chore: review linter setup
+- chore: update devDependencies
+- chore: update log messages for module default retrieval outputs
+- docs: update URL to own wiki
+- refactor: replace `body-parser` with express's built-in body parsing
+- refactor: update route definitions and improve response handling to be compatible with express v5 (without this MMM-Remote-Control would not work with the next release of MagicMirror²)
+- refactor: update scripts to use `node --run`
+
+### Fixed
+
+- fix: replace not working discussions URL with forum URL
+
 ## [3.1.8](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.7...v3.1.8) - 2025-04-27
 
 ### Changed
