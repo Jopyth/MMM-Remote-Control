@@ -115,6 +115,14 @@ module.exports = {
 
     this.expressRouter = express.Router();
 
+    /*
+     * MagicMirror² switches to Express 5 with v2.32.0 - to keep compatibility with older versions we need
+     * to check for the Express version. Since Express 5 dropt the .del method, we can use that to check.
+     * If the method is not available, we are using Express 4.x and need to use the old syntax.
+     * This is a temporary solution and will be removed in the future.
+     */
+    const expressVersionLessThan5 = express.application.del ? true : false;
+
     // Route for testing the api at http://mirror:8080/api/test
     this.expressRouter.route(["/test", "/"]). // Test without apiKey
       get((req, res) => {
@@ -168,21 +176,35 @@ module.exports = {
       self.answerGet({data: r}, res);
     });
 
-    this.expressRouter.route([
-      "/refresh{/:delayed}",
-      "/shutdown{/:delayed}",
-      "/reboot{/:delayed}",
-      "/restart{/:delayed}",
-      "/save",
-      "/minimize",
-      "/togglefullscreen",
-      "/devtools"
-    ]).get((req, res) => {
-      if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
-      const r = req.path.split("/")[1].toUpperCase();
-      console.log(req.path);
-      self.executeQuery(this.checkDelay({action: r}, req), res);
-    });
+    let route = expressVersionLessThan5
+      ? [
+        "/refresh/:delayed?",
+        "/shutdown/:delayed?",
+        "/reboot/:delayed?",
+        "/restart/:delayed?",
+        "/save",
+        "/minimize",
+        "/togglefullscreen",
+        "/devtools"
+      ]
+      : [
+        "/refresh{/:delayed}",
+        "/shutdown{/:delayed}",
+        "/reboot{/:delayed}",
+        "/restart{/:delayed}",
+        "/save",
+        "/minimize",
+        "/togglefullscreen",
+        "/devtools"
+      ];
+
+    this.expressRouter.route(route).
+      get((req, res) => {
+        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+        const r = req.path.split("/")[1].toUpperCase();
+        console.log(req.path);
+        self.executeQuery(this.checkDelay({action: r}, req), res);
+      });
 
     this.expressRouter.route("/classes/:value").
       get((req, res) => {
@@ -201,7 +223,10 @@ module.exports = {
         self.executeQuery({action: "COMMAND", command: req.params.value}, res);
       });
 
-    this.expressRouter.route("/userpresence{/:value}").
+    route = expressVersionLessThan5
+      ? "/userpresence/:value?"
+      : "/userpresence{/:value}";
+    this.expressRouter.route(route).
       get((req, res) => {
         if (req.params.value) {
           if (req.params.value === "true" || req.params.value === "false") {
@@ -214,7 +239,10 @@ module.exports = {
         }
       });
 
-    this.expressRouter.route("/update{/:moduleName}").
+    route = expressVersionLessThan5
+      ? "/update/:moduleName?"
+      : "/update{/:moduleName}";
+    this.expressRouter.route(route).
       get((req, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         if (!req.params.moduleName) { return self.answerGet({data: "mmUpdateAvailable"}, res); }
@@ -253,7 +281,10 @@ module.exports = {
       });
     // edit config
 
-    this.expressRouter.route("/notification/:notification{/:p}{/:delayed}").
+    route = expressVersionLessThan5
+      ? "/notification/:notification/:p?/:delayed?"
+      : "/notification/:notification{/:p}{/:delayed}";
+    this.expressRouter.route(route).
       get((req, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         this.answerNotifyApi(req, res);
@@ -267,7 +298,10 @@ module.exports = {
         this.answerNotifyApi(req, res);
       });
 
-    this.expressRouter.route("/module{/:moduleName}{/:action}{/:delayed}").
+    route = expressVersionLessThan5
+      ? "/module/:moduleName?/:action?/:delayed?"
+      : "/module{/:moduleName}{/:action}{/:delayed}";
+    this.expressRouter.route(route).
       get((req, res) => {
         this.answerModuleApi(req, res);
       }).
@@ -279,7 +313,10 @@ module.exports = {
         this.answerModuleApi(req, res);
       });
 
-    this.expressRouter.route("/monitor{/:action}{/:delayed}").
+    route = expressVersionLessThan5
+      ? "/monitor/:action?/:delayed?"
+      : "/monitor{/:action}{/:delayed}";
+    this.expressRouter.route(route).
       get((req, res) => {
         if (!req.params.action) { req.params.action = "STATUS"; }
         const actionName = req.params.action.toUpperCase();
