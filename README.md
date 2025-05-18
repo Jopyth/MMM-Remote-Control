@@ -1,16 +1,26 @@
 # MMM-Remote-Control
 
-**_MMM-Remote-Control_** is a module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) that allows you to use a browser, to quickly shut down your mirror, hide and show modules on your mirror and do other cool stuff.
+**MMM-Remote-Control** is a module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) that allows you to use a browser, to quickly shut down your mirror, hide and show modules on your mirror and do other cool stuff.
 
 The website should work fine on any device (desktop, smartphone, tablet, ...).
 
 Since we all want our [SD cards to live a long and prosper life](http://raspberrypi.stackexchange.com/a/383) we shut down properly every time before unplugging, right?
 
-![The Main Menu](img/main.png)
-![The Power Menu](img/power.png)
-![Hide and Show a Module](img/hide_show_module.gif)
-
 The module also includes a **RESTful API** for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
+
+## Screenshots
+
+### Main menu
+
+![main menu](img/main_screenshot.png)
+
+### Power menu
+
+![power menu](img/power_screenshot.png)
+
+### Screencast "Hide and show a module"
+
+![Hide and show a module](img/hide_show_module_screencast.gif)
 
 ## Installation
 
