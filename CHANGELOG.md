@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.11](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.10...v3.1.11) - 2025-05-18
+
+### Fixed
+
+- fix: support Express v4 and v5 - to fix issue #340
+  - The issue was introduced in 3.1.9, when the module was updated to be compatible with Express v5.
+  - Since the new route definitions are not compatible with Express v4, the module will now check the version of Express and use the appropriate route definitions.
+
 ## [3.1.10](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.9...v3.1.10) - 2025-05-18
 
 ### Changed
