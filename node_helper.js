@@ -100,15 +100,11 @@ module.exports = NodeHelper.create({
   combineConfig () {
     // function copied from MagicMirrorOrg (MIT)
     const defaults = require(`${__dirname}/../../js/defaults.js`);
-    let configFilename = path.resolve(`${__dirname}/../../config/config.js`);
-    if (typeof global.configuration_file !== "undefined") {
-      configFilename = path.resolve(`${__dirname}/../../${global.configuration_file}`);
-    }
-
+    const configPath = this.getConfigPath();
     this.thisConfig = {};
     try {
-      fs.accessSync(configFilename, fs.F_OK);
-      const c = require(configFilename);
+      fs.accessSync(configPath, fs.F_OK);
+      const c = require(configPath);
       const config = {...defaults, ...c};
       this.configOnHd = config;
       // Get the configuration for this module.
@@ -132,6 +128,14 @@ module.exports = NodeHelper.create({
     }
 
     this.loadTranslation(this.configOnHd.language);
+  },
+
+  getConfigPath () {
+    let configPath = path.resolve(`${__dirname}/../../config/config.js`);
+    if (typeof global.configuration_file !== "undefined") {
+      configPath = path.resolve(`${__dirname}/../../${global.configuration_file}`);
+    }
+    return configPath;
   },
 
   createRoutes () {
@@ -442,7 +446,7 @@ module.exports = NodeHelper.create({
 
     if (query.data === "config") {
       const backupHistorySize = 5;
-      const configPath = path.resolve("config/config.js");
+      const configPath = this.getConfigPath();
 
       let best = -1;
       let bestTime = null;
