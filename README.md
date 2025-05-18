@@ -45,7 +45,7 @@ cd MMM-Remote-Control
 npm ci --omit=dev
 ```
 
-- (2) Add the module to your `config/config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
+- (2) Add the module to your `config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
 
 ```js
     {
