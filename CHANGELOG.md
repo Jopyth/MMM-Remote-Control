@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.10](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.9...v3.1.10) - 2025-05-18
+
+### Changed
+
+- chore: re-add Prettier config (was removed in 3.1.9, but caused issues in GitHub actions)
+- chore: update devDependencies
+- docs: move images to own directory
+- docs: update screenshots and add screenshot heading to README
+
 ## [3.1.9](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.8...v3.1.9) - 2025-05-17
 
 ### Changed
