@@ -82,7 +82,7 @@ Module.register("MMM-Remote-Control", {
         if (settingsVersion === 0) {
           // move old data into moduleData
           payload = {moduleData: payload, brightness: 100};
-          payload = {moduleData: payload, temp: 370};
+          payload = {moduleData: payload, temp: 327};
         }
       }
 
@@ -173,7 +173,8 @@ Module.register("MMM-Remote-Control", {
       newBrightnessValue = 200;
     }
     const filterValue = `brightness(${newBrightnessValue}%)`;
-
+    Log.debug("BRIGHTNESS", newBrightnessValue);
+    this.brightness = newBrightnessValue;
     const childNodesList = document.body.childNodes;
     for (let i = 0; i < childNodesList.length; i++) {
       if (childNodesList[i].nodeName !== "SCRIPT" && childNodesList[i].nodeName !== "#text") {
@@ -200,6 +201,8 @@ Module.register("MMM-Remote-Control", {
       }
       overlay.style.backgroundColor = `rgba(0, 150, 255,${(325 - temp) / 865})`;
     }
+    Log.debug("TEMP", temp);
+    this.temp = temp;
   },
 
   getDom () {
