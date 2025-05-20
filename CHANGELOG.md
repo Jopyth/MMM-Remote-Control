@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.12](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.11...v3.1.12) - 2025-05-20
+
+### Fixed
+
+- docs: correct config file path
+- fix: ignore `settings.json` to prevent merge conflicts. This was accidentally removed in commit 6d7c85b12c8dce2ec772f9a9b1892b098576872f.
+- fix: set `brightness` and `temp` for saving into `settings.json` and offering in API
+
+### Changed
+
+- refactor: centralize config path retrieval in `combineConfig` and `answerPost`
+
 ## [3.1.11](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.10...v3.1.11) - 2025-05-18
 
 ### Fixed
