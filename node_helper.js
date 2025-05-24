@@ -103,7 +103,7 @@ module.exports = NodeHelper.create({
     const configPath = this.getConfigPath();
     this.thisConfig = {};
     try {
-      fs.accessSync(configPath, fs.F_OK);
+      fs.accessSync(configPath, fs.constants.F_OK);
       const c = require(configPath);
       const config = {...defaults, ...c};
       this.configOnHd = config;
@@ -325,7 +325,7 @@ module.exports = NodeHelper.create({
     const filename = path.resolve(`${modulePath}/${module.longname}.js`);
 
     try {
-      fs.accessSync(filename, fs.F_OK);
+      fs.accessSync(filename, fs.constants.F_OK);
 
       /* Defaults are stored when Module.register is called during require(filename); */
       require(filename);
