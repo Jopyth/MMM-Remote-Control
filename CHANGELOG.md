@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.13](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.12...v3.1.13) - 2025-05-24
+
+## Changed
+
+- chore: switch stale workflow schedule to twice a week
+- chore: update dependencies
+- refactor: use `fs.constants.F_OK` for file access checks
+
 ## [3.1.12](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.11...v3.1.12) - 2025-05-20
 
 ### Fixed
