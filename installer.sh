@@ -70,11 +70,11 @@ if [ -d "$MM_HOME/modules/$MODULE_NAME" ] ; then
     echo ""
     if [ "$BRANCH" == "master" ]; then
         if check_yes "Do you want to switch to the develop branch?"; then
-            git checkout develop
+            git switch develop
         fi
     else
         if check_yes "Do you want to switch to the master branch?"; then
-            git checkout master
+            git switch master
         fi
     fi
     echo ""

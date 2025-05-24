@@ -123,7 +123,7 @@ v1.1.1
 v1.1.2
 ```
 
-Then you can checkout that version with, for example `git checkout v1.0.0`, or use `git checkout master` to checkout the most recent version.
+Then you can checkout that version with, for example `git switch --detach v1.0.0`, or use `git switch master` to checkout the most recent version.
 
 ## Known limitations
 
