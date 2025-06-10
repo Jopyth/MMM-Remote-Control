@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.2.0](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.13...v3.2.0) - 2025-05-30
+
+## Added
+
+- style: add transition effect for brightness and temperature change
+
+## Changed
+
+- chore: add missing "type" field in `package.json`
+- chore: update dependencies
+- refactor: replace `git checkout` with `git switch` for branch/tag navigation
+- style: simplify range input CSS
+
+## Fixed
+
+- fix: add onerror handling for CSS file loading due to path changes in MagicMirror 2.32.0
+
 ## [3.1.13](https://github.com/jopyth/MMM-Remote-Control/compare/v3.1.12...v3.1.13) - 2025-05-24
 
 ## Changed
