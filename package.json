@@ -9,6 +9,7 @@
     "remote control",
     "control"
   ],
+  "type": "commonjs",
   "homepage": "https://github.com/jopyth/MMM-Remote-Control#readme",
   "bugs": {
     "url": "git+https://github.com/jopyth/MMM-Remote-Control/issues"
