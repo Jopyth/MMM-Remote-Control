@@ -5,4 +5,9 @@
   z-index: 2;
   width: 100vw;
   height: 100vh;
+  transition: background-color 1.5s ease;
+}
+
+body > *:not(script, style) {
+  transition: filter 1.5s ease-in-out;
 }
