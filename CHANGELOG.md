@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.2.3](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.2...v3.2.3) - 2025-09-01
+
+### Changed
+
+- chore: move "type" field to the correct position in package.json
+- chore: remove engines field from package.json
+- chore: remove unnecessary languageOptions from CSS configuration in ESLint
+- chore: update dependencies
+
 ## [3.2.2](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.1...v3.2.2) - 2025-08-19
 
 ### Changed
