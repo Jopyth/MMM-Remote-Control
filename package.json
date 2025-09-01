@@ -9,7 +9,6 @@
     "remote control",
     "control"
   ],
-  "type": "commonjs",
   "homepage": "https://github.com/jopyth/MMM-Remote-Control#readme",
   "bugs": {
     "url": "git+https://github.com/jopyth/MMM-Remote-Control/issues"
@@ -23,6 +22,7 @@
   "contributors": [
     "https://github.com/jopyth/MMM-Remote-Control/graphs/contributors"
   ],
+  "type": "commonjs",
   "scripts": {
     "download_modules": "node ./scripts/download_modules_manually.mjs",
     "lint": "eslint && prettier . --check",
