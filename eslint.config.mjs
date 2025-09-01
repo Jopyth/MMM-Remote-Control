@@ -9,7 +9,7 @@ import stylistic from "@stylistic/eslint-plugin";
 
 export default defineConfig([
   globalIgnores(["**/*.min.js"]),
-  {"files": ["**/*.css"], "languageOptions": {"tolerant": true}, "plugins": {css}, "language": "css/css", "extends": ["css/recommended"], "rules": {"css/use-baseline": ["error", {"available": "newly"}]}},
+  {"files": ["**/*.css"], "plugins": {css}, "language": "css/css", "extends": ["css/recommended"], "rules": {"css/use-baseline": ["error", {"available": "newly"}]}},
   {
     "files": ["**/*.js"],
     "languageOptions": {
