@@ -497,7 +497,6 @@ input[type="checkbox"]:checked ~ .fa-check-square-o {
 }
 
 input[type="range"] {
-  -webkit-appearance: none;
   appearance: none;
   background: transparent;
   width: calc(100% - 0.5em);
@@ -512,7 +511,6 @@ input[type="range"]:focus {
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
   width: 30px;
   height: 30px;
   border-radius: 50%;
