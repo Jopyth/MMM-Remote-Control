@@ -68,6 +68,7 @@
     "YOURAPIKEY"
   ],
   "ignorePaths": [
+    "coverage/**",
     "modules.json",
     "modules.json.template",
     "node_modules/**",

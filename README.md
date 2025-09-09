@@ -299,6 +299,67 @@ An example menu is provided in this module's folder, titled `custom_menu.example
 
 For contributing to this repository, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
+### Tests & Quality
+
+Current automated test stack (now at Phase 2) is in place:
+
+Phase 1: basic quality gates
+
+- Lint & formatting: `npm run lint`
+- Spell checking: `npm run test:spelling`
+
+Phase 2: initial unit test & coverage foundation
+
+- Unit tests (Node built-in runner): `npm run test:unit`
+- Combined pipeline (lint + spelling + unit): `npm test`
+- Coverage (c8): `npm run test:coverage`
+
+Coverage thresholds start deliberately low to allow incremental improvements. New tests should raise real coverage and can then justify increasing thresholds in `package.json`.
+
+#### Planned Test Roadmap (Phases)
+
+1. Phase (done): Base quality gates (lint, formatter, spellcheck) – no runtime tests
+2. Phase (done): Test runner, extracted utilities, first unit tests, coverage baseline
+3. Phase: More unit & first integration tests
+
+- Extra edge cases for `cleanConfig`
+- GET routes: `/get?data=moduleAvailable`, `/get?data=config`, error path
+- Small express/test factory (mocks: fs, simple-git)
+- Raise coverage target (e.g. statements >8%)
+
+4. Phase: Action / socket logic (core `executeQuery` paths)
+
+- BRIGHTNESS, TEMP, NOTIFICATION parsing, HIDE/SHOW/TOGGLE selection logic
+- DELAYED timer (start, reset, abort)
+
+5. Phase: Persistence & backups
+
+- `answerPost` (saving config), backup rotation, UNDO_CONFIG, failure scenarios (fs errors, disk edge cases)
+
+6. Phase: Module install & update flows
+
+- `installModule`, `updateModule` with mocked `simple-git` & `exec`
+
+7. Phase: System / hardware related commands
+
+- Monitor control (status detection), shutdown/reboot, PM2 control (pm2 mock)
+
+8. Phase: Frontend / DOM logic (jsdom)
+
+- `getDom()` URL/port logic, brightness filter application, temp overlay color gradients
+
+9. Phase: API / contract tests
+
+- Validate against `docs/swagger.json` (add missing if needed)
+
+10. Phase: Optional E2E / Docker integration
+
+- Spin minimal MagicMirror instance; smoke test key endpoints
+
+11. Phase (ongoing): Gradually raise coverage thresholds & consider mutation tests
+
+Each phase incrementally increases coverage thresholds to encourage steady progress without big-bang changes.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.

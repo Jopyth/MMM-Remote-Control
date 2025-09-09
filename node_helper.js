@@ -19,6 +19,8 @@ const util = require("node:util");
 const simpleGit = require("simple-git");
 
 const defaultModules = require(path.resolve(`${__dirname}/../../modules/default/defaultmodules.js`));
+const {capitalizeFirst, formatName, includes} = require("./lib/utils.js");
+const {cleanConfig} = require("./lib/configUtils.js");
 
 // eslint-disable-next-line no-global-assign
 Module = {
@@ -182,14 +184,9 @@ module.exports = NodeHelper.create({
     });
   },
 
-  capitalizeFirst (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  },
+  capitalizeFirst (string) { return capitalizeFirst(string); },
 
-  formatName (string) {
-    string = string.replace(/MMM-/g, "").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/(^|[-_])(\w)/g, ($0, $1, $2) => ($1 && " ") + $2.toUpperCase());
-    return string;
-  },
+  formatName (string) { return formatName(string); },
 
   updateModuleList (force) {
     const downloadModules = require("./scripts/download_modules");
@@ -400,45 +397,19 @@ module.exports = NodeHelper.create({
   },
 
   removeDefaultValues (config) {
-    // remove cached version
+    // Reload default config (avoid module cache if updated during runtime)
     delete require.cache[require.resolve(`${__dirname}/../../js/defaults.js`)];
-    // then reload default config
     const defaultConfig = require(`${__dirname}/../../js/defaults.js`);
-
-    for (const key in defaultConfig) {
-      if (Object.hasOwn(defaultConfig, key) && config && Object.hasOwn(config, key) && JSON.stringify(defaultConfig[key]) === JSON.stringify(config[key])) {
-        delete config[key];
-      }
-    }
-
-    for (let i = 0; i < config.modules.length; i++) {
-      const current = config.modules[i];
-      const moduleDefaultsFromRequire = Module.configDefaults[current.module];
-      // We need moduleDataFromBrowser for bundled modules like MMM-RAIN-MAP. See #331.
-      const moduleDataFromBrowser = this.configData.moduleData.find((item) => item.name === current.module);
-      const moduleDefaults = moduleDefaultsFromRequire || moduleDataFromBrowser?.defaults;
-
-      if (!current.config) current.config = {};
-      if (moduleDefaults) {
-        for (const key in moduleDefaults) {
-          if (Object.hasOwn(moduleDefaults, key) && Object.hasOwn(current.config, key) && JSON.stringify(moduleDefaults[key]) === JSON.stringify(current.config[key])) {
-            delete current.config[key];
-          }
-        }
-      }
-
-      if (current.config["position"] === "") {
-        delete current.config["position"];
-      }
-
-      if (current.header === "") {
-        delete current.header;
-      }
-
-      Log.debug(current);
-    }
-
-    return config;
+    const moduleDefaultsMap = Module.configDefaults;
+    const moduleDataFromBrowser = this.configData.moduleData || [];
+    const cleaned = cleanConfig({
+      config,
+      defaultConfig,
+      moduleDefaultsMap,
+      moduleDataFromBrowser
+    });
+    cleaned.modules?.forEach((m) => Log.debug(m));
+    return cleaned;
   },
 
   answerPost (query, req, res) {
@@ -1110,9 +1081,7 @@ module.exports = NodeHelper.create({
     });
   },
 
-  in (pattern, string) {
-    return string.indexOf(pattern) !== -1;
-  },
+  in (pattern, string) { return includes(pattern, string); },
 
   loadDefaultSettings () {
     const self = this;

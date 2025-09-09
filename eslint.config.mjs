@@ -8,7 +8,7 @@ import markdown from "@eslint/markdown";
 import stylistic from "@stylistic/eslint-plugin";
 
 export default defineConfig([
-  globalIgnores(["**/*.min.js"]),
+  globalIgnores(["**/*.min.js", "coverage/**"]),
   {"files": ["**/*.css"], "plugins": {css}, "language": "css/css", "extends": ["css/recommended"], "rules": {"css/use-baseline": ["error", {"available": "newly"}]}},
   {
     "files": ["**/*.js"],
