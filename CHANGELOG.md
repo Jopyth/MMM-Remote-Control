@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.2.4](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.3...v3.2.4) - 2025-09-09
+
+### Added
+
+- feat(tests): add initial unit test & coverage foundation
+
+### Changed
+
+- chore: update dependencies
+- refactor(css): remove redundant -webkit-appearance property
+
+### Fixed
+
+- chore: add `prismjs` override to resolve npm audit issue
+- fix(ui): correct alignment of stacked monitor/edit icons and text spacing
+
 ## [3.2.3](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.2...v3.2.3) - 2025-09-01
 
 ### Changed
