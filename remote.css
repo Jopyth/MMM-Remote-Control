@@ -336,11 +336,16 @@ input:focus.input-error {
 
 .stack {
   position: relative;
-  display: inline-block;
-  height: 1em;
-  line-height: 1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.2em;
+  line-height: 1.2em;
   font-size: 1em;
   vertical-align: middle;
+  width: 1em;
+  flex-shrink: 0;
+  margin-right: 0.5em;
 }
 
 .inner-label {
@@ -349,8 +354,11 @@ input:focus.input-error {
 
 .inner-monitor-label {
   font-size: 0.5em;
-  top: -0.15em;
-  left: -0.05em;
+  position: absolute;
+  top: 43%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .inner-small-label {
