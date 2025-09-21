@@ -86,9 +86,9 @@
       "**/*.md"
     ],
     "check-coverage": true,
-    "branches": 5,
-    "lines": 4,
-    "functions": 4,
-    "statements": 4
+    "branches": 6,
+    "lines": 6,
+    "functions": 5,
+    "statements": 6
   }
 }
