@@ -27,6 +27,7 @@
     "download_modules": "node ./scripts/download_modules_manually.mjs",
     "lint": "eslint && prettier . --check",
     "lint:fix": "eslint --fix && prettier . --write",
+    "prepare": "simple-git-hooks",
     "postinstall": "cp modules.json.template modules.json",
     "test": "node --run lint && node --run test:spelling && node --run test:unit",
     "test:coverage": "c8 --all node --test tests/unit/**/*.test.js",
@@ -50,9 +51,19 @@
     "eslint": "^9.36.0",
     "eslint-plugin-import-x": "^4.16.1",
     "globals": "^16.4.0",
-    "prettier": "^3.6.2"
+    "lint-staged": "^16.1.6",
+    "prettier": "^3.6.2",
+    "simple-git-hooks": "^2.13.1"
   },
-  
+  "simple-git-hooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*": [
+      "eslint --fix",
+      "prettier --write --ignore-unknown"
+    ]
+  },
   "c8": {
     "reporter": [
       "text-summary",
