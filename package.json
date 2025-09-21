@@ -71,6 +71,7 @@
     ],
     "include": [
       "lib/**/*.js",
+      "API/**/*.js",
       "node_helper.js",
       "MMM-Remote-Control.js"
     ],
