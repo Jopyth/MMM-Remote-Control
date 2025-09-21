@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.2.5](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.4...v3.2.5) - 2025-09-21
+
+### Changed
+
+- chore: update devDependencies
+- docs: switch from `npm run` to `node --run`
+- refactor: switch to `swagger-ui-dist`; remove overrides; silence install warnings
+
 ## [3.2.4](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.3...v3.2.4) - 2025-09-09
 
 ### Added
