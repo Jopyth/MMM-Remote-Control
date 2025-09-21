@@ -1,43 +1,80 @@
 name: Bug Report
 description: Think you found a bug? Let us know!
-labels: [bug, to check]
+labels:
+  - bug
+  - to check
 body:
   - type: markdown
     attributes:
       value: |
-        If you publish this issue, you accept that you made your own tests, and this is 100% a bug.
-        You should have the steps to being able to reproduce this bug, for us to check if it's truly a bug.
+        Thanks for taking the time to help make MMM-Remote-Control better!
+        Please share clear steps to reproduce the issue so we can verify and fix it quickly.
 
-        Also, you accept that, if this issue it's invalid in any way, will be discarded without receiving any response about it.
-        If you're not sure if it's a bug, please [ask here](https://forum.magicmirror.builders/category/29/troubleshooting).
+        Not sure it's a bug? Feel free to ask first in the community forum:
+        https://forum.magicmirror.builders/category/29/troubleshooting
 
-        Thanks for taking the time to help Remote Control get better every day!
+        Tip: How to write a great bug report:
+        https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue
   - type: input
     attributes:
       label: OS
       description: |
         example:
-        - OS: Ubuntu 20.04
+        - OS: Raspberry Pi OS (Bookworm)
+
+        How to find your OS on the Pi (or other Linux):
+        - Run: `cat /etc/os-release` and copy the value of `PRETTY_NAME`
+        - Alternatively: `lsb_release -a` (if available) or `uname -a`
+      placeholder: "Raspberry Pi OS (Bookworm)"
     validations:
       required: true
   - type: input
     attributes:
-      label: NodeJS Version
+      label: Node.js Version
       description: |
         example:
-        - NodeJS: 22.0.0
-      placeholder: "22.x.x"
+        - NodeJS: 24.0.0
+
+        How to check your Node.js version:
+        - Run: `node -v` and paste the exact version
+
+        Important:
+        - Only report a bug if you can reproduce it on a current, supported Node.js version (latest LTS or current stable).
+        - Please upgrade and re-test before filing issues for outdated Node.js versions.
+      placeholder: "24.x.x"
     validations:
       required: true
+  - type: checkboxes
+    attributes:
+      label: Version verification
+      description: Please confirm you reproduced the bug on an up-to-date Node.js release.
+      options:
+        - label: I verified the issue also occurs on a current Node.js version (e.g., latest LTS or 24.x), not only on an outdated one.
+          required: true
   - type: input
     attributes:
       label: MagicMirror² Version
       description: |
         example:
-        - MM: 2.29.0
+        - MM: 2.33.0
+
+        How to check your MagicMirror² version:
+        - When you run MagicMirror², the version is shown in the terminal output at startup.
+        - Or open `~/MagicMirror/package.json` and copy the `version`
+
+        Important:
+        - Please only report bugs reproducible on the current MagicMirror² release.
+        - If you're on an older version, update first and re-test before opening an issue.
       placeholder: "2.x.x"
     validations:
       required: true
+  - type: checkboxes
+    attributes:
+      label: MagicMirror² version verification
+      description: Please confirm you reproduced the bug on the latest MagicMirror² release.
+      options:
+        - label: I verified the issue also occurs on the latest MagicMirror² release (not only on an outdated one).
+          required: true
   - type: input
     attributes:
       label: Remote Control Version
@@ -49,9 +86,9 @@ body:
       required: true
   - type: checkboxes
     attributes:
-      label: Did you try using just Remote Control alone with MM?
+      label: Minimal reproduction
       options:
-        - label: I have and the error still happening
+        - label: I enabled only MMM-Remote-Control (other modules disabled) and the issue still occurs.
           required: true
   - type: textarea
     attributes:
@@ -74,13 +111,13 @@ body:
   - type: textarea
     attributes:
       label: Possible solution
-      description: You can suggest a reason for the bug, if know about it.
+      description: You can suggest a reason for the bug, if you know about it.
     validations:
       required: false
   - type: textarea
     attributes:
       label: Steps to reproduce
-      description: Please give details about how do you reach that behavior
+      description: Please provide detailed steps to reproduce the behavior
       placeholder: |
         1. Start MM...
         2. Wait until everything loads
@@ -90,11 +127,17 @@ body:
       required: true
   - type: textarea
     attributes:
+      label: Screenshots (optional)
+      description: If helpful, paste screenshots or a short screen recording.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
       label: Log
       description: |
-        Paste the log you're getting, and possibly the error.
+        Paste the relevant log output and any error messages.
         **Please, make sure that none of your personal information, such as IP or passwords are exposed.**
-      render: Shell
+      render: shell
     validations:
       required: true
   - type: textarea
@@ -103,11 +146,11 @@ body:
       description: |
         Paste here your config.js file.
 
-        Make sure that none of your personal data is present, specially check for:
-        - IPs from MM instance, or the ones that are whitelisted. Please, replace them with *** so we're totally sure that you have set them.
-        - API keys, Tokens from different modules, URL to private calendars.
-        - Directions or Personal data.
-      render: JavaScript
+        Make sure that none of your personal data is present, especially check for:
+        - IPs from the MM instance, or whitelisted IPs. Please replace them with *** so we're totally sure that you have set them.
+        - API keys, tokens from different modules, URLs to private calendars.
+        - Addresses or other personal data.
+      render: javascript
     validations:
       required: true
   - type: textarea

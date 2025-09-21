@@ -1,32 +1,91 @@
 name: Feature Request
-description: Could be a nice addition? Feel free to post!
-labels: [feature, to check]
+description: Suggest an idea for MMM-Remote-Control
+labels:
+  - feature
+  - to check
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share an idea! For general brainstorming or questions, you can also use the forum:
+        https://forum.magicmirror.builders/category/29/troubleshooting
+
+        Please help us understand the problem and your proposed solution. Clear context helps us assess and prioritize.
+  - type: checkboxes
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and discussions to avoid duplicates.
+          required: true
+        - label: This is a feature request (not a support/troubleshooting question).
+          required: true
   - type: textarea
     attributes:
-      label: Description
-      description: Tell us more about your awesome feature. Why do you feel that this should be implemented?
+      label: Problem / Use case
+      description: What problem are you trying to solve? Why is it important for you?
+      placeholder: |
+        When I ... I can't ..., which makes it hard to ...
     validations:
       required: true
   - type: textarea
     attributes:
-      label: Changelog
-      description: Do you, by any chance, know which files are needed to be changed in order to make it work?
+      label: Proposed solution
+      description: What would you like to happen? Try to be specific.
       placeholder: |
-        Probably `api.js` would need a change, because...
+        Add a button/menu/API that ..., so that ...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Alternatives considered
+      description: What else did you try or consider? Why wasn't it good enough?
     validations:
       required: false
   - type: textarea
     attributes:
-      label: Requirements
-      description: You have a suggestion of how to implement it? Let's heard it!
-      placeholder: |
-        You can change Line 35 of this file and everything is gonna be just fine.
+      label: UI/UX details (if applicable)
+      description: Describe any UI changes. Wireframes or screenshots are welcome.
     validations:
       required: false
   - type: textarea
     attributes:
-      label: Additional info
-      description: Everything else that you think could be useful for us. ;D
+      label: API / config impact (if applicable)
+      description: Would this add or change API routes, socket notifications, or config options?
+      placeholder: |
+        New GET /api/... or config option `foo: true`
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Backwards compatibility
+      description: Would this break existing setups? If so, can we provide a migration path?
+    validations:
+      required: false
+  - type: dropdown
+    attributes:
+      label: Priority / Impact
+      options:
+        - Low
+        - Medium
+        - High
+  - type: dropdown
+    attributes:
+      label: "Willing to contribute a PR?"
+      description: Select Yes if you plan to open a pull request for this feature.
+      options:
+        - "Yes"
+        - "No"
+  - type: textarea
+    attributes:
+      label: Implementation hints (optional)
+      description: Pointers to code areas or a rough plan help (files, functions, links).
+      placeholder: |
+        Likely touches node_helper.js (executeQuery), API/api.js (new route), and remote.html for UI.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Anything else we should know? Links, screenshots, or related modules.
     validations:
       required: false
