@@ -305,14 +305,14 @@ Current automated test stack (now at Phase 2) is in place:
 
 Phase 1: basic quality gates
 
-- Lint & formatting: `npm run lint`
-- Spell checking: `npm run test:spelling`
+- Lint & formatting: `node --run lint`
+- Spell checking: `node --run test:spelling`
 
 Phase 2: initial unit test & coverage foundation
 
-- Unit tests (Node built-in runner): `npm run test:unit`
+- Unit tests (Node built-in runner): `node --run test:unit`
 - Combined pipeline (lint + spelling + unit): `npm test`
-- Coverage (c8): `npm run test:coverage`
+- Coverage (c8): `node --run test:coverage`
 
 Coverage thresholds start deliberately low to allow incremental improvements. New tests should raise real coverage and can then justify increasing thresholds in `package.json`.
 

@@ -267,7 +267,7 @@ There shouldn't be any breaking changes in this release. But since there are a s
 ### Changed
 
 - Replace `node-fetch` by internal fetch API
-- Replace old python 2 script `download_modules.py` by JavaScript script, you can run it with `npm run download_modules` to download the modules list from the MagicMirror² wiki.
+- Replace old python 2 script `download_modules.py` by JavaScript script, you can run it with `node --run download_modules` to download the modules list from the MagicMirror² wiki.
 - Update `uuid`. This will fix #318.
 
 ## [2.5.2](https://github.com/jopyth/MMM-Remote-Control/compare/v2.5.1...v2.5.2) - 2025-01-18
