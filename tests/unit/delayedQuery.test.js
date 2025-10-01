@@ -1,5 +1,6 @@
 const assert = require("node:assert/strict");
-const {test} = require("node:test");
+const {test, describe} = require("node:test");
+const group = typeof describe === "function" ? describe : (_n, fn) => fn();
 
 // Add tests/shims to module resolution so 'logger' resolves to our shim
 const path = require("node:path");
@@ -50,61 +51,63 @@ function makeHelperWithFakeTimers () {
   return {helper, timeouts};
 }
 
-test("delayedQuery schedules and executes action", () => {
-  const {helper, timeouts} = makeHelperWithFakeTimers();
-  const res = {};
-  const q = {did: "A", timeout: 1, query: {action: "TEST"}};
+group("node_helper delayedQuery timers", () => {
+  test("schedules and executes action once timeout fires", () => {
+    const {helper, timeouts} = makeHelperWithFakeTimers();
+    const res = {};
+    const q = {did: "A", timeout: 1, query: {action: "TEST"}};
 
-  helper.delayedQuery(q, res);
-  // One timer should be recorded
-  assert.equal(Object.keys(helper.delayedQueryTimers).length, 1);
+    helper.delayedQuery(q, res);
+    // One timer should be recorded
+    assert.equal(Object.keys(helper.delayedQueryTimers).length, 1);
 
-  // Simulate timeout firing
-  const ids = Object.values(helper.delayedQueryTimers);
-  ids.forEach((id) => {
-    const fn = timeouts.get(id);
-    if (fn) fn();
+    // Simulate timeout firing
+    const ids = Object.values(helper.delayedQueryTimers);
+    ids.forEach((id) => {
+      const fn = timeouts.get(id);
+      if (fn) fn();
+    });
+
+    assert.equal((helper.__executed || []).length, 1);
+    assert.equal(helper.__executed[0].action, "TEST");
   });
 
-  assert.equal((helper.__executed || []).length, 1);
-  assert.equal(helper.__executed[0].action, "TEST");
-});
+  test("reset with same did replaces prior timer", () => {
+    const {helper, timeouts} = makeHelperWithFakeTimers();
+    const res = {};
 
-test("delayedQuery reset with same did replaces timer", () => {
-  const {helper, timeouts} = makeHelperWithFakeTimers();
-  const res = {};
+    helper.delayedQuery({did: "X", timeout: 1, query: {action: "ONE"}}, res);
+    const firstId = Object.values(helper.delayedQueryTimers)[0];
+    helper.delayedQuery({did: "X", timeout: 1, query: {action: "TWO"}}, res);
+    const secondId = Object.values(helper.delayedQueryTimers)[0];
 
-  helper.delayedQuery({did: "X", timeout: 1, query: {action: "ONE"}}, res);
-  const firstId = Object.values(helper.delayedQueryTimers)[0];
-  helper.delayedQuery({did: "X", timeout: 1, query: {action: "TWO"}}, res);
-  const secondId = Object.values(helper.delayedQueryTimers)[0];
+    assert.notEqual(firstId, secondId);
+    // Firing first should do nothing (cleared)
+    const fn1 = timeouts.get(firstId);
+    if (fn1) fn1();
+    assert.equal((helper.__executed || []).length || 0, 0);
 
-  assert.notEqual(firstId, secondId);
-  // Firing first should do nothing (cleared)
-  const fn1 = timeouts.get(firstId);
-  if (fn1) fn1();
-  assert.equal((helper.__executed || []).length || 0, 0);
+    // Fire second
+    const fn2 = timeouts.get(secondId);
+    if (fn2) fn2();
+    assert.equal(helper.__executed.length, 1);
+    assert.equal(helper.__executed[0].action, "TWO");
+  });
 
-  // Fire second
-  const fn2 = timeouts.get(secondId);
-  if (fn2) fn2();
-  assert.equal(helper.__executed.length, 1);
-  assert.equal(helper.__executed[0].action, "TWO");
-});
+  test("abort cancels scheduled timer", () => {
+    const {helper, timeouts} = makeHelperWithFakeTimers();
+    const res = {};
 
-test("delayedQuery abort cancels timer", () => {
-  const {helper, timeouts} = makeHelperWithFakeTimers();
-  const res = {};
+    helper.delayedQuery({did: "Y", timeout: 1, query: {action: "NEVER"}}, res);
+    const id = Object.values(helper.delayedQueryTimers)[0];
+    helper.delayedQuery({did: "Y", abort: true, query: {action: "NEVER"}}, res);
 
-  helper.delayedQuery({did: "Y", timeout: 1, query: {action: "NEVER"}}, res);
-  const id = Object.values(helper.delayedQueryTimers)[0];
-  helper.delayedQuery({did: "Y", abort: true, query: {action: "NEVER"}}, res);
-
-  // No timer should remain
-  assert.equal(Object.keys(helper.delayedQueryTimers).length, 0);
-  const fn = timeouts.get(id);
-  if (fn) fn();
-  assert.equal((helper.__executed || []).length || 0, 0);
+    // No timer should remain
+    assert.equal(Object.keys(helper.delayedQueryTimers).length, 0);
+    const fn = timeouts.get(id);
+    if (fn) fn();
+    assert.equal((helper.__executed || []).length || 0, 0);
+  });
 });
 
 // Restore global timers for other tests

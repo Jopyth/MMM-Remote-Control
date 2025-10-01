@@ -23,7 +23,7 @@ Status checkpoint (2025-09-21):
 
 - Phases 1 and 2 completed. We added unit tests for API helpers (`checkDelay`, `answerNotifyApi`), `answerModuleApi` defaults and SHOW flow, and timer behavior for `delayedQuery`.
 - Introduced shims for `logger` and `node_helper` so `node_helper.js` can be required in tests without MagicMirror runtime.
-- One `answerGet` test is currently skipped due to tight coupling to MM core; plan is to re-cover at the API router level or further isolate dependencies.
+- Phase 3 router-level GET coverage added; one direct `answerGet` unit test remains skipped and is deferred to a later phase once NodeHelper/MM core is further isolated.
 
 ## Test Roadmap (Phases)
 
@@ -33,12 +33,11 @@ The project follows an incremental test roadmap. Coverage thresholds start low a
    - Lint, formatter, spellcheck wired; no runtime tests.
 2. Phase 2 — Test runner & utilities (Done)
    - Test runner configured, first unit tests added, coverage baseline established.
-3. Phase 3 — More unit & first integration tests (In progress)
+3. Phase 3 — More unit & first integration tests (Done)
    - Extra edge cases for `cleanConfig` (Done)
-   - GET routes: `/get?data=moduleAvailable`, `/get?data=config`, error path (Pending)
-     - Note: One `answerGet` unit test is currently skipped; target to re-cover via API router tests or further isolation.
-   - Small express/test factory (mocks: fs, simple-git) (Pending)
-   - Raise coverage target (e.g., statements >8%) (Pending)
+   - GET routes covered at router level (Done)
+   - Small express/test factory (mocks: fs, simple-git) (Deferred)
+   - Raise coverage target (Done — thresholds bumped slightly)
 4. Phase 4 — Action / socket logic (core `executeQuery` paths) (In progress)
    - DELAYED timer (start, reset, abort) (Done)
    - BRIGHTNESS, TEMP, NOTIFICATION parsing, HIDE/SHOW/TOGGLE selection logic (Pending)
