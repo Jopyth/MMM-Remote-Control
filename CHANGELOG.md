@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.2.6](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.5...v3.2.6) - 2025-10-01
+
+### Changed
+
+- chore: add `simple-git-hooks` and `lint-staged` for pre-commit linting
+- chore: update dependencies
+- chore: update Node.js setup action to version 5
+- chore: update stale action to version 10
+- refactor: enhance issue templates for bug reports and feature requests
+
 ## [3.2.5](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.4...v3.2.5) - 2025-09-21
 
 ### Changed
