@@ -27,7 +27,7 @@
     "download_modules": "node ./scripts/download_modules_manually.mjs",
     "lint": "eslint && prettier . --check",
     "lint:fix": "eslint --fix && prettier . --write",
-    "prepare": "simple-git-hooks",
+    "prepare": "simple-git-hooks || echo 'No problem. Skipping git hooks installation.'",
     "postinstall": "cp modules.json.template modules.json",
     "test": "node --run lint && node --run test:spelling && node --run test:unit",
     "test:coverage": "c8 --all node --test tests/unit/**/*.test.js",
@@ -56,7 +56,7 @@
     "simple-git-hooks": "^2.13.1"
   },
   "simple-git-hooks": {
-    "pre-commit": "lint-staged"
+    "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
     "*": [
