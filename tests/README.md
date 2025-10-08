@@ -5,12 +5,16 @@ This project uses Node's built-in test runner and c8 for coverage.
 Quick run:
 
 - Lint & format check: `node --run lint`
+- Spell checking: `node --run test:spelling`
 - Unit tests: `node --run test:unit`
 - Coverage: `node --run test:coverage`
+- Watch mode (local dev): `node --run test:watch`
 
 Guidelines:
 
-- Keep tests side-effect free; mock/bypass filesystem, network, and timers.
+- Keep tests side-effect free; mock/bypass filesystem, network, and timers where necessary.
+- Focus on **critical logic with edge cases** (e.g., JSON parsing, backup rotation, class management).
+- Avoid testing trivial mappings or 1-line forwarding logic.
 - For API helpers in `API/api.js`, bind functions to a fake context rather than spinning an Express server.
 - For `node_helper.js` paths, test logic by stubbing methods (e.g., `sendSocketNotification`, `sendResponse`) and, when necessary, mock timers.
 - Follow repository lint rules; keep arrays/objects on one line where stylistic rules require it.
@@ -19,39 +23,122 @@ Notes on shims used in tests:
 
 - We provide lightweight shims under `tests/shims/` (e.g., `logger.js`, `node_helper.js`) to isolate unit tests from MagicMirror core. When a test needs to load `node_helper.js`, inject the shim path via `NODE_PATH` and call `module._initPaths()` before requiring the target file.
 
-Status checkpoint (2025-09-21):
+Status checkpoint (Updated 2025-10-08):
 
-- Phases 1 and 2 completed. We added unit tests for API helpers (`checkDelay`, `answerNotifyApi`), `answerModuleApi` defaults and SHOW flow, and timer behavior for `delayedQuery`.
-- Introduced shims for `logger` and `node_helper` so `node_helper.js` can be required in tests without MagicMirror runtime.
-- Phase 3 router-level GET coverage added; one direct `answerGet` unit test remains skipped and is deferred to a later phase once NodeHelper/MM core is further isolated.
+- **Phases 1–2:** Done (lint/format/spellcheck, utils tests).
+- **Phase 3:** Router-level GET coverage completed, but flagged for removal (low value; trivial mappings).
+- **Phase 4:** Core `executeQuery` tests added (NOTIFICATION JSON parsing, MANAGE_CLASSES, DELAYED timers). Simple forwarding logic (HIDE/SHOW/TOGGLE/BRIGHTNESS/TEMP) flagged for removal (no edge cases).
+- **Next:** Slim down existing tests, complete Phase 5 (config backup rotation), add minimal contract checks, then **done**.
 
-## Test Roadmap (Phases)
+## Test Roadmap (Phases) — Slimmed Down
 
-The project follows an incremental test roadmap. Coverage thresholds start low and rise as we add tests.
+The project follows a **lean, pragmatic** test roadmap. We focus on **critical logic** and **data integrity**, avoiding overkill for trivial forwarding or rarely-used flows.
 
-1. Phase 1 — Base quality gates (Done)
-   - Lint, formatter, spellcheck wired; no runtime tests.
-2. Phase 2 — Test runner & utilities (Done)
-   - Test runner configured, first unit tests added, coverage baseline established.
-3. Phase 3 — More unit & first integration tests (Done)
-   - Extra edge cases for `cleanConfig` (Done)
-   - GET routes covered at router level (Done)
-   - Small express/test factory (mocks: fs, simple-git) (Deferred)
-   - Raise coverage target (Done — thresholds bumped slightly)
-4. Phase 4 — Action / socket logic (core `executeQuery` paths) (In progress)
-   - DELAYED timer (start, reset, abort) (Done)
-   - BRIGHTNESS, TEMP, NOTIFICATION parsing, HIDE/SHOW/TOGGLE selection logic (Pending)
-5. Phase 5 — Persistence & backups (Not started)
-   - `answerPost` (saving config), backup rotation, UNDO_CONFIG, failure scenarios (fs errors, disk edge cases)
-6. Phase 6 — Module install & update flows (Not started)
-   - `installModule`, `updateModule` with mocked `simple-git` & `exec`
-7. Phase 7 — System / hardware related commands (Not started)
-   - Monitor control (status detection), shutdown/reboot, PM2 control (pm2 mock)
-8. Phase 8 — Frontend / DOM logic (jsdom) (Not started)
-   - `getDom()` URL/port logic, brightness filter application, temp overlay color gradients
-9. Phase 9 — API / contract tests (Not started)
-   - Validate against `docs/swagger.json` (add missing if needed)
-10. Phase 10 — Optional E2E / Docker integration (Not started)
-    - Spin minimal MagicMirror instance; smoke test key endpoints
-11. Phase 11 — Raise thresholds & mutation tests (Ongoing)
-    - Gradually raise coverage thresholds; consider mutation testing after core paths stable.
+### Phase 1 — Base quality gates ✅ Done
+
+- Lint, formatter (`prettier`/`eslint`), spellcheck (`cspell`) configured and passing.
+- CI/Badges added to README.
+
+### Phase 2 — Test runner & pure utilities ✅ Done
+
+- Node's built-in test runner configured.
+- Unit tests for pure functions: `utils` (`capitalizeFirst`, `formatName`, `includes`) and `configUtils` (`cleanConfig` with edge cases: nulls, unknown modules, deep equality).
+- Coverage baseline established (c8, thresholds: statements 4%, lines 4%, functions 4%, branches 5%).
+
+### Phase 3 — Router GET coverage ✅ Done (flagged for cleanup)
+
+- Router-level GET mapping tests added (invoked handlers without starting Express).
+- **Assessment:** Low value; trivial mappings with no edge cases. **Action:** Remove in cleanup step.
+
+### Phase 4 — Core action logic (critical paths only) ✅ Partially done (cleanup pending)
+
+- **Keep:**
+  - ✅ NOTIFICATION JSON parsing (undefined payload, valid JSON string, raw string, invalid JSON → error).
+  - ✅ MANAGE_CLASSES (string key, array of keys → correct HIDE/SHOW/TOGGLE dispatch).
+  - ✅ DELAYED timer behavior (start, reset on same `did`, abort).
+- **Remove (trivial 1-liners, no edge cases):**
+  - HIDE/SHOW/TOGGLE (simple forwarding).
+  - BRIGHTNESS/TEMP (numeric forwarding).
+  - SHOW_ALERT/HIDE_ALERT/REFRESH (minimal logic, defaults are obvious).
+  - USER_PRESENCE (trivial state set + forward).
+
+### Phase 5 — Persistence & backup rotation (Next priority)
+
+- **Goal:** Ensure config save/restore doesn't lose user data.
+- **Scope:**
+  - `answerPost` → `saveConfig`: backup slot rotation (keep last N), handle fs errors gracefully.
+  - `UNDO_CONFIG`: restore from backup, boundary cases (no backups, corrupted JSON).
+  - Edge cases: disk full, permission errors, concurrent writes (if applicable).
+- **Implementation:** Mock `fs.promises` (readFile, writeFile, readdir, unlink); assert backup count/order.
+- **Coverage target after Phase 5:** ~30–35% statements (modest increase from critical paths).
+
+### Phase 6 — Minimal contract checks (final polish)
+
+- **Goal:** Catch breaking API changes early.
+- **Scope:** Validate **shape only** (not content) for 2–3 core GET endpoints against `docs/swagger.json`:
+  - `/module/installed` → array of objects with `name`/`longname`.
+  - `/config` → object (exact keys not critical, just structure).
+  - Optional: `/translations` → object with locale keys.
+- **Implementation:** Lightweight JSON schema check or manual shape assertion; no heavy validator lib.
+- **Coverage impact:** Minimal (contract tests don't add statement coverage, just regression safety).
+
+### Phase 7+ — Done ✅
+
+- **No further phases planned.**
+- Install/update flows, system commands, frontend DOM, E2E → **out of scope** (too complex, low ROI for a MagicMirror module).
+- Mutation testing → **deferred indefinitely** (overkill for this project size).
+
+---
+
+## Cleanup Plan (Before Phase 5)
+
+To align with the slimmed-down roadmap:
+
+1. **Remove router-level GET tests** (`tests/unit/api.getRoutes.mapping.test.js` and related).
+   - Reason: Trivial mappings with no edge cases; if routes break, manual testing catches it.
+   - Impact: ~15 tests removed, minimal coverage drop.
+
+2. **Remove trivial `executeQuery` tests** (keep only NOTIFICATION/MANAGE_CLASSES/DELAYED):
+   - Remove: HIDE/SHOW/TOGGLE, BRIGHTNESS/TEMP, SHOW_ALERT/HIDE_ALERT/REFRESH, USER_PRESENCE individual tests.
+   - Keep: JSON parsing edge cases (NOTIFICATION), class dispatch logic (MANAGE_CLASSES), timer behavior (DELAYED).
+   - Impact: ~10 tests removed, coverage drops slightly but stays above thresholds.
+
+3. **Update coverage thresholds** (if needed after cleanup):
+   - Expect ~20–25% statements after cleanup (down from current).
+   - Adjust thresholds to reflect realistic baseline (e.g., statements 4%, lines 4%, functions 4%, branches 5%).
+
+4. **Update roadmap status**:
+   - Mark Phase 3 as "Completed and cleaned up (trivial tests removed)".
+   - Mark Phase 4 as "Completed (core logic only)".
+
+---
+
+## Coverage Philosophy
+
+- **Target:** ~30–35% statements after Phase 5 (backup rotation).
+- **Not a goal:** High coverage for its own sake. Focus on **critical paths** and **data integrity**.
+- **Strategy:** Raise thresholds modestly after each phase (if tests are stable), but keep them **achievable and meaningful**.
+
+---
+
+## Contributing Tests
+
+When adding tests:
+
+- **Ask:** Does this logic have edge cases or side effects? If no → skip the test.
+- **Patterns:**
+  - Router handlers: Bind to fake context; avoid spinning up Express.
+  - Timers: Use fake timers (manual or `node:test` mocks when available); restore originals after.
+  - Filesystem: Mock `fs.promises` methods; no actual reads/writes.
+- **Keep PRs small:** 1–2 test files per PR; clear titles (e.g., "test(backup): add rotation and undo cases").
+
+---
+
+## CI & Coverage
+
+[![Build](https://img.shields.io/github/actions/workflow/status/KristjanESPERANTO/MMM-Remote-Control/automated-tests.yaml?branch=master)](../../actions)
+[![Coverage](https://img.shields.io/badge/coverage-tests%2FREADME-blue)](./README.md)
+
+For faster iteration:
+
+- Watch mode: `node --run test:watch`
