@@ -301,7 +301,7 @@ For contributing to this repository, please see the [CONTRIBUTING.md](CONTRIBUTI
 
 ### Tests & Quality
 
-See `tests/README.md` for test setup, commands, and the roadmap. Quick commands:
+See [tests/README.md](./tests/README.md) for test setup, commands, and the roadmap. Quick commands:
 
 - Lint & formatting: `node --run lint`
 - Spell checking: `node --run test:spelling`
