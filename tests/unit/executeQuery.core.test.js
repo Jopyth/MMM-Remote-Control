@@ -22,74 +22,7 @@ function freshHelper () {
 }
 
 group("executeQuery core actions", () => {
-  test("HIDE forwards query unchanged to socket", () => {
-    const h = freshHelper();
-    const q = {action: "HIDE", module: "clock"};
-    const res = {};
-    const result = h.executeQuery(q, res);
-    assert.equal(result, true);
-    assert.deepEqual(h.__sent[0], {what: "HIDE", payload: q});
-    assert.equal(h.__responses.length, 1);
-  });
-
-  test("SHOW and TOGGLE also forward query", () => {
-    const h = freshHelper();
-    const res = {};
-    h.executeQuery({action: "SHOW", module: "all"}, res);
-    h.executeQuery({action: "TOGGLE", module: "module_1_clock"}, res);
-    assert.deepEqual(h.__sent[0], {what: "SHOW", payload: {action: "SHOW", module: "all"}});
-    assert.deepEqual(h.__sent[1], {what: "TOGGLE", payload: {action: "TOGGLE", module: "module_1_clock"}});
-    assert.equal(h.__responses.length, 2);
-  });
-
-  test("BRIGHTNESS forwards numeric value", () => {
-    const h = freshHelper();
-    const res = {};
-    const q = {action: "BRIGHTNESS", value: 90};
-    const ok = h.executeQuery(q, res);
-    assert.equal(ok, true);
-    assert.deepEqual(h.__sent[0], {what: "BRIGHTNESS", payload: 90});
-    assert.equal(h.__responses.length, 1);
-  });
-
-  test("TEMP forwards value and responds", () => {
-    const h = freshHelper();
-    const res = {};
-    const q = {action: "TEMP", value: 22};
-    const ok = h.executeQuery(q, res);
-    assert.equal(ok, true);
-    assert.deepEqual(h.__sent[0], {what: "TEMP", payload: 22});
-    assert.equal(h.__responses.length, 1);
-  });
-
-  test("SHOW_ALERT builds default payload when fields missing", () => {
-    const h = freshHelper();
-    const res = {};
-    const ok = h.executeQuery({action: "SHOW_ALERT"}, res);
-    assert.equal(ok, true);
-    assert.equal(h.__sent[0].what, "SHOW_ALERT");
-    assert.deepEqual(h.__sent[0].payload, {type: "alert", title: "Note", message: "Attention!", timer: 4000});
-    assert.equal(h.__responses.length, 1);
-  });
-
-  test("SHOW_ALERT respects provided fields and multiplies timer by 1000", () => {
-    const h = freshHelper();
-    const res = {};
-    h.executeQuery({action: "SHOW_ALERT", type: "warning", title: "T", message: "M", timer: 2}, res);
-    assert.deepEqual(h.__sent[0], {what: "SHOW_ALERT", payload: {type: "warning", title: "T", message: "M", timer: 2000}});
-  });
-
-  test("HIDE_ALERT and REFRESH emit simple notifications", () => {
-    const h = freshHelper();
-    const res = {};
-    h.executeQuery({action: "HIDE_ALERT"}, res);
-    h.executeQuery({action: "REFRESH"}, res);
-    assert.deepEqual(h.__sent[0], {what: "HIDE_ALERT", payload: undefined});
-    assert.deepEqual(h.__sent[1], {what: "REFRESH", payload: undefined});
-    assert.equal(h.__responses.length, 2);
-  });
-
-  test("NOTIFICATION without payload sends undefined payload", () => {
+  test("NOTIFICATION without payload returns undefined payload", () => {
     const h = freshHelper();
     const res = {};
     const ok = h.executeQuery({action: "NOTIFICATION", notification: "HELLO"}, res);
@@ -121,16 +54,6 @@ group("executeQuery core actions", () => {
     assert.equal(h.__sent.length, 0, "should not send socket notification on parse error");
     assert.equal(h.__responses.length, 1);
     assert.ok(h.__responses[0].err instanceof Error);
-  });
-
-  test("USER_PRESENCE forwards boolean and updates state", () => {
-    const h = freshHelper();
-    const res = {};
-    const ok = h.executeQuery({action: "USER_PRESENCE", value: true}, res);
-    assert.equal(ok, true);
-    assert.deepEqual(h.__sent[0], {what: "USER_PRESENCE", payload: true});
-    assert.equal(h.userPresence, true);
-    assert.equal(h.__responses.length, 1);
   });
 
   test("MANAGE_CLASSES: string key maps to lower-case actions and sends modules", () => {

@@ -23,12 +23,12 @@ Notes on shims used in tests:
 
 - We provide lightweight shims under `tests/shims/` (e.g., `logger.js`, `node_helper.js`) to isolate unit tests from MagicMirror core. When a test needs to load `node_helper.js`, inject the shim path via `NODE_PATH` and call `module._initPaths()` before requiring the target file.
 
-Status checkpoint (Updated 2025-10-08):
+Status checkpoint (Updated 2025-10-09):
 
 - **Phases 1–2:** Done (lint/format/spellcheck, utils tests).
-- **Phase 3:** Router-level GET coverage completed, but flagged for removal (low value; trivial mappings).
-- **Phase 4:** Core `executeQuery` tests added (NOTIFICATION JSON parsing, MANAGE_CLASSES, DELAYED timers). Simple forwarding logic (HIDE/SHOW/TOGGLE/BRIGHTNESS/TEMP) flagged for removal (no edge cases).
-- **Next:** Slim down existing tests, complete Phase 5 (config backup rotation), add minimal contract checks, then **done**.
+- **Phase 3:** Router-level GET coverage removed as low value; no router mapping tests remain.
+- **Phase 4:** Core `executeQuery` coverage trimmed to critical paths (NOTIFICATION parsing, MANAGE_CLASSES, DELAYED timers).
+- **Next:** Phase 5 (config backup rotation), then Phase 6 (minimal contract checks); roadmap complete afterwards.
 
 ## Test Roadmap (Phases) — Slimmed Down
 
@@ -43,24 +43,19 @@ The project follows a **lean, pragmatic** test roadmap. We focus on **critical l
 
 - Node's built-in test runner configured.
 - Unit tests for pure functions: `utils` (`capitalizeFirst`, `formatName`, `includes`) and `configUtils` (`cleanConfig` with edge cases: nulls, unknown modules, deep equality).
-- Coverage baseline established (c8, thresholds: statements 4%, lines 4%, functions 4%, branches 5%).
+- Coverage baseline established (c8 thresholds: statements 5%, lines 5%, functions 4%, branches 5%).
 
-### Phase 3 — Router GET coverage ✅ Done (flagged for cleanup)
+### Phase 3 — Router GET coverage ✅ Done (leaned out)
 
-- Router-level GET mapping tests added (invoked handlers without starting Express).
-- **Assessment:** Low value; trivial mappings with no edge cases. **Action:** Remove in cleanup step.
+- Initial router-level GET mapping tests were added but later removed (October 2025) after deciding they added little value beyond manual verification.
+- ✅ No router mapping tests remain; focus is on higher-value logic.
 
-### Phase 4 — Core action logic (critical paths only) ✅ Partially done (cleanup pending)
+### Phase 4 — Core action logic (critical paths only) ✅ Done
 
-- **Keep:**
-  - ✅ NOTIFICATION JSON parsing (undefined payload, valid JSON string, raw string, invalid JSON → error).
-  - ✅ MANAGE_CLASSES (string key, array of keys → correct HIDE/SHOW/TOGGLE dispatch).
-  - ✅ DELAYED timer behavior (start, reset on same `did`, abort).
-- **Remove (trivial 1-liners, no edge cases):**
-  - HIDE/SHOW/TOGGLE (simple forwarding).
-  - BRIGHTNESS/TEMP (numeric forwarding).
-  - SHOW_ALERT/HIDE_ALERT/REFRESH (minimal logic, defaults are obvious).
-  - USER_PRESENCE (trivial state set + forward).
+- ✅ NOTIFICATION JSON parsing (undefined payload, valid JSON string, raw string, invalid JSON → error).
+- ✅ MANAGE_CLASSES (string key, array of keys → correct HIDE/SHOW/TOGGLE dispatch).
+- ✅ DELAYED timer behavior (start, reset on same `did`, abort).
+- ❌ Removed: HIDE/SHOW/TOGGLE, BRIGHTNESS/TEMP, SHOW_ALERT/HIDE_ALERT/REFRESH, USER_PRESENCE (all trivial forwarding).
 
 ### Phase 5 — Persistence & backup rotation (Next priority)
 
@@ -90,26 +85,11 @@ The project follows a **lean, pragmatic** test roadmap. We focus on **critical l
 
 ---
 
-## Cleanup Plan (Before Phase 5)
+## Cleanup summary (2025-10-09)
 
-To align with the slimmed-down roadmap:
-
-1. **Remove router-level GET tests** (`tests/unit/api.getRoutes.mapping.test.js` and related).
-   - Reason: Trivial mappings with no edge cases; if routes break, manual testing catches it.
-   - Impact: ~15 tests removed, minimal coverage drop.
-
-2. **Remove trivial `executeQuery` tests** (keep only NOTIFICATION/MANAGE_CLASSES/DELAYED):
-   - Remove: HIDE/SHOW/TOGGLE, BRIGHTNESS/TEMP, SHOW_ALERT/HIDE_ALERT/REFRESH, USER_PRESENCE individual tests.
-   - Keep: JSON parsing edge cases (NOTIFICATION), class dispatch logic (MANAGE_CLASSES), timer behavior (DELAYED).
-   - Impact: ~10 tests removed, coverage drops slightly but stays above thresholds.
-
-3. **Update coverage thresholds** (if needed after cleanup):
-   - Expect ~20–25% statements after cleanup (down from current).
-   - Adjust thresholds to reflect realistic baseline (e.g., statements 4%, lines 4%, functions 4%, branches 5%).
-
-4. **Update roadmap status**:
-   - Mark Phase 3 as "Completed and cleaned up (trivial tests removed)".
-   - Mark Phase 4 as "Completed (core logic only)".
+- Removed router-level GET tests (`tests/unit/api.getRoutes.mapping.test.js`).
+- Trimmed `executeQuery.core.test.js` to only NOTIFICATION / MANAGE_CLASSES / DELAYED coverage.
+- Lowered c8 coverage thresholds to a realistic baseline (statements 5%, lines 5%, functions 4%, branches 5%).
 
 ---
 
