@@ -1,3 +1,5 @@
+[![Build](https://img.shields.io/github/actions/workflow/status/Jopyth/MMM-Remote-Control/automated-tests.yaml?branch=master)](https://github.com/Jopyth/MMM-Remote-Control/actions/workflows/automated-tests.yaml) [![Latest tag](https://img.shields.io/github/v/tag/Jopyth/MMM-Remote-Control?sort=semver)](https://github.com/Jopyth/MMM-Remote-Control/tags) [![License](https://img.shields.io/github/license/Jopyth/MMM-Remote-Control)](LICENSE.md)
+
 # MMM-Remote-Control
 
 **MMM-Remote-Control** is a module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) that allows you to use a browser, to quickly shut down your mirror, hide and show modules on your mirror and do other cool stuff.
@@ -301,64 +303,12 @@ For contributing to this repository, please see the [CONTRIBUTING.md](CONTRIBUTI
 
 ### Tests & Quality
 
-Current automated test stack (now at Phase 2) is in place:
-
-Phase 1: basic quality gates
+See [tests/README.md](./tests/README.md) for test setup, commands, and the roadmap. Quick commands:
 
 - Lint & formatting: `node --run lint`
 - Spell checking: `node --run test:spelling`
-
-Phase 2: initial unit test & coverage foundation
-
-- Unit tests (Node built-in runner): `node --run test:unit`
-- Combined pipeline (lint + spelling + unit): `npm test`
+- Unit tests (Node built-in): `node --run test:unit`
 - Coverage (c8): `node --run test:coverage`
-
-Coverage thresholds start deliberately low to allow incremental improvements. New tests should raise real coverage and can then justify increasing thresholds in `package.json`.
-
-#### Planned Test Roadmap (Phases)
-
-1. Phase (done): Base quality gates (lint, formatter, spellcheck) – no runtime tests
-2. Phase (done): Test runner, extracted utilities, first unit tests, coverage baseline
-3. Phase: More unit & first integration tests
-
-- Extra edge cases for `cleanConfig`
-- GET routes: `/get?data=moduleAvailable`, `/get?data=config`, error path
-- Small express/test factory (mocks: fs, simple-git)
-- Raise coverage target (e.g. statements >8%)
-
-4. Phase: Action / socket logic (core `executeQuery` paths)
-
-- BRIGHTNESS, TEMP, NOTIFICATION parsing, HIDE/SHOW/TOGGLE selection logic
-- DELAYED timer (start, reset, abort)
-
-5. Phase: Persistence & backups
-
-- `answerPost` (saving config), backup rotation, UNDO_CONFIG, failure scenarios (fs errors, disk edge cases)
-
-6. Phase: Module install & update flows
-
-- `installModule`, `updateModule` with mocked `simple-git` & `exec`
-
-7. Phase: System / hardware related commands
-
-- Monitor control (status detection), shutdown/reboot, PM2 control (pm2 mock)
-
-8. Phase: Frontend / DOM logic (jsdom)
-
-- `getDom()` URL/port logic, brightness filter application, temp overlay color gradients
-
-9. Phase: API / contract tests
-
-- Validate against `docs/swagger.json` (add missing if needed)
-
-10. Phase: Optional E2E / Docker integration
-
-- Spin minimal MagicMirror instance; smoke test key endpoints
-
-11. Phase (ongoing): Gradually raise coverage thresholds & consider mutation tests
-
-Each phase incrementally increases coverage thresholds to encourage steady progress without big-bang changes.
 
 ## License
 
