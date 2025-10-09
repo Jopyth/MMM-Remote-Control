@@ -2,7 +2,7 @@
 
 This project uses Node's built-in test runner and c8 for coverage.
 
-Quick run:
+## Quick run
 
 - Lint & format check: `node --run lint`
 - Spell checking: `node --run test:spelling`
@@ -10,7 +10,7 @@ Quick run:
 - Coverage: `node --run test:coverage`
 - Watch mode (local dev): `node --run test:watch`
 
-Guidelines:
+## Guidelines
 
 - Keep tests side-effect free; mock/bypass filesystem, network, and timers where necessary.
 - Focus on **critical logic with edge cases** (e.g., JSON parsing, backup rotation, class management).
@@ -19,17 +19,18 @@ Guidelines:
 - For `node_helper.js` paths, test logic by stubbing methods (e.g., `sendSocketNotification`, `sendResponse`) and, when necessary, mock timers.
 - Follow repository lint rules; keep arrays/objects on one line where stylistic rules require it.
 
-Notes on shims used in tests:
+## Notes on shims used in tests
 
 - We provide lightweight shims under `tests/shims/` (e.g., `logger.js`, `node_helper.js`) to isolate unit tests from MagicMirror core. When a test needs to load `node_helper.js`, inject the shim path via `NODE_PATH` and call `module._initPaths()` before requiring the target file.
 
-Status checkpoint (Updated 2025-10-09):
+## Status checkpoint (Updated 2025-10-09)
 
 - **Phases 1–2:** Done (lint/format/spellcheck, utils tests).
 - **Phase 3:** Router-level GET coverage removed as low value; no router mapping tests remain.
 - **Phase 4:** Core `executeQuery` coverage trimmed to critical paths (NOTIFICATION parsing, MANAGE_CLASSES, DELAYED timers).
 - **Phase 5:** Added unit coverage for config backup rotation, error paths (write failure, missing slots), and `UNDO_CONFIG` restore handling (match, missing, load error).
-- **Next:** Move on to Phase 6 (minimal contract checks); roadmap complete afterwards.
+- **Phase 6:** Added contract-shape tests for `/api/module/installed`, `/api/config`, and `/api/translations` responses.
+- **Next:** Monitoring only; roadmap phases closed unless new requirements surface.
 
 ## Test Roadmap (Phases)
 
@@ -66,7 +67,7 @@ The project follows a **lean, pragmatic** test roadmap. We focus on **critical l
 - ✅ `UNDO_CONFIG` restore flow: restores matched backup, falls back to saves when timestamp missing, surfaces load errors.
 - 🔲 Additional edge cases (e.g., read stream errors) as needed (optional).
 
-### Phase 6 — Minimal contract checks (final polish)
+### Phase 6 — Minimal contract checks (final polish) ✅ Done
 
 - **Goal:** Catch breaking API changes early.
 - **Scope:** Validate **shape only** (not content) for 2–3 core GET endpoints against `docs/swagger.json`:
@@ -74,6 +75,7 @@ The project follows a **lean, pragmatic** test roadmap. We focus on **critical l
   - `/config` → object (exact keys not critical, just structure).
   - Optional: `/translations` → object with locale keys.
 - **Implementation:** Lightweight JSON schema check or manual shape assertion; no heavy validator lib.
+- **Status:** Tests live in `tests/unit/answerGet.contract.test.js` (module metadata filter, config merge shape, translation dictionary).
 - **Coverage impact:** Minimal (contract tests don't add statement coverage, just regression safety).
 
 ### Phase 7+ — Done ✅
@@ -115,9 +117,4 @@ When adding tests:
 
 ## CI & Coverage
 
-[![Build](https://img.shields.io/github/actions/workflow/status/KristjanESPERANTO/MMM-Remote-Control/automated-tests.yaml?branch=master)](../../actions)
-[![Coverage](https://img.shields.io/badge/coverage-tests%2FREADME-blue)](./README.md)
-
-For faster iteration:
-
-- Watch mode: `node --run test:watch`
+[![Build](https://img.shields.io/github/actions/workflow/status/KristjanESPERANTO/MMM-Remote-Control/automated-tests.yaml?branch=master)](../../actions) [![Coverage](https://img.shields.io/badge/coverage-tests%2FREADME-blue)](./README.md)
