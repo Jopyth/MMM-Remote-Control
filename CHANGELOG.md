@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.2.7](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.6...v3.2.7) - 2025-10-09
+
+### Added
+
+- tests: expand unit coverage for API helpers, delayed execution, persistence flows, and notification routing
+- docs: add [tests/README.md](tests/README.md) to document the current stack, coverage focus, and roadmap
+
+### Changed
+
+- tests: raise coverage thresholds and include `API/**/*.js` in instrumentation while trimming brittle Express wiring suites
+- docs: refresh README badges and testing guidance to point contributors at the new documentation
+- chore: update dependencies
+
 ## [3.2.6](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.5...v3.2.6) - 2025-10-01
 
 ### Changed
