@@ -28,9 +28,10 @@ Status checkpoint (Updated 2025-10-09):
 - **Phases 1–2:** Done (lint/format/spellcheck, utils tests).
 - **Phase 3:** Router-level GET coverage removed as low value; no router mapping tests remain.
 - **Phase 4:** Core `executeQuery` coverage trimmed to critical paths (NOTIFICATION parsing, MANAGE_CLASSES, DELAYED timers).
-- **Next:** Phase 5 (config backup rotation), then Phase 6 (minimal contract checks); roadmap complete afterwards.
+- **Phase 5:** Added unit coverage for config backup rotation, error paths (write failure, missing slots), and `UNDO_CONFIG` restore handling (match, missing, load error).
+- **Next:** Move on to Phase 6 (minimal contract checks); roadmap complete afterwards.
 
-## Test Roadmap (Phases) — Slimmed Down
+## Test Roadmap (Phases)
 
 The project follows a **lean, pragmatic** test roadmap. We focus on **critical logic** and **data integrity**, avoiding overkill for trivial forwarding or rarely-used flows.
 
@@ -57,15 +58,13 @@ The project follows a **lean, pragmatic** test roadmap. We focus on **critical l
 - ✅ DELAYED timer behavior (start, reset on same `did`, abort).
 - ❌ Removed: HIDE/SHOW/TOGGLE, BRIGHTNESS/TEMP, SHOW_ALERT/HIDE_ALERT/REFRESH, USER_PRESENCE (all trivial forwarding).
 
-### Phase 5 — Persistence & backup rotation (Next priority)
+### Phase 5 — Persistence & backup rotation ✅ Done
 
-- **Goal:** Ensure config save/restore doesn't lose user data.
-- **Scope:**
-  - `answerPost` → `saveConfig`: backup slot rotation (keep last N), handle fs errors gracefully.
-  - `UNDO_CONFIG`: restore from backup, boundary cases (no backups, corrupted JSON).
-  - Edge cases: disk full, permission errors, concurrent writes (if applicable).
-- **Implementation:** Mock `fs.promises` (readFile, writeFile, readdir, unlink); assert backup count/order.
-- **Coverage target after Phase 5:** ~30–35% statements (modest increase from critical paths).
+- ✅ `answerPost` backup rotation: picks oldest slot, writes new config, handles fs errors.
+- ✅ Missing backup slots handled gracefully.
+- ✅ Write error propagates meaningful response.
+- ✅ `UNDO_CONFIG` restore flow: restores matched backup, falls back to saves when timestamp missing, surfaces load errors.
+- 🔲 Additional edge cases (e.g., read stream errors) as needed (optional).
 
 ### Phase 6 — Minimal contract checks (final polish)
 
