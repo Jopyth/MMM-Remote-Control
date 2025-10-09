@@ -25,13 +25,13 @@ Together these suites focus on code that mutates state, touches the filesystem, 
 
 ## What we deliberately skip (and why)
 
-- **Router-to-handler wiring:** Express route-mapping tests were dropped because they duplicated framework behaviour and were brittle whenever routes were reordered. Manual smoke tests or integration tests are a better fit.
+- **Router-to-handler wiring:** Express route-mapping tests were dropped because they duplicated framework behavior and were brittle whenever routes were reordered. Manual smoke tests or integration tests are a better fit.
 - **System commands and hardware control (`shutdown`, `reboot`, monitor control):** they depend on Raspberry Pi hardware privileges and side effects we can’t safely stub in CI.
 - **Front-end DOM or E2E coverage:** Rendering happens in the MagicMirror browser context; replicating it would require Puppeteer/Electron harnesses that are heavy relative to the payoff.
 - **“Pass-through” notification wrappers:** Flows that simply forward parameters (`HIDE_ALERT`, `SHOW_ALERT`, etc.) are exercised indirectly by higher-level tests; duplicating them would be noise.
 - **Git/network dependent paths:** Update and install code paths require repositories and network access. We guard their public contract via `getExternalApiByGuessing`/menu tests instead.
 
-Documenting these gaps helps us recognise when a change might require a different kind of test (manual check, integration smoke, etc.).
+Documenting these gaps helps us recognize when a change might require a different kind of test (manual check, integration smoke, etc.).
 
 ## Fixtures and shims
 
@@ -42,16 +42,16 @@ Documenting these gaps helps us recognise when a change might require a differen
 ## Potential future enhancements
 
 - Add a focused regression test for `answerPost` when the config read stream errors mid-pipe (currently logged but unasserted).
-- Capture a tiny contract test for `/api/saves` to freeze the backup timestamp ordering behaviour.
-- Explore lightweight schema validation for `/api/module/available` once module metadata stabilises—could reuse the existing helper stubs.
+- Capture a tiny contract test for `/api/saves` to freeze the backup timestamp ordering behavior.
+- Explore lightweight schema validation for `/api/module/available` once module metadata stabilizes—could reuse the existing helper stubs.
 - Consider bumping coverage thresholds modestly (for example to 10%) once the above additions land and prove stable.
 
-These ideas stay deliberately small; larger endeavours (integration or E2E) are still considered out of scope unless requirements change.
+These ideas stay deliberately small; larger endeavors (integration or E2E) are still considered out of scope unless requirements change.
 
 ## Contribution guidelines
 
 - Prefer deterministic unit tests with explicit stubbing over fragile integration harnesses.
-- Question every prospective test: if it simply mirrors production code without behaviour, it’s likely not worth adding.
+- Question every prospective test: if it simply mirrors production code without behavior, it’s likely not worth adding.
 - Keep pull requests focused—group related assertions in the same suite and avoid cross-cutting rewrites.
 - Restore any global/mocked state (`Module._load`, timers, `fs`) in `afterEach` blocks to keep suites isolated.
 
