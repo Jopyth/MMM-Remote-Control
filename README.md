@@ -1,3 +1,5 @@
+[![Build](https://img.shields.io/github/actions/workflow/status/Jopyth/MMM-Remote-Control/automated-tests.yaml?branch=master)](https://github.com/Jopyth/MMM-Remote-Control/actions/workflows/automated-tests.yaml) [![Latest tag](https://img.shields.io/github/v/tag/Jopyth/MMM-Remote-Control?sort=semver)](https://github.com/Jopyth/MMM-Remote-Control/tags) [![License](https://img.shields.io/github/license/Jopyth/MMM-Remote-Control)](LICENSE.md)
+
 # MMM-Remote-Control
 
 **MMM-Remote-Control** is a module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) that allows you to use a browser, to quickly shut down your mirror, hide and show modules on your mirror and do other cool stuff.
