@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [unreleased](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.7...HEAD)
+
+**Note:** This release changes the default monitor control commands to support modern Raspberry Pi OS (Wayland). Users can restore the previous behavior via `customCommand` configuration. See the README's "Monitor Control Commands by Display System" section for migration instructions and alternatives for all supported systems.
+
+### Added
+
+- docs: add comprehensive monitor control command reference covering different display systems (Wayland/wlr-randr, X11/Xorg, GNOME/Mutter, CEC, DPMS, legacy vcgencmd) with installation instructions, troubleshooting, and multi-monitor setup guidance
+
+### Changed
+
+- **BREAKING:** refactor: default monitor control commands now use Wayland (`wlr-randr`) instead of deprecated `vcgencmd` to support Raspberry Pi OS Bookworm/Bullseye (Wayland has been the default since 2023)
+
 ## [3.2.7](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.6...v3.2.7) - 2025-10-09
 
 ### Added

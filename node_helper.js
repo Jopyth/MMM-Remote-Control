@@ -649,13 +649,13 @@ module.exports = NodeHelper.create({
     ];
     const monitorOnCommand = this.initialized && "monitorOnCommand" in this.thisConfig.customCommand
       ? this.thisConfig.customCommand.monitorOnCommand
-      : "vcgencmd display_power 1";
+      : "wlr-randr --output HDMI-A-1 --on";
     const monitorOffCommand = this.initialized && "monitorOffCommand" in this.thisConfig.customCommand
       ? this.thisConfig.customCommand.monitorOffCommand
-      : "vcgencmd display_power 0";
+      : "wlr-randr --output HDMI-A-1 --off";
     const monitorStatusCommand = this.initialized && "monitorStatusCommand" in this.thisConfig.customCommand
       ? this.thisConfig.customCommand.monitorStatusCommand
-      : "vcgencmd display_power -1";
+      : "wlr-randr | grep -q 'Enabled: yes' && echo 'true' || echo 'false'";
     switch (action) {
       case "MONITORSTATUS": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
         status = offArr.indexOf(stdout.trim()) !== -1

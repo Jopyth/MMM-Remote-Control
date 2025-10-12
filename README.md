@@ -261,6 +261,169 @@ Depending on your installation, some `shell` commands used by this module are no
     }
 ```
 
+#### Monitor Control Commands by Display System
+
+**Since version 4.0.0**, the default monitor control commands have changed to support **Wayland** (the default display server in Raspberry Pi OS since Bookworm (released 2023)). If you're using a different setup or experiencing issues, configure the appropriate commands for your system:
+
+##### Wayland (Default - Raspberry Pi OS Bookworm/Bullseye)
+
+**Default commands** (no configuration needed):
+
+```js
+    customCommand: {
+        monitorOnCommand: 'wlr-randr --output HDMI-A-1 --on',
+        monitorOffCommand: 'wlr-randr --output HDMI-A-1 --off',
+        monitorStatusCommand: 'wlr-randr | grep -q "Enabled: yes" && echo "true" || echo "false"'
+    }
+```
+
+**Note:** You may need to install `wlr-randr` first:
+
+```bash
+sudo apt-get install wlr-randr
+```
+
+To find your correct output name (might be `HDMI-A-2`, `HDMI-1`, etc.), run:
+
+```bash
+wlr-randr
+```
+
+If `wlr-randr` doesn't work without specifying the display, try setting the `WAYLAND_DISPLAY` environment variable:
+
+```js
+    customCommand: {
+        monitorOnCommand: 'WAYLAND_DISPLAY="wayland-1" wlr-randr --output HDMI-A-1 --on',
+        monitorOffCommand: 'WAYLAND_DISPLAY="wayland-1" wlr-randr --output HDMI-A-1 --off',
+        monitorStatusCommand: 'WAYLAND_DISPLAY="wayland-1" wlr-randr | grep -q "Enabled: yes" && echo "true" || echo "false"'
+    }
+```
+
+##### X11 / Xorg
+
+For systems using X11 (older Raspberry Pi OS or desktop Linux):
+
+```js
+    customCommand: {
+        monitorOnCommand: 'xrandr --output HDMI-1 --auto',
+        monitorOffCommand: 'xrandr --output HDMI-1 --off',
+        monitorStatusCommand: 'xrandr | grep "HDMI-1 connected" | grep -q " [0-9]" && echo "true" || echo "false"'
+    }
+```
+
+**Alternative with explicit display** (use if the above doesn't work):
+
+```js
+    customCommand: {
+        monitorOnCommand: 'xrandr -d :0 --output HDMI-1 --auto',
+        monitorOffCommand: 'xrandr -d :0 --output HDMI-1 --off',
+        monitorStatusCommand: 'xrandr -d :0 --listmonitors | grep -v "Monitors: 0" && echo "true" || echo "false"'
+    }
+```
+
+To find your output name, run:
+
+```bash
+xrandr | grep " connected"
+```
+
+Common output names: `HDMI-1`, `HDMI-2`, `DP-1`, `eDP-1`
+
+##### Legacy vcgencmd (Raspberry Pi OS Buster and older)
+
+If you're running an older Raspberry Pi OS version where `vcgencmd` still works:
+
+```js
+    customCommand: {
+        monitorOnCommand: 'vcgencmd display_power 1',
+        monitorOffCommand: 'vcgencmd display_power 0',
+        monitorStatusCommand: 'vcgencmd display_power -1'
+    }
+```
+
+**Note:** `vcgencmd display_power` has been deprecated and may not work on recent Raspberry Pi OS versions.
+
+##### CEC (HDMI-CEC capable displays)
+
+For displays that support HDMI-CEC control:
+
+```js
+    customCommand: {
+        monitorOnCommand: 'echo "on 0" | cec-client -s -d 1',
+        monitorOffCommand: 'echo "standby 0" | cec-client -s -d 1',
+        monitorStatusCommand: 'echo "pow 0" | cec-client -s -d 1 | grep -q "power status: on" && echo "true" || echo "false"'
+    }
+```
+
+Install `cec-client`:
+
+```bash
+sudo apt-get install cec-utils
+```
+
+##### DPMS (Generic Linux)
+
+For generic Linux systems with DPMS support:
+
+```js
+    customCommand: {
+        monitorOnCommand: 'xset dpms force on',
+        monitorOffCommand: 'xset dpms force off',
+        monitorStatusCommand: 'xset q | grep -q "Monitor is On" && echo "true" || echo "false"'
+    }
+```
+
+##### GNOME/Mutter (Debian 13 Trixie and newer)
+
+For systems using GNOME/Mutter display server (like Debian 13 Trixie):
+
+```js
+    customCommand: {
+        monitorOnCommand: 'busctl --user set-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode i 0',
+        monitorOffCommand: 'busctl --user set-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode i 1',
+        monitorStatusCommand: 'busctl --user get-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode | grep -q "i 0" && echo "true" || echo "false"'
+    }
+```
+
+##### Troubleshooting Monitor Control
+
+If monitor control doesn't work:
+
+1. **Verify your display server:**
+
+   ```bash
+   echo $XDG_SESSION_TYPE  # Should show 'wayland' or 'x11'
+   ```
+
+2. **Switch display server if needed:** On Raspberry Pi OS, you can switch between Wayland and X11:
+
+   ```bash
+   sudo raspi-config
+   # Navigate to: Advanced Options -> Wayland -> Select X11 or Wayland -> Reboot
+   ```
+
+3. **Test commands manually:** Run the command directly in the terminal to ensure it works before adding it to the config.
+
+4. **Check output names:** Display output names vary by system. Use `wlr-randr` (Wayland) or `xrandr` (X11) to find the correct name.
+
+   For **Wayland**:
+
+   ```bash
+   wlr-randr
+   ```
+
+   For **X11**:
+
+   ```bash
+   xrandr -d :0  # or just: xrandr
+   ```
+
+5. **Multi-monitor setups:** If you have multiple HDMI outputs (like Raspberry Pi 4/5), make sure to specify the correct output (e.g., `HDMI-A-1` vs `HDMI-A-2`).
+
+6. **Permissions:** Some commands may require additional permissions or group membership (e.g., `video` group for CEC).
+
+7. **See the discussion:** For more solutions and community help, check [Issue #288](https://github.com/Jopyth/MMM-Remote-Control/issues/288).
+
 ### Custom Classes
 
 You probably wanna hide or show some modules at the same time, right? It's everything that we want this module for, of course.
