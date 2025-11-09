@@ -6,7 +6,7 @@ This document describes the state of the automated test suite for **MMM-Remote-C
 
 - **Runner:** Node’s built-in test runner (`node --test`).
 - **Coverage:** `c8` with low but enforced thresholds (5% statements/lines, 4% functions, 5% branches) to guard critical paths without chasing high numbers.
-- **Quality gates:** Lint (`node --run lint`) and spell check (`node --run test:spelling`) are part of the standard `npm run test` pipeline.
+- **Quality gates:** Lint (`node --run lint`) and spell check (`node --run test:spelling`) are part of the standard `node -- test` pipeline.
 - **Execution shortcuts:**
   - Unit tests: `node --run test:unit`
   - Coverage report: `node --run test:coverage`
