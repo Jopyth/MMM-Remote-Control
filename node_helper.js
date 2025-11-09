@@ -819,7 +819,16 @@ module.exports = NodeHelper.create({
         this.sendResponse(res);
         return true;
       } catch (error) {
-        Log.error("[MMM-Remote-Control]", error);
+
+        /*
+         * JSON parse errors are expected when users provide invalid input.
+         * Only log as debug, not as error.
+         */
+        if (error instanceof SyntaxError) {
+          Log.debug(`[MMM-Remote-Control] Invalid JSON payload: ${error.message}`);
+        } else {
+          Log.error("[MMM-Remote-Control]", error);
+        }
         this.sendResponse(res, error, {reason: error.message});
         return true;
       }
