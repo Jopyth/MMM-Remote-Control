@@ -69,17 +69,18 @@
           }
         }
 
-        try {
+        let extdocs = document.getElementsByClassName("info__extdocs")[0];
+        let info = document.getElementsByClassName("info")[0];
+        let license = document.getElementsByClassName("info__license")[0];
+
+        if (extdocs && info) {
           let node = document.createElement("div");
-          node.appendChild(document.getElementsByClassName("info__extdocs")[0]);
-          document.getElementsByClassName("info")[0].appendChild(node);
-          document
-            .getElementsByClassName("info__license")[0]
-            .parentElement.appendChild(
-              document.getElementsByClassName("info__license")[0]
-            );
-        } catch (e) {
-          console.log(e);
+          node.appendChild(extdocs);
+          info.appendChild(node);
+        }
+
+        if (license && license.parentElement) {
+          license.parentElement.appendChild(license);
         }
 
         document.addEventListener("click", function () {
