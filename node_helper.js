@@ -1100,7 +1100,13 @@ module.exports = NodeHelper.create({
   },
 
   fillTemplates (data) {
-    return this.translate(data);
+    data = this.translate(data);
+    // Replace config path placeholder
+    const configPath = typeof global.configuration_file !== "undefined"
+      ? global.configuration_file
+      : "config/config.js";
+    data = data.replace(/%%CONFIG_PATH%%/g, configPath);
+    return data;
   },
 
   loadTranslation (language) {
