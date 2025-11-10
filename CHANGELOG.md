@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.3.0](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.7...v3.3.0) - 2025-11-10
+
+### Added
+
+- feat: improve notification UX and PM2 error handling
+
+### Changed
+
+- chore: update dependencies
+- chore: update Node.js setup action to v6
+- docs: `npm run` -> `node --run`
+- test: suppress noisy logs during test execution
+- refactor: Switch module list from Wiki markdown to JSON API - solves [#336](https://github.com/Jopyth/MMM-Remote-Control/issues/336)
+
+### Fixed
+
+- fix: add null checks to prevent appendChild TypeError - fixes [#327](https://github.com/Jopyth/MMM-Remote-Control/issues/327)
+- fix: add null-safety for configData.moduleData access
+- fix: use cross-platform Node.js script for postinstall - fixes [#360](https://github.com/Jopyth/MMM-Remote-Control/issues/360)
+- fix: use dynamic config path instead of hardcoded value - fixes [#328](https://github.com/Jopyth/MMM-Remote-Control/issues/328)
+
 ## [3.2.7](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.6...v3.2.7) - 2025-10-09
 
 ### Added
