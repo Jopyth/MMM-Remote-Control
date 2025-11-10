@@ -29,8 +29,10 @@ const Remote = {
   addModule: "",
   changedModules: [],
   deletedModules: [],
-  autoHideTimer: undefined,
-  autoHideDelay: 1000, // ms
+  autoHideTimer: undefined, // Internal: Reference to the active auto-hide timeout (do not modify manually)
+  autoHideDelay: 2000, // ms - Time after which success messages are auto hidden
+  autoHideDelayError: 30 * 1000, // ms - Time for error messages (0 = no auto-hide, must be clicked away)
+  autoHideDelayInfo: 30 * 1000, // ms - Time for info messages like PM2 restart/stop
 
   /*
    * socket()
@@ -408,7 +410,28 @@ const Remote = {
     if (status === "error") {
       symbol = "fa-exclamation-circle";
       text = this.translate("ERROR");
-      onClick = false;
+      onClick = function () {
+        self.setStatus("none");
+      };
+      // Only auto-hide errors if autoHideDelayError > 0, otherwise user must click to dismiss
+      if (this.autoHideDelayError > 0) {
+        this.autoHideTimer = setTimeout(() => {
+          self.setStatus("none");
+        }, this.autoHideDelayError);
+      }
+    }
+    if (status === "info") {
+      symbol = "fa-info-circle";
+      text = this.translate("INFO");
+      onClick = function () {
+        self.setStatus("none");
+      };
+      // Info messages (like PM2 restart/stop) should be displayed longer
+      if (this.autoHideDelayInfo > 0) {
+        this.autoHideTimer = setTimeout(() => {
+          self.setStatus("none");
+        }, this.autoHideDelayInfo);
+      }
     }
     if (status === "success") {
       symbol = "fa-check-circle";

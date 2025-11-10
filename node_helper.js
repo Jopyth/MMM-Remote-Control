@@ -1022,37 +1022,53 @@ module.exports = NodeHelper.create({
   },
 
   controlPm2 (res, query) {
-    try { require("pm2"); } catch (err) {
-      this.sendResponse(res, err, {reason: "PM2 not installed or unlinked"});
+    const actionName = query.action.toLowerCase();
+
+    // Check if PM2 is available
+    try {
+      require.resolve("pm2");
+    } catch {
+      // PM2 not installed
+      const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
+      Log.log(`[MMM-Remote-Control] ${message}`);
+      this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
       return;
     }
+
     const pm2 = require("pm2");
     const processName = query.processName || this.thisConfig.pm2ProcessName || "mm";
 
     pm2.connect((err) => {
       if (err) {
-        this.sendResponse(res, err);
+        pm2.disconnect();
+        const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
+        Log.log(`[MMM-Remote-Control] ${message}`);
+        this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
         return;
       }
 
-      const actionName = query.action.toLowerCase();
-      Log.log(`[MMM-Remote-Control] PM2 process: ${actionName} ${processName}`);
+      // Check if process is running in PM2
+      pm2.list((err, list) => {
+        if (err || !list.find((proc) => proc.name === processName && proc.pm2_env.status === "online")) {
+          pm2.disconnect();
+          const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
+          Log.log(`[MMM-Remote-Control] ${message}`);
+          this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
+          return;
+        }
 
-      switch (actionName) {
-        case "restart":
-          pm2.restart(processName, (err) => {
+        // Process is running in PM2, perform action
+        pm2[actionName](processName, (err) => {
+          pm2.disconnect();
+          if (err) {
+            Log.error(`[MMM-Remote-Control] PM2 ${actionName} error:`, err);
+            this.sendResponse(res, err);
+          } else {
+            Log.log(`[MMM-Remote-Control] PM2 ${actionName}: ${processName}`);
             this.sendResponse(res, undefined, {action: actionName, processName});
-            if (err) { this.sendResponse(res, err); }
-          });
-          break;
-        case "stop":
-          pm2.stop(processName, (err) => {
-            this.sendResponse(res, undefined, {action: actionName, processName});
-            pm2.disconnect();
-            if (err) { this.sendResponse(res, err); }
-          });
-          break;
-      }
+          }
+        });
+      });
     });
   },
 

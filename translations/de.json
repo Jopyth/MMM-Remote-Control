@@ -60,6 +60,7 @@
 
   "DONE": "Fertig.",
   "ERROR": "Fehler!",
+  "INFO": "Info",
   "LOADING": "Lade …",
 
   "LOCKSTRING_WARNING": "Dieses Modul wurde durch LIST_OF_MODULES versteckt, es kann nicht angezeigt werden.",
