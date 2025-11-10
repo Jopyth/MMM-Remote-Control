@@ -382,7 +382,7 @@ module.exports = NodeHelper.create({
       const current = config.modules[i];
       const moduleDefaultsFromRequire = Module.configDefaults[current.module];
       // We need moduleDataFromBrowser for bundled modules like MMM-RAIN-MAP. See #331.
-      const moduleDataFromBrowser = this.configData.moduleData.find((item) => item.name === current.module);
+      const moduleDataFromBrowser = this.configData.moduleData?.find((item) => item.name === current.module);
 
       const moduleConfig = moduleDefaultsFromRequire || moduleDataFromBrowser?.config || {};
 
