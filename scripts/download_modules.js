@@ -19,7 +19,7 @@ const fs = require("node:fs");
 const downloadModules = {
   defaults: {
     modulesFile: path.resolve(__dirname, "../modules.json"), // Path to modules file
-    sourceUrl: "https://raw.githubusercontent.com/wiki/MagicMirrorOrg/MagicMirror/3rd-Party-Modules.md", // Source url
+    sourceUrl: "https://modules.magicmirror.builders/data/modules.json", // Source url
     refreshRate: 24 * 3600, // Max Refresh of One Day
     force: false, // Force the update
     callback (result) { console.log(result); } // Callback to run on success or failure
@@ -33,23 +33,28 @@ const downloadModules = {
   },
 
   parseList (content) {
-    const re = /\|\s?\[(.*?)\]\((.*?)\)\s?\|(.*?)\|(.*)\|?/gu;
-    const modules = [];
+    try {
+      const data = JSON.parse(content);
+      const modules = [];
 
-    content.match(re).forEach((line) => {
-      line.replace(re, (match, name, url, author, desc) => {
-        const modDetail = {
-          longname: name.trim(),
-          id: url.replace(".git", "").replace(/.*\/(.*?\/.*?)$/u, "$1").trim(),
-          url: url.replace(".git", "").trim(),
-          author: author.replace(/\[(.*)\]\(.*\)/u, "$1").trim(),
-          desc: desc.replace(/\|/u, "").trim()
-        };
-        modules.push(modDetail);
-      });
-    });
+      if (data.modules && Array.isArray(data.modules)) {
+        data.modules.forEach((module) => {
+          const modDetail = {
+            longname: module.name,
+            id: module.id,
+            url: module.url,
+            author: module.maintainer,
+            desc: module.description
+          };
+          modules.push(modDetail);
+        });
+      }
 
-    return modules;
+      return modules;
+    } catch (error) {
+      console.error("MODULE LIST ERROR: Failed to parse JSON:", error.message);
+      return [];
+    }
   },
 
   async getPackages () {
@@ -69,7 +74,7 @@ const downloadModules = {
           }
         });
       } else if (response.status === 401) {
-        console.error("MODULE LIST ERROR: Could not load module data from wiki. 401 Error");
+        console.error("MODULE LIST ERROR: Could not load module data from JSON API. 401 Error");
         this.config.callback("ERROR_401");
       } else {
         console.error("MODULE LIST ERROR: Could not load data.", response.statusText);
@@ -93,8 +98,14 @@ const downloadModules = {
         this.config.callback("NO_UPDATE_REQUIRED");
       }
     } catch (err) {
-      console.error("MODULE LIST ERROR: Could not check last modified time.", err);
-      this.config.callback("ERROR_CHECKING_LAST_MODIFIED");
+      // If file doesn't exist or can't be read, download it
+      if (err.code === "ENOENT") {
+        console.log("MODULE LIST INFO: modules.json not found, downloading...");
+        this.getPackages();
+      } else {
+        console.error("MODULE LIST ERROR: Could not check last modified time.", err);
+        this.config.callback("ERROR_CHECKING_LAST_MODIFIED");
+      }
     }
 
   }
