@@ -28,7 +28,7 @@
     "lint": "eslint && prettier . --check",
     "lint:fix": "eslint --fix && prettier . --write",
     "prepare": "simple-git-hooks || echo 'No problem. Skipping git hooks installation.'",
-    "postinstall": "cp modules.json.template modules.json",
+    "postinstall": "node scripts/postinstall.js",
     "test": "node --run lint && node --run test:spelling && node --run test:unit",
     "test:coverage": "c8 --all node --test tests/unit/**/*.test.js",
     "test:spelling": "cspell .",
