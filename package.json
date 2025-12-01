@@ -51,7 +51,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-import-x": "^4.16.1",
     "globals": "^16.5.0",
-    "lint-staged": "^16.2.6",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
     "simple-git-hooks": "^2.13.1"
   },
