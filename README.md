@@ -150,7 +150,7 @@ For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders
 this.sendNotification("REMOTE_ACTION", { action: "RESTART" });
 ```
 
-See some specific examples for controlling your mirror from other modules and add your own examples [in the Wiki page here](https://github.com/Jopyth/MMM-Remote-Control/wiki/Examples-for-Controlling-from-Another-Module)
+See the [Examples Guide](docs/guide/examples.md) for more integration examples with MMM-ModuleScheduler, MMM-Navigate, Home Assistant, and more.
 
 ### List of actions
 
@@ -249,53 +249,44 @@ Can also be used with the [API](https://documenter.getpostman.com/view/6167403/R
 
 ### Using Custom Commands
 
-Depending on your installation, some `shell` commands used by this module are not appropriate and can be overwritten by something that will work for you. To overwrite the commands, add a `customCommand` object to your config section. The following commands are supported:
+Override default shell commands for shutdown, reboot, and monitor control. See the [Custom Commands Guide](docs/guide/custom-commands.md) for details.
 
-```js
-    customCommand: {
-        shutdownCommand: 'shell command to shutdown your pc',
-        rebootCommand: 'shell command to reboot your pc',
-        monitorOnCommand: 'shell command to turn on your monitor',
-        monitorOffCommand: 'shell command to turn off your monitor',
-        monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'
-    }
-```
+> **Monitor not turning on/off?** The default `vcgencmd` commands don't work on newer Raspberry Pi OS (Bookworm+). See the [Monitor Control Guide](docs/guide/monitor-control.md) for Wayland, X11, CEC, and other options.
 
 ### Custom Classes
 
-You probably wanna hide or show some modules at the same time, right? It's everything that we want this module for, of course.
-Well, now you can add as many classes as you like, and define whether they show themselves, hide or toggle between the two stages!
+Group modules to show/hide together with a single action. See the [Classes Guide](docs/guide/classes.md) for details.
 
 ```js
     classes: {
-        "Any Name You Want": {
-            hide: ["calendar"],
-            show: ["newsfeed"],
-            toggle: ["clock"],
-        },
-        "Another Name You Want": {
-            hide: ["newsfeed"],
-            show: ["calendar"],
+        "Day Mode": {
+            show: ["clock", "weather"],
+            hide: ["screensaver"],
         },
     }
 ```
 
 ### Custom Menu Items
 
-You can create your own customized menu items by providing creating a JSON file for the menu and providing a `customMenu: "custom_menu.json"` directive in your config. The file may be called whatever you want, but the name must be provided in the `config` section, and it must be stored in the Mirror's `config/` directory (same place as your `config.js` file).
+Create custom buttons in the web interface. See the [Custom Menus Guide](docs/guide/custom-menus.md) for details.
 
-An example menu is provided in this module's folder, titled `custom_menu.example.json`. You can copy this to the `/config` folder and modify as you need.
+Copy `custom_menu.example.json` to your MagicMirror `config/` folder, rename it, and add to your config:
 
-#### Key Components
+```js
+    customMenu: "custom_menu.json",
+```
 
-|   Name   | Description                                                                                                                                                                                                                                                                                                           |
-| :------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   `id`   | The HTML id prefix to use for the menu item.                                                                                                                                                                                                                                                                          |
-|  `type`  | The item type, either `'menu'` or `'item'`. `'menu'` is used to indicate the item is a sub-menu and has an `items` array. `'item'` is used for single menu items and will send a socket "REMOTE_ACTION" notification back to the server. This requires `action:` and `content:` parameters before it can do anything. |
-|  `text`  | The text to display. You can use the translate string `'%%TRANSLATE:YOUR_KEY_HERE%%'`, but remember to also update the appropriate file in `/translations`.                                                                                                                                                           |
-|  `icon`  | The [FontAwesome](https://fontawesome.com/v4.7.0/icons/) icon to use (without the leading `-fa`).                                                                                                                                                                                                                     |
-| `items`  | An array of sub-menu items to use with `"type":"menu"`. Should be the same format as the top level menu (i.e. the menu structure is recursive).                                                                                                                                                                       |
-| `action` | The `REMOTE_ACTION` notification action name, usually `NOTIFICATION`. Required for `"type":"item"` items to be able to do anything.                                                                                                                                                                                   |
+## Documentation
+
+For detailed documentation, see the [docs/guide/](docs/guide/) folder:
+
+- [Configuration](docs/guide/configuration.md) - All config options
+- [Monitor Control](docs/guide/monitor-control.md) - Wayland, X11, CEC commands
+- [Custom Commands](docs/guide/custom-commands.md) - Shell command overrides
+- [Custom Menus](docs/guide/custom-menus.md) - Build custom UI buttons
+- [Classes](docs/guide/classes.md) - Group modules together
+- [Examples](docs/guide/examples.md) - Integration with other modules
+- [FAQ](docs/guide/faq.md) - Troubleshooting
 
 ## Contributing
 
