@@ -14,5 +14,5 @@ This guide covers all configuration options and features of MMM-Remote-Control.
 
 ## Quick Links
 
-- [API Documentation](../swagger.json) - REST API reference
+- [API Documentation](../../API/README.md) - REST API reference
 - [Main README](../../README.md) - Installation & Quick Start
