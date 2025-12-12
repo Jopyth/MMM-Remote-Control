@@ -1,6 +1,6 @@
 {
   "name": "mmm-remote-control",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "This module for the MagicMirror² allows you to shutdown and configure your mirror through a web browser.",
   "keywords": [
     "magic mirror",

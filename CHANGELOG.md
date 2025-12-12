@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.3.1](https://github.com/jopyth/MMM-Remote-Control/compare/v3.3.0...v3.3.1) - 2025-12-12
+
+### Changed
+
+- chore: update dependencies
+- docs: migrate wiki to docs/guide, simplify README
+
 ## [3.3.0](https://github.com/jopyth/MMM-Remote-Control/compare/v3.2.7...v3.3.0) - 2025-11-10
 
 ### Added
