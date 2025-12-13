@@ -152,8 +152,8 @@ module.exports = {
         }
       }
 
-      // Check for correct Content-Type header:
-      if (req.method === "POST" && !req.is("application/json")) {
+      // Check for correct Content-Type header (skip check if no content-type is set):
+      if (req.method === "POST" && req.headers["content-type"] && !req.is("application/json")) {
         res.status(400).json({success: false, message: "Incorrect content-type, must be 'application/json'"});
         return;
       }
