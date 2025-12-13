@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.3.2](https://github.com/jopyth/MMM-Remote-Control/compare/v3.3.1...v3.3.2) - 2025-12-13
+
+### Changed
+
+- chore: update devDependencies
+- chore: handle prettier issue
+- chore: handle cspell issues
+- docs: update API documentation link in README
+- fix(api): allow POST requests without Content-Type header when body is empty
+
 ## [3.3.1](https://github.com/jopyth/MMM-Remote-Control/compare/v3.3.0...v3.3.1) - 2025-12-12
 
 ### Changed
