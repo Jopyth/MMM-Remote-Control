@@ -338,7 +338,7 @@ const Remote = {
       this.loadList("config-modules", "config", (parent, configData) => {
 
         const alertElem = document.getElementById("alert-button");
-        if (!configData.modules.find((m) => m.module === "alert") && alertElem !== undefined) { alertElem.remove(); }
+        if (!configData.modules.find((m) => m.module === "alert") && alertElem) { alertElem.remove(); }
 
         const modConfig = configData.modules.find((m) => m.module === "MMM-Remote-Control").config;
         const classesButton = document.getElementById("classes-button");
