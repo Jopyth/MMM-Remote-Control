@@ -370,15 +370,15 @@ const Remote = {
       }
     }
 
-    const allMenus = document.getElementsByClassName("menu-element");
+    const allMenus = Array.from(document.getElementsByClassName("menu-element"));
 
-    Array.from(allMenus).forEach((menu) => {
+    allMenus.forEach((menu) => {
       this.hide(menu);
     });
 
-    const currentMenu = document.getElementsByClassName(newMenu);
+    const currentMenu = Array.from(document.getElementsByClassName(newMenu));
 
-    Array.from(currentMenu).forEach((menu) => {
+    currentMenu.forEach((menu) => {
       this.show(menu);
     });
 
@@ -1184,7 +1184,7 @@ const Remote = {
 
   getModuleConfigFromUI () {
     const rootElement = {};
-    const elements = document.getElementsByClassName("config-input");
+    const elements = Array.from(document.getElementsByClassName("config-input"));
     for (const element of elements) {
       const path = element.id;
       const splitPath = path.split("/");
@@ -1879,7 +1879,7 @@ const buttons = {
   // edit menu buttons
   "show-all-button" () {
     const parent = document.getElementById("visible-modules-results");
-    const buttons = parent.children;
+    const buttons = Array.from(parent.children);
     for (const button of buttons) {
       if (Remote.hasClass(button, "external-locked")) {
         continue;
@@ -1890,7 +1890,7 @@ const buttons = {
   },
   "hide-all-button" () {
     const parent = document.getElementById("visible-modules-results");
-    const buttons = parent.children;
+    const buttons = Array.from(parent.children);
     for (const button of buttons) {
       button.className = button.className.replace("toggled-on", "toggled-off");
       Remote.hideModule(button.id);
