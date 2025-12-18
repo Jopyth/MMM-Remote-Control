@@ -581,10 +581,11 @@ module.exports = NodeHelper.create({
   },
 
   handleGetClasses (query, res) {
-    const thisConfig = this.getConfig().modules.find((m) => m.module === "MMM-Remote-Control").config || {};
-    this.sendResponse(res, undefined, {query, data: thisConfig.classes
-      ? thisConfig.classes
-      : {}});
+    const thisConfig = this.getConfig().modules.find((m) => m.module === "MMM-Remote-Control")?.config || {};
+    this.sendResponse(res, undefined, {
+      query,
+      data: thisConfig.classes || {}
+    });
   },
 
   handleGetSaves (query, res) {

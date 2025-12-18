@@ -30,24 +30,17 @@ export default defineConfig([
       "@stylistic/indent": ["error", 2],
       "@stylistic/multiline-ternary": "off",
       "@stylistic/newline-per-chained-call": "off",
-      "@stylistic/object-property-newline": "off",
+      "@stylistic/object-property-newline": ["error", {"allowAllPropertiesOnSameLine": true}],
       "@stylistic/padded-blocks": "off",
       "@stylistic/quote-props": ["error", "consistent"],
       "capitalized-comments": "off",
-      "consistent-this": "off",
-      "line-comment-position": "off",
       "max-lines-per-function": ["warn", 250],
       "max-statements": ["warn", 60],
-      "multiline-comment-style": "off",
-      "no-await-in-loop": "off",
       "no-inline-comments": "off",
       "no-magic-numbers": "off",
       "no-var": "error",
       "one-var": "off",
-      "prefer-const": "error",
-      "prefer-template": "error",
-      "sort-keys": "off",
-      "strict": "off"
+      "sort-keys": "off"
     }
   },
   {
