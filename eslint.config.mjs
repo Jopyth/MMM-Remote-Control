@@ -26,7 +26,7 @@ export default defineConfig([
     "rules": {
       "@stylistic/array-element-newline": ["error", "consistent"],
       "@stylistic/brace-style": ["error", "1tbs", {"allowSingleLine": true}],
-      "@stylistic/function-call-argument-newline": "off",
+      "@stylistic/function-call-argument-newline": ["error", "consistent"],
       "@stylistic/indent": ["error", 2],
       "@stylistic/multiline-ternary": "off",
       "@stylistic/newline-per-chained-call": "off",
