@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Menü",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Ansicht editieren",
   "SHUTDOWN_MENU_NAME": "Energieoptionen",
   "CONFIGURE_MENU_NAME": "Einstellungen",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Links",
+  "API_DOCS": "API-Dokumentation",
+  "WEBSITE": "Webseite",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repository",
 
   "BACK": "Zurück",
 
@@ -21,8 +26,9 @@
   "MINIMIZE": "Browser minimieren",
   "DEVTOOLS": "Entwicklerwerkzeuge",
 
-  "SHOWALL": "Alle",
-  "HIDEALL": "Alle",
+  "SHOWALL": "Alle anzeigen",
+  "HIDEALL": "Alle verbergen",
+  "RESTORE": "Wiederherstellen",
 
   "ADD_MODULE": "Neues Modul",
   "SEARCH": "Suchen …",
@@ -48,7 +54,7 @@
   "NO_MODULES_LOADED": "Keine Module geladen.",
   "SAVE": "Speichern",
 
-  "EXPERIMENTAL": "Dies ist ein experimentelles Feature, es könnte Probleme verursachen. Mache ein Backup von deiner config!<br>Weiter machen?",
+  "EXPERIMENTAL": "Dies ist ein experimentelles Feature, es könnte Probleme verursachen. Mache ein Backup von deiner config!",
   "PANIC": "Lieber nicht.",
   "NO_RISK_NO_FUN": "Ich liebe das Risiko!",
 

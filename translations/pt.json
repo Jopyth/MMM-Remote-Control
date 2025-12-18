@@ -1,10 +1,15 @@
 {
-  "TITLE": "Menu do MagicMirror²",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Editar a aparência",
   "SHUTDOWN_MENU_NAME": "Ligar/Desligar",
   "CONFIGURE_MENU_NAME": "Editar o config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Ligações",
+  "API_DOCS": "Documentação da API",
+  "WEBSITE": "Website",
+  "FORUM": "Fórum",
+  "REPOSITORY": "Repositório",
 
   "BACK": "Voltar",
 
@@ -18,8 +23,9 @@
   "RESTARTMM": "Reiniciar o MagicMirror²",
   "SHUTDOWN": "Desligar",
 
-  "SHOWALL": "Todos",
-  "HIDEALL": "Todos",
+  "SHOWALL": "Mostrar tudo",
+  "HIDEALL": "Esconder tudo",
+  "RESTORE": "Restaurar",
 
   "ADD_MODULE": "Adicionar módulo",
   "SEARCH": "Procurar …",
@@ -45,7 +51,7 @@
   "NO_MODULES_LOADED": "Nenhum módulo carregado.",
   "SAVE": "Guardar",
 
-  "EXPERIMENTAL": "Esta é uma função experimental e pode corromper o seu ficheiro de configuração. Faça backup da sua configuração por precaução!<br>Deseja continuar?",
+  "EXPERIMENTAL": "Esta é uma função experimental e pode corromper o seu ficheiro de configuração. Faça backup da sua configuração por precaução!",
   "PANIC": "Deixa lá.",
   "NO_RISK_NO_FUN": "Quem não arrisca, não petisca!",
 

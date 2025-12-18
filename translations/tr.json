@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Menü",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Görünümü Düzenle",
   "SHUTDOWN_MENU_NAME": "Güç",
   "CONFIGURE_MENU_NAME": "config.js dosyasını düzenle",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Bağlantılar",
+  "API_DOCS": "API Dokümantasyonu",
+  "WEBSITE": "Web sitesi",
+  "FORUM": "Forum",
+  "REPOSITORY": "Depo",
 
   "BACK": "Geri",
 
@@ -21,8 +26,9 @@
   "MINIMIZE": "Tarayıcıyı Küçült",
   "DEVTOOLS": "DevTools Aracını Çalıştır",
 
-  "SHOWALL": "Hepsi",
-  "HIDEALL": "Hepsi",
+  "SHOWALL": "Hepsi Göster",
+  "HIDEALL": "Hepsi Gizle",
+  "RESTORE": "Geri Yükle",
 
   "ADD_MODULE": "Modül Ekle",
   "SEARCH": "Ara …",
@@ -48,7 +54,7 @@
   "NO_MODULES_LOADED": "Modül yüklenmedi.",
   "SAVE": "Kaydet",
 
-  "EXPERIMENTAL": "Bu deneysel bir özellik dolayısıyla config.js dosyanız zarar görebilir. Önce config.js dosyanızı yedekleyin!<br>Devam etmek istiyor musunuz?",
+  "EXPERIMENTAL": "Bu deneysel bir özellik dolayısıyla config.js dosyanız zarar görebilir. Önce config.js dosyanızı yedekleyin!",
   "PANIC": "Böyle zor bir kararı alamam. Ben vazgeçtim.",
   "NO_RISK_NO_FUN": "Risk yoksa eğlence de yoktur! Devam et...",
 

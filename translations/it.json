@@ -1,10 +1,15 @@
 {
-  "TITLE": "Menù MagicMirror²",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Modifica vista",
   "SHUTDOWN_MENU_NAME": "Alimentazione",
   "CONFIGURE_MENU_NAME": "Modifica config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Link",
+  "API_DOCS": "Documentazione API",
+  "WEBSITE": "Sito web",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repository",
 
   "BACK": "Indietro",
 
@@ -18,9 +23,9 @@
   "RESTARTMM": "Riavvia MagicMirror²",
   "SHUTDOWN": "Spegni",
 
-  "SHOWALL": "Tutto",
-  "HIDEALL": "Tutto",
-
+  "SHOWALL": "Mostra tutto",
+  "HIDEALL": "Nascondi tutto",
+  "RESTORE": "Ripristina",
   "ADD_MODULE": "Aggiungi modulo",
   "SEARCH": "Cerca …",
   "INSTALLED": "Installati",
@@ -45,7 +50,7 @@
   "NO_MODULES_LOADED": "Nessun modulo caricato.",
   "SAVE": "Salva",
 
-  "EXPERIMENTAL": "Questa è una funzione sperimentale e potrebbe rendere illeggibile il file config. Effettua prima il backup del tuo config per sicurezza!<br>Vuoi continuare?",
+  "EXPERIMENTAL": "Questa è una funzione sperimentale e potrebbe rendere illeggibile il file config. Effettua prima il backup del tuo config per sicurezza!",
   "PANIC": "Nessun problema.",
   "NO_RISK_NO_FUN": "Chi non risica non rosica!",
 

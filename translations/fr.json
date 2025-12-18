@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Menu",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Afficher ou cacher les modules",
   "SHUTDOWN_MENU_NAME": "Alimentation",
   "CONFIGURE_MENU_NAME": "Éditer le fichier config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Liens",
+  "API_DOCS": "Docs de l'API",
+  "WEBSITE": "Site web",
+  "FORUM": "Forum",
+  "REPOSITORY": "Dépôt",
 
   "BACK": "Retour",
 
@@ -20,6 +25,7 @@
 
   "SHOWALL": "Tout voir",
   "HIDEALL": "Tout cacher",
+  "RESTORE": "Restaurer",
 
   "ADD_MODULE": "Ajouter un module",
   "SEARCH": "Rechercher …",
@@ -45,7 +51,7 @@
   "NO_MODULES_LOADED": "Aucun module chargé.",
   "SAVE": "Enregistrer",
 
-  "EXPERIMENTAL": "Ceci est une fonctionnalité expérimentale, elle peut casser votre configuration. Enregistrez votre configuration au cas où !<br>Voulez vous continuer ?",
+  "EXPERIMENTAL": "Ceci est une fonctionnalité expérimentale, elle peut casser votre configuration. Enregistrez votre configuration au cas où !",
   "PANIC": "Non, tant pis !",
   "NO_RISK_NO_FUN": "On a qu'une vie ! Go !",
 

@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Menu",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Edit view",
   "SHUTDOWN_MENU_NAME": "Power",
   "CONFIGURE_MENU_NAME": "Edit config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Links",
+  "API_DOCS": "API Docs",
+  "WEBSITE": "Website",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repository",
 
   "BACK": "Back",
 
@@ -21,8 +26,9 @@
   "MINIMIZE": "Minimize Browser",
   "DEVTOOLS": "Toggle DevTools",
 
-  "SHOWALL": "All",
-  "HIDEALL": "All",
+  "SHOWALL": "Show all",
+  "HIDEALL": "Hide all",
+  "RESTORE": "Restore",
 
   "ADD_MODULE": "Add module",
   "SEARCH": "Search …",
@@ -48,7 +54,7 @@
   "NO_MODULES_LOADED": "No module loaded.",
   "SAVE": "Save",
 
-  "EXPERIMENTAL": "This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!<br>Do you want to continue?",
+  "EXPERIMENTAL": "This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!",
   "PANIC": "Never mind.",
   "NO_RISK_NO_FUN": "No risk no fun!",
 

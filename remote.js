@@ -37,16 +37,15 @@ const Remote = {
   /*
    * socket()
    * Returns a socket object. If it doesn't exist, it's created.
-   * It also registers the notification callback.
+   * It also registers the notification handler.
    */
   socket () {
     if (typeof this._socket === "undefined") {
-      this._socket = this._socket = new MMSocket(this.name);
+      this._socket = new MMSocket(this.name);
     }
 
-    const self = this;
     this._socket.setNotificationCallback((notification, payload) => {
-      self.socketNotificationReceived(notification, payload);
+      this.socketNotificationReceived(notification, payload);
     });
 
     return this._socket;
@@ -74,20 +73,20 @@ const Remote = {
     if (notification === "REMOTE_ACTION_RESULT") {
       // console.log("Result received:", JSON.stringify(payload, undefined, 4));
       if ("action" in payload && payload.action === "INSTALL") {
-        this.installCallback(payload);
+        this.handleInstall(payload);
         return;
       }
       if ("action" in payload && payload.action === "GET_CHANGELOG") {
-        this.showChangelogCallback(payload);
+        this.handleShowChangelog(payload);
         return;
       }
       if ("data" in payload) {
         if (payload.query.data === "config_update") {
-          this.saveConfigCallback(payload);
+          this.handleSaveConfig(payload);
         } else if (payload.query.data === "saves") {
-          this.undoConfigMenuCallback(payload);
+          this.handleRestoreConfigMenu(payload);
         } else if (payload.query.data === "mmUpdateAvailable") {
-          this.mmUpdateCallback(payload.result);
+          this.handleMmUpdate(payload.result);
         } else if (payload.query.data === "brightness") {
           const slider = document.getElementById("brightness-slider");
           slider.value = payload.result;
@@ -95,7 +94,7 @@ const Remote = {
           this.translations = payload.data;
           this.onTranslationsLoaded();
         } else {
-          this.loadListCallback(payload);
+          this.handleLoadList(payload);
         }
         return;
       }
@@ -126,7 +125,6 @@ const Remote = {
     if (notification === "RESTART") {
       setTimeout(() => {
         document.location.reload();
-        console.log("Delayed REFRESH");
       }, 62000);
       return;
     }
@@ -146,7 +144,6 @@ const Remote = {
     Object.keys(buttons).forEach((key) => {
       document.getElementById(key).addEventListener("click", buttons[key], false);
     });
-    console.log("buttons loaded");
   },
 
   translate (pattern) {
@@ -158,27 +155,21 @@ const Remote = {
   },
 
   hide (element) {
-    if (!this.hasClass(element, "hidden")) {
-      element.className += " hidden";
-    }
+    element?.classList.add("hidden");
   },
 
   show (element) {
-    if (this.hasClass(element, "hidden")) {
-      element.className = element.className.replace(/ ?hidden/, "");
-    }
+    element?.classList.remove("hidden");
   },
 
-  loadToggleButton (element, toggleCallback) {
-    const self = this;
-
+  loadToggleButton (element, onToggle) {
     element.addEventListener("click", (event) => {
-      if (self.hasClass(event.currentTarget, "toggled-off")) {
-        if (toggleCallback) {
-          toggleCallback(true, event);
+      if (this.hasClass(event.currentTarget, "toggled-off")) {
+        if (onToggle) {
+          onToggle(true, event);
         }
-      } else if (toggleCallback) {
-        toggleCallback(false, event);
+      } else if (onToggle) {
+        onToggle(false, event);
       }
     }, false);
   },
@@ -195,51 +186,82 @@ const Remote = {
     const searchIn = ["author", "desc", "longname", "name"];
 
     const data = this.savedData.moduleAvailable;
-    for (let i = 0; i < data.length; i++) {
-      const currentData = data[i];
+    data.forEach((currentData, i) => {
       const id = `install-module-${i}`;
       const element = document.getElementById(id);
-      if (pattern === "" || pattern === undefined) {
+      if (!pattern) {
         // cleared search input, show all
-        element.style.display = "";
-        continue;
+        element.classList.remove("hidden");
+        return;
       }
 
-      let match = false;
-      if (filterInstalled && currentData.installed) {
-        match = true;
-      }
-      for (let k = 0; k < searchIn.length; k++) {
-        const key = searchIn[k];
-        if (match || currentData[key] && currentData[key].match(regex)) {
+      let match = filterInstalled && currentData.installed;
+
+      for (const key of searchIn) {
+        if (match || currentData[key]?.match(regex)) {
           match = true;
           break;
         }
       }
-      if (match) {
-        element.style.display = "";
-      } else {
-        element.style.display = "none";
-      }
+      element.classList.toggle("hidden", !match);
+    });
+  },
+
+  updateSliderThumbColor (slider, type) {
+    const value = parseInt(slider.value, 10);
+    const min = parseInt(slider.min, 10);
+    const max = parseInt(slider.max, 10);
+    const percent = (value - min) / (max - min);
+
+    let thumbColor, trackGradient;
+    if (type === "brightness") {
+      // Brightness: dark gray to bright white (neutral, no color)
+      const brightness = Math.round(50 + percent * 205);
+      thumbColor = `rgb(${brightness}, ${brightness}, ${brightness})`;
+      // Track gradient: dark gray (left) to bright white (right)
+      trackGradient = "linear-gradient(to right, rgb(50, 50, 50), rgb(255, 255, 255))";
+    } else if (type === "temp") {
+
+      /*
+       * Color temperature: warm (orange) to cool (blue)
+       * Low values (140) = warm, High values (500) = cool
+       * Invert: start with cool (low slider %), end with warm (high slider %)
+       */
+      const warmR = 255,
+        warmG = 147,
+        warmB = 41; // warm orange
+      const coolR = 100,
+        coolG = 181,
+        coolB = 246; // cool blue
+      const r = Math.round(coolR + (warmR - coolR) * percent);
+      const g = Math.round(coolG + (warmG - coolG) * percent);
+      const b = Math.round(coolB + (warmB - coolB) * percent);
+      thumbColor = `rgb(${r}, ${g}, ${b})`;
+      // Track gradient: cool blue (left) to warm orange (right)
+      trackGradient = `linear-gradient(to right, rgb(${coolR}, ${coolG}, ${coolB}), rgb(${warmR}, ${warmG}, ${warmB}))`;
+    }
+
+    if (thumbColor) {
+      slider.style.setProperty("--thumb-color", thumbColor);
+    }
+    if (trackGradient) {
+      slider.style.setProperty("--track-gradient", trackGradient);
     }
   },
 
   closePopup () {
     const popupContainer = document.getElementById("popup-container");
     const popupContents = document.getElementById("popup-contents");
-    if (popupContainer) popupContainer.style.display = "none";
+    popupContainer?.classList.add("hidden");
     if (popupContents) popupContents.innerHTML = "";
   },
 
   showPopup () {
     const popupContainer = document.getElementById("popup-container");
-    if (popupContainer) popupContainer.style.display = "block";
+    popupContainer?.classList.remove("hidden");
   },
 
-  getPopupContent (clear) {
-    if (clear === undefined) {
-      clear = true;
-    }
+  getPopupContent (clear = true) {
     if (clear) {
       this.closePopup();
     }
@@ -247,40 +269,40 @@ const Remote = {
   },
 
   loadOtherElements () {
-    const self = this;
-
     const slider = document.getElementById("brightness-slider");
     slider.addEventListener("change", () => {
-      self.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: slider.value});
+      this.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: slider.value});
     }, false);
+    slider.addEventListener("input", () => {
+      this.updateSliderThumbColor(slider, "brightness");
+    }, false);
+    this.updateSliderThumbColor(slider, "brightness");
 
     const slider2 = document.getElementById("temp-slider");
     slider2.addEventListener("change", () => {
-      self.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: slider2.value});
+      this.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: slider2.value});
     }, false);
+    slider2.addEventListener("input", () => {
+      this.updateSliderThumbColor(slider2, "temp");
+    }, false);
+    this.updateSliderThumbColor(slider2, "temp");
 
     const input = document.getElementById("add-module-search");
     const deleteButton = document.getElementById("delete-search-input");
 
     input.addEventListener("input", () => {
-      self.filter(input.value);
-      if (input.value === "") {
-        deleteButton.style.display = "none";
-      } else {
-        deleteButton.style.display = "";
-      }
+      this.filter(input.value);
+      deleteButton.classList.toggle("hidden", input.value === "");
     }, false);
 
     deleteButton.addEventListener("click", () => {
       input.value = "";
-      self.filter(input.value);
-      deleteButton.style.display = "none";
+      this.filter(input.value);
+      deleteButton.classList.add("hidden");
     }, false);
-
-    console.log("loadOtherElements loaded");
   },
 
-  showMenu (newMenu) {
+  async showMenu (newMenu) {
     const self = this;
     if (this.currentMenu === "settings-menu") {
       // check for unsaved changes
@@ -288,7 +310,7 @@ const Remote = {
       if (changes > 0) {
         const wrapper = document.createElement("div");
         const text = document.createElement("span");
-        text.innerHTML = this.translate("UNSAVED_CHANGES");
+        text.textContent = this.translate("UNSAVED_CHANGES");
         wrapper.appendChild(text);
 
         const ok = self.createSymbolText("fa fa-check-circle", this.translate("OK"), () => {
@@ -312,14 +334,7 @@ const Remote = {
       }
     }
 
-    const belowFold = document.getElementById("below-fold");
-    if (newMenu === "main-menu") {
-      if (!this.hasClass(belowFold, "hide-border")) {
-        belowFold.className += " hide-border";
-      }
-    } else if (this.hasClass(belowFold, "hide-border")) {
-      belowFold.className = belowFold.className.replace(" hide-border", "");
-    }
+
     if (newMenu === "add-module-menu") {
       this.loadModulesToAdd();
     }
@@ -337,18 +352,22 @@ const Remote = {
     if (newMenu === "update-menu") {
       this.loadModulesToUpdate();
     }
+    if (newMenu === "links-menu") {
+      this.loadLinks();
+    }
 
     if (newMenu === "main-menu") {
-      this.loadList("config-modules", "config", (parent, configData) => {
-
+      try {
+        const {data: configData} = await this.loadList("config-modules", "config");
         const alertElem = document.getElementById("alert-button");
         if (!configData.modules.find((m) => m.module === "alert") && alertElem) { alertElem.remove(); }
 
         const modConfig = configData.modules.find((m) => m.module === "MMM-Remote-Control").config;
         const classesButton = document.getElementById("classes-button");
         if ((!modConfig || !modConfig.classes) && classesButton) { classesButton.remove(); }
-
-      });
+      } catch (error) {
+        console.error("Error loading config for main menu:", error);
+      }
     }
 
     const allMenus = document.getElementsByClassName("menu-element");
@@ -366,6 +385,67 @@ const Remote = {
     this.setStatus("none");
 
     this.currentMenu = newMenu;
+    // Update header title based on the active menu
+    this.updateHeaderTitle(newMenu);
+  },
+
+  getMenuTitleKey (menuName) {
+    // Map menu identifiers to translation keys
+    const menuTitleMap = {
+      "main-menu": "TITLE",
+      "power-menu": "SHUTDOWN_MENU_NAME",
+      "edit-menu": "EDIT_MENU_NAME",
+      "settings-menu": "CONFIGURE_MENU_NAME",
+      "add-module-menu": "ADD_MODULE",
+      "update-menu": "UPDATE_MENU_NAME",
+      "alert-menu": "ALERT_MENU_NAME",
+      "links-menu": "LINKS"
+    };
+    return menuTitleMap[menuName];
+  },
+
+  updateHeaderTitle (menuName) {
+    try {
+      const headerTitleEl = document.querySelector(".header .header-title");
+      if (!headerTitleEl) { return; }
+
+      const hasTranslations = this.translations && Object.keys(this.translations).length > 0;
+      if (!hasTranslations) { return; }
+
+      const key = menuName || this.currentMenu || "main-menu";
+      const titleKey = this.getMenuTitleKey(key);
+      let titleText = titleKey ? this.translate(titleKey) : null;
+
+      // Special case for classes-menu: use button text if available
+      if (!titleText && key === "classes-menu") {
+        const classesBtn = document.getElementById("classes-button");
+        titleText = classesBtn?.querySelector(".text")?.textContent || this.translate("TITLE");
+      }
+
+      if (titleText) {
+        headerTitleEl.textContent = titleText;
+      }
+    } catch (e) {
+      console.warn("Failed to update header title:", e);
+    }
+  },
+
+  loadLinks () {
+    const parent = document.getElementById("links-results");
+    if (!parent) { return; }
+    while (parent.firstChild) parent.removeChild(parent.firstChild);
+
+    const open = (url) => () => window.open(url, "_blank");
+    const items = [
+      {icon: "fa-book", text: this.translate("API_DOCS"), url: `${window.location.origin}/api/docs/`},
+      {icon: "fa-globe", text: this.translate("WEBSITE"), url: "https://magicmirror.builders/"},
+      {icon: "fa-comments", text: this.translate("FORUM"), url: "https://forum.magicmirror.builders/"},
+      {icon: "fa-github", text: this.translate("REPOSITORY"), url: "https://github.com/Jopyth/MMM-Remote-Control"}
+    ];
+
+    items.forEach(({icon, text, url}) => {
+      parent.appendChild(this.createSymbolText(`fa fa-fw ${icon}`, text, open(url)));
+    });
   },
 
   setStatus (status, message, customContent) {
@@ -378,8 +458,8 @@ const Remote = {
     // Simple status update
     if (status === "success" && !message && !customContent) {
       const successPopup = document.getElementById("success-popup");
-      successPopup.style.display = "block";
-      this.autoHideTimer = setTimeout(() => { successPopup.style.display = "none"; }, this.autoHideDelay);
+      successPopup.classList.remove("hidden");
+      this.autoHideTimer = setTimeout(() => { successPopup.classList.add("hidden"); }, this.autoHideDelay);
       return;
     }
 
@@ -412,7 +492,7 @@ const Remote = {
     if (status === "error") {
       symbol = "fa-exclamation-circle";
       text = this.translate("ERROR");
-      onClick = function () {
+      onClick = () => {
         self.setStatus("none");
       };
       // Only auto-hide errors if autoHideDelayError > 0, otherwise user must click to dismiss
@@ -425,7 +505,7 @@ const Remote = {
     if (status === "info") {
       symbol = "fa-info-circle";
       text = this.translate("INFO");
-      onClick = function () {
+      onClick = () => {
         self.setStatus("none");
       };
       // Info messages (like PM2 restart/stop) should be displayed longer
@@ -438,7 +518,7 @@ const Remote = {
     if (status === "success") {
       symbol = "fa-check-circle";
       text = this.translate("DONE");
-      onClick = function () {
+      onClick = () => {
         self.setStatus("none");
       };
       this.autoHideTimer = setTimeout(() => {
@@ -454,26 +534,21 @@ const Remote = {
     this.show(document.getElementById("result"));
   },
 
-  getWithStatus (params, callback) {
-    const self = this;
+  async getWithStatus (params) {
+    this.setStatus("loading");
+    const response = await this.get("remote", params);
 
-    self.setStatus("loading");
-    self.get("remote", params, (response) => {
-      if (callback) {
-        callback(response);
+    try {
+      const result = JSON.parse(response);
+      if (result.success) {
+        this.setStatus("success", result.info || null);
       } else {
-        const result = JSON.parse(response);
-        if (result.success) {
-          if (result.info) {
-            self.setStatus("success", result.info);
-          } else {
-            self.setStatus("success");
-          }
-        } else {
-          self.setStatus("error");
-        }
+        this.setStatus("error");
       }
-    });
+    } catch (error) {
+      console.error("Error parsing response:", error);
+      this.setStatus("error");
+    }
   },
 
   showModule (id, force) {
@@ -489,8 +564,6 @@ const Remote = {
   },
 
   install (url, index) {
-    const self = this;
-
     const downloadButton = document.getElementById("download-button");
     const icon = downloadButton.querySelector("span:first-child");
     const text = downloadButton.querySelector("span:last-child");
@@ -501,13 +574,13 @@ const Remote = {
     }
 
     if (text) {
-      text.innerHTML = ` ${self.translate("DOWNLOADING")}`;
+      text.innerHTML = ` ${this.translate("DOWNLOADING")}`;
     }
 
     this.sendSocketNotification("REMOTE_ACTION", {action: "INSTALL", url, index});
   },
 
-  installCallback (result) {
+  handleInstall (result) {
     if (result.success) {
       const bgElement = document.getElementById(`install-module-${result.index}`);
       bgElement.firstChild.className = "fa fa-fw fa-check-circle";
@@ -516,13 +589,13 @@ const Remote = {
     }
   },
 
-  async get (route, params, callback, timeout) {
+  async get (route, params, timeout) {
     const url = `${route}?${params}`;
     const controller = new AbortController();
-    const signal = controller.signal;
+    const {signal} = controller;
 
     if (timeout) {
-      setTimeout(() => controller.abort(), timeout); // Timeout in milliseconds
+      setTimeout(() => controller.abort(), timeout);
     }
 
     try {
@@ -538,77 +611,75 @@ const Remote = {
         throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
       }
 
-      const text = await response.text();
-      if (callback) {
-        console.error("Callback:", text);
-        callback(text);
-      }
+      return await response.text();
     } catch (error) {
       if (error.name === "AbortError") {
         console.error("Request was aborted.");
-        // Provide user feedback
         const errorMessage = document.createElement("div");
         errorMessage.className = "error-message";
-        errorMessage.innerText = "The request was aborted. Please try again.";
+        errorMessage.textContent = "The request was aborted. Please try again.";
         document.body.appendChild(errorMessage);
       } else {
         console.error("Fetch error:", error);
       }
+      throw error;
     }
   },
 
-  loadList (listname, dataId, callback) {
-    const self = this;
-
+  loadList (listname, dataId, onLoad) {
     const loadingIndicator = document.getElementById(`${listname}-loading`);
     const parent = document.getElementById(`${listname}-results`);
 
-    while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
+    parent.replaceChildren();
+    this.show(loadingIndicator);
+
+    // Support both onLoad handler and Promise-based usage
+    if (onLoad) {
+      this.pendingResolver = onLoad;
+      this.sendSocketNotification("REMOTE_ACTION", {data: dataId, listname});
+    } else {
+      return new Promise((resolve, reject) => {
+        this.pendingResolver = (parent, data) => {
+          resolve({parent, data});
+        };
+        this.pendingRejecter = (error) => {
+          reject(error);
+        };
+        this.sendSocketNotification("REMOTE_ACTION", {data: dataId, listname});
+      });
     }
-    self.show(loadingIndicator);
-    if (callback) { self.pendingCallback = callback; }
-    self.sendSocketNotification("REMOTE_ACTION", {data: dataId, listname});
   },
 
-  loadListCallback (result) {
-    const self = this;
-
+  handleLoadList (result) {
     const loadingIndicator = document.getElementById(`${result.query.listname}-loading`);
     const emptyIndicator = document.getElementById(`${result.query.listname}-empty`);
     const parent = document.getElementById(`${result.query.listname}-results`);
 
-    self.hide(loadingIndicator);
-    self.savedData[result.query.data] = false;
+    this.hide(loadingIndicator);
+    this.savedData[result.query.data] = false;
 
     try {
       if (result.data.length === 0) {
-        self.show(emptyIndicator);
+        this.show(emptyIndicator);
       } else {
-        self.hide(emptyIndicator);
+        this.hide(emptyIndicator);
       }
-      self.savedData[result.query.data] = result.data;
-      if (self.pendingCallback) {
-        self.pendingCallback(parent, result.data);
-        delete self.pendingCallback;
+      this.savedData[result.query.data] = result.data;
+      if (this.pendingResolver) {
+        this.pendingResolver(parent, result.data);
+        delete this.pendingResolver;
       }
     } catch (error) {
       console.debug("Error loading list:", error);
-      self.show(emptyIndicator);
+      this.show(emptyIndicator);
     }
   },
 
   formatName (string) {
-    string = string.replace(/MMM?-/ig, "").replace(/_/g, " ").replace(/-/g, " ");
-    string = string.replace(/([a-z])([A-Z])/g, function (txt) {
-      // insert space into camel case
-      return `${txt.charAt(0)} ${txt.charAt(1)}`;
-    });
-    string = string.replace(/\w\S*/g, function (txt) {
-      // make character after white space upper case
-      return txt.charAt(0).toUpperCase() + txt.substr(1);
-    });
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    string = string.replace(/MMM?-/ig, "").replaceAll("_", " ").replaceAll("-", " ");
+    string = string.replace(/([a-z])([A-Z])/g, (txt) => `${txt[0]} ${txt[1]}`);
+    string = string.replace(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1));
+    return string.at(0).toUpperCase() + string.slice(1);
   },
 
   formatLabel (string) {
@@ -621,7 +692,7 @@ const Remote = {
   },
 
   formatPosition (string) {
-    return string.replace("_", " ").replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    return string.replaceAll("_", " ").replace(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1).toLowerCase());
   },
 
   getVisibilityStatus (data) {
@@ -662,74 +733,66 @@ const Remote = {
   },
 
   loadBrightness () {
-    console.log("Load brightness...");
     this.sendSocketNotification("REMOTE_ACTION", {data: "brightness"});
   },
 
   loadTemp () {
-    console.log("Load color temperature...");
     this.sendSocketNotification("REMOTE_ACTION", {data: "temp"});
   },
 
   makeToggleButton (moduleBox, visibilityStatus) {
-    const self = this;
-
-    self.loadToggleButton(moduleBox, (toggledOn, event) => {
-      if (toggledOn) {
-        if (self.hasClass(event.currentTarget, "external-locked")) {
+    moduleBox.addEventListener("click", (event) => {
+      if (this.hasClass(event.currentTarget, "toggled-off")) {
+        if (this.hasClass(event.currentTarget, "external-locked")) {
           const wrapper = document.createElement("div");
           const warning = document.createElement("span");
-          warning.innerHTML = self.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
+          warning.innerHTML = this.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
           wrapper.appendChild(warning);
 
-          const ok = self.createSymbolText("fa fa-check-circle", self.translate("OK"), () => {
-            self.setStatus("none");
+          const ok = this.createSymbolText("fa fa-check-circle", this.translate("OK"), () => {
+            this.setStatus("none");
           });
           wrapper.appendChild(ok);
 
-          const force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), (function (target) {
-            return function () {
-              target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
-              self.showModule(target.id, true);
-              self.setStatus("none");
-            };
-          }(event.currentTarget)));
+          const force = this.createSymbolText("fa fa-warning", this.translate("FORCE_SHOW"), () => {
+            event.currentTarget.className = event.currentTarget.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
+            this.showModule(event.currentTarget.id, true);
+            this.setStatus("none");
+          });
           wrapper.appendChild(force);
 
-          self.setStatus("error", false, wrapper);
+          this.setStatus("error", false, wrapper);
         } else {
           event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
-          self.showModule(event.currentTarget.id);
+          this.showModule(event.currentTarget.id);
         }
       } else {
         event.currentTarget.className = event.currentTarget.className.replace("toggled-on", "toggled-off");
-        self.hideModule(event.currentTarget.id);
+        this.hideModule(event.currentTarget.id);
       }
     });
   },
 
-  loadVisibleModules () {
-    const self = this;
-
-    console.log("Load visible modules...");
-
-    this.loadList("visible-modules", "modules", (parent, moduleData) => {
+  async loadVisibleModules () {
+    try {
+      const {data: moduleData} = await this.loadList("visible-modules", "modules");
+      const parent = document.getElementById("visible-modules-results");
       for (let i = 0; i < moduleData.length; i++) {
         if (!moduleData[i].position) {
           // skip invisible modules
           continue;
         }
-        const visibilityStatus = self.getVisibilityStatus(moduleData[i]);
+        const visibilityStatus = this.getVisibilityStatus(moduleData[i]);
 
         const moduleBox = document.createElement("div");
         moduleBox.className = `button module-line ${visibilityStatus.status}`;
         moduleBox.id = moduleData[i].identifier;
 
-        self.addToggleElements(moduleBox);
+        this.addToggleElements(moduleBox);
 
         const text = document.createElement("span");
         text.className = "text";
-        text.innerHTML = ` ${self.formatName(moduleData[i].name)}`;
+        text.innerHTML = ` ${this.formatName(moduleData[i].name)}`;
         if ("header" in moduleData[i]) {
           text.innerHTML += ` (${moduleData[i].header})`;
         }
@@ -737,9 +800,11 @@ const Remote = {
 
         parent.appendChild(moduleBox);
 
-        self.makeToggleButton(moduleBox, visibilityStatus);
+        this.makeToggleButton(moduleBox, visibilityStatus);
       }
-    });
+    } catch (error) {
+      console.error("Error loading visible modules:", error);
+    }
   },
 
   createSymbolText (symbol, text, eventListener, element) {
@@ -786,11 +851,11 @@ const Remote = {
 
     const previousType = oldElement.children[1].innerHTML.slice(1).toLowerCase();
     const select = document.createElement("select");
-    for (let i = 0; i < this.types.length; i++) {
+    for (const typeOption of this.types) {
       const option = document.createElement("option");
-      option.innerHTML = this.formatName(this.types[i]);
-      option.value = this.types[i];
-      if (this.types[i] === type) {
+      option.innerHTML = this.formatName(typeOption);
+      option.value = typeOption;
+      if (typeOption === type) {
         option.selected = "selected";
       }
       select.appendChild(option);
@@ -809,15 +874,12 @@ const Remote = {
     return select;
   },
 
-  createConfigLabel (key, name, type, forcedType, symbol) {
+  createConfigLabel (key, name, type, forcedType, symbol = "fa-tag") {
     const self = this;
 
-    if (symbol === undefined) {
-      symbol = "fa-tag";
-    }
-    if (name[0] === "#") {
+    if (name.at(0) === "#") {
       symbol = "fa-hashtag";
-      name = name.substring(1);
+      name = name.slice(1);
     }
     const label = document.createElement("label");
     label.htmlFor = key;
@@ -835,11 +897,11 @@ const Remote = {
       label.appendChild(typeLabel);
 
       const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), (event) => {
-        let thisElement = event.currentTarget;
-        if (type === "array" || type === "object") {
-          thisElement = thisElement.parentNode;
-        }
-        thisElement.parentNode.parentNode.removeChild(thisElement.parentNode);
+        const thisElement = event.currentTarget;
+        const elementToRemove = type === "array" || type === "object"
+          ? thisElement.parentNode.parentNode
+          : thisElement.parentNode;
+        elementToRemove.remove();
       }, "span");
       remove.className += " type-edit";
       label.appendChild(remove);
@@ -847,10 +909,7 @@ const Remote = {
     return label;
   },
 
-  createConfigInput (key, value, omitValue, element) {
-    if (element === undefined) {
-      element = "input";
-    }
+  createConfigInput (key, value, omitValue, element = "input") {
     const input = document.createElement(element);
     input.className = "config-input";
     if (!omitValue) {
@@ -905,10 +964,8 @@ const Remote = {
         const input = self.createConfigInput(key, value, true);
         input.type = "checkbox";
         label.appendChild(input);
-        console.log(value);
         if (value) {
           input.checked = true;
-          console.log(input.checked);
         }
 
         self.createVisualCheckbox(key, label, input, "fa-check-square-o", false);
@@ -1035,7 +1092,7 @@ const Remote = {
       input.placeholder = this.translate("NEW_ENTRY_NAME");
       addElement.appendChild(inputWrapper);
       inputWrapper.appendChild(input);
-      const addFunction = function () {
+      const addFunction = () => {
         const existingKey = Object.keys(dataToEdit)[0];
         const lastType = self.getTypeAsString(`${path}/${existingKey}`, dataToEdit[existingKey]);
         const key = input.value;
@@ -1055,7 +1112,7 @@ const Remote = {
       symbol.className = "fa fa-fw fa-plus-square button";
       symbol.addEventListener("click", addFunction, false);
       inputWrapper.appendChild(symbol);
-      input.onkeypress = function (e) {
+      input.onkeypress = (e) => {
         if (!e) { e = window.event; }
         const keyCode = e.keyCode || e.which;
         if (keyCode == "13") {
@@ -1090,22 +1147,8 @@ const Remote = {
   appendConfigMenu (index, wrapper) {
     const self = this;
 
-    const menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), () => {
-      const elements = document.getElementsByClassName("sub-menu");
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
-        if (self.hasClass(element, "hidden")) {
-          element.className = element.className.replace("hidden", "");
-        } else {
-          element.className = `${element.className} hidden`;
-        }
-      }
-    });
-    menuElement.className += " fixed-size";
-    wrapper.appendChild(menuElement);
-
     const menuDiv = document.createElement("div");
-    menuDiv.className = "fixed-size sub-menu hidden";
+    menuDiv.className = "fixed-size sub-menu";
 
     const help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), () => {
       window.open(`config-help.html?module=${self.currentConfig.module}`, "_blank");
@@ -1128,9 +1171,6 @@ const Remote = {
 
     wrapper.appendChild(menuDiv);
 
-    const line = document.createElement("header");
-    line.className = "header";
-    wrapper.appendChild(line);
   },
 
   setValue (parent, name, value) {
@@ -1250,61 +1290,74 @@ const Remote = {
       const innerWrapper = document.createElement("div");
       innerWrapper.className = "module-line";
 
-      const moduleBox = self.createSymbolText("fa fa-fw fa-pencil", self.formatName(moduleData[i].module), (event) => {
+      // Module name (left side)
+      const moduleName = document.createElement("div");
+      moduleName.className = "module-name";
+      moduleName.textContent = self.formatName(moduleData[i].module);
+      innerWrapper.appendChild(moduleName);
+
+      // Buttons container (right side)
+      const buttonsContainer = document.createElement("div");
+      buttonsContainer.className = "module-buttons";
+
+      const moduleBox = self.createSymbolText("fa fa-fw fa-pencil", "Edit", (event) => {
         const i = event.currentTarget.id.replace("edit-module-", "");
         self.createConfigPopup(i);
       }, "span");
       moduleBox.id = `edit-module-${i}`;
-      innerWrapper.appendChild(moduleBox);
+      buttonsContainer.appendChild(moduleBox);
 
       if (self.changedModules.indexOf(i) !== -1) {
-        innerWrapper.appendChild(self.createChangedWarning());
+        buttonsContainer.appendChild(self.createChangedWarning());
       }
 
-      const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), (event) => {
-        const i = event.currentTarget.parentNode.firstChild.id.replace("edit-module-", "");
+      const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", "Delete", (event) => {
+        const i = event.currentTarget.parentNode.parentNode.firstChild.nextSibling.firstChild.id.replace("edit-module-", "");
         self.deletedModules.push(parseInt(i));
-        const thisElement = event.currentTarget;
-        thisElement.parentNode.parentNode.removeChild(thisElement.parentNode);
+        const thisElement = event.currentTarget.parentNode.parentNode;
+        thisElement.parentNode.removeChild(thisElement);
       }, "span");
       remove.className += " type-edit";
-      innerWrapper.appendChild(remove);
+      buttonsContainer.appendChild(remove);
 
+      innerWrapper.appendChild(buttonsContainer);
       wrapper.appendChild(innerWrapper);
     }
   },
 
-  loadConfigModules () {
-    const self = this;
-
-    console.log("Loading modules in config...");
+  async loadConfigModules () {
     this.changedModules = [];
 
-    this.loadList("config-modules", "config", (parent, configData) => {
+    try {
+      const {data: configData} = await this.loadList("config-modules", "config");
+      const parent = document.getElementById("config-modules-results");
       const moduleData = configData.modules;
-      if (self.addModule) {
-        const name = self.addModule;
+      if (this.addModule) {
+        const name = this.addModule;
         // we came here from adding a module
-        self.get("get", `data=defaultConfig&module=${name}`, (response) => {
+        try {
+          const response = await this.get("get", `data=defaultConfig&module=${name}`);
           const newData = JSON.parse(response);
           moduleData.push({module: name, config: newData.data});
           const index = moduleData.length - 1;
-          self.changedModules.push(index);
-          self.appendModuleEditElements(parent, moduleData);
-          self.createConfigPopup(index);
-        });
-        self.addModule = "";
+          this.changedModules.push(index);
+          this.appendModuleEditElements(parent, moduleData);
+          this.createConfigPopup(index);
+        } catch (error) {
+          console.error("Error loading default config:", error);
+        }
+        this.addModule = "";
       } else {
-        self.appendModuleEditElements(parent, moduleData);
+        this.appendModuleEditElements(parent, moduleData);
       }
-    });
+    } catch (error) {
+      console.error("Error loading config modules:", error);
+    }
   },
 
-  loadClasses () {
-    const self = this;
-
-    console.log("Loading classes...");
-    this.loadList("classes", "classes", (parent, classes) => {
+  async loadClasses () {
+    try {
+      const {data: classes} = await this.loadList("classes", "classes");
       for (const i in classes) {
         const node = document.createElement("div");
         node.id = "classes-before-result";
@@ -1329,9 +1382,11 @@ const Remote = {
           existingButton.remove();
         }
 
-        self.createMenuElement(content, "classes", node);
+        this.createMenuElement(content, "classes", node);
       }
-    });
+    } catch (error) {
+      console.error("Error loading classes:", error);
+    }
   },
 
   createAddingPopup (index) {
@@ -1391,27 +1446,27 @@ const Remote = {
     this.showPopup();
   },
 
-  loadModulesToAdd () {
-    const self = this;
-
-    console.log("Loading modules to add...");
-
-    this.loadList("add-module", "moduleAvailable", (parent, modules) => {
+  async loadModulesToAdd () {
+    try {
+      const {data: modules} = await this.loadList("add-module", "moduleAvailable");
+      const parent = document.getElementById("add-module-results");
       for (let i = 0; i < modules.length; i++) {
         let symbol = "fa fa-fw fa-cloud";
         if (modules[i].installed) {
           symbol = "fa fa-fw fa-check-circle";
         }
 
-        const moduleBox = self.createSymbolText(symbol, modules[i].name, (event) => {
+        const moduleBox = this.createSymbolText(symbol, modules[i].name, (event) => {
           const index = event.currentTarget.id.replace("install-module-", "");
-          self.createAddingPopup(index);
+          this.createAddingPopup(index);
         });
         moduleBox.className = "button module-line";
         moduleBox.id = `install-module-${i}`;
         parent.appendChild(moduleBox);
       }
-    });
+    } catch (error) {
+      console.error("Error loading modules to add:", error);
+    }
   },
 
   offerRestart (message) {
@@ -1464,64 +1519,101 @@ const Remote = {
     this.sendSocketNotification("REMOTE_ACTION", {action: "UPDATE", module});
   },
 
-  mmUpdateCallback (result) {
+  handleMmUpdate (result) {
     if (window.location.hash.substring(1) == "update-menu") {
-      const element = document.getElementById("update-mm-status");
       const updateButton = document.getElementById("update-mm-button");
       if (result) {
-        self.show(element);
-        updateButton.className += " bright";
+        updateButton?.classList.remove("hidden");
+        updateButton?.classList.add("bright");
       } else {
-        self.hide(element);
-        updateButton.className = updateButton.className.replace(" bright", "");
+        updateButton?.classList.add("hidden");
+        updateButton?.classList.remove("bright");
       }
     }
   },
 
-  loadModulesToUpdate () {
-    const self = this;
-
-    console.log("Loading modules to update...");
-
+  async loadModulesToUpdate () {
     // also update mm info notification
     this.sendSocketNotification("REMOTE_ACTION", {data: "mmUpdateAvailable"});
 
-    this.loadList("update-module", "moduleInstalled", (parent, modules) => {
+    try {
+      const {data: modules} = await this.loadList("update-module", "moduleInstalled");
+      const parent = document.getElementById("update-module-results");
+
+      // Create MagicMirror² update line first
+      const mmWrapper = document.createElement("div");
+      mmWrapper.id = "mm-update-container";
+      mmWrapper.className = "module-line mm-update-line";
+
+      const mmName = document.createElement("div");
+      mmName.className = "module-name";
+      mmName.textContent = "MagicMirror²";
+      mmWrapper.appendChild(mmName);
+
+      const mmButtons = document.createElement("div");
+      mmButtons.className = "module-buttons";
+
+      // MM Update button (initially hidden, shown by handleMmUpdate)
+      const mmUpdateButton = this.createSymbolText("fa fa-fw fa-toggle-up", "Update", () => {
+        this.updateModule(undefined);
+      });
+      mmUpdateButton.id = "update-mm-button";
+      mmUpdateButton.className = "button hidden";
+      mmButtons.appendChild(mmUpdateButton);
+
+      // MM Changelog button (always visible) - opens GitHub releases
+      const mmChangelogButton = this.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", () => {
+        window.open("https://github.com/MagicMirrorOrg/MagicMirror/releases", "_blank");
+      });
+      mmChangelogButton.className = "button";
+      mmButtons.appendChild(mmChangelogButton);
+
+      mmWrapper.appendChild(mmButtons);
+      parent.appendChild(mmWrapper);
+
+      // Now load module updates
       for (let i = 0; i < modules.length; i++) {
-        const symbol = "fa fa-fw fa-toggle-up";
         const innerWrapper = document.createElement("div");
         innerWrapper.className = "module-line";
 
-        const moduleBox = self.createSymbolText(symbol, modules[i].name, (event) => {
-          const module = event.currentTarget.id.replace("update-module-", "");
-          self.updateModule(module);
-        });
-        moduleBox.className = "button";
-        if (modules[i].updateAvailable) {
-          moduleBox.className += " bright";
-        }
-        moduleBox.id = `update-module-${modules[i].longname}`;
-        innerWrapper.appendChild(moduleBox);
+        // Module name (non-clickable)
+        const moduleName = document.createElement("div");
+        moduleName.className = "module-name";
+        moduleName.textContent = modules[i].name;
+        innerWrapper.appendChild(moduleName);
 
+        // Buttons container
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "module-buttons";
+
+        // Update button - only if update available
         if (modules[i].updateAvailable) {
-          const updateInfo = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
-          innerWrapper.appendChild(updateInfo);
+          const updateButton = this.createSymbolText("fa fa-fw fa-toggle-up", "Update", (event) => {
+            const module = event.currentTarget.id.replace("update-module-", "");
+            this.updateModule(module);
+          });
+          updateButton.className = "button bright";
+          updateButton.id = `update-module-${modules[i].longname}`;
+          buttonsContainer.appendChild(updateButton);
         }
 
         // Add changelog button if module has changelog
         if (modules[i].hasChangelog) {
-          const changelogButton = self.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", (event) => {
+          const changelogButton = this.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", (event) => {
             event.stopPropagation();
             const module = modules[i].longname;
-            self.showChangelog(module);
+            this.showChangelog(module);
           });
           changelogButton.className = "button";
-          innerWrapper.appendChild(changelogButton);
+          buttonsContainer.appendChild(changelogButton);
         }
 
+        innerWrapper.appendChild(buttonsContainer);
         parent.appendChild(innerWrapper);
       }
-    });
+    } catch (error) {
+      console.error("Error loading modules to update:", error);
+    }
   },
 
   showChangelog (moduleName) {
@@ -1529,7 +1621,7 @@ const Remote = {
     this.sendSocketNotification("REMOTE_ACTION", {action: "GET_CHANGELOG", module: moduleName});
   },
 
-  showChangelogCallback (result) {
+  handleShowChangelog (result) {
     if (result.success && result.changelog) {
       const wrapper = document.createElement("div");
       wrapper.innerHTML = `<h3>${result.module || "Changelog"}</h3><div id='changelog'>${marked.parse(result.changelog)}</div>`;
@@ -1539,34 +1631,31 @@ const Remote = {
     }
   },
 
-  undoConfigMenu () {
+  restoreConfigMenu () {
     if (this.saving) {
       return;
     }
-    const undoButton = document.getElementById("undo-config");
-    undoButton.className = undoButton.className.replace(" highlight", "");
+    const restoreButton = document.getElementById("restore-config");
+    restoreButton.className = restoreButton.className.replace(" highlight", "");
     this.setStatus("loading");
     this.sendSocketNotification("REMOTE_ACTION", {data: "saves"});
   },
 
-  undoConfigMenuCallback (result) {
-    const self = this;
-
+  handleRestoreConfigMenu (result) {
     if (result.success) {
       const dates = {};
       for (const i in result.data) {
-        dates[new Date(result.data[i])] = function () {
-          console.log(result.data[i]);
-          self.undoConfig(result.data[i]);
+        dates[new Date(result.data[i])] = () => {
+          this.restoreConfig(result.data[i]);
         };
       }
-      self.offerOptions(self.translate("DONE"), dates);
+      this.offerOptions(this.translate("RESTORE"), dates);
     } else {
-      self.setStatus("error");
+      this.setStatus("error");
     }
   },
 
-  undoConfig (date) {
+  restoreConfig (date) {
     // prevent saving before current saving is finished
     if (this.saving) {
       return;
@@ -1600,7 +1689,7 @@ const Remote = {
     this.sendSocketNotification("NEW_CONFIG", configData);
   },
 
-  saveConfigCallback (result) {
+  handleSaveConfig (result) {
     const self = this;
 
     if (result.success) {
@@ -1614,6 +1703,12 @@ const Remote = {
 
   onTranslationsLoaded () {
     this.createDynamicMenu();
+    // Ensure header reflects the current menu once translations are available
+    this.updateHeaderTitle(this.currentMenu);
+    // If currently on links page, rebuild with translated labels
+    if (this.currentMenu === "links-menu") {
+      this.loadLinks();
+    }
   },
 
   createMenuElement (content, menu, insertAfter) {
@@ -1644,13 +1739,16 @@ const Remote = {
       item.setAttribute("data-parent", menu);
       item.setAttribute("data-type", "menu");
       document.getElementById("back-button").classList.add(`${content.id}-menu`);
-      document.getElementById("below-fold").classList.add(`${content.id}-menu`);
+      const menuContent = document.querySelector(".menu-content");
+      if (menuContent) {
+        menuContent.classList.add(`${content.id}-menu`);
+      }
       item.addEventListener("click", () => {
         window.location.hash = `${content.id}-menu`;
       });
     } else if (content.type === "slider") {
       const contain = document.createElement("div");
-      contain.style.flex = "1";
+      contain.classList.add("flex-1");
 
       const slide = document.createElement("input");
       slide.id = `${content.id}-slider`;
@@ -1680,7 +1778,7 @@ const Remote = {
       input.id = `${content.id}-input`;
       input.className = `menu-element ${menu}-menu medium`;
       input.type = "text";
-      input.placeholder = content.text || "";
+      input.placeholder = content.text;
 
       input.addEventListener("focusout", () => {
         this.sendSocketNotification("REMOTE_ACTION", {
@@ -1749,24 +1847,7 @@ const buttons = {
     window.location.hash = "edit-menu";
   },
   "settings-button" () {
-    const self = Remote;
-
-    const wrapper = document.createElement("div");
-    const text = document.createElement("span");
-    text.innerHTML = self.translate("EXPERIMENTAL");
-    wrapper.appendChild(text);
-
-    const panic = self.createSymbolText("fa fa-life-ring", self.translate("PANIC"), () => {
-      self.setStatus("none");
-    });
-    wrapper.appendChild(panic);
-
-    const danger = self.createSymbolText("fa fa-warning", self.translate("NO_RISK_NO_FUN"), () => {
-      window.location.hash = "settings-menu";
-    });
-    wrapper.appendChild(danger);
-
-    self.setStatus(false, false, wrapper);
+    window.location.hash = "settings-menu";
   },
   "mirror-link-button" () {
     window.open("/", "_blank");
@@ -1792,17 +1873,22 @@ const buttons = {
   "alert-button" () {
     window.location.hash = "alert-menu";
   },
+  "links-button" () {
+    window.location.hash = "links-menu";
+  },
 
   // settings menu buttons
   "brightness-reset" () {
     const element = document.getElementById("brightness-slider");
     element.value = 100;
+    Remote.updateSliderThumbColor(element, "brightness");
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: element.value});
   },
 
   "temp-reset" () {
     const element = document.getElementById("temp-slider");
     element.value = 327;
+    Remote.updateSliderThumbColor(element, "temp");
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: element.value});
   },
 
@@ -1872,7 +1958,6 @@ const buttons = {
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "RESTART"});
     setTimeout(() => {
       document.location.reload();
-      console.log("Delayed REFRESH");
     }, 60000);
   },
   "monitor-on-button" () {
@@ -1902,8 +1987,8 @@ const buttons = {
     Remote.saveConfig();
   },
 
-  "undo-config" () {
-    Remote.undoConfigMenu();
+  "restore-config" () {
+    Remote.restoreConfigMenu();
   },
   // main menu
   "save-button" () {
@@ -1914,11 +1999,6 @@ const buttons = {
   },
   "close-result" () {
     Remote.setStatus("none");
-  },
-
-  // update Menu
-  "update-mm-button" () {
-    Remote.updateModule(undefined);
   },
 
   // alert menu

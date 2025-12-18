@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Menu",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Udseende",
   "SHUTDOWN_MENU_NAME": "Strøm",
   "CONFIGURE_MENU_NAME": "Rediger config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Links",
+  "API_DOCS": "API-dokumentation",
+  "WEBSITE": "Hjemmeside",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repository",
 
   "BACK": "Tilbage",
 
@@ -23,6 +28,7 @@
 
   "SHOWALL": "Vis alle",
   "HIDEALL": "Skjul alle",
+  "RESTORE": "Gendan",
 
   "ADD_MODULE": "Tilføj modul",
   "SEARCH": "Søg …",
@@ -48,7 +54,7 @@
   "NO_MODULES_LOADED": "Ingen moduler indlæst.",
   "SAVE": "Gem",
 
-  "EXPERIMENTAL": "Dette er en eksperimentel funktion, det kan ødelægge din konfigurationsfil. Sikkerhedskopier først din konfiguration, hvis det er tilfældet! <br> Vil du fortsætte?",
+  "EXPERIMENTAL": "Dette er en eksperimentel funktion, det kan ødelægge din konfigurationsfil. Sikkerhedskopier først din konfiguration, hvis det er tilfældet!",
   "PANIC": "Glem det.",
   "NO_RISK_NO_FUN": "Selvfølgelig!",
 

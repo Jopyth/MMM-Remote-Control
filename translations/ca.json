@@ -1,10 +1,15 @@
 {
-  "TITLE": "Menú MagicMirror²",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Editar Vista",
   "SHUTDOWN_MENU_NAME": "Encendre/Apagar",
   "CONFIGURE_MENU_NAME": "Editar config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Enllaços",
+  "API_DOCS": "Documentació de l'API",
+  "WEBSITE": "Lloc web",
+  "FORUM": "Fòrum",
+  "REPOSITORY": "Repositori",
 
   "BACK": "Endarrera",
 
@@ -23,6 +28,7 @@
 
   "SHOWALL": "Mostrar Tots",
   "HIDEALL": "Amagar Tots",
+  "RESTORE": "Restaurar",
 
   "ADD_MODULE": "Afegir mòdul",
   "SEARCH": "Buscar …",
@@ -48,7 +54,7 @@
   "NO_MODULES_LOADED": "No hi han móduls carregats.",
   "SAVE": "Guardar",
 
-  "EXPERIMENTAL": "Aquesta es una funciò experimental, pot corrompre el teu arxiu config. Fes còpia de seguretat primer, per si de cas!<br>Vols continuar?",
+  "EXPERIMENTAL": "Aquesta es una funciò experimental, pot corrompre el teu arxiu config. Fes còpia de seguretat primer, per si de cas!",
   "PANIC": "No m'importa.",
   "NO_RISK_NO_FUN": "Qui no arrisca no pisca!",
 

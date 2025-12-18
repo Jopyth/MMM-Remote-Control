@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Menu 魔镜菜单",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "编辑界面",
   "SHUTDOWN_MENU_NAME": "电源",
   "CONFIGURE_MENU_NAME": "编辑 config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "链接",
+  "API_DOCS": "API 文档",
+  "WEBSITE": "网站",
+  "FORUM": "论坛",
+  "REPOSITORY": "仓库",
 
   "BACK": "返回",
 
@@ -23,6 +28,7 @@
 
   "SHOWALL": "打开全部",
   "HIDEALL": "关闭全部",
+  "RESTORE": "恢复",
 
   "ADD_MODULE": "添加模块",
   "SEARCH": "搜索 …",
@@ -48,7 +54,7 @@
   "NO_MODULES_LOADED": "无模块.",
   "SAVE": "保存",
 
-  "EXPERIMENTAL": "这是一个实验特性, 它可能会损坏你的配置文件. 先备份你的配置文件，以防万一!<br>是否继续?",
+  "EXPERIMENTAL": "这是一个实验特性, 它可能会损坏你的配置文件.",
   "PANIC": "不搞了.",
   "NO_RISK_NO_FUN": "就是折腾!",
 

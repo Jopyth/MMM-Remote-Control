@@ -1,10 +1,15 @@
 {
-  "TITLE": "Menu MagicMirror²",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Sunting tampilan",
   "SHUTDOWN_MENU_NAME": "Power",
   "CONFIGURE_MENU_NAME": "Sunting config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Tautan",
+  "API_DOCS": "Dokumentasi API",
+  "WEBSITE": "Situs web",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repositori",
 
   "BACK": "Kembali",
 
@@ -18,8 +23,9 @@
   "RESTARTMM": "Restart MagicMirror²",
   "SHUTDOWN": "Matikan",
 
-  "SHOWALL": "Semua",
-  "HIDEALL": "Semua",
+  "SHOWALL": "Tampilkan semua",
+  "HIDEALL": "Sembunyikan semua",
+  "RESTORE": "Pulihkan",
 
   "ADD_MODULE": "Tambah modul",
   "SEARCH": "Cari …",
@@ -45,7 +51,7 @@
   "NO_MODULES_LOADED": "Tidak ada modul yang dimuat.",
   "SAVE": "Simpan",
 
-  "EXPERIMENTAL": "Ini adalah fitur percobaan, dapat merusak file config Anda. Backup config Anda terlebih dahulu, untuk berjaga-jaga!<br>Yakin untuk lanjut?",
+  "EXPERIMENTAL": "Ini adalah fitur percobaan, dapat merusak file config Anda. Backup config Anda terlebih dahulu, untuk berjaga-jaga!",
   "PANIC": "Gak usah dipikirin.",
   "NO_RISK_NO_FUN": "Tanpa resiko tidak ada kesenangan!",
 

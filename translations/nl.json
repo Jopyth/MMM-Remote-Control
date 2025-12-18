@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Menu",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Aanzicht aanpassen",
   "SHUTDOWN_MENU_NAME": "Stroom",
   "CONFIGURE_MENU_NAME": "config.js aanpassen",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Links",
+  "API_DOCS": "API-documentatie",
+  "WEBSITE": "Website",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repository",
 
   "BACK": "Terug",
 
@@ -18,8 +23,9 @@
   "RESTARTMM": "MagicMirror² herstarten",
   "SHUTDOWN": "Uitschakelen",
 
-  "SHOWALL": "Alles",
-  "HIDEALL": "Alles",
+  "SHOWALL": "Toon alles",
+  "HIDEALL": "Verberg alles",
+  "RESTORE": "Herstellen",
 
   "ADD_MODULE": "Module toevoegen",
   "SEARCH": "Zoeken …",
@@ -45,7 +51,7 @@
   "NO_MODULES_LOADED": "Geen module geladen.",
   "SAVE": "Opslaan",
 
-  "EXPERIMENTAL": "Dit is een experimentele feature, het kan je configuratie bestand onleesbaar maken. Sla voor de zekerheid eerst je configuratie op!<br>Weet je zeker dat je wilt doorgaan?",
+  "EXPERIMENTAL": "Dit is een experimentele feature, het kan je configuratie bestand onleesbaar maken. Sla voor de zekerheid eerst je configuratie op!",
   "PANIC": "Laat maar.",
   "NO_RISK_NO_FUN": "No guts, no glory!",
 

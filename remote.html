@@ -1,38 +1,15 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <title>%%TRANSLATE:TITLE%%</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="google" content="notranslate" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <!--
-     We need this onerror handling because MagicMirror changed the location of the css files in version 2.32.0.
-     We can remove this after a while, when most users have updated to the new version.
-     -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="css/roboto.css"
-      onerror="
-        this.onerror = null;
-        this.href = 'fonts/roboto.css';
-      "
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="css/font-awesome.css"
-      onerror="
-        this.onerror = null;
-        this.href = 'vendor/css/font-awesome.css';
-      "
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="modules/MMM-Remote-Control/remote.css"
-    />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/roboto.css" />
+    <link rel="stylesheet" href="css/font-awesome.css" />
+    <link rel="stylesheet" href="modules/MMM-Remote-Control/remote.css" />
     <link
       rel="apple-touch-icon"
       href="modules/MMM-Remote-Control/img/apple-touch-icon.png"
@@ -44,27 +21,32 @@
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
 
   <body>
-    <div class="container normal fill">
-      <div id="module_1_MMM-Remote-Control" class="fill">
-        <header class="header">%%TRANSLATE:TITLE%%</header>
-        <div class="fill">
-          <div class="menu above-fold">
-            <!-- general back button -->
-            <div
-              id="back-button"
-              class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu classes-menu alert-menu"
-            >
-              <span class="fa fa-fw fa-angle-left" aria-hidden="true"></span>
-              <!-- <span class="text">%%TRANSLATE:BACK%%</span> -->
-            </div>
-            <!-- alert menu -->
+    <div class="container normal">
+      <div id="module_1_MMM-Remote-Control" class="app">
+        <header class="header">
+          <div
+            id="back-button"
+            class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu classes-menu alert-menu links-menu"
+            role="button"
+            aria-label="%%TRANSLATE:BACK%%"
+            tabindex="0"
+          >
+            <span class="fa fa-fw fa-angle-left" aria-hidden="true"></span>
+          </div>
+          <span class="header-title">%%TRANSLATE:TITLE%%</span>
+          <div class="header-spacer"></div>
+        </header>
+        <main class="main-content">
+          <nav class="menu-nav">
+            <!-- alert menu buttons -->
             <div
               id="send-alert-button"
               class="menu-element hidden button alert-menu"
+              role="button"
+              tabindex="0"
             >
               <span class="fa fa-fw fa-send-o" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:SENDALERT%%</span>
@@ -72,308 +54,224 @@
             <div
               id="hide-alert-button"
               class="menu-element hidden button alert-menu"
+              role="button"
+              tabindex="0"
             >
               <span class="fa fa-fw fa-eye-slash" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:HIDEALERT%%</span>
             </div>
-            <!-- edit menu -->
-            <div id="save-button" class="menu-element hidden button edit-menu">
-              <span class="fa fa-fw fa-save" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:SAVE%%</span>
-            </div>
-            <div
-              id="show-all-button"
-              class="menu-element hidden button edit-menu"
-            >
-              <span class="fa fa-fw fa-toggle-on" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:SHOWALL%%</span>
-            </div>
-            <div
-              id="hide-all-button"
-              class="menu-element hidden button edit-menu"
-            >
-              <span class="fa fa-fw fa-toggle-off" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:HIDEALL%%</span>
-            </div>
-            <div class="menu-element-container">
-              <div class="menu-element hidden edit-menu one-line">
-                <span class="stack fa-fw">
-                  <span
-                    class="fa fa-fw fa-sun-o outer-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                  <span
-                    class="fa fa-fw fa-adjust inner-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                </span>
-                <div
-                  id="brightness-container"
-                  class="slider-container menu-element hidden button edit-menu"
-                >
-                  <input
-                    id="brightness-slider"
-                    type="range"
-                    min="0"
-                    max="200"
-                    step="10"
-                    value="100"
-                    class="slider"
-                  />
-                </div>
-                <span
-                  id="brightness-reset"
-                  class="inline-menu-element hidden button edit-menu"
-                >
-                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
-                </span>
-              </div>
-              <div class="menu-element hidden edit-menu one-line">
-                <span class="stack fa-fw">
-                  <span
-                    class="fa fa-fw fa-thermometer-three-quarters"
-                    aria-hidden="true"
-                  ></span>
-                </span>
-                <div
-                  id="temp-container"
-                  class="slider-container menu-element hidden button edit-menu"
-                >
-                  <input
-                    id="temp-slider"
-                    type="range"
-                    min="140"
-                    max="500"
-                    step="20"
-                    value="325"
-                    class="slider"
-                  />
-                </div>
-                <span
-                  id="temp-reset"
-                  class="inline-menu-element hidden button edit-menu"
-                >
-                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
-                </span>
-              </div>
-            </div>
-
-            <!-- module menu -->
-            <div
-              id="add-module"
-              class="menu-element hidden button settings-menu"
-            >
-              <span class="fa fa-fw fa-plus" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:ADD_MODULE%%</span>
-            </div>
-            <div
-              id="save-config"
-              class="menu-element hidden button settings-menu"
-            >
-              <span class="fa fa-fw fa-save" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:SAVE%%</span>
-            </div>
-            <div
-              id="undo-config"
-              class="menu-element hidden button settings-menu"
-            >
-              <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
-            </div>
-            <!-- add new module menu -->
+            <!-- search container for add-module menu -->
             <div
               id="search-container"
               class="menu-element hidden add-module-menu search-container"
             >
               <span class="fa fa-fw fa-search" aria-hidden="true"></span>
               <input
-                class="input-with-symbol"
+                class="input-with-symbol search-input"
                 id="add-module-search"
                 type="text"
                 placeholder="%%TRANSLATE:SEARCH%%"
-                size="10"
+                aria-label="%%TRANSLATE:SEARCH%%"
               />
               <span
                 id="delete-search-input"
-                class="fa fa-times-circle delete-button"
-                style="display: none"
+                class="fa fa-times-circle delete-button hidden"
               ></span>
             </div>
-            <!-- update menu -->
+            <!-- main menu buttons -->
             <div
-              id="update-mm-button"
-              class="menu-element hidden button update-menu"
+              id="power-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:SHUTDOWN_MENU_NAME%%</span>
+              <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+            </div>
+            <div
+              id="edit-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="stack fa-fw">
+                <span
+                  class="fa fa-fw fa-television outer-label fa-stack-1x"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class="fa fa-fw fa-pencil inner-monitor-label fa-stack-1x"
+                  aria-hidden="true"
+                ></span>
+              </span>
+              <span class="text">%%TRANSLATE:EDIT_MENU_NAME%%</span>
+              <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+            </div>
+            <div
+              id="settings-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:CONFIGURE_MENU_NAME%%</span>
+              <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+            </div>
+            <div
+              id="classes-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
+              <span class="text">Classes Menu</span>
+              <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+            </div>
+            <div
+              id="update-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
             >
               <span class="fa fa-fw fa-toggle-up" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:UPDATEMM%%</span>
+              <span class="text">%%TRANSLATE:UPDATE_MENU_NAME%%</span>
+              <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
             <div
-              id="update-mm-status"
-              class="menu-element flex-like-button hidden"
+              id="alert-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
             >
-              <span class="fa fa-fw fa-info-circle" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:UPDATE_AVAILABLE%%</span>
+              <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:ALERT_MENU_NAME%%</span>
+              <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
-          </div>
-          <div
-            id="below-fold"
-            class="below-fold menu-element hidden edit-menu settings-menu add-module-menu update-menu classes-menu alert-menu main-menu power-menu"
-          >
-            <div class="menu-container">
-              <!-- main menu -->
-              <div
-                id="power-button"
-                class="menu-element hidden button main-menu"
-              >
-                <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:SHUTDOWN_MENU_NAME%%</span>
-                <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
-              </div>
-              <div
-                id="edit-button"
-                class="menu-element hidden button main-menu"
-              >
-                <span class="stack fa-fw">
-                  <span
-                    class="fa fa-fw fa-television outer-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                  <span
-                    class="fa fa-fw fa-pencil inner-monitor-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                </span>
-                <span class="text">%%TRANSLATE:EDIT_MENU_NAME%%</span>
-                <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
-              </div>
-              <div
-                id="settings-button"
-                class="menu-element hidden button main-menu"
-              >
-                <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:CONFIGURE_MENU_NAME%%</span>
-                <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
-              </div>
-              <div
-                id="classes-button"
-                class="menu-element hidden button main-menu"
-              >
-                <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
-                <span class="text">Classes Menu</span>
-                <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
-              </div>
-              <div
-                id="update-button"
-                class="menu-element hidden button main-menu"
-              >
-                <span class="fa fa-fw fa-toggle-up" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:UPDATE_MENU_NAME%%</span>
-                <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
-              </div>
-              <div
-                id="alert-button"
-                class="menu-element hidden button main-menu"
-              >
-                <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:ALERT_MENU_NAME%%</span>
-                <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
-              </div>
-              <div
-                id="mirror-link-button"
-                class="menu-element hidden button main-menu"
-              >
+            <div
+              id="mirror-link-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-external-link" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:VIEW_MIRROR%%</span>
+            </div>
+            <div
+              id="links-button"
+              class="menu-element hidden button main-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-link" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:LINKS%%</span>
+            </div>
+            <!-- power menu buttons -->
+            <div
+              id="shut-down-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:SHUTDOWN%%</span>
+            </div>
+            <div
+              id="restart-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-refresh" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:RESTART%%</span>
+            </div>
+            <div
+              id="restart-mm-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-recycle" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:RESTARTMM%%</span>
+            </div>
+            <div
+              id="refresh-mm-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-globe" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:REFRESHMM%%</span>
+            </div>
+            <div
+              id="monitor-on-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="stack fa-fw">
                 <span
-                  class="fa fa-fw fa-external-link"
+                  class="fa fa-fw fa-television outer-label fa-stack-1x"
                   aria-hidden="true"
                 ></span>
-                <span class="text">%%TRANSLATE:VIEW_MIRROR%%</span>
-              </div>
-              <!-- power menu -->
-              <div
-                id="shut-down-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:SHUTDOWN%%</span>
-              </div>
-              <div
-                id="restart-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="fa fa-fw fa-refresh" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:RESTART%%</span>
-              </div>
-              <div
-                id="restart-mm-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="fa fa-fw fa-recycle" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:RESTARTMM%%</span>
-              </div>
-              <div
-                id="refresh-mm-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="fa fa-fw fa-globe" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:REFRESHMM%%</span>
-              </div>
-              <div
-                id="monitor-on-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="stack fa-fw">
-                  <span
-                    class="fa fa-fw fa-television outer-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                  <span
-                    class="fa fa-fw fa-check inner-monitor-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                </span>
-                <span class="text">%%TRANSLATE:MONITORON%%</span>
-              </div>
-              <div
-                id="monitor-off-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="stack fa-fw">
-                  <span
-                    class="fa fa-fw fa-television outer-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                  <span
-                    class="fa fa-fw fa-close inner-monitor-label fa-stack-1x"
-                    aria-hidden="true"
-                  ></span>
-                </span>
-                <span class="text">%%TRANSLATE:MONITOROFF%%</span>
-              </div>
-              <div
-                id="fullscreen-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="fa fa-fw fa-arrows-alt" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:FULLSCREEN%%</span>
-              </div>
-              <div
-                id="minimize-button"
-                class="menu-element hidden button power-menu"
-              >
                 <span
-                  class="fa fa-fw fa-window-minimize"
+                  class="fa fa-fw fa-check inner-monitor-label fa-stack-1x"
                   aria-hidden="true"
                 ></span>
-                <span class="text">%%TRANSLATE:MINIMIZE%%</span>
-              </div>
-              <div
-                id="devtools-button"
-                class="menu-element hidden button power-menu"
-              >
-                <span class="fa fa-fw fa-terminal" aria-hidden="true"></span>
-                <span class="text">%%TRANSLATE:DEVTOOLS%%</span>
-              </div>
+              </span>
+              <span class="text">%%TRANSLATE:MONITORON%%</span>
             </div>
-            <!-- below fold part of alert menu -->
+            <div
+              id="monitor-off-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="stack fa-fw">
+                <span
+                  class="fa fa-fw fa-television outer-label fa-stack-1x"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class="fa fa-fw fa-close inner-monitor-label fa-stack-1x"
+                  aria-hidden="true"
+                ></span>
+              </span>
+              <span class="text">%%TRANSLATE:MONITOROFF%%</span>
+            </div>
+            <div
+              id="fullscreen-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-arrows-alt" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:FULLSCREEN%%</span>
+            </div>
+            <div
+              id="minimize-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span
+                class="fa fa-fw fa-window-minimize"
+                aria-hidden="true"
+              ></span>
+              <span class="text">%%TRANSLATE:MINIMIZE%%</span>
+            </div>
+            <div
+              id="devtools-button"
+              class="menu-element hidden button power-menu"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-terminal" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:DEVTOOLS%%</span>
+            </div>
+          </nav>
+          <section class="menu-content">
+            <!-- alert form -->
             <form
               id="alert"
               action=""
@@ -406,7 +304,103 @@
               <div class="xsmall">%%TRANSLATE:FORM_SECONDS%%</div>
               <input type="number" name="timer" value="4" />
             </form>
-            <!-- below fold part of edit menu -->
+            <!-- edit menu content -->
+            <div class="menu-element-container menu-element hidden edit-menu">
+              <div class="action-buttons-row">
+                <div
+                  id="save-button"
+                  class="menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="%%TRANSLATE:SAVE%%"
+                  tabindex="0"
+                >
+                  <span class="fa fa-fw fa-save" aria-hidden="true"></span>
+                  <span class="text">%%TRANSLATE:SAVE%%</span>
+                </div>
+                <div
+                  id="show-all-button"
+                  class="menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="%%TRANSLATE:SHOWALL%%"
+                  tabindex="0"
+                >
+                  <span class="fa fa-fw fa-toggle-on" aria-hidden="true"></span>
+                  <span class="text">%%TRANSLATE:SHOWALL%%</span>
+                </div>
+                <div
+                  id="hide-all-button"
+                  class="menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="%%TRANSLATE:HIDEALL%%"
+                  tabindex="0"
+                >
+                  <span
+                    class="fa fa-fw fa-toggle-off"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="text">%%TRANSLATE:HIDEALL%%</span>
+                </div>
+              </div>
+              <div class="menu-element hidden edit-menu one-line">
+                <span class="fa fa-fw fa-sun-o" aria-hidden="true"></span>
+                <div
+                  id="brightness-container"
+                  class="slider-container menu-element hidden edit-menu"
+                  data-label="Brightness"
+                >
+                  <input
+                    id="brightness-slider"
+                    type="range"
+                    min="0"
+                    max="200"
+                    step="10"
+                    value="100"
+                    class="slider"
+                    aria-label="%%TRANSLATE:BRIGHTNESS%%"
+                  />
+                </div>
+                <span
+                  id="brightness-reset"
+                  class="inline-menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="Reset brightness"
+                  tabindex="0"
+                >
+                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                </span>
+              </div>
+              <div class="menu-element hidden edit-menu one-line">
+                <span
+                  class="fa fa-fw fa-thermometer-three-quarters"
+                  aria-hidden="true"
+                ></span>
+                <div
+                  id="temp-container"
+                  class="slider-container menu-element hidden edit-menu"
+                  data-label="Color Temperature"
+                >
+                  <input
+                    id="temp-slider"
+                    type="range"
+                    min="140"
+                    max="500"
+                    step="20"
+                    value="325"
+                    class="slider"
+                    aria-label="Color temperature"
+                  />
+                </div>
+                <span
+                  id="temp-reset"
+                  class="inline-menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="Reset color temperature"
+                  tabindex="0"
+                >
+                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                </span>
+              </div>
+            </div>
             <div
               id="visible-modules-container"
               class="result-list menu-element hidden edit-menu"
@@ -423,7 +417,7 @@
                 <!-- elements are inserted here -->
               </div>
             </div>
-            <!-- below fold part of classes menu -->
+            <!-- classes menu content -->
             <div
               id="classes-container"
               class="result-list menu-element hidden classes-menu"
@@ -440,7 +434,41 @@
                 <!-- elements are inserted here -->
               </div>
             </div>
-            <!-- below fold part of settings menu -->
+            <!-- settings menu content -->
+            <div
+              id="settings-warning"
+              class="menu-element hidden settings-menu settings-warning"
+            >
+              <span
+                class="fa fa-fw fa-exclamation-triangle"
+                aria-hidden="true"
+              ></span>
+              <span>%%TRANSLATE:EXPERIMENTAL%%</span>
+            </div>
+            <div class="action-buttons-row menu-element hidden settings-menu">
+              <div
+                id="save-config"
+                class="menu-element hidden button settings-menu"
+              >
+                <span class="fa fa-fw fa-save" aria-hidden="true"></span>
+                <span class="text">%%TRANSLATE:SAVE%%</span>
+              </div>
+              <div
+                id="restore-config"
+                class="menu-element hidden button settings-menu"
+                aria-label="%%TRANSLATE:RESTORE%%"
+              >
+                <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                <span class="text">%%TRANSLATE:RESTORE%%</span>
+              </div>
+              <div
+                id="add-module"
+                class="menu-element hidden button settings-menu"
+              >
+                <span class="fa fa-fw fa-plus" aria-hidden="true"></span>
+                <span class="text">%%TRANSLATE:ADD_MODULE%%</span>
+              </div>
+            </div>
             <div
               id="config-modules-container"
               class="result-list menu-element hidden settings-menu"
@@ -457,7 +485,7 @@
                 <!-- elements are inserted here -->
               </div>
             </div>
-            <!-- below fold part of add module menu -->
+            <!-- add module menu content -->
             <div
               id="add-module-container"
               class="result-list menu-element hidden add-module-menu"
@@ -475,6 +503,7 @@
                 <!-- elements are inserted here -->
               </div>
             </div>
+            <!-- update menu content -->
             <div
               id="update-module-container"
               class="result-list menu-element hidden update-menu"
@@ -491,17 +520,26 @@
                 <!-- elements are inserted here -->
               </div>
             </div>
-          </div>
-          <div id="load-error">
-            <span
-              class="fa fa-fw fa-exclamation-circle"
-              aria-hidden="true"
-            ></span>
-            <span class="text">%%TRANSLATE:LOAD_ERROR%%</span>
-            <a href="https://github.com/jopyth/MMM-Remote-Control/issues"
-              >%%TRANSLATE:ISSUE_LINK%%</a
+            <!-- links menu content -->
+            <div
+              id="links-container"
+              class="result-list menu-element hidden links-menu"
             >
-          </div>
+              <div id="links-results" class="results small">
+                <!-- elements are inserted here -->
+              </div>
+            </div>
+          </section>
+        </main>
+        <div id="load-error">
+          <span
+            class="fa fa-fw fa-exclamation-circle"
+            aria-hidden="true"
+          ></span>
+          <span class="text">%%TRANSLATE:LOAD_ERROR%%</span>
+          <a href="https://github.com/jopyth/MMM-Remote-Control/issues"
+            >%%TRANSLATE:ISSUE_LINK%%</a
+          >
         </div>
         <div id="result-overlay" class="overlay hidden"></div>
         <div id="result" class="result hidden">
@@ -512,7 +550,7 @@
             <!-- content is inserted here -->
           </div>
         </div>
-        <div id="popup-container" class="popup">
+        <div id="popup-container" class="popup hidden">
           <div id="close-popup">
             <span class="fa fa-times-circle delete-button"></span>
           </div>
@@ -520,22 +558,16 @@
             <!-- content is inserted here -->
           </div>
         </div>
-        <div id="success-popup" class="success-popup">
+        <div id="success-popup" class="success-popup hidden">
           <span class="fa fa-fw fa-check-circle"></span>
           <span class="text">%%TRANSLATE:DONE%%</span>
         </div>
       </div>
     </div>
-    <script type="text/javascript" src="%%CONFIG_PATH%%"></script>
-    <script type="text/javascript" src="socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="js/socketclient.js"></script>
-    <script
-      type="text/javascript"
-      src="modules/MMM-Remote-Control/node_modules/marked/lib/marked.umd.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="modules/MMM-Remote-Control/remote.js"
-    ></script>
+    <script src="%%CONFIG_PATH%%"></script>
+    <script src="socket.io/socket.io.js"></script>
+    <script src="js/socketclient.js"></script>
+    <script src="modules/MMM-Remote-Control/node_modules/marked/lib/marked.umd.js"></script>
+    <script src="modules/MMM-Remote-Control/remote.js"></script>
   </body>
 </html>

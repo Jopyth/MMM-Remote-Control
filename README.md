@@ -20,6 +20,10 @@ The module also includes a **RESTful API** for controlling all aspects of your m
 
 ![power menu](img/power_screenshot.png)
 
+### Edit View menu
+
+![edit view menu](img/view_screenshot.png)
+
 ### Screencast "Hide and show a module"
 
 ![Hide and show a module](img/hide_show_module_screencast.gif)

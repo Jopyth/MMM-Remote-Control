@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Meny",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Rediger visning",
   "SHUTDOWN_MENU_NAME": "Strøm",
   "CONFIGURE_MENU_NAME": "Rediger config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Lenker",
+  "API_DOCS": "API-dokumentasjon",
+  "WEBSITE": "Nettsted",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repository",
 
   "BACK": "Tilbake",
 
@@ -18,8 +23,9 @@
   "RESTARTMM": "Restart MagicMirror²",
   "SHUTDOWN": "Slå av",
 
-  "SHOWALL": "Alle",
-  "HIDEALL": "Alle",
+  "SHOWALL": "Vis alle",
+  "HIDEALL": "Skjul alle",
+  "RESTORE": "Gjenopprett",
 
   "ADD_MODULE": "Legg til modul",
   "SEARCH": "Søk …",
@@ -45,7 +51,7 @@
   "NO_MODULES_LOADED": "Ingen modul lastet.",
   "SAVE": "Lagre",
 
-  "EXPERIMENTAL": "Dette er en eksperimentell funksjon, det kan ødelegge konfigurasjonsfilen din. Sikkerhetskopier din konfigurasjon først, bare i tilfelle!<br>Vil du fortsette?",
+  "EXPERIMENTAL": "Dette er en eksperimentell funksjon, det kan ødelegge konfigurasjonsfilen din. Sikkerhetskopier din konfigurasjon først, bare i tilfelle!",
   "PANIC": "Glem det.",
   "NO_RISK_NO_FUN": "Ingen risiko, ingen morro!",
 

@@ -1,10 +1,15 @@
 {
-  "TITLE": "MagicMirror² Meny",
+  "TITLE": "MagicMirror²",
 
   "EDIT_MENU_NAME": "Editera synlighet",
   "SHUTDOWN_MENU_NAME": "Av och På",
   "CONFIGURE_MENU_NAME": "Editera config.js",
   "VIEW_MIRROR": "MagicMirror²",
+  "LINKS": "Länkar",
+  "API_DOCS": "API-dokumentation",
+  "WEBSITE": "Webbplats",
+  "FORUM": "Forum",
+  "REPOSITORY": "Repository",
 
   "BACK": "Tillbaka",
 
@@ -18,8 +23,9 @@
   "RESTARTMM": "Starta om MagicMirror²",
   "SHUTDOWN": "Stäng av",
 
-  "SHOWALL": "Alla",
-  "HIDEALL": "Alla",
+  "SHOWALL": "Visa alla",
+  "HIDEALL": "Dölj alla",
+  "RESTORE": "Återställ",
 
   "ADD_MODULE": "Lägg till modul",
   "SEARCH": "Sök …",
@@ -45,7 +51,7 @@
   "NO_MODULES_LOADED": "Ingen modul laddad.",
   "SAVE": "Spara",
 
-  "EXPERIMENTAL": "Detta är en experimentell funktion, den skulle kunna förstöra din konfigfil. Se till du har en kopia på din konfigfil innan du går vidare, för att vara på säkra sidan!<br>Vill du fortsätta?",
+  "EXPERIMENTAL": "Detta är en experimentell funktion, den skulle kunna förstöra din konfigfil. Se till du har en kopia på din konfigfil innan du går vidare, för att vara på säkra sidan!",
   "PANIC": "Nej, strunta i det.",
   "NO_RISK_NO_FUN": "Ja, kör på! Ingen risk, inget kul!",
 
