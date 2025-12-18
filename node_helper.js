@@ -789,215 +789,219 @@ module.exports = NodeHelper.create({
     }
   },
 
-  executeQuery (query, res) {
-    const self = this;
-    const opts = {timeout: 15000};
+  handleShowAlert (query, res) {
+    this.sendResponse(res);
 
-    if (query.action === "GET_CHANGELOG") {
-      this.answerGetChangelog(query, res);
-      return true;
-    }
-    if (["SHUTDOWN", "REBOOT"].indexOf(query.action) !== -1) {
-      this.shutdownControl(query.action, opts, res);
-      return true;
-    }
-    if (query.action === "RESTART" || query.action === "STOP") {
-      this.controlPm2(res, query);
-      return true;
-    }
-    if (query.action === "COMMAND") {
-      if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
-        exec(this.thisConfig.customCommand[query.command], opts, (error, stdout, stderr) => {
-          self.checkForExecError(error, stdout, stderr, res, {stdout});
-        });
-      } else {
-        self.sendResponse(res, new Error("Command not found"), query);
-      }
-      return true;
-    }
-    if (query.action === "USER_PRESENCE") {
-      this.sendSocketNotification("USER_PRESENCE", query.value);
-      this.userPresence = query.value;
-      this.sendResponse(res, undefined, query);
-      return true;
-    }
-    if (["MONITORON", "MONITOROFF", "MONITORTOGGLE", "MONITORSTATUS"].indexOf(query.action) !== -1) {
-      this.monitorControl(query.action, opts, res);
-      return true;
-    }
-    if (query.action === "HIDE" || query.action === "SHOW" || query.action === "TOGGLE") {
-      self.sendSocketNotification(query.action, query);
-      self.sendResponse(res);
-      return true;
-    }
-    if (query.action === "BRIGHTNESS") {
-      self.sendResponse(res);
-      self.sendSocketNotification(query.action, query.value);
-      return true;
-    }
-    if (query.action === "TEMP") {
-      self.sendResponse(res);
-      self.sendSocketNotification(query.action, query.value);
-      return true;
-    }
-    if (query.action === "SAVE") {
-      self.sendResponse(res);
-      self.callAfterUpdate(() => { self.saveDefaultSettings(); });
-      return true;
-    }
-    if (query.action === "MODULE_DATA") {
-      self.callAfterUpdate(() => {
-        self.sendResponse(res, undefined, self.configData);
-      });
-      return true;
-    }
-    if (query.action === "INSTALL") {
-      self.installModule(query.url, res, query);
-      return true;
-    }
-    if (query.action === "REFRESH") {
-      self.sendResponse(res);
-      self.sendSocketNotification(query.action);
-      return true;
-    }
-    if (query.action === "HIDE_ALERT") {
-      self.sendResponse(res);
-      self.sendSocketNotification(query.action);
-      return true;
-    }
-    if (query.action === "SHOW_ALERT") {
-      self.sendResponse(res);
+    const type = query.type
+      ? query.type
+      : "alert";
+    const title = query.title
+      ? query.title
+      : "Note";
+    const message = query.message
+      ? query.message
+      : "Attention!";
+    const timer = query.timer
+      ? query.timer
+      : 4;
 
-      const type = query.type
-        ? query.type
-        : "alert";
-      const title = query.title
-        ? query.title
-        : "Note";
-      const message = query.message
-        ? query.message
-        : "Attention!";
-      const timer = query.timer
-        ? query.timer
-        : 4;
+    this.sendSocketNotification(query.action, {
+      type,
+      title,
+      message,
+      timer: timer * 1000
+    });
+  },
 
-      self.sendSocketNotification(query.action, {
-        type,
-        title,
-        message,
-        timer: timer * 1000
-      });
-      return true;
-    }
-    if (query.action === "UPDATE") {
-      self.updateModule(decodeURI(query.module), res);
-      return true;
-    }
-    if (query.action === "NOTIFICATION") {
-      try {
-        let payload = {}; // Assume empty JSON-object if no payload is provided
-        if (typeof query.payload === "undefined") {
-          payload = query.payload;
-        } else if (typeof query.payload === "object") {
-          payload = query.payload;
-        } else if (typeof query.payload === "string") {
-          if (query.payload.startsWith("{")) {
-            payload = JSON.parse(query.payload);
-          } else {
-            payload = query.payload;
-          }
-        }
-        this.sendSocketNotification(query.action, {"notification": query.notification, payload});
-        this.sendResponse(res);
-        return true;
-      } catch (error) {
-
-        /*
-         * JSON parse errors are expected when users provide invalid input.
-         * Only log as debug, not as error.
-         */
-        if (error instanceof SyntaxError) {
-          Log.debug(`Invalid JSON payload: ${error.message}`);
+  handleNotification (query, res) {
+    try {
+      let payload = {}; // Assume empty JSON-object if no payload is provided
+      if (typeof query.payload === "undefined") {
+        payload = query.payload;
+      } else if (typeof query.payload === "object") {
+        payload = query.payload;
+      } else if (typeof query.payload === "string") {
+        if (query.payload.startsWith("{")) {
+          payload = JSON.parse(query.payload);
         } else {
-          Log.error(error);
+          payload = query.payload;
         }
-        this.sendResponse(res, error, {reason: error.message});
-        return true;
       }
-    }
-    if (query.action === "MANAGE_CLASSES") {
-      if (!query.payload || !query.payload.classes || !this.thisConfig || !this.thisConfig.classes) { return; }
-      const classes = [];
-      switch (typeof query.payload.classes) {
-        case "string": classes.push(this.thisConfig.classes[query.payload.classes]); break;
-        case "object": query.payload.classes.forEach((t) => classes.push(this.thisConfig.classes[t]));
-      }
-      classes.forEach((cl) => {
-        for (const act in cl) {
-          if ([
-            "SHOW",
-            "HIDE",
-            "TOGGLE"
-          ].includes(act.toUpperCase())) {
-            if (typeof cl[act] === "string") { this.sendSocketNotification(act.toUpperCase(), {module: cl[act]}); } else {
-              cl[act].forEach((t) => {
-                this.sendSocketNotification(act.toUpperCase(), {module: t});
-              });
-            }
-          }
-        }
-      });
+      this.sendSocketNotification(query.action, {"notification": query.notification, payload});
       this.sendResponse(res);
-      return;
-    }
-    if ([
-      "MINIMIZE",
-      "TOGGLEFULLSCREEN",
-      "DEVTOOLS"
-    ].indexOf(query.action) !== -1) {
-      try {
-        const electron = require("electron").BrowserWindow;
-        if (!electron) { throw "Could not get Electron window instance."; }
-        const win = electron.getAllWindows()[0];
-        switch (query.action) {
-          case "MINIMIZE":
-            win.minimize();
-            break;
-          case "TOGGLEFULLSCREEN":
-            win.setFullScreen(!win.isFullScreen());
-            break;
-          case "DEVTOOLS":
-            if (win.webContents.isDevToolsOpened()) { win.webContents.closeDevTools(); } else { win.webContents.openDevTools(); }
-            break;
-          default:
-        }
-        this.sendResponse(res);
-      } catch (err) {
-        this.sendResponse(res, err);
-      }
-      return;
-    }
-    if (query.action === "DELAYED") {
+      return true;
+    } catch (error) {
 
       /*
-       * Expects a nested query object
-       *   {
-       *       action: "DELAYED",
-       *       did: "SOME_UNIQUE_ID",
-       *       timeout: 10000,  // Optional; Default 10000ms
-       *       abort: false, // Optional; send to cancel
-       *       query: {
-       *           action: "SHOW_ALERT",
-       *           title: "Delayed Alert!",
-       *           message: "This is a delayed alert test."
-       *       }
-       *   }
-       * Resending with same ID resets delay, unless abort:true
+       * JSON parse errors are expected when users provide invalid input.
+       * Only log as debug, not as error.
        */
-      this.delayedQuery(query, res);
-      return;
+      if (error instanceof SyntaxError) {
+        Log.debug(`Invalid JSON payload: ${error.message}`);
+      } else {
+        Log.error(error);
+      }
+      this.sendResponse(res, error, {reason: error.message});
+      return true;
     }
-    self.sendResponse(res, new Error(`Invalid Option: ${query.action}`));
+  },
+
+  handleManageClasses (query, res) {
+    if (!query.payload || !query.payload.classes || !this.thisConfig || !this.thisConfig.classes) { return; }
+    const classes = [];
+    switch (typeof query.payload.classes) {
+      case "string": classes.push(this.thisConfig.classes[query.payload.classes]); break;
+      case "object": query.payload.classes.forEach((t) => classes.push(this.thisConfig.classes[t]));
+    }
+    classes.forEach((cl) => {
+      for (const act in cl) {
+        if ([
+          "SHOW",
+          "HIDE",
+          "TOGGLE"
+        ].includes(act.toUpperCase())) {
+          if (typeof cl[act] === "string") { this.sendSocketNotification(act.toUpperCase(), {module: cl[act]}); } else {
+            cl[act].forEach((t) => {
+              this.sendSocketNotification(act.toUpperCase(), {module: t});
+            });
+          }
+        }
+      }
+    });
+    this.sendResponse(res);
+  },
+
+  handleElectronActions (query, res) {
+    try {
+      const electron = require("electron").BrowserWindow;
+      if (!electron) { throw "Could not get Electron window instance."; }
+      const win = electron.getAllWindows()[0];
+      switch (query.action) {
+        case "MINIMIZE":
+          win.minimize();
+          break;
+        case "TOGGLEFULLSCREEN":
+          win.setFullScreen(!win.isFullScreen());
+          break;
+        case "DEVTOOLS":
+          if (win.webContents.isDevToolsOpened()) { win.webContents.closeDevTools(); } else { win.webContents.openDevTools(); }
+          break;
+        default:
+      }
+      this.sendResponse(res);
+    } catch (err) {
+      this.sendResponse(res, err);
+    }
+  },
+
+  handleCommand (query, res) {
+    const opts = {timeout: 15000};
+    if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
+      exec(this.thisConfig.customCommand[query.command], opts, (error, stdout, stderr) => {
+        this.checkForExecError(error, stdout, stderr, res, {stdout});
+      });
+    } else {
+      this.sendResponse(res, new Error("Command not found"), query);
+    }
+  },
+
+  handleUserPresence (query, res) {
+    this.sendSocketNotification("USER_PRESENCE", query.value);
+    this.userPresence = query.value;
+    this.sendResponse(res, undefined, query);
+  },
+
+  handleSimpleSocketNotification (query, res) {
+    this.sendSocketNotification(query.action, query);
+    this.sendResponse(res);
+  },
+
+  handleSimpleValueNotification (query, res) {
+    this.sendResponse(res);
+    this.sendSocketNotification(query.action, query.value);
+  },
+
+  handleSimpleNotification (query, res) {
+    this.sendResponse(res);
+    this.sendSocketNotification(query.action);
+  },
+
+  handleSave (query, res) {
+    this.sendResponse(res);
+    this.callAfterUpdate(() => { this.saveDefaultSettings(); });
+  },
+
+  handleModuleData (query, res) {
+    this.callAfterUpdate(() => {
+      this.sendResponse(res, undefined, this.configData);
+    });
+  },
+
+  handleDelayed (query, res) {
+
+    /*
+     * Expects a nested query object
+     *   {
+     *       action: "DELAYED",
+     *       did: "SOME_UNIQUE_ID",
+     *       timeout: 10000,  // Optional; Default 10000ms
+     *       abort: false, // Optional; send to cancel
+     *       query: {
+     *           action: "SHOW_ALERT",
+     *           title: "Delayed Alert!",
+     *           message: "This is a delayed alert test."
+     *       }
+     *   }
+     * Resending with same ID resets delay, unless abort:true
+     */
+    this.delayedQuery(query, res);
+  },
+
+  getActionHandlers () {
+    const opts = {timeout: 15000};
+    return {
+      GET_CHANGELOG: (q, r) => this.answerGetChangelog(q, r),
+      SHUTDOWN: (q, r) => this.shutdownControl(q.action, opts, r),
+      REBOOT: (q, r) => this.shutdownControl(q.action, opts, r),
+      RESTART: (q, r) => this.controlPm2(r, q),
+      STOP: (q, r) => this.controlPm2(r, q),
+      COMMAND: (q, r) => this.handleCommand(q, r),
+      USER_PRESENCE: (q, r) => this.handleUserPresence(q, r),
+      MONITORON: (q, r) => this.monitorControl(q.action, opts, r),
+      MONITOROFF: (q, r) => this.monitorControl(q.action, opts, r),
+      MONITORTOGGLE: (q, r) => this.monitorControl(q.action, opts, r),
+      MONITORSTATUS: (q, r) => this.monitorControl(q.action, opts, r),
+      HIDE: (q, r) => this.handleSimpleSocketNotification(q, r),
+      SHOW: (q, r) => this.handleSimpleSocketNotification(q, r),
+      TOGGLE: (q, r) => this.handleSimpleSocketNotification(q, r),
+      BRIGHTNESS: (q, r) => this.handleSimpleValueNotification(q, r),
+      TEMP: (q, r) => this.handleSimpleValueNotification(q, r),
+      SAVE: (q, r) => this.handleSave(q, r),
+      MODULE_DATA: (q, r) => this.handleModuleData(q, r),
+      INSTALL: (q, r) => this.installModule(q.url, r, q),
+      REFRESH: (q, r) => this.handleSimpleNotification(q, r),
+      HIDE_ALERT: (q, r) => this.handleSimpleNotification(q, r),
+      SHOW_ALERT: (q, r) => this.handleShowAlert(q, r),
+      UPDATE: (q, r) => this.updateModule(decodeURI(q.module), r),
+      NOTIFICATION: (q, r) => this.handleNotification(q, r),
+      MANAGE_CLASSES: (q, r) => this.handleManageClasses(q, r),
+      MINIMIZE: (q, r) => this.handleElectronActions(q, r),
+      TOGGLEFULLSCREEN: (q, r) => this.handleElectronActions(q, r),
+      DEVTOOLS: (q, r) => this.handleElectronActions(q, r),
+      DELAYED: (q, r) => this.handleDelayed(q, r)
+    };
+  },
+
+  executeQuery (query, res) {
+    const handlers = this.getActionHandlers();
+    const handler = handlers[query.action];
+
+    if (handler) {
+      handler(query, res);
+      return true;
+    }
+
+    this.sendResponse(res, new Error(`Invalid Option: ${query.action}`));
     return false;
   },
 
