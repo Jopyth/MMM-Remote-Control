@@ -553,9 +553,7 @@ module.exports = NodeHelper.create({
 
   handleGetModuleInstalled (query, res) {
     const self = this;
-    const filterInstalled = function (value) {
-      return value.installed && !value.isDefaultModule;
-    };
+    const filterInstalled = (value) => value.installed && !value.isDefaultModule;
 
     // Wait for pending update checks to complete before sending response
     const startTime = Date.now();

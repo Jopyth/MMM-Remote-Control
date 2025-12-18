@@ -50,7 +50,7 @@ module.exports = {
   getExternalApiByGuessing () {
     if (!this.configOnHd) { return undefined; }
 
-    const getActions = function (content) {
+    const getActions = (content) => {
       const re = /notification ===? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
       const availableActions = [];
       if (re.test(content)) {

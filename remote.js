@@ -2013,7 +2013,7 @@ if (window.location.hash) {
   Remote.showMenu("main-menu");
 }
 
-window.onhashchange = function () {
+window.onhashchange = () => {
   if (Remote.skipHashChange) {
     Remote.skipHashChange = false;
     return;
