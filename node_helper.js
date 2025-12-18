@@ -1038,13 +1038,9 @@ module.exports = NodeHelper.create({
     Log.log(`path: ${path} name: ${name}`);
 
     const git = simpleGit(path);
-    git.reset("hard").then(() => {
-      git.pull((error, result) => {
-        if (error) {
-          Log.error(error);
-          self.sendResponse(res, error);
-          return;
-        }
+    git.reset("hard").
+      then(() => git.pull(["--ff-only"])).
+      then((result) => {
         if (result.summary.changes) {
           const packageJsonExists = fs.existsSync(`${path}/package.json`);
           if (packageJsonExists) {
@@ -1077,10 +1073,14 @@ module.exports = NodeHelper.create({
               self.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
             }
           }
+        } else {
+          self.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
         }
+      }).
+      catch((error) => {
+        Log.warn(`Error updating ${name}: ${error.message || error}`);
+        self.sendResponse(res, error);
       });
-    });
-
   },
 
   checkForExecError (error, stdout, stderr, res, data) {
