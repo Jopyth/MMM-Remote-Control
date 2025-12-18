@@ -529,124 +529,139 @@ module.exports = NodeHelper.create({
     }
   },
 
-  answerGet (query, res) {
+  handleGetModuleAvailable (query, res) {
+    this.modulesAvailable.sort((a, b) => a.name.localeCompare(b.name));
+    this.sendResponse(res, undefined, {query, data: this.modulesAvailable});
+  },
+
+  handleGetModuleInstalled (query, res) {
     const self = this;
+    const filterInstalled = function (value) {
+      return value.installed && !value.isDefaultModule;
+    };
 
-    if (query.data === "moduleAvailable") {
-      this.modulesAvailable.sort((a, b) => a.name.localeCompare(b.name));
-      this.sendResponse(res, undefined, {query, data: this.modulesAvailable});
-      return;
-    }
-    if (query.data === "moduleInstalled") {
-      const filterInstalled = function (value) {
-        return value.installed && !value.isDefaultModule;
-      };
+    // Wait for pending update checks to complete before sending response
+    const startTime = Date.now();
+    const maxWaitTime = 3000; // Maximum 3 seconds - first batch should be ready
 
-      // Wait for pending update checks to complete before sending response
-      const startTime = Date.now();
-      const maxWaitTime = 3000; // Maximum 3 seconds - first batch should be ready
+    const waitForUpdateChecks = () => {
+      const elapsed = Date.now() - startTime;
+      const {pendingUpdateChecks, activeUpdateChecks, updateCheckQueue} = self;
 
-      const waitForUpdateChecks = () => {
-        const elapsed = Date.now() - startTime;
-        const {pendingUpdateChecks, activeUpdateChecks, updateCheckQueue} = self;
-
-        if (pendingUpdateChecks > 0 && elapsed < maxWaitTime) {
-          if (elapsed % 1000 < 100) { // Log every ~1 second
-            Log.debug(`Waiting for update checks: ${pendingUpdateChecks} pending, ${activeUpdateChecks} active, ${updateCheckQueue.length} queued`);
-          }
-          setTimeout(waitForUpdateChecks, 100);
-        } else {
-          if (elapsed >= maxWaitTime && pendingUpdateChecks > 0) {
-            Log.info(`Sending response after ${elapsed}ms with ${pendingUpdateChecks} checks still pending (${activeUpdateChecks} active, ${updateCheckQueue.length} queued)`);
-          } else {
-            Log.info(`All update checks complete after ${elapsed}ms`);
-          }
-          const installed = self.modulesAvailable.filter(filterInstalled);
-          installed.sort((a, b) => a.name.localeCompare(b.name));
-          this.sendResponse(res, undefined, {query, data: installed});
+      if (pendingUpdateChecks > 0 && elapsed < maxWaitTime) {
+        if (elapsed % 1000 < 100) { // Log every ~1 second
+          Log.debug(`Waiting for update checks: ${pendingUpdateChecks} pending, ${activeUpdateChecks} active, ${updateCheckQueue.length} queued`);
         }
-      };
-      waitForUpdateChecks();
-      return;
-    }
-    if (query.data === "translations") {
-      this.sendResponse(res, undefined, {query, data: this.translation});
-      return;
-    }
-    if (query.data === "mmUpdateAvailable") {
-      const sg = simpleGit(`${__dirname}/..`);
-      sg.fetch().status((err, data) => {
-        if (!err) {
-          if (data.behind > 0) {
-            this.sendResponse(res, undefined, {query, result: true});
-            return;
-          }
-        }
-        this.sendResponse(res, undefined, {query, result: false});
-      });
-      return;
-    }
-    if (query.data === "config") {
-      this.sendResponse(res, undefined, {query, data: this.getConfig()});
-      return;
-    }
-    if (query.data === "classes") {
-      const thisConfig = this.getConfig().modules.find((m) => m.module === "MMM-Remote-Control").config || {};
-      this.sendResponse(res, undefined, {query, data: thisConfig.classes
-        ? thisConfig.classes
-        : {}});
-      return;
-    }
-    if (query.data === "saves") {
-      const backupHistorySize = 5;
-      const times = [];
-
-      for (let i = backupHistorySize - 1; i > 0; i--) {
-        const backupPath = path.resolve(`config/config.js.backup${i}`);
-        try {
-          const stats = fs.statSync(backupPath);
-          times.push(stats.mtime);
-        } catch (error) {
-          Log.debug(`Backup ${i} does not exist: ${error}.`);
-          continue;
-        }
-      }
-      this.sendResponse(res, undefined, {query, data: times.sort((a, b) => b - a)});
-      return;
-    }
-    if (query.data === "defaultConfig") {
-      if (!(query.module in Module.configDefaults)) {
-        this.sendResponse(res, undefined, {query, data: {}});
+        setTimeout(waitForUpdateChecks, 100);
       } else {
-        this.sendResponse(res, undefined, {query, data: Module.configDefaults[query.module]});
+        if (elapsed >= maxWaitTime && pendingUpdateChecks > 0) {
+          Log.info(`Sending response after ${elapsed}ms with ${pendingUpdateChecks} checks still pending (${activeUpdateChecks} active, ${updateCheckQueue.length} queued)`);
+        } else {
+          Log.info(`All update checks complete after ${elapsed}ms`);
+        }
+        const installed = self.modulesAvailable.filter(filterInstalled);
+        installed.sort((a, b) => a.name.localeCompare(b.name));
+        self.sendResponse(res, undefined, {query, data: installed});
       }
+    };
+    waitForUpdateChecks();
+  },
+
+  handleGetMmUpdateAvailable (query, res) {
+    const sg = simpleGit(`${__dirname}/..`);
+    sg.fetch().status((err, data) => {
+      if (!err) {
+        if (data.behind > 0) {
+          this.sendResponse(res, undefined, {query, result: true});
+          return;
+        }
+      }
+      this.sendResponse(res, undefined, {query, result: false});
+    });
+  },
+
+  handleGetClasses (query, res) {
+    const thisConfig = this.getConfig().modules.find((m) => m.module === "MMM-Remote-Control").config || {};
+    this.sendResponse(res, undefined, {query, data: thisConfig.classes
+      ? thisConfig.classes
+      : {}});
+  },
+
+  handleGetSaves (query, res) {
+    const backupHistorySize = 5;
+    const times = [];
+
+    for (let i = backupHistorySize - 1; i > 0; i--) {
+      const backupPath = path.resolve(`config/config.js.backup${i}`);
+      try {
+        const stats = fs.statSync(backupPath);
+        times.push(stats.mtime);
+      } catch (error) {
+        Log.debug(`Backup ${i} does not exist: ${error}.`);
+        continue;
+      }
+    }
+    this.sendResponse(res, undefined, {query, data: times.sort((a, b) => b - a)});
+  },
+
+  handleGetDefaultConfig (query, res) {
+    if (!(query.module in Module.configDefaults)) {
+      this.sendResponse(res, undefined, {query, data: {}});
+    } else {
+      this.sendResponse(res, undefined, {query, data: Module.configDefaults[query.module]});
+    }
+  },
+
+  handleGetModules (query, res) {
+    const self = this;
+    if (!this.checkInitialized(res)) { return; }
+    this.callAfterUpdate(() => {
+      self.sendResponse(res, undefined, {query, data: self.configData.moduleData});
+    });
+  },
+
+  handleGetBrightness (query, res) {
+    const self = this;
+    if (!this.checkInitialized(res)) { return; }
+    this.callAfterUpdate(() => {
+      self.sendResponse(res, undefined, {query, result: self.configData.brightness});
+    });
+  },
+
+  handleGetTemp (query, res) {
+    const self = this;
+    if (!this.checkInitialized(res)) { return; }
+    this.callAfterUpdate(() => {
+      self.sendResponse(res, undefined, {query, result: self.configData.temp});
+    });
+  },
+
+  getDataHandlers () {
+    return {
+      moduleAvailable: (q, r) => this.handleGetModuleAvailable(q, r),
+      moduleInstalled: (q, r) => this.handleGetModuleInstalled(q, r),
+      translations: (q, r) => this.sendResponse(r, undefined, {query: q, data: this.translation}),
+      mmUpdateAvailable: (q, r) => this.handleGetMmUpdateAvailable(q, r),
+      config: (q, r) => this.sendResponse(r, undefined, {query: q, data: this.getConfig()}),
+      classes: (q, r) => this.handleGetClasses(q, r),
+      saves: (q, r) => this.handleGetSaves(q, r),
+      defaultConfig: (q, r) => this.handleGetDefaultConfig(q, r),
+      modules: (q, r) => this.handleGetModules(q, r),
+      brightness: (q, r) => this.handleGetBrightness(q, r),
+      temp: (q, r) => this.handleGetTemp(q, r),
+      userPresence: (q, r) => this.sendResponse(r, undefined, {query: q, result: this.userPresence})
+    };
+  },
+
+  answerGet (query, res) {
+    const handlers = this.getDataHandlers();
+    const handler = handlers[query.data];
+
+    if (handler) {
+      handler(query, res);
       return;
     }
-    if (query.data === "modules") {
-      if (!this.checkInitialized(res)) { return; }
-      this.callAfterUpdate(() => {
-        this.sendResponse(res, undefined, {query, data: self.configData.moduleData});
-      });
-      return;
-    }
-    if (query.data === "brightness") {
-      if (!this.checkInitialized(res)) { return; }
-      this.callAfterUpdate(() => {
-        this.sendResponse(res, undefined, {query, result: self.configData.brightness});
-      });
-      return;
-    }
-    if (query.data === "temp") {
-      if (!this.checkInitialized(res)) { return; }
-      this.callAfterUpdate(() => {
-        this.sendResponse(res, undefined, {query, result: self.configData.temp});
-      });
-      return;
-    }
-    if (query.data === "userPresence") {
-      this.sendResponse(res, undefined, {query, result: this.userPresence});
-      return;
-    }
+
     // Unknown Command, Return Error
     this.sendResponse(res, "Unknown or Bad Command.", query);
   },
