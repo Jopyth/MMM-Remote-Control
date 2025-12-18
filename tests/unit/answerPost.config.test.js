@@ -1,7 +1,6 @@
 const assert = require("node:assert/strict");
 const {describe, test, beforeEach, afterEach} = require("node:test");
 const path = require("node:path");
-const {EventEmitter} = require("node:events");
 const ModuleLib = require("module");
 
 // Ensure shims resolve like other tests
@@ -38,21 +37,16 @@ function freshHelper () {
   return helper;
 }
 
-class FakeReadStream extends EventEmitter {
-  pipe (dest) {
-    this.dest = dest;
-    return dest;
-  }
-}
-
 describe("answerPost config persistence", () => {
   const originalFs = {};
   const fs = require("node:fs");
 
   beforeEach(() => {
-    ["statSync", "createReadStream", "createWriteStream", "writeFile"].forEach((key) => {
-      originalFs[key] = fs[key];
-    });
+    // Store original methods
+    originalFs.statSync = fs.statSync;
+    originalFs.copyFile = fs.promises.copyFile;
+    originalFs.writeFile = fs.promises.writeFile;
+
     ModuleLib._load = function (request, parent, isMain) {
       const resolved = path.isAbsolute(request)
         ? path.resolve(request)
@@ -71,9 +65,11 @@ describe("answerPost config persistence", () => {
   });
 
   afterEach(() => {
-    Object.entries(originalFs).forEach(([key, value]) => {
-      fs[key] = value;
-    });
+    // Restore original methods
+    fs.statSync = originalFs.statSync;
+    fs.promises.copyFile = originalFs.copyFile;
+    fs.promises.writeFile = originalFs.writeFile;
+
     moduleOverrides.forEach((_entry, filePath) => {
       delete require.cache[filePath];
     });
@@ -103,20 +99,13 @@ describe("answerPost config persistence", () => {
       throw err;
     };
 
-    const readStream = new FakeReadStream();
-    fs.createReadStream = (filePath) => {
-      assert.equal(filePath, "/mirror/config.js");
-      return readStream;
-    };
-    fs.createWriteStream = (filePath) => {
-      assert.equal(filePath, path.resolve("config/config.js.backup3"));
-      return {};
-    };
-
     let written;
-    fs.writeFile = (target, contents, callback) => {
+    fs.promises.copyFile = async (src, dest) => {
+      assert.equal(src, "/mirror/config.js");
+      assert.equal(dest, path.resolve("config/config.js.backup3"));
+    };
+    fs.promises.writeFile = async (target, contents) => {
       written = {target, contents};
-      callback();
     };
 
     const payload = {modules: [], foo: "bar"};
@@ -130,8 +119,6 @@ describe("answerPost config persistence", () => {
     });
 
     helper.answerPost({data: "config"}, {body: payload}, {});
-
-    readStream.emit("end");
 
     const {error, data} = await responsePromise;
     assert.equal(error, undefined);
@@ -172,13 +159,12 @@ describe("answerPost config persistence", () => {
       throw err;
     };
 
-    const readStream = new FakeReadStream();
-    fs.createReadStream = () => readStream;
-    fs.createWriteStream = () => ({});
-
     const writeError = new Error("disk full");
-    fs.writeFile = (_target, _contents, callback) => {
-      callback(writeError);
+    fs.promises.copyFile = async () => {
+      // Copy succeeds
+    };
+    fs.promises.writeFile = async () => {
+      throw writeError;
     };
 
     const responsePromise = new Promise((resolve) => {
@@ -189,7 +175,6 @@ describe("answerPost config persistence", () => {
     });
 
     helper.answerPost({data: "config"}, {body: {foo: "bar"}}, {});
-    readStream.emit("end");
 
     const {error, data} = await responsePromise;
     assert.equal(error, writeError);

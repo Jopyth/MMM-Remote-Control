@@ -480,7 +480,10 @@ module.exports = NodeHelper.create({
           : best;
       } catch (e) {
         if (e.code === "ENOENT") {
-          return {slot, mtime: new Date(0)};
+          const emptySlotMtime = new Date(0);
+          return !best || emptySlotMtime < best.mtime
+            ? {slot, mtime: emptySlotMtime}
+            : best;
         }
         return best;
       }
