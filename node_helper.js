@@ -1088,7 +1088,8 @@ module.exports = NodeHelper.create({
     Log.log(`path: ${path} name: ${name}`);
 
     const git = simpleGit(path);
-    git.reset("hard").
+    git.fetch().
+      then(() => git.reset(["--hard", "FETCH_HEAD"])).
       then(() => git.pull(["--ff-only"])).
       then((result) => {
         if (result.summary.changes) {
