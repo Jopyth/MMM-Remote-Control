@@ -341,32 +341,35 @@ module.exports = NodeHelper.create({
   },
 
   processUpdateCheckQueue () {
-    const self = this;
+    while (this.activeUpdateChecks < this.maxParallelUpdateChecks && this.updateCheckQueue.length > 0) {
+      const check = this.updateCheckQueue.shift();
+      this.activeUpdateChecks++;
 
-    while (self.activeUpdateChecks < self.maxParallelUpdateChecks && self.updateCheckQueue.length > 0) {
-      const check = self.updateCheckQueue.shift();
-      self.activeUpdateChecks++;
+      // Start async check without awaiting (parallel execution)
+      this.checkModuleUpdate(check);
+    }
+  },
 
-      const sg = simpleGit(check.modulePath);
-      sg.fetch().
-        status().
-        then((data) => {
-          if (data.behind > 0) {
-            check.module.updateAvailable = true;
-            Log.info(`Module ${check.folderName} has updates available (behind ${data.behind} commits)`);
-          }
-        }).
-        catch((err) => {
-          Log.warn(`Error checking updates for ${check.folderName}: ${err.message || err}`);
-        }).
-        finally(() => {
-          self.activeUpdateChecks--;
-          self.pendingUpdateChecks--;
-          Log.debug(`Finished update check for ${check.folderName}, pending: ${self.pendingUpdateChecks}, active: ${self.activeUpdateChecks}, queued: ${self.updateCheckQueue.length}`);
+  async checkModuleUpdate (check) {
+    const sg = simpleGit(check.modulePath);
 
-          // Process next item in queue
-          self.processUpdateCheckQueue();
-        });
+    try {
+      await sg.fetch();
+      const data = await sg.status();
+
+      if (data.behind > 0) {
+        check.module.updateAvailable = true;
+        Log.info(`Module ${check.folderName} has updates available (behind ${data.behind} commits)`);
+      }
+    } catch (err) {
+      Log.warn(`Error checking updates for ${check.folderName}: ${err.message || err}`);
+    } finally {
+      this.activeUpdateChecks--;
+      this.pendingUpdateChecks--;
+      Log.debug(`Finished update check for ${check.folderName}, pending: ${this.pendingUpdateChecks}, active: ${this.activeUpdateChecks}, queued: ${this.updateCheckQueue.length}`);
+
+      // Process next item in queue
+      this.processUpdateCheckQueue();
     }
   },
 
@@ -1064,80 +1067,88 @@ module.exports = NodeHelper.create({
     });
   },
 
-  updateModule (module, res) {
+  async updateModule (module, res) {
     Log.log(`UPDATE ${module || "MagicMirror"}`);
 
-    const self = this;
-
-    let path = `${__dirname}/../../`;
+    let modulePath = `${__dirname}/../../`;
     let name = "MM";
 
-    if (typeof module !== "undefined" && module !== "undefined") {
-      if (self.modulesAvailable) {
-        const modData = self.modulesAvailable.find((m) => m.longname === module);
-        if (modData === undefined) {
-          this.sendResponse(res, new Error("Unknown Module"), {info: module});
-          return;
-        }
-
-        path = `${__dirname}/../${modData.longname}`;
-        name = modData.name;
+    if (module && module !== "undefined") {
+      const modData = this.modulesAvailable?.find((m) => m.longname === module);
+      if (!modData) {
+        this.sendResponse(res, new Error("Unknown Module"), {info: module});
+        return;
       }
+
+      modulePath = `${__dirname}/../${modData.longname}`;
+      name = modData.name;
     }
 
-    Log.log(`path: ${path} name: ${name}`);
+    Log.log(`path: ${modulePath} name: ${name}`);
 
-    const git = simpleGit(path);
-    git.fetch().
-      then(() => git.reset(["--hard", "FETCH_HEAD"])).
-      then(() => git.pull(["--ff-only"])).
-      then((result) => {
-        if (result.summary.changes) {
-          self.readModuleData();
+    const git = simpleGit(modulePath);
+    const execPromise = util.promisify(exec);
 
-          // Helper function to send update response with optional changelog
-          const sendUpdateResponse = () => {
-            const changelogExists = fs.existsSync(`${path}/CHANGELOG.md`);
-            if (changelogExists) {
-              const changelog = fs.readFileSync(`${path}/CHANGELOG.md`, "utf-8");
-              self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`, chlog: changelog});
-            } else {
-              self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`});
-            }
-          };
+    try {
+      await git.fetch();
 
-          const packageJsonExists = fs.existsSync(`${path}/package.json`);
-          if (packageJsonExists) {
-            const packageJson = JSON.parse(fs.readFileSync(`${path}/package.json`, "utf8"));
-            const installNecessary = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
-            if (installNecessary) {
-              const packageLockExists = fs.existsSync(`${path}/package-lock.json`);
-              const command = packageLockExists
-                ? "npm ci --omit=dev"
-                : "npm install --omit=dev";
+      // Check if there are changes before resetting
+      const status = await git.status();
+      const hasUpdates = status.behind > 0;
 
-              exec(command, {cwd: path, timeout: 120000}, (error, stdout, stderr) => {
-                if (error) {
-                  Log.error(error);
-                  self.sendResponse(res, error, {stdout, stderr});
-                } else {
-                  sendUpdateResponse();
-                }
-              });
-            } else {
-              sendUpdateResponse();
-            }
-          } else {
-            sendUpdateResponse();
-          }
-        } else {
-          self.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
-        }
-      }).
-      catch((error) => {
-        Log.warn(`Error updating ${name}: ${error.message || error}`);
-        self.sendResponse(res, error);
-      });
+      if (!hasUpdates) {
+        this.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
+        return;
+      }
+
+      // Reset to remote and pull
+      await git.reset(["--hard", "FETCH_HEAD"]);
+      await git.pull(["--ff-only"]);
+
+      // Changes detected, reload module data
+      this.readModuleData();
+
+      // Check if npm install is needed
+      const packageJsonPath = `${modulePath}/package.json`;
+      if (!fs.existsSync(packageJsonPath)) {
+        this.sendUpdateResponseWithChangelog(res, modulePath, name);
+        return;
+      }
+
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+      const needsInstall = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
+
+      if (!needsInstall) {
+        this.sendUpdateResponseWithChangelog(res, modulePath, name);
+        return;
+      }
+
+      // Run npm install
+      const packageLockExists = fs.existsSync(`${modulePath}/package-lock.json`);
+      const command = packageLockExists ? "npm ci --omit=dev" : "npm install --omit=dev";
+
+      try {
+        await execPromise(command, {cwd: modulePath, timeout: 120000});
+        this.sendUpdateResponseWithChangelog(res, modulePath, name);
+      } catch (error) {
+        Log.error(error);
+        this.sendResponse(res, error, {stdout: error.stdout, stderr: error.stderr});
+      }
+    } catch (error) {
+      Log.warn(`Error updating ${name}: ${error.message || error}`);
+      this.sendResponse(res, error);
+    }
+  },
+
+  sendUpdateResponseWithChangelog (res, modulePath, name) {
+    const changelogPath = `${modulePath}/CHANGELOG.md`;
+    const response = {code: "restart", info: `${name} updated.`};
+
+    if (fs.existsSync(changelogPath)) {
+      response.chlog = fs.readFileSync(changelogPath, "utf-8");
+    }
+
+    this.sendResponse(res, undefined, response);
   },
 
   checkForExecError (error, stdout, stderr, res, data) {
