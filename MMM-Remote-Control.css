@@ -6,6 +6,7 @@
   width: 100vw;
   height: 100vh;
   transition: background-color 1.5s ease;
+  pointer-events: none;
 }
 
 /* Class for elements that receive brightness filter animation */
