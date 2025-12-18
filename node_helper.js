@@ -123,13 +123,13 @@ module.exports = NodeHelper.create({
       }
     } catch (error) {
       if (error.code == "ENOENT") {
-        Log.error("[MMM-Remote-Control] Could not find config file. Please create one. Starting with default configuration.");
+        Log.error("Could not find config file. Please create one. Starting with default configuration.");
         this.configOnHd = defaults;
       } else if (error instanceof ReferenceError || error instanceof SyntaxError) {
-        Log.error("[MMM-Remote-Control] Could not validate config file. Please correct syntax errors. Starting with default configuration.");
+        Log.error("Could not validate config file. Please correct syntax errors. Starting with default configuration.");
         this.configOnHd = defaults;
       } else {
-        Log.error(`[MMM-Remote-Control] Could not load config file. Starting with default configuration. Error found: ${error}`);
+        Log.error(`Could not load config file. Starting with default configuration. Error found: ${error}`);
         this.configOnHd = defaults;
       }
     }
@@ -198,7 +198,7 @@ module.exports = NodeHelper.create({
     downloadModules({
       force,
       callback: (result) => {
-        if (result && result.startsWith("ERROR")) { Log.error("[MMM-Remote-Control]", result); }
+        if (result && result.startsWith("ERROR")) { Log.error(result); }
         this.readModuleData();
       }
     });
@@ -372,14 +372,14 @@ module.exports = NodeHelper.create({
       require(filename);
     } catch (e) {
       if (e instanceof ReferenceError) {
-        Log.log(`[MMM-Remote-Control] Could not get defaults for ${module.longname}. See #335.`);
+        Log.log(`Could not get defaults for ${module.longname}. See #335.`);
       } else if (e.code == "ENOENT") {
-        Log.error(`[MMM-Remote-Control] Could not find main module js file for ${module.longname}`);
+        Log.error(`Could not find main module js file for ${module.longname}`);
       } else if (e instanceof SyntaxError) {
-        Log.error(`[MMM-Remote-Control] Could not validate main module js file for ${module.longname}`);
+        Log.error(`Could not validate main module js file for ${module.longname}`);
         Log.error(e);
       } else {
-        Log.error(`[MMM-Remote-Control] Could not load main module js file for ${module.longname}. Error found: ${e}`);
+        Log.error(`Could not load main module js file for ${module.longname}. Error found: ${e}`);
       }
     }
     if (lastOne) { this.onModulesLoaded(); }
@@ -392,7 +392,7 @@ module.exports = NodeHelper.create({
       const git = simpleGit(dir);
       git.revparse(["HEAD"], (error, result) => {
         if (error) {
-          Log.error("[MMM-Remote-Control]", error);
+          Log.error(error);
         }
         res.writeHead(302, {"Location": `https://github.com/MagicMirrorOrg/MagicMirror/tree/${result.trim()}/modules/default/${query.module}`});
         res.end();
@@ -403,7 +403,7 @@ module.exports = NodeHelper.create({
     const git = simpleGit(modulePath);
     git.getRemotes(true, (error, result) => {
       if (error) {
-        Log.error("[MMM-Remote-Control]", error);
+        Log.error(error);
       }
       let baseUrl = result[0].refs.fetch;
       // replacements
@@ -412,7 +412,7 @@ module.exports = NodeHelper.create({
       baseUrl = baseUrl.replace("git@", "https://");
       git.revparse(["HEAD"], (error, result) => {
         if (error) {
-          Log.error("[MMM-Remote-Control]", error);
+          Log.error(error);
         }
         res.writeHead(302, {"Location": `${baseUrl}/tree/${result.trim()}`});
         res.end();
@@ -483,7 +483,7 @@ module.exports = NodeHelper.create({
       }
       if (best === -1) {
         // can not backup, panic!
-        Log.error("[MMM-Remote-Control] Backing up config failed, not saving!");
+        Log.error("Backing up config failed, not saving!");
         self.sendResponse(res, new Error("Backing up config failed, not saving!"), {query});
         return;
       }
@@ -512,7 +512,7 @@ module.exports = NodeHelper.create({
             if (error) {
               self.sendResponse(res, error, {query, backup: backupPath, data: self.configOnHd});
             }
-            Log.info("MMM-Remote-Control saved new config!");
+            Log.info("Saved new config!");
             Log.info(`Used backup: ${backupPath}`);
             self.sendResponse(res, undefined, {query, backup: backupPath, data: self.configOnHd});
           }
@@ -688,7 +688,7 @@ module.exports = NodeHelper.create({
     let status = 200;
     let result = true;
     if (error) {
-      Log.error("[MMM-Remote-Control]", error);
+      Log.error(error);
       response = {success: false, status: "error", reason: "unknown", info: error};
       status = 400;
       result = false;
@@ -892,9 +892,9 @@ module.exports = NodeHelper.create({
          * Only log as debug, not as error.
          */
         if (error instanceof SyntaxError) {
-          Log.debug(`[MMM-Remote-Control] Invalid JSON payload: ${error.message}`);
+          Log.debug(`Invalid JSON payload: ${error.message}`);
         } else {
-          Log.error("[MMM-Remote-Control]", error);
+          Log.error(error);
         }
         this.sendResponse(res, error, {reason: error.message});
         return true;
@@ -981,7 +981,7 @@ module.exports = NodeHelper.create({
 
     simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), (error) => {
       if (error) {
-        Log.error("[MMM-Remote-Control]", error);
+        Log.error(error);
         self.sendResponse(res, error);
       } else {
         const workDir = path.resolve(`${__dirname}/../${path.basename(url)}`);
@@ -997,7 +997,7 @@ module.exports = NodeHelper.create({
 
             exec(command, {cwd: workDir, timeout: 120000}, (error, stdout, stderr) => {
               if (error) {
-                Log.error("[MMM-Remote-Control]", error);
+                Log.error(error);
                 self.sendResponse(res, error, {stdout, stderr, ...data});
               } else {
                 // success part
@@ -1035,13 +1035,13 @@ module.exports = NodeHelper.create({
       }
     }
 
-    Log.log(`[MMM-Remote-Control] path: ${path} name: ${name}`);
+    Log.log(`path: ${path} name: ${name}`);
 
     const git = simpleGit(path);
     git.reset("hard").then(() => {
       git.pull((error, result) => {
         if (error) {
-          Log.error("[MMM-Remote-Control]", error);
+          Log.error(error);
           self.sendResponse(res, error);
           return;
         }
@@ -1058,7 +1058,7 @@ module.exports = NodeHelper.create({
 
               exec(command, {cwd: path, timeout: 120000}, (error, stdout, stderr) => {
                 if (error) {
-                  Log.error("[MMM-Remote-Control]", error);
+                  Log.error(error);
                   self.sendResponse(res, error, {stdout, stderr});
                 } else {
                   // success part
@@ -1084,7 +1084,7 @@ module.exports = NodeHelper.create({
   },
 
   checkForExecError (error, stdout, stderr, res, data) {
-    if (error) { Log.error("[MMM-Remote-Control]", stderr); }
+    if (error) { Log.error(stderr); }
     this.sendResponse(res, error, data);
   },
 
@@ -1097,7 +1097,7 @@ module.exports = NodeHelper.create({
     } catch {
       // PM2 not installed
       const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
-      Log.log(`[MMM-Remote-Control] ${message}`);
+      Log.log(`${message}`);
       this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
       return;
     }
@@ -1109,7 +1109,7 @@ module.exports = NodeHelper.create({
       if (err) {
         pm2.disconnect();
         const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
-        Log.log(`[MMM-Remote-Control] ${message}`);
+        Log.log(`${message}`);
         this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
         return;
       }
@@ -1119,7 +1119,7 @@ module.exports = NodeHelper.create({
         if (err || !list.find((proc) => proc.name === processName && proc.pm2_env.status === "online")) {
           pm2.disconnect();
           const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
-          Log.log(`[MMM-Remote-Control] ${message}`);
+          Log.log(`${message}`);
           this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
           return;
         }
@@ -1128,10 +1128,10 @@ module.exports = NodeHelper.create({
         pm2[actionName](processName, (err) => {
           pm2.disconnect();
           if (err) {
-            Log.error(`[MMM-Remote-Control] PM2 ${actionName} error:`, err);
+            Log.error(`PM2 ${actionName} error:`, err);
             this.sendResponse(res, err);
           } else {
-            Log.log(`[MMM-Remote-Control] PM2 ${actionName}: ${processName}`);
+            Log.log(`PM2 ${actionName}: ${processName}`);
             this.sendResponse(res, undefined, {action: actionName, processName});
           }
         });
@@ -1183,7 +1183,7 @@ module.exports = NodeHelper.create({
         if (self.in("no such file or directory", error.message)) {
           return;
         }
-        Log.error("[MMM-Remote-Control]", error);
+        Log.error(error);
       } else {
         data = JSON.parse(data.toString());
         self.sendSocketNotification("DEFAULT_SETTINGS", data);
@@ -1217,7 +1217,7 @@ module.exports = NodeHelper.create({
     if ("customMenu" in this.thisConfig) {
       const menuPath = path.resolve(`${__dirname}/../../config/${this.thisConfig.customMenu}`);
       if (!fs.existsSync(menuPath)) {
-        Log.log(`[MMM-Remote-Control] customMenu requested, but file:${menuPath} was not found.`);
+        Log.log(`customMenu requested, but file:${menuPath} was not found.`);
         return;
       }
       fs.readFile(menuPath, (err, data) => {
