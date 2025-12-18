@@ -174,13 +174,20 @@ Module.register("MMM-Remote-Control", {
     }
     const filterValue = `brightness(${newBrightnessValue}%)`;
     Log.debug("BRIGHTNESS", newBrightnessValue);
-    this.brightness = newBrightnessValue;
     const childNodesList = document.body.childNodes;
     for (let i = 0; i < childNodesList.length; i++) {
-      if (childNodesList[i].nodeName !== "SCRIPT" && childNodesList[i].nodeName !== "#text") {
-        childNodesList[i].style.filter = filterValue;
+      const node = childNodesList[i];
+      // Only process Element nodes, skip scripts and text nodes
+      if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== "SCRIPT") {
+        node.style.filter = filterValue;
+        // Only add animation class to elements without backdrop-filter
+        const computed = window.getComputedStyle(node);
+        if (computed.backdropFilter === "none" && this.brightness !== newBrightnessValue) {
+          node.classList.add("brightness-filtered");
+        }
       }
     }
+    this.brightness = newBrightnessValue;
   },
 
   setTemp (temp) {
