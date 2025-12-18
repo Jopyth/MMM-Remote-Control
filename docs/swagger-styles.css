@@ -1,0 +1,35 @@
+/* eslint-disable css/no-important -- Needed to override Swagger UI defaults */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+body {
+  margin: 0;
+  background: #fafafa;
+}
+
+/* Hide Swagger UI elements */
+:is(
+  .download-url-wrapper,
+  td.col.col_header.response-col_links,
+  td.response-col_links
+) {
+  display: none !important;
+}
+
+td.response-col_description {
+  padding: 0 !important;
+}
+
+/* Style code blocks in responses */
+.response-col_description__inner code {
+  background: #41444e !important;
+  color: #fff !important;
+}
