@@ -285,6 +285,14 @@ module.exports = NodeHelper.create({
         }
         self.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
 
+        // Check if module has changelog
+        try {
+          fs.accessSync(path.join(modulePath, "CHANGELOG.md"), fs.constants.F_OK);
+          currentModule.hasChangelog = true;
+        } catch {
+          currentModule.hasChangelog = false;
+        }
+
         // check for available updates
         try {
           fs.statSync(path.join(modulePath, ".git"));
@@ -643,6 +651,19 @@ module.exports = NodeHelper.create({
     this.sendResponse(res, "Unknown or Bad Command.", query);
   },
 
+  answerGetChangelog (query, res) {
+    const moduleName = query.module;
+    const modulePath = `${this.getModuleDir()}/${moduleName}`;
+    const changelogPath = path.join(modulePath, "CHANGELOG.md");
+
+    try {
+      const changelog = fs.readFileSync(changelogPath, "utf-8");
+      this.sendResponse(res, undefined, {action: "GET_CHANGELOG", changelog, module: moduleName});
+    } catch {
+      this.sendResponse(res, new Error("Changelog not found"), {action: "GET_CHANGELOG", query});
+    }
+  },
+
   callAfterUpdate (callback, timeout) {
     if (timeout === undefined) {
       timeout = 3000;
@@ -772,6 +793,10 @@ module.exports = NodeHelper.create({
     const self = this;
     const opts = {timeout: 15000};
 
+    if (query.action === "GET_CHANGELOG") {
+      this.answerGetChangelog(query, res);
+      return true;
+    }
     if (["SHUTDOWN", "REBOOT"].indexOf(query.action) !== -1) {
       this.shutdownControl(query.action, opts, res);
       return true;

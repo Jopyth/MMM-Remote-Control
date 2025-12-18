@@ -77,6 +77,10 @@ const Remote = {
         this.installCallback(payload);
         return;
       }
+      if ("action" in payload && payload.action === "GET_CHANGELOG") {
+        this.showChangelogCallback(payload);
+        return;
+      }
       if ("data" in payload) {
         if (payload.query.data === "config_update") {
           this.saveConfigCallback(payload);
@@ -1500,13 +1504,39 @@ const Remote = {
         innerWrapper.appendChild(moduleBox);
 
         if (modules[i].updateAvailable) {
-          const moduleBox = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
-          innerWrapper.appendChild(moduleBox);
+          const updateInfo = self.createSymbolText("fa fa-fw fa-info-circle", self.translate("UPDATE_AVAILABLE"));
+          innerWrapper.appendChild(updateInfo);
+        }
+
+        // Add changelog button if module has changelog
+        if (modules[i].hasChangelog) {
+          const changelogButton = self.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", (event) => {
+            event.stopPropagation();
+            const module = modules[i].longname;
+            self.showChangelog(module);
+          });
+          changelogButton.className = "button";
+          innerWrapper.appendChild(changelogButton);
         }
 
         parent.appendChild(innerWrapper);
       }
     });
+  },
+
+  showChangelog (moduleName) {
+    this.setStatus("loading");
+    this.sendSocketNotification("REMOTE_ACTION", {action: "GET_CHANGELOG", module: moduleName});
+  },
+
+  showChangelogCallback (result) {
+    if (result.success && result.changelog) {
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `<h3>${result.module || "Changelog"}</h3><div id='changelog'>${marked.parse(result.changelog)}</div>`;
+      this.setStatus("success", false, wrapper);
+    } else {
+      this.setStatus("error", "Changelog not found");
+    }
   },
 
   undoConfigMenu () {
