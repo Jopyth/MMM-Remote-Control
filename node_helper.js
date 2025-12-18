@@ -58,6 +58,11 @@ module.exports = NodeHelper.create({
 
     this.delayedQueryTimers = {};
 
+    // Queue for update checks to avoid overwhelming system
+    this.updateCheckQueue = [];
+    this.activeUpdateChecks = 0;
+    this.maxParallelUpdateChecks = 10;
+
     fs.readFile(path.resolve(`${__dirname}/remote.html`), (err, data) => {
       self.template = data.toString();
     });
@@ -283,39 +288,78 @@ module.exports = NodeHelper.create({
         // check for available updates
         try {
           fs.statSync(path.join(modulePath, ".git"));
-        } catch (error) {
-          Log.debug(`[MMM-Remote-Control] Module ${folderName} is not managed with git. Skip checking for updates: ${error}`);
-          return;
-        }
 
-        const sg = simpleGit(modulePath);
-        sg.fetch().status((err, data) => {
-          if (!err) {
-            if (data.behind > 0) {
-              currentModule.updateAvailable = true;
-            }
+          // Track pending update check (only for git repos)
+          if (!self.pendingUpdateChecks) {
+            self.pendingUpdateChecks = 0;
           }
-        });
-        if (!isInList) {
-          sg.getRemotes(true, (error, result) => {
-            if (error) {
-              Log.error("[MMM-Remote-Control]", error);
-            }
-            try {
-              let baseUrl = result[0].refs.fetch;
-              // replacements
-              baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
-              // if cloned with ssh
-              currentModule.url = baseUrl.replace("git@", "https://");
-            } catch (error) {
-              // Something happened. Skip it.
-              Log.debug(`Could not get remote URL for module ${folderName}: ${error}`);
+          self.pendingUpdateChecks++;
+          Log.debug(`Queuing update check for ${folderName}, pending: ${self.pendingUpdateChecks}`);
 
-            }
+          // Add to queue instead of executing immediately
+          self.updateCheckQueue.push({
+            module: currentModule,
+            modulePath,
+            folderName
           });
+
+          // Start processing queue
+          self.processUpdateCheckQueue();
+
+          if (!isInList) {
+            const sg = simpleGit(modulePath);
+            sg.getRemotes(true, (error, result) => {
+              if (error) {
+                Log.error(error);
+              }
+              try {
+                let baseUrl = result[0].refs.fetch;
+                // replacements
+                baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
+                // if cloned with ssh
+                currentModule.url = baseUrl.replace("git@", "https://");
+              } catch (error) {
+                // Something happened. Skip it.
+                Log.debug(`Could not get remote URL for module ${folderName}: ${error}`);
+
+              }
+            });
+          }
+        } catch {
+          Log.debug(`Module ${folderName} is not managed with git, skipping update check`);
         }
       }
     });
+  },
+
+  processUpdateCheckQueue () {
+    const self = this;
+
+    while (self.activeUpdateChecks < self.maxParallelUpdateChecks && self.updateCheckQueue.length > 0) {
+      const check = self.updateCheckQueue.shift();
+      self.activeUpdateChecks++;
+
+      const sg = simpleGit(check.modulePath);
+      sg.fetch().
+        status().
+        then((data) => {
+          if (data.behind > 0) {
+            check.module.updateAvailable = true;
+            Log.info(`Module ${check.folderName} has updates available (behind ${data.behind} commits)`);
+          }
+        }).
+        catch((err) => {
+          Log.warn(`Error checking updates for ${check.folderName}: ${err.message || err}`);
+        }).
+        finally(() => {
+          self.activeUpdateChecks--;
+          self.pendingUpdateChecks--;
+          Log.debug(`Finished update check for ${check.folderName}, pending: ${self.pendingUpdateChecks}, active: ${self.activeUpdateChecks}, queued: ${self.updateCheckQueue.length}`);
+
+          // Process next item in queue
+          self.processUpdateCheckQueue();
+        });
+    }
   },
 
   loadModuleDefaultConfig (module, modulePath, lastOne) {
@@ -489,9 +533,32 @@ module.exports = NodeHelper.create({
       const filterInstalled = function (value) {
         return value.installed && !value.isDefaultModule;
       };
-      const installed = self.modulesAvailable.filter(filterInstalled);
-      installed.sort((a, b) => a.name.localeCompare(b.name));
-      this.sendResponse(res, undefined, {query, data: installed});
+
+      // Wait for pending update checks to complete before sending response
+      const startTime = Date.now();
+      const maxWaitTime = 3000; // Maximum 3 seconds - first batch should be ready
+
+      const waitForUpdateChecks = () => {
+        const elapsed = Date.now() - startTime;
+        const {pendingUpdateChecks, activeUpdateChecks, updateCheckQueue} = self;
+
+        if (pendingUpdateChecks > 0 && elapsed < maxWaitTime) {
+          if (elapsed % 1000 < 100) { // Log every ~1 second
+            Log.debug(`Waiting for update checks: ${pendingUpdateChecks} pending, ${activeUpdateChecks} active, ${updateCheckQueue.length} queued`);
+          }
+          setTimeout(waitForUpdateChecks, 100);
+        } else {
+          if (elapsed >= maxWaitTime && pendingUpdateChecks > 0) {
+            Log.info(`Sending response after ${elapsed}ms with ${pendingUpdateChecks} checks still pending (${activeUpdateChecks} active, ${updateCheckQueue.length} queued)`);
+          } else {
+            Log.info(`All update checks complete after ${elapsed}ms`);
+          }
+          const installed = self.modulesAvailable.filter(filterInstalled);
+          installed.sort((a, b) => a.name.localeCompare(b.name));
+          this.sendResponse(res, undefined, {query, data: installed});
+        }
+      };
+      waitForUpdateChecks();
       return;
     }
     if (query.data === "translations") {
