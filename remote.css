@@ -154,9 +154,9 @@ a {
 .result {
   position: absolute;
   width: 70%;
-  height: 50%;
+  height: 70%;
   left: 15%;
-  top: 25%;
+  top: 15%;
   background: black;
   border: 2px solid #666;
   display: flex;
@@ -567,9 +567,9 @@ pre {
 }
 
 #changelog {
-  max-height: 30vh;
-  font-size: small;
-  overflow: scroll;
+  max-height: 50vh;
+  font-size: medium;
+  overflow: auto;
 }
 
 #temp-slider,

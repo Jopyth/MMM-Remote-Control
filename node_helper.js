@@ -1042,6 +1042,19 @@ module.exports = NodeHelper.create({
       then(() => git.pull(["--ff-only"])).
       then((result) => {
         if (result.summary.changes) {
+          self.readModuleData();
+
+          // Helper function to send update response with optional changelog
+          const sendUpdateResponse = () => {
+            const changelogExists = fs.existsSync(`${path}/CHANGELOG.md`);
+            if (changelogExists) {
+              const changelog = fs.readFileSync(`${path}/CHANGELOG.md`, "utf-8");
+              self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`, chlog: changelog});
+            } else {
+              self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`});
+            }
+          };
+
           const packageJsonExists = fs.existsSync(`${path}/package.json`);
           if (packageJsonExists) {
             const packageJson = JSON.parse(fs.readFileSync(`${path}/package.json`, "utf8"));
@@ -1057,21 +1070,14 @@ module.exports = NodeHelper.create({
                   Log.error(error);
                   self.sendResponse(res, error, {stdout, stderr});
                 } else {
-                  // success part
-                  self.readModuleData();
-
-                  const changelogExists = fs.existsSync(`${path}/CHANGELOG.md`);
-                  if (changelogExists) {
-                    const changelog = fs.readFileSync(`${path}/CHANGELOG.md`, "utf-8");
-                    self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`, chlog: changelog});
-                  } else {
-                    self.sendResponse(res, undefined, {code: "restart", info: `${name} updated.`});
-                  }
+                  sendUpdateResponse();
                 }
               });
             } else {
-              self.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
+              sendUpdateResponse();
             }
+          } else {
+            sendUpdateResponse();
           }
         } else {
           self.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
