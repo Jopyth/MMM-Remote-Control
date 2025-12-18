@@ -154,10 +154,10 @@ Module.register("MMM-Remote-Control", {
       modules.forEach((mod) => {
         if (notification === "HIDE" ||
           notification === "TOGGLE" && !mod.hidden) {
-          mod.hide(1000, options);
+          mod.hide(1000, () => {}, options);
         } else if (notification === "SHOW" ||
           notification === "TOGGLE" && mod.hidden) {
-          mod.show(1000, options);
+          mod.show(1000, () => {}, options);
         }
       });
     }
