@@ -691,28 +691,22 @@ module.exports = NodeHelper.create({
     }
   },
 
-  callAfterUpdate (callback, timeout) {
-    if (timeout === undefined) {
-      timeout = 3000;
-    }
-
+  callAfterUpdate (callback, timeout = 3000) {
     const waitObject = {
       finished: false,
+      callback,
       run () {
         if (this.finished) {
           return;
         }
         this.finished = true;
         this.callback();
-      },
-      callback
+      }
     };
 
     this.waiting.push(waitObject);
     this.sendSocketNotification("UPDATE");
-    setTimeout(() => {
-      waitObject.run();
-    }, timeout);
+    setTimeout(() => waitObject.run(), timeout);
   },
 
   delayedQuery (query, res) {
