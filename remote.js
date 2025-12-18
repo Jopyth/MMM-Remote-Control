@@ -626,28 +626,22 @@ const Remote = {
     }
   },
 
-  loadList (listname, dataId, onLoad) {
+  loadList (listname, dataId) {
     const loadingIndicator = document.getElementById(`${listname}-loading`);
     const parent = document.getElementById(`${listname}-results`);
 
     parent.replaceChildren();
     this.show(loadingIndicator);
 
-    // Support both onLoad handler and Promise-based usage
-    if (onLoad) {
-      this.pendingResolver = onLoad;
+    return new Promise((resolve, reject) => {
+      this.pendingResolver = (parent, data) => {
+        resolve({parent, data});
+      };
+      this.pendingRejecter = (error) => {
+        reject(error);
+      };
       this.sendSocketNotification("REMOTE_ACTION", {data: dataId, listname});
-    } else {
-      return new Promise((resolve, reject) => {
-        this.pendingResolver = (parent, data) => {
-          resolve({parent, data});
-        };
-        this.pendingRejecter = (error) => {
-          reject(error);
-        };
-        this.sendSocketNotification("REMOTE_ACTION", {data: dataId, listname});
-      });
-    }
+    });
   },
 
   handleLoadList (result) {
