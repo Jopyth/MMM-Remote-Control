@@ -1,4 +1,4 @@
-/* global MMSocket showdown */
+/* global MMSocket marked */
 
 // main javascript file for the remote control page
 
@@ -96,10 +96,8 @@ const Remote = {
         return;
       }
       if ("code" in payload && payload.code === "restart") {
-        const chlog = new showdown.Converter();
-        chlog.setFlavor("github");
         this.offerRestart(payload.chlog
-          ? `${payload.info}<br><div id='changelog'>${chlog.makeHtml(payload.chlog)}</div>`
+          ? `${payload.info}<br><div id='changelog'>${marked.parse(payload.chlog)}</div>`
           : payload.info);
         return;
       }

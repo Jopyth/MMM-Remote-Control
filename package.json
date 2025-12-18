@@ -35,7 +35,7 @@
     "test:unit": "node --test tests/unit/**/*.test.js"
   },
   "dependencies": {
-    "showdown": "^2.1.0",
+    "marked": "^17.0.1",
     "simple-git": "^3.30.0",
     "swagger-ui-dist": "^5.31.0",
     "uuid": "^13.0.0"
