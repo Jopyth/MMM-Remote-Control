@@ -146,8 +146,6 @@ This approach catches route wiring bugs, middleware issues, and response format 
 
 ### Medium-term (structural improvements)
 
-- [ ] **Contract test for `/api/saves`** – Freeze the backup timestamp ordering behavior to catch regressions.
-
 - [ ] **Schema validation for `/api/module/available`** – Once module metadata stabilizes, validate field presence/types systematically.
 
 ### Out of scope (unless requirements change)
