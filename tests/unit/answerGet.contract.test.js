@@ -227,6 +227,17 @@ describe("answerGet contract coverage", () => {
     assert.deepEqual(payload.query, {data: "defaultConfig", module: "unknown"});
     assert.deepEqual(payload.data, {});
   });
+
+  test("userPresence returns current user presence state", () => {
+    const helper = freshHelper();
+    helper.userPresence = true;
+
+    helper.answerGet({data: "userPresence"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "userPresence"});
+    assert.equal(payload.result, true);
+  });
 });
 
 describe("answerGet data assembly logic", () => {

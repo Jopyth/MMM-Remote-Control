@@ -152,11 +152,14 @@ This approach catches route wiring bugs, middleware issues, and response format 
 
 ## Coverage improvement strategy
 
-To reach 50%+ coverage efficiently, focus on **high-impact, low-mock areas**:
+To reach 50%+ coverage efficiently, follow an incremental approach focusing on **high-impact, low-mock areas**:
 
-### Priority 3: Helper utilities (currently well-covered)
+1. Pick **one** untested function from `node_helper.js` or `API/api.js`
+2. Write test with **minimal setup** (reuse existing helper factories)
+3. Verify it catches a real regression (e.g., bounds checking, null handling)
+4. Check coverage gain and repeat until diminishing returns
 
-- Additional edge cases in `lib/configUtils.js` and `lib/utils.js` only if behavior changes
+**Target: 50% statements** is realistic and valuable. Beyond that, focus shifts to integration/manual testing.
 
 ### What NOT to chase:
 
@@ -164,15 +167,7 @@ To reach 50%+ coverage efficiently, focus on **high-impact, low-mock areas**:
 - **Avoid mocking complexity** – If a test needs >5 mocks, it's testing the wrong thing
 - **Skip brittle integration points** – File system, network, hardware, DOM manipulation
 - **Don't duplicate HTTP-layer tests** – Already covered at the right abstraction level
-
-### Incremental approach:
-
-1. Pick **one** untested action from Priority 1
-2. Write test with **minimal setup** (reuse existing helper factories)
-3. Verify it catches a real regression (e.g., bounds checking, null handling)
-4. Repeat until diminishing returns
-
-Target: **50% statements** is realistic and valuable. Beyond that, focus shifts to integration/manual testing.
+- **Helper utilities** – Only add edge cases to `lib/configUtils.js` and `lib/utils.js` if behavior changes
 
 ---
 
