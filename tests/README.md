@@ -60,12 +60,6 @@ Documenting these gaps helps us recognize when a change might require a differen
 
 ### Short-term (coverage gaps)
 
-- [ ] **Test core `executeQuery` actions** – Currently only `NOTIFICATION` and `MANAGE_CLASSES` are tested. Add coverage for the most-used actions:
-  - `SHOW`, `HIDE`, `TOGGLE` (module visibility)
-  - `REFRESH`, `RESTART` (system actions)
-  - `UPDATE`, `INSTALL` (at least the validation/error paths)
-  - These are in `node_helper.js` lines ~400-700 and are the heart of the module.
-
 - [ ] **Add negative/error-path tests** – Happy paths are covered, but we lack:
   - Malformed JSON body handling in POST requests
   - Missing required params (e.g., `notification` in `/api/notification`)

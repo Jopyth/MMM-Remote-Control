@@ -89,4 +89,85 @@ describe("executeQuery core actions", () => {
     assert.ok(sent.has("TOGGLE:{\"module\":\"three\"}"));
     assert.equal(h.__responses.length, 1);
   });
+
+  test("SHOW sends socket notification with module identifier", () => {
+    const h = freshHelper();
+    const res = {};
+    h.executeQuery({action: "SHOW", module: "calendar"}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "SHOW");
+    assert.deepEqual(h.__sent[0].payload, {action: "SHOW", module: "calendar"});
+    assert.equal(h.__responses.length, 1);
+    assert.equal(h.__responses[0].err, undefined);
+  });
+
+  test("SHOW with module 'all' sends to all modules", () => {
+    const h = freshHelper();
+    const res = {};
+    h.executeQuery({action: "SHOW", module: "all"}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "SHOW");
+    assert.deepEqual(h.__sent[0].payload, {action: "SHOW", module: "all"});
+  });
+
+  test("HIDE sends socket notification with module identifier", () => {
+    const h = freshHelper();
+    const res = {};
+    h.executeQuery({action: "HIDE", module: "weather"}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "HIDE");
+    assert.deepEqual(h.__sent[0].payload, {action: "HIDE", module: "weather"});
+    assert.equal(h.__responses.length, 1);
+  });
+
+  test("TOGGLE sends socket notification with module identifier", () => {
+    const h = freshHelper();
+    const res = {};
+    h.executeQuery({action: "TOGGLE", module: "clock"}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "TOGGLE");
+    assert.deepEqual(h.__sent[0].payload, {action: "TOGGLE", module: "clock"});
+    assert.equal(h.__responses.length, 1);
+  });
+
+  test("SHOW with force flag passes through to frontend", () => {
+    const h = freshHelper();
+    const res = {};
+    h.executeQuery({action: "SHOW", module: "MMM-Test", force: true}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "SHOW");
+    assert.deepEqual(h.__sent[0].payload, {action: "SHOW", module: "MMM-Test", force: true});
+  });
+
+  test("REFRESH sends simple notification without payload", () => {
+    const h = freshHelper();
+    const res = {};
+    h.executeQuery({action: "REFRESH"}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "REFRESH");
+    assert.equal(h.__sent[0].payload, undefined);
+    assert.equal(h.__responses.length, 1);
+    assert.equal(h.__responses[0].err, undefined);
+  });
+
+  test("RESTART sends socket notification to restart MagicMirror", () => {
+    const h = freshHelper();
+    h.thisConfig = {pm2ProcessName: "mm"};
+    // Stub controlPm2 since we don't have PM2 in test environment
+    h.controlPm2 = (res) => {
+      h.sendResponse(res, undefined, {action: "RESTART"});
+    };
+    const res = {};
+    const ok = h.executeQuery({action: "RESTART"}, res);
+
+    assert.equal(ok, true);
+    assert.equal(h.__responses.length, 1);
+    assert.equal(h.__responses[0].err, undefined);
+  });
 });
