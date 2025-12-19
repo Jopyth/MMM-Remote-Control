@@ -1,6 +1,5 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 // Add tests/shims to module resolution so 'logger' resolves to our shim
 const path = require("node:path");
@@ -51,7 +50,7 @@ function makeHelperWithFakeTimers () {
   return {helper, timeouts};
 }
 
-group("node_helper delayedQuery timers", () => {
+describe("node_helper delayedQuery timers", () => {
   test("schedules and executes action once timeout fires", () => {
     const {helper, timeouts} = makeHelperWithFakeTimers();
     const res = {};

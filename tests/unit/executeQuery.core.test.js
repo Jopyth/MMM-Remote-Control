@@ -1,6 +1,5 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 // Add tests/shims to module resolution so 'logger' and 'node_helper' resolve to our shims
 const path = require("node:path");
@@ -21,7 +20,7 @@ function freshHelper () {
   return h;
 }
 
-group("executeQuery core actions", () => {
+describe("executeQuery core actions", () => {
   test("NOTIFICATION without payload returns undefined payload", () => {
     const h = freshHelper();
     const res = {};

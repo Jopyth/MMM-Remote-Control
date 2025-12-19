@@ -1,6 +1,5 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 // We'll import the module and bind methods to a fake context so we can test pure-ish helpers
 const apiModule = require("../../API/api.js");
@@ -21,8 +20,8 @@ function makeContext (overrides = {}) {
   };
 }
 
-group("API helpers", () => {
-  group("checkDelay", () => {
+describe("API helpers", () => {
+  describe("checkDelay", () => {
     test("wraps query as DELAYED when '/delay' is used (adds ID and default timeout)", () => {
       const context = makeContext();
       const checkDelay = apiModule.checkDelay.bind(context);
@@ -45,7 +44,7 @@ group("API helpers", () => {
     });
   });
 
-  group("answerNotifyApi", () => {
+  describe("answerNotifyApi", () => {
     test("builds payload from GET params and returns success", () => {
       const captured = {};
       const context = makeContext({

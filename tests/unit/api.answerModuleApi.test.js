@@ -1,6 +1,5 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 const apiModule = require("../../API/api.js");
 
@@ -22,7 +21,7 @@ function makeContext (overrides = {}) {
   };
 }
 
-group("Module API", () => {
+describe("Module API", () => {
   test("DEFAULTS action requests defaultConfig via answerGet", () => {
     const captured = {};
     const context = makeContext({
