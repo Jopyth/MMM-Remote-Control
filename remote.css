@@ -445,7 +445,9 @@ a {
 }
 
 .module-line {
-  max-width: 85%;
+  width: 95%;
+  max-width: 900px;
+  margin-inline: auto;
   margin-bottom: 5px;
   transition: background-color var(--transition-fast);
   padding: 0.3em;
@@ -456,7 +458,14 @@ a {
   }
 }
 
-:is(#config-modules-results, #update-module-results) .module-line {
+/* Simple module lines (edit menu) */
+#visible-modules-results .module-line {
+  max-width: 300px;
+}
+
+/* Detailed module lines (settings, update, add-module menus) */
+:is(#config-modules-results, #update-module-results, #add-module-results)
+  .module-line {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -479,9 +488,6 @@ a {
 }
 
 #update-module-results .module-line {
-  min-width: 600px;
-  max-width: 900px;
-  width: 100%;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: var(--spacing-md);
@@ -536,6 +542,25 @@ a {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.module-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.module-description {
+  font-size: 0.85em;
+  color: var(--text-color-medium);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }
 
 .module-buttons {
@@ -1111,7 +1136,8 @@ pre {
   }
 
   /* Make module lines more compact on mobile */
-  :is(#config-modules-results, #update-module-results) .module-line {
+  :is(#config-modules-results, #update-module-results, #add-module-results)
+    .module-line {
     flex-direction: column;
     align-items: stretch;
     padding: var(--spacing-sm);
@@ -1120,6 +1146,16 @@ pre {
 
   .module-name {
     font-size: 0.95em;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .module-description {
+    font-size: 0.8em;
+    -webkit-line-clamp: 3;
+  }
+
+  .module-info {
+    gap: var(--spacing-xs);
     margin-bottom: var(--spacing-xs);
   }
 

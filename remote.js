@@ -1498,18 +1498,62 @@ const Remote = {
       const {data: modules} = await this.loadList("add-module", "moduleAvailable");
       const parent = document.getElementById("add-module-results");
       modules.forEach((module, i) => {
-        let symbol = "fa fa-fw fa-cloud";
-        if (module.installed) {
-          symbol = "fa fa-fw fa-check-circle";
+        const moduleWrapper = document.createElement("div");
+        moduleWrapper.className = "module-line";
+
+        // Left side: Module name and description
+        const moduleInfo = document.createElement("div");
+        moduleInfo.className = "module-info";
+
+        const moduleName = document.createElement("div");
+        moduleName.className = "module-name";
+        moduleName.textContent = module.name;
+        moduleInfo.appendChild(moduleName);
+
+        if (module.desc) {
+          const moduleDesc = document.createElement("div");
+          moduleDesc.className = "module-description";
+          moduleDesc.innerHTML = module.desc;
+          moduleInfo.appendChild(moduleDesc);
         }
 
-        const moduleBox = this.createSymbolText(symbol, module.name, (event) => {
-          const index = event.currentTarget.id.replace("install-module-", "");
-          this.createAddingPopup(index);
-        });
-        moduleBox.className = "button module-line";
-        moduleBox.id = `install-module-${i}`;
-        parent.appendChild(moduleBox);
+        moduleWrapper.appendChild(moduleInfo);
+
+        // Right side: Buttons
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "module-buttons";
+
+        // Repository button
+        if (module.url) {
+          const repoButton = this.createSymbolText("fa fa-fw fa-github", "Repository", () => {
+            window.open(module.url, "_blank");
+          }, "span");
+          repoButton.className = "button";
+          buttonsContainer.appendChild(repoButton);
+        }
+
+        // Install/Installed button
+        let symbol = "fa fa-fw fa-cloud";
+        let buttonText = "Install";
+        let buttonClass = "button";
+        if (module.installed) {
+          symbol = "fa fa-fw fa-check-circle";
+          buttonText = "Installed";
+          buttonClass = "button disabled";
+        }
+
+        const installButton = this.createSymbolText(symbol, buttonText, (event) => {
+          if (!module.installed) {
+            const index = event.currentTarget.id.replace("install-module-", "");
+            this.createAddingPopup(index);
+          }
+        }, "span");
+        installButton.className = buttonClass;
+        installButton.id = `install-module-${i}`;
+        buttonsContainer.appendChild(installButton);
+
+        moduleWrapper.appendChild(buttonsContainer);
+        parent.appendChild(moduleWrapper);
       });
     } catch (error) {
       console.error("Error loading modules to add:", error);
