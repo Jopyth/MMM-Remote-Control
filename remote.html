@@ -40,68 +40,14 @@
           <div class="header-spacer"></div>
         </header>
         <main class="main-content">
-          <nav class="menu-nav">
-            <!-- alert menu buttons -->
-            <div
-              id="send-alert-button"
-              class="menu-element hidden button alert-menu"
-              role="button"
-              tabindex="0"
-            >
-              <span class="fa fa-fw fa-send-o" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:SENDALERT%%</span>
-            </div>
-            <div
-              id="hide-alert-button"
-              class="menu-element hidden button alert-menu"
-              role="button"
-              tabindex="0"
-            >
-              <span class="fa fa-fw fa-eye-slash" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:HIDEALERT%%</span>
-            </div>
-            <!-- links menu buttons -->
-            <div
-              id="links-container-nav"
-              class="menu-element hidden links-menu"
-            >
-              <!-- Links will be dynamically inserted here -->
-            </div>
-            <!-- search container for add-module menu -->
-            <div
-              id="search-container"
-              class="menu-element hidden add-module-menu search-container"
-            >
-              <span class="fa fa-fw fa-search" aria-hidden="true"></span>
-              <input
-                class="input-with-symbol search-input"
-                id="add-module-search"
-                type="text"
-                placeholder="%%TRANSLATE:SEARCH%%"
-                aria-label="%%TRANSLATE:SEARCH%%"
-              />
-              <span
-                id="delete-search-input"
-                class="fa fa-times-circle delete-button hidden"
-              ></span>
-            </div>
-            <!-- main menu buttons -->
-            <div
-              id="power-button"
-              class="menu-element hidden button main-menu"
-              role="button"
-              tabindex="0"
-            >
+          <!-- Main menu navigation -->
+          <nav class="menu-nav menu-element hidden main-menu">
+            <div id="power-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:SHUTDOWN_MENU_NAME%%</span>
               <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
-            <div
-              id="edit-button"
-              class="menu-element hidden button main-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="edit-button" class="button" role="button" tabindex="0">
               <span class="stack fa-fw">
                 <span
                   class="fa fa-fw fa-television outer-label fa-stack-1x"
@@ -115,86 +61,58 @@
               <span class="text">%%TRANSLATE:EDIT_MENU_NAME%%</span>
               <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
-            <div
-              id="settings-button"
-              class="menu-element hidden button main-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="settings-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:CONFIGURE_MENU_NAME%%</span>
               <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
-            <div
-              id="classes-button"
-              class="menu-element hidden button main-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="classes-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-wrench" aria-hidden="true"></span>
               <span class="text">Classes Menu</span>
               <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
-            <div
-              id="update-button"
-              class="menu-element hidden button main-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="update-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-toggle-up" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:UPDATE_MENU_NAME%%</span>
               <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
-            <div
-              id="alert-button"
-              class="menu-element hidden button main-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="alert-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:ALERT_MENU_NAME%%</span>
               <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
             <div
               id="mirror-link-button"
-              class="menu-element hidden button main-menu"
+              class="button"
               role="button"
               tabindex="0"
             >
               <span class="fa fa-fw fa-external-link" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:VIEW_MIRROR%%</span>
             </div>
-            <div
-              id="links-button"
-              class="menu-element hidden button main-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="links-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-link" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:LINKS%%</span>
             </div>
-            <!-- power menu buttons -->
+          </nav>
+          <!-- Power menu navigation -->
+          <nav class="menu-nav menu-element hidden power-menu">
             <div
               id="shut-down-button"
-              class="menu-element hidden button power-menu"
+              class="button"
               role="button"
               tabindex="0"
             >
               <span class="fa fa-fw fa-power-off" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:SHUTDOWN%%</span>
             </div>
-            <div
-              id="restart-button"
-              class="menu-element hidden button power-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="restart-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-refresh" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:RESTART%%</span>
             </div>
             <div
               id="restart-mm-button"
-              class="menu-element hidden button power-menu"
+              class="button"
               role="button"
               tabindex="0"
             >
@@ -203,7 +121,7 @@
             </div>
             <div
               id="refresh-mm-button"
-              class="menu-element hidden button power-menu"
+              class="button"
               role="button"
               tabindex="0"
             >
@@ -212,7 +130,7 @@
             </div>
             <div
               id="monitor-on-button"
-              class="menu-element hidden button power-menu"
+              class="button"
               role="button"
               tabindex="0"
             >
@@ -230,7 +148,7 @@
             </div>
             <div
               id="monitor-off-button"
-              class="menu-element hidden button power-menu"
+              class="button"
               role="button"
               tabindex="0"
             >
@@ -248,33 +166,67 @@
             </div>
             <div
               id="fullscreen-button"
-              class="menu-element hidden button power-menu"
+              class="button"
               role="button"
               tabindex="0"
             >
               <span class="fa fa-fw fa-arrows-alt" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:FULLSCREEN%%</span>
             </div>
-            <div
-              id="minimize-button"
-              class="menu-element hidden button power-menu"
-              role="button"
-              tabindex="0"
-            >
+            <div id="minimize-button" class="button" role="button" tabindex="0">
               <span
                 class="fa fa-fw fa-window-minimize"
                 aria-hidden="true"
               ></span>
               <span class="text">%%TRANSLATE:MINIMIZE%%</span>
             </div>
+            <div id="devtools-button" class="button" role="button" tabindex="0">
+              <span class="fa fa-fw fa-terminal" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:DEVTOOLS%%</span>
+            </div>
+          </nav>
+          <!-- Alert menu navigation -->
+          <nav class="menu-nav menu-element hidden alert-menu">
             <div
-              id="devtools-button"
-              class="menu-element hidden button power-menu"
+              id="send-alert-button"
+              class="button"
               role="button"
               tabindex="0"
             >
-              <span class="fa fa-fw fa-terminal" aria-hidden="true"></span>
-              <span class="text">%%TRANSLATE:DEVTOOLS%%</span>
+              <span class="fa fa-fw fa-send-o" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:SENDALERT%%</span>
+            </div>
+            <div
+              id="hide-alert-button"
+              class="button"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-eye-slash" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:HIDEALERT%%</span>
+            </div>
+          </nav>
+          <!-- Links menu navigation -->
+          <nav class="menu-nav menu-element hidden links-menu">
+            <div id="links-container-nav">
+              <!-- Links will be dynamically inserted here -->
+            </div>
+          </nav>
+          <!-- Add-module menu navigation (search) -->
+          <nav class="menu-nav menu-element hidden add-module-menu">
+            <div id="search-container" class="search-container">
+              <span class="fa fa-fw fa-search" aria-hidden="true"></span>
+              <input
+                class="input-with-symbol search-input"
+                id="add-module-search"
+                type="text"
+                placeholder="%%TRANSLATE:SEARCH%%"
+                aria-label="%%TRANSLATE:SEARCH%%"
+              />
+              <span
+                id="delete-search-input"
+                class="fa fa-times-circle delete-button hidden"
+              ></span>
             </div>
           </nav>
           <section class="menu-content">
