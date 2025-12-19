@@ -1096,14 +1096,14 @@ const Remote = {
       const addFunction = () => {
         const existingKey = Object.keys(dataToEdit)[0];
         const lastType = self.getTypeAsString(`${path}/${existingKey}`, dataToEdit[existingKey]);
-        const key = input.value;
-        if (key === "" || document.getElementById(`${path}/${key}`)) {
-          if (!self.hasClass(input, "input-error")) {
-            input.classList.add("input-error");
-          }
+        const key = input.value.trim();
+
+        if (!key || document.getElementById(`${path}/${key}`)) {
+          input.classList.add("input-error");
           return;
         }
-        input.className = input.className.replace(" input-error", "");
+
+        input.classList.remove("input-error");
         dataToEdit[key] = self.values[self.types.indexOf(lastType)];
         const newElement = self.createObjectGUI(`${path}/${key}`, key, dataToEdit[key]);
         wrapper.insertBefore(newElement, addElement.nextSibling);
@@ -1113,13 +1113,12 @@ const Remote = {
       symbol.className = "fa fa-fw fa-plus-square button";
       symbol.addEventListener("click", addFunction, false);
       inputWrapper.appendChild(symbol);
-      input.onkeypress = (e) => {
-        if (!e) { e = window.event; }
-        const keyCode = e.keyCode || e.which;
-        if (keyCode == "13") {
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
           addFunction();
         }
-      };
+      });
       wrapper.appendChild(addElement);
     }
     let keys = Object.keys(dataToEdit);
