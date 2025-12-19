@@ -18,7 +18,13 @@ const url = require("node:url");
 const {inspect, promisify} = require("node:util");
 const simpleGit = require("simple-git");
 
-const defaultModules = require(path.resolve(`${__dirname}/../../modules/default/defaultmodules.js`));
+let defaultModules;
+try {
+  defaultModules = require(path.resolve(`${__dirname}/../../modules/default/defaultmodules.js`));
+} catch {
+  // Fallback for test environment or standalone usage
+  defaultModules = require("./tests/shims/defaultmodules.js");
+}
 const {capitalizeFirst, formatName, includes} = require("./lib/utils.js");
 const {cleanConfig} = require("./lib/configUtils.js");
 

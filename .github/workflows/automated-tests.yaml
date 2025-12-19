@@ -27,4 +27,6 @@ jobs:
         run: node --run test:spelling
       - name: Check linting
         run: node --run lint
+      - name: Run tests
+        run: node --run test
       - run: "echo '✨ Code quality checks completed with status: ${{ job.status }}.'"
