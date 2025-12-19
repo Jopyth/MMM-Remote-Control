@@ -203,14 +203,14 @@ module.exports = NodeHelper.create({
       this.modulesAvailable = JSON.parse(data.toString());
 
       for (const module of this.modulesAvailable) {
-        module.name = this.formatName(module.longname);
+        module.name = module.longname;
         module.isDefaultModule = false;
       }
 
       for (const [index, moduleName] of defaultModules.entries()) {
         this.modulesAvailable.push({
           longname: moduleName,
-          name: this.capitalizeFirst(moduleName),
+          name: moduleName,
           isDefaultModule: true,
           installed: true,
           author: "MagicMirrorOrg",
@@ -259,7 +259,7 @@ module.exports = NodeHelper.create({
         if (!currentModule) {
           const newModule = {
             longname: folderName,
-            name: this.formatName(folderName),
+            name: folderName,
             isDefaultModule: false,
             installed: true,
             author: "unknown",

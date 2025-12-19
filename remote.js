@@ -704,13 +704,6 @@ const Remote = {
     }
   },
 
-  formatName (string) {
-    string = string.replaceAll(/MMM?-/ig, "").replaceAll("_", " ").replaceAll("-", " ");
-    string = string.replaceAll(/([a-z])([A-Z])/g, (txt) => `${txt[0]} ${txt[1]}`);
-    string = string.replaceAll(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1));
-    return string.at(0).toUpperCase() + string.slice(1);
-  },
-
   formatLabel (string) {
 
     /*
@@ -824,7 +817,7 @@ const Remote = {
 
         const text = document.createElement("span");
         text.className = "text";
-        text.innerHTML = ` ${this.formatName(module.name)}`;
+        text.innerHTML = ` ${module.name}`;
         if ("header" in module) {
           text.innerHTML += ` (${module.header})`;
         }
@@ -883,7 +876,7 @@ const Remote = {
     const select = document.createElement("select");
     for (const typeOption of this.types) {
       const option = document.createElement("option");
-      option.innerHTML = this.formatName(typeOption);
+      option.innerHTML = typeOption;
       option.value = typeOption;
       if (typeOption === type) {
         option.selected = "selected";
@@ -918,7 +911,7 @@ const Remote = {
     label.append(desc);
 
     if (!forcedType) {
-      const typeLabel = Remote.createSymbolText("fa fa-fw fa-pencil", this.formatName(type), (event) => {
+      const typeLabel = Remote.createSymbolText("fa fa-fw fa-pencil", type, (event) => {
         const thisElement = event.currentTarget;
         label.replaceChild(this.createTypeEditSelection(key, label, type, thisElement), thisElement);
       }, "span");
@@ -1270,7 +1263,7 @@ const Remote = {
     const wrapper = this.getPopupContent();
 
     const name = document.createElement("div");
-    name.innerHTML = this.formatName(data.module);
+    name.innerHTML = data.module;
     name.className = "bright title medium";
     wrapper.append(name);
 
@@ -1310,7 +1303,7 @@ const Remote = {
       // Module name (left side)
       const moduleName = document.createElement("div");
       moduleName.className = "module-name";
-      moduleName.textContent = this.formatName(data.module);
+      moduleName.textContent = data.module;
       innerWrapper.append(moduleName);
 
       // Buttons container (right side)
