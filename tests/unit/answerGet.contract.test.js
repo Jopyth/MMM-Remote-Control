@@ -125,6 +125,92 @@ describe("answerGet data assembly logic", () => {
     assert.deepEqual(data.map((m) => m.name), ["alpha", "beta", "zebra"]);
   });
 
+  test("moduleAvailable returns all required fields for each module", () => {
+    const helper = freshHelper();
+    helper.modulesAvailable = [
+      {
+        longname: "MMM-Example",
+        name: "Example",
+        isDefaultModule: false,
+        installed: true,
+        author: "test-author",
+        desc: "Test description",
+        id: "test/MMM-Example",
+        url: "https://example.com"
+      },
+      {
+        longname: "clock",
+        name: "Clock",
+        isDefaultModule: true,
+        installed: true,
+        author: "MagicMirrorOrg",
+        desc: "",
+        id: "MagicMirrorOrg/MagicMirror",
+        url: "https://docs.magicmirror.builders"
+      }
+    ];
+    helper.handleGetModuleAvailable = helperFactory.handleGetModuleAvailable.bind(helper);
+
+    helper.answerGet({data: "moduleAvailable"});
+
+    const {data} = helper.__responses[0].payload;
+    assert.equal(data.length, 2);
+
+    // Verify all required fields are present and have correct types
+    for (const module of data) {
+      assert.equal(typeof module.longname, "string", "longname should be string");
+      assert.equal(typeof module.name, "string", "name should be string");
+      assert.equal(typeof module.isDefaultModule, "boolean", "isDefaultModule should be boolean");
+      assert.equal(typeof module.installed, "boolean", "installed should be boolean");
+      assert.equal(typeof module.author, "string", "author should be string");
+      assert.equal(typeof module.desc, "string", "desc should be string");
+      assert.equal(typeof module.id, "string", "id should be string");
+      assert.equal(typeof module.url, "string", "url should be string");
+    }
+  });
+
+  test("moduleAvailable handles optional fields (hasChangelog, defaultConfig)", () => {
+    const helper = freshHelper();
+    helper.modulesAvailable = [
+      {
+        longname: "MMM-WithChangelog",
+        name: "WithChangelog",
+        isDefaultModule: false,
+        installed: true,
+        author: "test",
+        desc: "",
+        id: "test/MMM-WithChangelog",
+        url: "",
+        hasChangelog: true,
+        defaultConfig: {option1: "value1"}
+      },
+      {
+        longname: "MMM-WithoutChangelog",
+        name: "WithoutChangelog",
+        isDefaultModule: false,
+        installed: true,
+        author: "test",
+        desc: "",
+        id: "test/MMM-WithoutChangelog",
+        url: "",
+        hasChangelog: false
+      }
+    ];
+    helper.handleGetModuleAvailable = helperFactory.handleGetModuleAvailable.bind(helper);
+
+    helper.answerGet({data: "moduleAvailable"});
+
+    const {data} = helper.__responses[0].payload;
+
+    // First module should have hasChangelog and defaultConfig
+    assert.equal(data[0].hasChangelog, true);
+    assert.deepEqual(data[0].defaultConfig, {option1: "value1"});
+
+    // Second module should have hasChangelog but no defaultConfig
+    assert.equal(data[1].hasChangelog, false);
+    assert.equal(data[1].defaultConfig, undefined);
+  });
+
   test("moduleInstalled filters out default modules", () => {
     const helper = freshHelper();
     helper.modulesAvailable = [

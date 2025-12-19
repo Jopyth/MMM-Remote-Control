@@ -41,7 +41,8 @@ Both run in CI/CD without MagicMirror runtime or browser dependencies.
 | Suite                                             | Purpose                                                                                  |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `answerPost.config.test.js`                       | Config persistence: backup rotation, write-error propagation, `UNDO_CONFIG` restore flow |
-| `answerGet.contract.test.js`                      | Response shapes and data assembly logic for module/config endpoints                      |
+| `answerGet.contract.test.js`                      | Response shapes, data assembly logic, and schema validation for module/config endpoints  |
+| `answerGet.saves.test.js`                         | Backup timestamp ordering and ENOENT handling for `/api/saves`                           |
 | `api.answerModuleApi.test.js`                     | Default-config lookups and bulk SHOW actions                                             |
 | `api.delayedFlow.test.js`, `delayedQuery.test.js` | `/delay` wrapper, timer scheduling, reset, abort semantics                               |
 | `executeQuery.core.test.js`                       | Module visibility, notifications, system actions (SHOW/HIDE/REFRESH/RESTART)             |
@@ -142,13 +143,7 @@ This approach catches route wiring bugs, middleware issues, and response format 
 
 ---
 
-## TODO: Test improvements roadmap
-
-### Medium-term (structural improvements)
-
-- [ ] **Schema validation for `/api/module/available`** – Once module metadata stabilizes, validate field presence/types systematically.
-
-### Out of scope (unless requirements change)
+## Out of scope
 
 - Full E2E tests with Puppeteer/Playwright
 - Hardware-dependent command testing (shutdown, reboot, monitor control)
