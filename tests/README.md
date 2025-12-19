@@ -8,22 +8,54 @@ This document describes the state of the automated test suite for **MMM-Remote-C
 - **Coverage:** `c8` with enforced thresholds (currently 5% statements/lines, 4% functions, 5% branches).
 - **Quality gates:** Lint (`node --run lint`) and spell check (`node --run test:spelling`) are part of the standard `node --run test` pipeline.
 - **Execution shortcuts:**
-  - Unit tests: `node --run test:unit`
+  - All tests: `node --run test` (includes unit + HTTP-layer)
+  - Unit tests only: `node --run test:unit`
+  - HTTP-layer tests only: `node --run test:integration`
   - Coverage report: `node --run test:coverage`
   - Watch mode: `node --run test:watch`
 
+## Test structure
+
+```plaintext
+tests/
+├── unit/           # Isolated logic tests with mocked dependencies
+├── integration/    # HTTP-layer tests with real Express routing
+└── shims/          # Minimal stubs for MagicMirror globals
+```
+
+**Unit tests** verify individual functions in isolation. Fast, deterministic, no I/O.
+
+**Integration tests** start a real Express server and make HTTP requests. They catch:
+
+- Route wiring bugs (wrong paths, missing endpoints)
+- Middleware ordering issues
+- JSON parsing/serialization problems
+- Authentication/error response formats
+
+Both run in CI/CD without MagicMirror runtime or browser dependencies.
+
 ## What we cover today
 
-| Suite                                              | Purpose                                                                                  |
-| -------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `answerPost.config.test.js`                        | Config persistence: backup rotation, write-error propagation, `UNDO_CONFIG` restore flow |
-| `answerGet.contract.test.js`                       | Response shapes for `/api/module/installed`, `/api/config`, `/api/translations`          |
-| `api.answerModuleApi.test.js`                      | Default-config lookups and bulk SHOW actions                                             |
-| `api.delayedFlow.test.js`, `delayedQuery.test.js`  | `/delay` wrapper, timer scheduling, reset, abort semantics                               |
-| `executeQuery.core.test.js`, `api.helpers.test.js` | JSON payload parsing, `MANAGE_CLASSES` routing, notification composition                 |
-| `utils.test.js`, `configUtils.test.js`             | String-format helpers and `cleanConfig` regressions                                      |
+### Unit tests (`tests/unit/`)
 
-Together these suites focus on code that mutates state, touches the filesystem, or transforms user input—areas where regressions have the highest blast radius.
+| Suite                                             | Purpose                                                                                  |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `answerPost.config.test.js`                       | Config persistence: backup rotation, write-error propagation, `UNDO_CONFIG` restore flow |
+| `answerGet.contract.test.js`                      | Response shapes and data assembly logic for module/config endpoints                      |
+| `api.answerModuleApi.test.js`                     | Default-config lookups and bulk SHOW actions                                             |
+| `api.delayedFlow.test.js`, `delayedQuery.test.js` | `/delay` wrapper, timer scheduling, reset, abort semantics                               |
+| `executeQuery.core.test.js`                       | Module visibility, notifications, system actions (SHOW/HIDE/REFRESH/RESTART)             |
+| `executeQuery.error.test.js`                      | Error handling for malformed JSON, missing params                                        |
+| `api.helpers.test.js`                             | JSON payload parsing, delay parameter handling                                           |
+| `utils.test.js`, `configUtils.test.js`            | String-format helpers and `cleanConfig` regressions                                      |
+
+### HTTP-layer tests (`tests/integration/`)
+
+| Suite               | Purpose                                                      |
+| ------------------- | ------------------------------------------------------------ |
+| `api.smoke.test.js` | HTTP-layer smoke tests for Express routing and API contracts |
+
+Together these suites focus on isolated logic (unit tests) and HTTP contract verification (HTTP-layer tests)—the most critical areas for catching regressions while remaining CI-friendly.
 
 ## Current coverage reality
 
@@ -51,8 +83,60 @@ Documenting these gaps helps us recognize when a change might require a differen
 ## Fixtures and shims
 
 - Minimal shims live under `tests/shims/` (for `logger` and `node_helper`). Tests extend the shim via `NODE_PATH` before importing the module under test.
-- Filesystem-heavy suites stub `fs` methods directly, ensuring no real disk I/O occurs.
-- Helper factories clone the module export and override context methods (e.g., `sendResponse`, `callAfterUpdate`) to keep assertions straightforward.
+- **Unit tests:** Stub `fs` methods directly, ensuring no real disk I/O. Use helper factories to clone module exports and override context methods (e.g., `sendResponse`, `callAfterUpdate`).
+- **HTTP-layer tests:** Mock MagicMirror globals (`Module`, `Log`) but use real Express routing and HTTP layer. Capture socket notifications instead of sending them. Bind real API/helper methods to mock context. Focus is on API contracts and Express wiring, not end-to-end MagicMirror integration.
+
+---
+
+## HTTP-layer test approach
+
+The HTTP-layer smoke test (`tests/integration/api.smoke.test.js`) tests Express routing and API contracts without requiring full MagicMirror runtime:
+
+**What's real:**
+
+- Express app and router
+- HTTP requests/responses (using `fetch`)
+- Middleware execution (JSON parsing, authentication)
+- Route matching and parameter extraction
+
+**What's mocked:**
+
+- MagicMirror globals (`Module`, `Log`)
+- Socket notifications (captured in array, not sent)
+- File system operations
+- Module-specific logic requiring runtime
+
+**What this tests (and doesn't):**
+
+✅ **Does catch:**
+
+- Route wiring bugs (wrong paths, missing routes)
+- Middleware issues (wrong order, missing JSON parser)
+- Response format changes (breaking API contracts)
+- HTTP-level errors (400/403/500 responses)
+- Content-Type validation
+
+❌ **Does NOT catch:**
+
+- MagicMirror module interaction bugs
+- Socket notification delivery to frontend
+- Config file parsing from disk
+- Module lifecycle (show/hide actual modules)
+- External module API discovery
+
+**Trade-off rationale:**
+
+These are **HTTP-layer tests**, not end-to-end integration tests. They verify Express routing and API contracts without MagicMirror runtime. They sit between pure unit tests (which don't test HTTP at all) and full E2E tests (which require Electron/browser and can't run in CI). They're valuable for catching route wiring bugs, middleware issues, and API contract breakage, but don't replace manual testing with actual MagicMirror.
+
+**Key learnings:**
+
+1. **Shims are essential:** Reuse `tests/shims/` setup to resolve MagicMirror dependencies
+2. **Method binding matters:** API methods call `this.answerGet()` etc. – bind them to mock context with `.bind(mockContext)`
+3. **Minimal stubs suffice:** Only stub methods actually called during test execution (`getExternalApiByGuessing`, `updateModuleApiMenu`)
+4. **Random ports work:** Use `server.listen(0)` to get a free port, avoiding conflicts
+5. **CI-compatible:** No browser/Electron/hardware dependencies – runs in any Node.js environment
+
+This approach catches route wiring bugs, middleware issues, and response format problems that unit tests miss, while remaining fast and deterministic.
 
 ---
 
@@ -61,13 +145,6 @@ Documenting these gaps helps us recognize when a change might require a differen
 ### Medium-term (structural improvements)
 
 - [ ] **Raise coverage thresholds to 15-20%** – Once the above items land, bump thresholds in `package.json` `c8` config to actually guard the new coverage.
-
-- [ ] **Add one integration smoke test** – A minimal test that:
-  1. Starts the Express app
-  2. Sends one GET and one POST request
-  3. Asserts success responses
-
-  This catches wiring bugs without full E2E complexity. Could use `node:http` directly.
 
 - [ ] **Contract test for `/api/saves`** – Freeze the backup timestamp ordering behavior to catch regressions.
 

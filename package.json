@@ -29,8 +29,9 @@
     "lint:fix": "eslint --fix && prettier . --write",
     "prepare": "simple-git-hooks || echo 'No problem. Skipping git hooks installation.'",
     "postinstall": "node scripts/postinstall.js",
-    "test": "node --run lint && node --run test:spelling && node --run test:unit",
-    "test:coverage": "c8 --all node --test tests/unit/**/*.test.js",
+    "test": "node --run lint && node --run test:spelling && node --run test:unit && node --run test:integration",
+    "test:coverage": "c8 --all node --test tests/unit/**/*.test.js tests/integration/**/*.test.js",
+    "test:integration": "node --test tests/integration/**/*.test.js",
     "test:spelling": "cspell .",
     "test:unit": "node --test tests/unit/**/*.test.js"
   },
