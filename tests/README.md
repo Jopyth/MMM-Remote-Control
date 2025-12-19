@@ -54,23 +54,9 @@ Documenting these gaps helps us recognize when a change might require a differen
 - Filesystem-heavy suites stub `fs` methods directly, ensuring no real disk I/O occurs.
 - Helper factories clone the module export and override context methods (e.g., `sendResponse`, `callAfterUpdate`) to keep assertions straightforward.
 
-## Known issues and technical debt
-
-1. **Inconsistent `describe` usage:** ~~Some files use a `group` alias for Mocha compatibility; this is obsolete with Node's test runner.~~ **Fixed.**
-2. **Placeholder tests:** ~~`answerGet.test.js` contains only a skipped placeholder – should be implemented or removed.~~ **Fixed.**
-3. **Legacy timer mocking:** `delayedQuery.test.js` patches `globalThis.setTimeout/clearTimeout` directly instead of using Node 20's `mock.timers` API.
-4. **Scattered edge case files:** ~~`configUtils.test.js` and `configUtils.edge cases.test.js` could be consolidated.~~ **Fixed.**
-
 ---
 
 ## TODO: Test improvements roadmap
-
-### Immediate (code hygiene)
-
-- [x] **Remove `answerGet.test.js` placeholder** – It's a skipped stub with no value. Either implement real tests or delete the file.
-- [x] **Standardize on `describe`/`test`** – Remove the `group` alias pattern from all files. Node's test runner provides `describe` natively.
-- [ ] **Migrate timer mocking to `mock.timers`** – Node 20+ provides `const { mock } = require('node:test'); mock.timers.enable()` which is cleaner and safer than patching globals.
-- [x] **Consolidate `configUtils` tests** – Merge edge case tests into `configUtils.test.js` for one cohesive suite.
 
 ### Short-term (coverage gaps)
 
