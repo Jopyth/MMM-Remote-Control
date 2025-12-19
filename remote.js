@@ -659,6 +659,13 @@ const Remote = {
         this.hide(emptyIndicator);
       }
       this.savedData[result.query.data] = result.data;
+
+      // Cache moduleInstalled data for repository buttons
+      if (result.query.data === "moduleInstalled" && this.installedModulesCacheResolver) {
+        this.installedModulesCacheResolver(result);
+        delete this.installedModulesCacheResolver;
+      }
+
       if (this.pendingResolver) {
         this.pendingResolver(parent, result.data);
         delete this.pendingResolver;
@@ -1293,6 +1300,17 @@ const Remote = {
       const buttonsContainer = document.createElement("div");
       buttonsContainer.className = "module-buttons";
 
+      // Add repository button if URL is available (first button)
+      self.getModuleUrl(data.module).then((url) => {
+        if (url) {
+          const repoButton = self.createSymbolText("fa fa-fw fa-github", "Repository", () => {
+            window.open(url, "_blank");
+          }, "span");
+          repoButton.className = "button";
+          buttonsContainer.insertBefore(repoButton, buttonsContainer.firstChild);
+        }
+      });
+
       const moduleBox = self.createSymbolText("fa fa-fw fa-pencil", "Edit", (event) => {
         const i = event.currentTarget.id.replace("edit-module-", "");
         self.createConfigPopup(i);
@@ -1345,6 +1363,42 @@ const Remote = {
       }
     } catch (error) {
       console.error("Error loading config modules:", error);
+    }
+  },
+
+  loadInstalledModulesCache () {
+    if (this.installedModulesCachePromise) {
+      return this.installedModulesCachePromise;
+    }
+
+    this.installedModulesCachePromise = new Promise((resolve) => {
+      const handleResponse = (result) => {
+        if (result.success && result.data) {
+          this.installedModulesCache = result.data;
+        } else {
+          this.installedModulesCache = [];
+        }
+        resolve();
+      };
+
+      // Temporarily store the resolver
+      this.installedModulesCacheResolver = handleResponse;
+      this.sendSocketNotification("REMOTE_ACTION", {data: "moduleInstalled"});
+    });
+
+    return this.installedModulesCachePromise;
+  },
+
+  async getModuleUrl (moduleName) {
+    try {
+      if (!this.installedModulesCache) {
+        await this.loadInstalledModulesCache();
+      }
+      const module = this.installedModulesCache.find((m) => m.longname === moduleName);
+      return module?.url || "";
+    } catch (error) {
+      console.error("Error loading module URL:", error);
+      return "";
     }
   },
 
