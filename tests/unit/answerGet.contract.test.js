@@ -98,6 +98,135 @@ describe("answerGet contract coverage", () => {
     assert.equal(typeof payload.data.en, "object");
     assert.equal(payload.data.en.HELLO, "hi");
   });
+
+  test("classes returns MMM-Remote-Control classes config", () => {
+    const helper = freshHelper();
+    helper.configOnHd = {
+      modules: [
+        {
+          module: "MMM-Remote-Control",
+          config: {
+            classes: {
+              Group1: {show: ["clock"], hide: ["calendar"]},
+              Group2: {toggle: ["weather"]}
+            }
+          }
+        }
+      ]
+    };
+    helper.handleGetClasses = helperFactory.handleGetClasses.bind(helper);
+
+    helper.answerGet({data: "classes"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "classes"});
+    assert.equal(typeof payload.data, "object");
+    assert.ok(payload.data.Group1);
+    assert.ok(payload.data.Group2);
+    assert.deepEqual(payload.data.Group1, {show: ["clock"], hide: ["calendar"]});
+  });
+
+  test("classes returns empty object when no classes configured", () => {
+    const helper = freshHelper();
+    helper.configOnHd = {
+      modules: [{module: "MMM-Remote-Control", config: {}}]
+    };
+    helper.handleGetClasses = helperFactory.handleGetClasses.bind(helper);
+
+    helper.answerGet({data: "classes"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.data, {});
+  });
+
+  test("classes returns empty object when MMM-Remote-Control not in config", () => {
+    const helper = freshHelper();
+    helper.configOnHd = {modules: [{module: "clock", config: {}}]};
+    helper.handleGetClasses = helperFactory.handleGetClasses.bind(helper);
+
+    helper.answerGet({data: "classes"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.data, {});
+  });
+
+  test("modules returns moduleData from config", () => {
+    const helper = freshHelper();
+    helper.configData = {
+      moduleData: [
+        {identifier: "module_1_clock", name: "clock", hidden: false},
+        {identifier: "module_2_calendar", name: "calendar", hidden: true}
+      ]
+    };
+    helper.handleGetModules = helperFactory.handleGetModules.bind(helper);
+
+    helper.answerGet({data: "modules"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "modules"});
+    assert.ok(Array.isArray(payload.data));
+    assert.equal(payload.data.length, 2);
+    assert.equal(payload.data[0].name, "clock");
+    assert.equal(payload.data[1].name, "calendar");
+  });
+
+  test("brightness returns current brightness value", () => {
+    const helper = freshHelper();
+    helper.configData = {brightness: 150};
+    helper.handleGetBrightness = helperFactory.handleGetBrightness.bind(helper);
+
+    helper.answerGet({data: "brightness"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "brightness"});
+    assert.equal(payload.result, 150);
+  });
+
+  test("temp returns current temperature value", () => {
+    const helper = freshHelper();
+    helper.configData = {temp: 6500};
+    helper.handleGetTemp = helperFactory.handleGetTemp.bind(helper);
+
+    helper.answerGet({data: "temp"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "temp"});
+    assert.equal(payload.result, 6500);
+  });
+
+  test("defaultConfig returns module config defaults when module exists", () => {
+    const helper = freshHelper();
+    helper.handleGetDefaultConfig = helperFactory.handleGetDefaultConfig.bind(helper);
+
+    const defaultsMap = globalThis.Module.configDefaults;
+    const previousDefaults = defaultsMap.clock;
+    defaultsMap.clock = {timeFormat: 24, showDate: true};
+
+    try {
+      helper.answerGet({data: "defaultConfig", module: "clock"});
+
+      const {payload} = helper.__responses[0];
+      assert.deepEqual(payload.query, {data: "defaultConfig", module: "clock"});
+      assert.deepEqual(payload.data, {timeFormat: 24, showDate: true});
+    } finally {
+      if (previousDefaults === undefined) {
+        delete defaultsMap.clock;
+      } else {
+        defaultsMap.clock = previousDefaults;
+      }
+    }
+  });
+
+  test("defaultConfig returns empty object when module not found", () => {
+    const helper = freshHelper();
+    helper.handleGetDefaultConfig = helperFactory.handleGetDefaultConfig.bind(helper);
+
+    helper.answerGet({data: "defaultConfig", module: "unknown"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "defaultConfig", module: "unknown"});
+    assert.deepEqual(payload.data, {});
+  });
 });
 
 describe("answerGet data assembly logic", () => {

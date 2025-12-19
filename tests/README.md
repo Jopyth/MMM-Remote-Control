@@ -65,10 +65,10 @@ As of December 2024, actual coverage stands at:
 
 | Metric           | Value | Threshold | Notes                                   |
 | ---------------- | ----- | --------- | --------------------------------------- |
-| Statements       | ~42%  | 30%       | Improved from ~26% with Priority 1+2    |
-| Branches         | ~78%  | 60%       | Strong branch coverage                  |
-| Functions        | ~38%  | 20%       | Improved from ~17% with edge case tests |
-| Lines            | ~42%  | 30%       | Mirrors statement coverage              |
+| Statements       | ~43%  | 30%       | Improved from ~26% with Priority 1+2    |
+| Branches         | ~79%  | 60%       | Strong branch coverage                  |
+| Functions        | ~46%  | 20%       | Improved from ~17% with edge case tests |
+| Lines            | ~43%  | 30%       | Mirrors statement coverage              |
 | `node_helper.js` | ~15%  | -         | Improved with state/value action tests  |
 | `API/api.js`     | ~62%  | -         | Edge cases covered                      |
 
@@ -153,10 +153,6 @@ This approach catches route wiring bugs, middleware issues, and response format 
 ## Coverage improvement strategy
 
 To reach 50%+ coverage efficiently, focus on **high-impact, low-mock areas**:
-
-### Priority 2: `API/api.js` remaining gaps (currently ~63%)
-
-- **Error response paths** – Already covered in HTTP-layer tests, but add unit tests for specific error constructors
 
 ### Priority 3: Helper utilities (currently well-covered)
 
