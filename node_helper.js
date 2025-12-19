@@ -1325,6 +1325,9 @@ module.exports = NodeHelper.create({
       // check if we have got saved default settings
       this.loadDefaultSettings();
     }
+    if (notification === "GENERATE_QR_CODE") {
+      this.generateQRCode(payload);
+    }
     if (notification === "REMOTE_ACTION") {
       if ("action" in payload) {
         this.executeQuery(payload, {isSocket: true});
@@ -1384,6 +1387,28 @@ module.exports = NodeHelper.create({
         delete this.externalApiRoutes[payload.module];
       }
       this.updateModuleApiMenu();
+    }
+  },
+
+  /**
+   * Generate QR code as data URL
+   * @param {object} payload - Object with url and size properties
+   */
+  async generateQRCode (payload) {
+    try {
+      const QRCode = require("qrcode");
+      const dataUrl = await QRCode.toDataURL(payload.url, {
+        width: payload.size,
+        margin: 1,
+        color: {
+          dark: "#FFFFFF",
+          light: "#00000000"
+        }
+      });
+      this.sendSocketNotification("QR_CODE_GENERATED", dataUrl);
+    } catch (error) {
+      Log.error(`QR Code generation failed: ${error}`);
+      this.sendSocketNotification("QR_CODE_ERROR", error.message);
     }
   },
   ...require("./API/api.js")

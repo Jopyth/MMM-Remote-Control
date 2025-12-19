@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "marked": "^17.0.1",
+    "qrcode": "^1.5.4",
     "simple-git": "^3.30.0",
     "swagger-ui-dist": "^5.31.0",
     "uuid": "^13.0.0"

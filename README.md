@@ -10,6 +10,8 @@ Since we all want our [SD cards to live a long and prosper life](http://raspberr
 
 The module also includes a **RESTful API** for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
 
+**New:** The module can now display a QR code on your mirror for easy mobile access - simply scan and connect!
+
 ## Screenshots
 
 ### Main menu
@@ -51,13 +53,12 @@ cd MMM-Remote-Control
 npm ci --omit=dev
 ```
 
-- (2) Add the module to your `config.js` file, if you add a `position`, it will display the URL to the remote on the mirror.
+- (2) Add the module to your `config.js` file. **Note:** You must set a `position` to display the URL/QR code on the mirror.
 
 ```js
     {
         module: 'MMM-Remote-Control',
-        // uncomment the following line to show the URL of the remote control on the mirror
-        // position: 'bottom_left',
+        position: 'bottom_left', // Required to show URL/QR code on mirror
         // you can hide this module afterwards from the remote control itself
         config: {
             customCommand: {},  // Optional, See "Using Custom Commands" below
@@ -66,7 +67,15 @@ npm ci --omit=dev
             // uncomment any of the lines below if you're gonna use it
             // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
             // apiKey: "", // Optional, See API/README.md for details
-            // classes: {} // Optional, See "Custom Classes" below
+            // classes: {}, // Optional, See "Custom Classes" below
+
+            // QR Code options (new!)
+            // showQRCode: true, // Optional, display QR code for easy mobile access (default: true)
+            // qrCodeSize: 150, // Optional, size of QR code in pixels (default: 150)
+            // qrCodePosition: "below" // Optional:
+            //   "below" - Show URL above, QR code below (default)
+            //   "above" - Show QR code above, URL below
+            //   "replace" - Show only QR code, no URL text
         }
     },
 ```

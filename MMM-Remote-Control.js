@@ -10,11 +10,12 @@
 
 Module.register("MMM-Remote-Control", {
 
-  requiresVersion: "2.12.0",
-
   // Default module config.
   defaults: {
-    customCommand: {}
+    customCommand: {},
+    showQRCode: true,
+    qrCodeSize: 150,
+    qrCodePosition: "above" // "below", "above", or "replace"
   },
 
   // Define start sequence.
@@ -28,6 +29,8 @@ Module.register("MMM-Remote-Control", {
 
     this.brightness = 100;
     this.temp = 327;
+
+    this.qrCodeDataUrl = null;
   },
 
   getStyles () {
@@ -70,6 +73,17 @@ Module.register("MMM-Remote-Control", {
         if (this.data.position) {
           this.updateDom();
         }
+        break;
+
+      case "QR_CODE_GENERATED":
+        this.qrCodeDataUrl = payload;
+        if (this.data.position) {
+          this.updateDom();
+        }
+        break;
+
+      case "QR_CODE_ERROR":
+        Log.error(`QR Code generation error: ${payload}`);
         break;
 
       case "USER_PRESENCE":
@@ -247,8 +261,56 @@ Module.register("MMM-Remote-Control", {
       case "80": portToShow = ""; break;
       default: portToShow = `:${this.port}`; break;
     }
-    wrapper.innerHTML = `http://${this.addresses[0]}${portToShow}/remote.html`;
-    wrapper.className = "normal xsmall";
+
+    const url = `http://${this.addresses[0]}${portToShow}/remote.html`;
+
+    // Show QR code if enabled
+    if (this.config.showQRCode) {
+      const container = document.createElement("div");
+      container.className = "qrcode-container";
+
+      // Add URL text above QR code (unless position is "replace")
+      if (this.config.qrCodePosition !== "replace") {
+        const urlText = document.createElement("div");
+        urlText.innerHTML = url;
+        urlText.className = "normal xsmall url-text";
+        if (this.config.qrCodePosition === "below") {
+          container.append(urlText);
+        }
+      }
+
+      // Request QR code generation if not already done
+      if (!this.qrCodeDataUrl) {
+        this.sendSocketNotification("GENERATE_QR_CODE", {
+          url,
+          size: this.config.qrCodeSize
+        });
+      }
+
+      // Display QR code if available
+      if (this.qrCodeDataUrl) {
+        const qrImage = document.createElement("img");
+        qrImage.src = this.qrCodeDataUrl;
+        qrImage.className = "qrcode-image";
+        qrImage.alt = "QR Code for Remote Control";
+        container.append(qrImage);
+      }
+
+      // Add URL text below QR code
+      if (this.config.qrCodePosition === "above") {
+        const urlText = document.createElement("div");
+        urlText.innerHTML = url;
+        urlText.className = "normal xsmall url-text";
+        container.append(urlText);
+      }
+
+      wrapper.append(container);
+    } else {
+      // Just show URL text
+      wrapper.innerHTML = url;
+      wrapper.className = "normal xsmall";
+    }
+
     return wrapper;
   },
 

@@ -89,6 +89,7 @@ let config = {
     },
     {
       module: "MMM-Remote-Control",
+      position: "bottom_right",
       config: {
         secureEndpoints: false,
         classes: {
