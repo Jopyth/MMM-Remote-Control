@@ -111,6 +111,10 @@ const downloadModules = {
   }
 };
 
+/**
+ * Main entry point for downloading modules from modules.json.
+ * @param {object} config - MagicMirror configuration object
+ */
 function downloadModulesMain (config) {
   downloadModules.init(config);
   downloadModules.checkLastModified();

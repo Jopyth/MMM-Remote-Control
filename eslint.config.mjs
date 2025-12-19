@@ -5,6 +5,7 @@ import {flatConfigs as importX} from "eslint-plugin-import-x";
 import js from "@eslint/js";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
+import pluginJsdoc from "eslint-plugin-jsdoc";
 import stylistic from "@stylistic/eslint-plugin";
 import unicorn from "eslint-plugin-unicorn";
 
@@ -22,8 +23,8 @@ export default defineConfig([
         "$node": "writable"
       }
     },
-    "plugins": {js, stylistic},
-    "extends": [importX.recommended, "js/recommended", "stylistic/all", unicorn.configs.recommended],
+    "plugins": {js, "jsdoc": pluginJsdoc, stylistic},
+    "extends": [importX.recommended, pluginJsdoc.configs["flat/recommended"], "js/recommended", "stylistic/all", unicorn.configs.recommended],
     "rules": {
       "@stylistic/array-element-newline": ["error", "consistent"],
       "@stylistic/brace-style": ["error", "1tbs", {"allowSingleLine": true}],
@@ -49,6 +50,12 @@ export default defineConfig([
       "unicorn/prefer-query-selector": "off",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/switch-case-braces": ["error", "avoid"]
+    }
+  },
+  {
+    "files": ["**/*.test.js"],
+    "rules": {
+      "jsdoc/require-jsdoc": "off"
     }
   },
   {

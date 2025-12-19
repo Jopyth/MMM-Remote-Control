@@ -167,7 +167,7 @@ Module.register("MMM-Remote-Control", {
 
   /**
    * Handle DEFAULT_SETTINGS notification - manage module visibility
-   * @param {Object} payload - Settings data
+   * @param {object} payload - Settings data
    */
   handleDefaultSettings (payload) {
     let {settingsVersion} = payload;
@@ -208,7 +208,7 @@ Module.register("MMM-Remote-Control", {
   /**
    * Handle HIDE/SHOW/TOGGLE notifications - manage module visibility
    * @param {string} notification - Type of visibility action
-   * @param {Object} payload - Notification data with module info
+   * @param {object} payload - Notification data with module info
    */
   handleModuleVisibility (notification, payload) {
     const options = {lockString: this.identifier};
