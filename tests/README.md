@@ -53,13 +53,22 @@ All tests run in CI/CD without MagicMirror runtime or browser dependencies.
 | `executeQuery.core.test.js`                       | Module visibility, notifications, system actions (SHOW/HIDE/REFRESH/RESTART)             |
 | `executeQuery.error.test.js`                      | Error handling for malformed JSON, missing params                                        |
 | `api.helpers.test.js`                             | JSON payload parsing, delay parameter handling                                           |
+| `executeQuery.alerts.test.js`                     | Alert handling (SHOW_ALERT/HIDE_ALERT parameter handling)                                |
+| `executeQuery.notifications.test.js`              | Notification wrapper functions and routing logic                                         |
+| `executeQuery.handlers.test.js`                   | Action handlers, delayed queries, callback scheduling                                    |
+| `helper.config.test.js`                           | Config path resolution, module directory handling                                        |
+| `helper.utils.test.js`                            | Response handling, translation, error checking, network utilities                        |
+| `answerGetChangelog.test.js`                      | Changelog file retrieval and error handling                                              |
+| `socketNotification.test.js`                      | Socket notification routing (CURRENT_STATUS, REQUEST_DEFAULT_SETTINGS, REMOTE_ACTION)    |
+| `helper.getConfig.test.js`                        | Config merging with defaults from moduleData                                             |
 | `utils.test.js`, `configUtils.test.js`            | String-format helpers and `cleanConfig` regressions                                      |
 
 ### DOM tests (`tests/dom/`)
 
-| Suite                  | Purpose                                                    |
-| ---------------------- | ---------------------------------------------------------- |
-| `remote.smoke.test.js` | Frontend logic tests using happy-dom (no browser required) |
+| Suite                        | Purpose                                                              |
+| ---------------------------- | -------------------------------------------------------------------- |
+| `remote.smoke.test.js`       | Frontend logic tests using happy-dom (no browser required)           |
+| `MMM-Remote-Control.test.js` | Module initialization and lockStrings handling with edge case checks |
 
 ### HTTP-layer tests (`tests/integration/`)
 
@@ -73,16 +82,16 @@ Together these suites focus on isolated logic (unit tests) and HTTP contract ver
 
 As of December 2024, actual coverage stands at:
 
-| Metric           | Value | Threshold | Notes                                   |
-| ---------------- | ----- | --------- | --------------------------------------- |
-| Statements       | ~43%  | 30%       | Improved from ~26% with Priority 1+2    |
-| Branches         | ~79%  | 60%       | Strong branch coverage                  |
-| Functions        | ~46%  | 20%       | Improved from ~17% with edge case tests |
-| Lines            | ~43%  | 30%       | Mirrors statement coverage              |
-| `node_helper.js` | ~15%  | -         | Improved with state/value action tests  |
-| `API/api.js`     | ~62%  | -         | Edge cases covered                      |
+| Metric           | Value | Threshold | Notes                                      |
+| ---------------- | ----- | --------- | ------------------------------------------ |
+| Statements       | ~49%  | 30%       | Reached plateau with core logic covered    |
+| Branches         | ~83%  | 60%       | Strong branch coverage                     |
+| Functions        | ~57%  | 20%       | Major handlers and utilities tested        |
+| Lines            | ~49%  | 30%       | Mirrors statement coverage                 |
+| `node_helper.js` | ~28%  | -         | Core actions and notification flow covered |
+| `API/api.js`     | ~62%  | -         | Edge cases and routing verified            |
 
-Thresholds now provide meaningful regression protection while remaining achievable.
+Thresholds now provide meaningful regression protection while remaining achievable. Further gains would require testing system commands and hardware integration better suited for E2E or manual testing.
 
 ## What we deliberately skip (and why)
 
@@ -160,24 +169,31 @@ This approach catches route wiring bugs, middleware issues, and response format 
 - Hardware-dependent command testing (shutdown, reboot, monitor control)
 - Git/network-dependent install/update flows
 
-## Coverage improvement strategy
+## Coverage status and philosophy
 
-To reach 50%+ coverage efficiently, follow an incremental approach focusing on **high-impact, low-mock areas**:
+As of December 2025, coverage has reached a healthy plateau through **incremental, high-value testing**:
 
-1. Pick **one** untested function from `node_helper.js` or `API/api.js`
-2. Write test with **minimal setup** (reuse existing helper factories)
-3. Verify it catches a real regression (e.g., bounds checking, null handling)
-4. Check coverage gain and repeat until diminishing returns
+- **~49% statements** – Core logic paths covered
+- **~57% functions** – Major handlers tested
+- **~83% branches** – Strong conditional coverage
+- **152 tests** – Mix of unit, integration, and DOM tests
 
-**Target: 50% statements** is realistic and valuable. Beyond that, focus shifts to integration/manual testing.
+### Why we stop here
 
-### What NOT to chase:
+Further coverage gains would hit **diminishing returns**:
 
-- **Don't test for coverage percentage alone** – Every test should catch real bugs or prevent regressions
-- **Avoid mocking complexity** – If a test needs >5 mocks, it's testing the wrong thing
-- **Skip brittle integration points** – File system, network, hardware, DOM manipulation
-- **Don't duplicate HTTP-layer tests** – Already covered at the right abstraction level
-- **Helper utilities** – Only add edge cases to `lib/configUtils.js` and `lib/utils.js` if behavior changes
+- Remaining untested code is primarily **system commands** (`shutdown`, `reboot`, monitor control) requiring hardware/privileges
+- **Complex integration points** (PM2, Electron, git operations) need E2E tests, not unit tests
+- **Express routing details** already verified at HTTP layer
+- Mock complexity would exceed test value
+
+### Testing principles (when adding new tests)
+
+- **Test behavior, not coverage** – Every test should catch real bugs or prevent regressions
+- **Minimal mocking** – If a test needs >5 mocks, reconsider the abstraction
+- **Skip brittle integration points** – File system, network, hardware, DOM manipulation better suited for E2E
+- **Avoid duplication** – Don't re-test what HTTP-layer tests already cover
+- **Edge cases only** – For utilities (`lib/configUtils.js`, `lib/utils.js`), add tests when behavior changes
 
 ---
 

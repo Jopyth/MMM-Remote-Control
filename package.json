@@ -90,9 +90,9 @@
       "**/*.md"
     ],
     "check-coverage": true,
-    "branches": 60,
-    "lines": 30,
-    "functions": 20,
-    "statements": 30
+    "branches": 75,
+    "lines": 45,
+    "functions": 50,
+    "statements": 45
   }
 }
