@@ -1,9 +1,95 @@
-# MMM-Remote-Control Change Log
+# Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](https://semver.org/).
+## [4.0.0](https://github.com/jopyth/MMM-Remote-Control/compare/v3.3.2...v4.0.0) (2025-12-19)
+
+This release is a huge step forward in modernizing the MMM-Remote-Control module, both in terms of user interface and code quality.
+
+For users the most outstanding changes are the complete overhaul of the MMM-Remote-Control remote user interface and the new QR code feature - which simplifies connecting to the remote control interface via mobile devices.
+
+There are also many under-the-hood improvements, including a comprehensive refactor of the codebase to modern JavaScript standards, enhanced error handling, and a significant expansion of the test suite to ensure reliability and maintainability going forward.
+
+There should be no breaking changes in this release, but due to the extent of the changes, we decided for a major release and recommend testing the module thoroughly after updating.
+
+### Features
+
+- add `pointer-events: none` to temperature overlay to allow clicks/touch events to pass through ([30adf0e](https://github.com/jopyth/MMM-Remote-Control/commit/30adf0e0d09d0ec9bf6004500f3bc84410c9c491))
+- add changelog button to module list ([a3ea01f](https://github.com/jopyth/MMM-Remote-Control/commit/a3ea01fab2f23e0e166f2d84a9e46cd1ec7dc976))
+- add demo configuration file and add package.json script ([1110865](https://github.com/jopyth/MMM-Remote-Control/commit/111086552d34114946bf68eaf2c8287762ab8a86))
+- add DOM tests and fix lockStrings handling ([aa7a3c8](https://github.com/jopyth/MMM-Remote-Control/commit/aa7a3c8a176440990d6c80b269893c766fb382e2))
+- add PWA support ([ee2ccfa](https://github.com/jopyth/MMM-Remote-Control/commit/ee2ccfacdc0d51f011ada955b57d32814221da94))
+- add QR code display and menu header icons ([467372e](https://github.com/jopyth/MMM-Remote-Control/commit/467372ebeb46b7480d105e63cca231866a9d68e4))
+- add status badges and i18n for Classes menu ([20485df](https://github.com/jopyth/MMM-Remote-Control/commit/20485df91e1164ecb25acb97c62c5a9d9167a0b9))
+- **remote:** add descriptions and repository buttons to add-module-menu ([c2e7388](https://github.com/jopyth/MMM-Remote-Control/commit/c2e7388830bd3c97b28271420a7f3fd78e499411))
+- **remote:** add modern SVG favicon ([a3ccd57](https://github.com/jopyth/MMM-Remote-Control/commit/a3ccd570e0491c62f243e4348975b849c0910dfc))
+- **remote:** add repository buttons to settings-menu ([635aab0](https://github.com/jopyth/MMM-Remote-Control/commit/635aab096324f0034354fc416c02f4de4dca8a09))
+- **remote:** enhance menu headers with icons, sort main menu and new updates icon ([e672c11](https://github.com/jopyth/MMM-Remote-Control/commit/e672c11979a31d7b3779ef188c9754611358b463))
+
+### Bug Fixes
+
+- correct null check for alert button element ([4df9f8f](https://github.com/jopyth/MMM-Remote-Control/commit/4df9f8fcbeba2d8fbdedef09b45eb7cd377b212c))
+- ensure callback execution on module hide/show actions ([5518aa4](https://github.com/jopyth/MMM-Remote-Control/commit/5518aa42e0b7989db6b109aa9b765d80bab3f926))
+- ensure handleManageClasses always sends response ([cecb0ed](https://github.com/jopyth/MMM-Remote-Control/commit/cecb0edd386ef8d6c91c19552005dccb3d5356db))
+- implement queue system for module update checks ([d2f95bd](https://github.com/jopyth/MMM-Remote-Control/commit/d2f95bdd806692ab527d478e525d2cd06728cae9))
+- improve changelog display on module updates ([4226482](https://github.com/jopyth/MMM-Remote-Control/commit/4226482285b93df2362dba48f1dfd6e3877df27e))
+- preserve backdrop-filter effect during brightness transitions ([f5eeb77](https://github.com/jopyth/MMM-Remote-Control/commit/f5eeb773fb70da803e2c1979166bc8d9dc61b0d3)), closes [#373](https://github.com/jopyth/MMM-Remote-Control/issues/373)
+- resolve git pull fast-forward errors during module updates ([1910faa](https://github.com/jopyth/MMM-Remote-Control/commit/1910faa2539a0cc040bdf9baee22e9faec1f5633))
+- update config backup tests and correct findBestBackupSlot logic ([d654505](https://github.com/jopyth/MMM-Remote-Control/commit/d654505d3cec0c07eb42626642ce3201f5fbdb94))
+
+### Chores
+
+- add eslint-plugin-jsdoc and improve documentation ([057c075](https://github.com/jopyth/MMM-Remote-Control/commit/057c0750682e57ca060c451baea4ba53c84f762c))
+- raise coverage thresholds and add improvement strategy ([30e40de](https://github.com/jopyth/MMM-Remote-Control/commit/30e40de1b6fcdbd380d35d56c2c0f7ea687739c5))
+- setup commit-and-tag-version ([533257b](https://github.com/jopyth/MMM-Remote-Control/commit/533257b430aef792af58c6cc9146b4f63c6127eb))
+
+### Documentation
+
+- add JSDoc for intentional error handling behavior ([3c62105](https://github.com/jopyth/MMM-Remote-Control/commit/3c62105abee918e430ff2169fc7937ee863140e0))
+
+### Code Refactoring
+
+- convert function expressions to arrow functions for consistency ([097a0b6](https://github.com/jopyth/MMM-Remote-Control/commit/097a0b64cec260cf1e5641f8cb94a4736e2dad55))
+- convert HTMLCollections to Arrays for better compatibility ([9315724](https://github.com/jopyth/MMM-Remote-Control/commit/93157242c684cce917f9dce6cd8bf8c8deffd220))
+- modernize answerPost with async/await and promises ([16f4473](https://github.com/jopyth/MMM-Remote-Control/commit/16f44738fe3a9ac8aad005baac7ba9175a728886))
+- modernize callAfterUpdate with ES6+ features ([74060f7](https://github.com/jopyth/MMM-Remote-Control/commit/74060f7a7428e2e54a3b3eb3b881fbadfcb88eed))
+- modernize for loops to modern iteration patterns ([c145f03](https://github.com/jopyth/MMM-Remote-Control/commit/c145f0373c734edf6872badfb6545c9ed0b66955))
+- modernize JavaScript codebase to ES2020+ standards ([82cf674](https://github.com/jopyth/MMM-Remote-Control/commit/82cf674831d7c493afd4bbff57f4b03c28182b67))
+- modernize module update workflow with async/await ([7145ae5](https://github.com/jopyth/MMM-Remote-Control/commit/7145ae5aef389ff2f40e139fad14ffa995f8840b))
+- modernize Swagger UI documentation ([72acc35](https://github.com/jopyth/MMM-Remote-Control/commit/72acc35874a772d2c28ad7b8a4b35da1a6fe1bed))
+- modernize updateModule() git operations ([0317e80](https://github.com/jopyth/MMM-Remote-Control/commit/0317e8079904f76377754c2d80e47faf57b9d769))
+- preserve original module names ([dfd029f](https://github.com/jopyth/MMM-Remote-Control/commit/dfd029fe3dbae7a5bf193d90acc62836c65569b4))
+- **remote:** comprehensive UI/UX modernization and code quality improvements ([5174ae4](https://github.com/jopyth/MMM-Remote-Control/commit/5174ae480e6fb07531a0fef2ea7c48b641183c2c))
+- **remote:** harmonize styling for result lists ([5f14b16](https://github.com/jopyth/MMM-Remote-Control/commit/5f14b168013f2a4d62f8a6aeb5765bb66864bf13))
+- **remote:** modernize add-entry handling ([f794f82](https://github.com/jopyth/MMM-Remote-Control/commit/f794f8295411523e21a0ba71ef21747696182b73))
+- **remote:** move links menu buttons to menu-nav for consistent layout ([1c95add](https://github.com/jopyth/MMM-Remote-Control/commit/1c95add38ffdb3711f13f86e0f98515448e82056))
+- **remote:** reorganize menu navigation for improved structure and clarity ([9d2a039](https://github.com/jopyth/MMM-Remote-Control/commit/9d2a039e787a95a8fdd5d51e91ad140c54b43252))
+- **remote:** replace className manipulation with classList ([f091102](https://github.com/jopyth/MMM-Remote-Control/commit/f091102013a1005331eaaa67b327b6364fd55e40))
+- remove module prefix from log messages ([76c2246](https://github.com/jopyth/MMM-Remote-Control/commit/76c2246ba59bf1b44687bf2551289ce63e01b660))
+- remove unused formatLabel function and simplify label creation ([8462322](https://github.com/jopyth/MMM-Remote-Control/commit/8462322319438f56d6fc1cf0aabc4bc821db06da))
+- replace if-chain with action handler map in executeQuery ([c20a864](https://github.com/jopyth/MMM-Remote-Control/commit/c20a864b5730563b6bbb6f9a0b1772893c6310a2))
+- replace if-chain with data handler map in answerGet ([162cba3](https://github.com/jopyth/MMM-Remote-Control/commit/162cba38376c2fdffc185d3b12eec66e10154768))
+- replace unmaintained `showdown` with `marked` ([0e3db68](https://github.com/jopyth/MMM-Remote-Control/commit/0e3db68d45e86fe62e7c27768586e1326c65e23a))
+- simplify handleGetClasses with optional chaining ([959cfb0](https://github.com/jopyth/MMM-Remote-Control/commit/959cfb0174ec4b3081ae538485cef9f411dee941))
+- simplify loadList to always return Promise ([d3991a3](https://github.com/jopyth/MMM-Remote-Control/commit/d3991a3aa0e4b360c2d1f9105578e0b6309e0d92))
+- **translations:** rename "delete" action to "remove" and optimize styles ([388d677](https://github.com/jopyth/MMM-Remote-Control/commit/388d6779788b68e46a4071a75df38bb115c36957))
+
+### Tests
+
+- add alert handling and userPresence GET tests ([103c5ab](https://github.com/jopyth/MMM-Remote-Control/commit/103c5ab7ba195f16d22211fab9c4b73bd91d6236))
+- add answerGet data assembly logic tests ([dba9de4](https://github.com/jopyth/MMM-Remote-Control/commit/dba9de4968a2c2c425edc2c263798efbec75918c))
+- add comprehensive coverage for mergeData logic ([8853af5](https://github.com/jopyth/MMM-Remote-Control/commit/8853af501daed8a9e73efaeca6f1cdff6b23addc))
+- add contract tests for /api/saves endpoint ([62cd0d6](https://github.com/jopyth/MMM-Remote-Control/commit/62cd0d631a6fefb5e77931309d0b491f31046f4d))
+- add coverage for core executeQuery actions (batch 1) ([f057f94](https://github.com/jopyth/MMM-Remote-Control/commit/f057f94e7c41502cd3bd1ef10747ba4f7e1a293e))
+- add coverage for executeQuery actions ([b4eae48](https://github.com/jopyth/MMM-Remote-Control/commit/b4eae488c11d3395cc85e4b6ffec49c7ff4112da))
+- add edge case coverage for answerModuleApi ([0e5afe2](https://github.com/jopyth/MMM-Remote-Control/commit/0e5afe26734f8dac33dd4f2c4857625e3a2c265b))
+- add error-path tests for executeQuery ([2def992](https://github.com/jopyth/MMM-Remote-Control/commit/2def992f66d19aacea87f4763145e95791f9eecc))
+- add GET endpoint tests for brightness, temp, and defaultConfig ([7adb73a](https://github.com/jopyth/MMM-Remote-Control/commit/7adb73a6a0ec16164f8197fdf311af4ab71f0703))
+- add HTTP-layer smoke tests for API endpoints ([f85693d](https://github.com/jopyth/MMM-Remote-Control/commit/f85693daa527ad47351eb3e3c474fda0781f2f3b))
+- add schema validation for /api/module/available ([273fde2](https://github.com/jopyth/MMM-Remote-Control/commit/273fde286e81096bc568e81b1854953aa8b95cc7))
+- clean up test suite hygiene ([ce66c63](https://github.com/jopyth/MMM-Remote-Control/commit/ce66c6323a860e3d53cdfcac5ede9b9260ec300f))
+- **coverage:** expand unit tests for core helpers and handlers ([8c7cea0](https://github.com/jopyth/MMM-Remote-Control/commit/8c7cea09f1eb26399b1905d9c058e58b83d146d4))
+- migrate timer mocking to Node's native mock.timers ([45dafb0](https://github.com/jopyth/MMM-Remote-Control/commit/45dafb0653055f704f3ad6a5f830c8fc23eb20c5))
 
 ## [3.3.2](https://github.com/jopyth/MMM-Remote-Control/compare/v3.3.1...v3.3.2) - 2025-12-13
 
