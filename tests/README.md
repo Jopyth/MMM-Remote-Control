@@ -5,7 +5,7 @@ This document describes the state of the automated test suite for **MMM-Remote-C
 ## Test stack at a glance
 
 - **Runner:** Node's built-in test runner (`node --test`) – lean, zero-config, future-proof.
-- **Coverage:** `c8` with enforced thresholds (currently 5% statements/lines, 4% functions, 5% branches).
+- **Coverage:** `c8` with enforced thresholds (30% statements/lines, 20% functions, 60% branches).
 - **Quality gates:** Lint (`node --run lint`) and spell check (`node --run test:spelling`) are part of the standard `node --run test` pipeline.
 - **Execution shortcuts:**
   - All tests: `node --run test` (includes unit + HTTP-layer)
@@ -61,14 +61,16 @@ Together these suites focus on isolated logic (unit tests) and HTTP contract ver
 
 As of December 2024, actual coverage stands at:
 
-| Metric           | Value | Notes                                |
-| ---------------- | ----- | ------------------------------------ |
-| Statements       | ~26%  | Threshold is 5% – very low guard     |
-| Functions        | ~17%  | Many `executeQuery` actions untested |
-| `node_helper.js` | ~10%  | Core module, highest risk            |
-| `API/api.js`     | ~57%  | Reasonably covered                   |
+| Metric           | Value | Threshold | Notes                                  |
+| ---------------- | ----- | --------- | -------------------------------------- |
+| Statements       | ~39%  | 30%       | Improved from ~26% with new tests      |
+| Branches         | ~71%  | 60%       | Strong branch coverage                 |
+| Functions        | ~29%  | 20%       | Improved from ~17%                     |
+| Lines            | ~39%  | 30%       | Mirrors statement coverage             |
+| `node_helper.js` | ~10%  | -         | Core module, still needs more coverage |
+| `API/api.js`     | ~57%  | -         | Reasonably covered                     |
 
-The thresholds prevent obvious regressions but don't yet guard the module's core logic adequately.
+Thresholds now provide meaningful regression protection while remaining achievable.
 
 ## What we deliberately skip (and why)
 
@@ -144,8 +146,6 @@ This approach catches route wiring bugs, middleware issues, and response format 
 
 ### Medium-term (structural improvements)
 
-- [ ] **Raise coverage thresholds to 15-20%** – Once the above items land, bump thresholds in `package.json` `c8` config to actually guard the new coverage.
-
 - [ ] **Contract test for `/api/saves`** – Freeze the backup timestamp ordering behavior to catch regressions.
 
 - [ ] **Schema validation for `/api/module/available`** – Once module metadata stabilizes, validate field presence/types systematically.
@@ -155,6 +155,47 @@ This approach catches route wiring bugs, middleware issues, and response format 
 - Full E2E tests with Puppeteer/Playwright
 - Hardware-dependent command testing (shutdown, reboot, monitor control)
 - Git/network-dependent install/update flows
+
+## Coverage improvement strategy
+
+To reach 50%+ coverage efficiently, focus on **high-impact, low-mock areas**:
+
+### Priority 1: Core `node_helper.js` logic (currently ~10%)
+
+Target untested `executeQuery` actions with clear behavior:
+
+- **MODULE_DATA**, **SAVE**, **USER_PRESENCE** – Simple state updates, easy to test
+- **BRIGHTNESS**, **TEMP** – Value validation and bounds checking
+- **MANAGE_CLASSES** – Already partially covered, add edge cases (invalid class names, empty arrays)
+- **DELAYED** query handling – Timer management (already have patterns in `delayedQuery.test.js`)
+
+**Skip:** Hardware-dependent actions (`SHUTDOWN`, `REBOOT`, `MONITORON`), git/network operations (`UPDATE`, `INSTALL`)
+
+### Priority 2: `API/api.js` remaining gaps (currently ~57%)
+
+- **answerModuleApi** edge cases – Module not found, invalid action, custom module APIs
+- **Error response paths** – Already covered in HTTP-layer tests, but add unit tests for specific error constructors
+- **mergeData** logic – Config merging with external API routes
+
+### Priority 3: Helper utilities (currently well-covered)
+
+- Additional edge cases in `lib/configUtils.js` and `lib/utils.js` only if behavior changes
+
+### What NOT to chase:
+
+- **Don't test for coverage percentage alone** – Every test should catch real bugs or prevent regressions
+- **Avoid mocking complexity** – If a test needs >5 mocks, it's testing the wrong thing
+- **Skip brittle integration points** – File system, network, hardware, DOM manipulation
+- **Don't duplicate HTTP-layer tests** – Already covered at the right abstraction level
+
+### Incremental approach:
+
+1. Pick **one** untested action from Priority 1
+2. Write test with **minimal setup** (reuse existing helper factories)
+3. Verify it catches a real regression (e.g., bounds checking, null handling)
+4. Repeat until diminishing returns
+
+Target: **50% statements** is realistic and valuable. Beyond that, focus shifts to integration/manual testing.
 
 ---
 
