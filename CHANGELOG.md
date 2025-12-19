@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.0.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.0...v4.0.1) (2025-12-19)
+
+### Bug Fixes
+
+- restore custom menu functionality after refactoring ([90520dc](https://github.com/jopyth/MMM-Remote-Control/commit/90520dcc7a6f1154b16e4a781f08e8ed9f7fdda3))
+
+### Chores
+
+- add 'navbutton' and 'qrcode' to cspell configuration ([8f3dc99](https://github.com/jopyth/MMM-Remote-Control/commit/8f3dc99e0c2980485a8716334b2e83d89e18cdb3))
+
 ## [4.0.0](https://github.com/jopyth/MMM-Remote-Control/compare/v3.3.2...v4.0.0) (2025-12-19)
 
 This release is a huge step forward in modernizing the MMM-Remote-Control module, both in terms of user interface and code quality.
