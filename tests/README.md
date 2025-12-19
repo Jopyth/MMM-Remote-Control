@@ -65,8 +65,6 @@ Documenting these gaps helps us recognize when a change might require a differen
   - Missing required params (e.g., `notification` in `/api/notification`)
   - Config read-stream errors mid-pipe (mentioned in old "future enhancements")
 
-- [ ] **Test `answerGet` data paths** – The contract test checks shapes, but the actual data assembly in `answerGet` (e.g., `moduleAvailable`, `moduleInstalled` filtering logic) needs unit tests.
-
 ### Medium-term (structural improvements)
 
 - [ ] **Raise coverage thresholds to 15-20%** – Once the above items land, bump thresholds in `package.json` `c8` config to actually guard the new coverage.

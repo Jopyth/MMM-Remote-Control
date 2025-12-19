@@ -99,3 +99,77 @@ describe("answerGet contract coverage", () => {
     assert.equal(payload.data.en.HELLO, "hi");
   });
 });
+
+describe("answerGet data assembly logic", () => {
+
+  /*
+   * These tests verify intentional filtering behavior:
+   * - moduleInstalled is used by update/install UI (remote.js:1643)
+   * - Default modules (clock, alert) should not appear - they have no repos
+   * - Only custom installed modules should be updatable/uninstallable
+   */
+
+  test("moduleAvailable sorts all modules by name", () => {
+    const helper = freshHelper();
+    helper.modulesAvailable = [
+      {name: "zebra", installed: true, isDefaultModule: false},
+      {name: "alpha", installed: false, isDefaultModule: false},
+      {name: "beta", installed: true, isDefaultModule: true}
+    ];
+    helper.handleGetModuleAvailable = helperFactory.handleGetModuleAvailable.bind(helper);
+
+    helper.answerGet({data: "moduleAvailable"});
+
+    assert.equal(helper.__responses.length, 1);
+    const {data} = helper.__responses[0].payload;
+    assert.deepEqual(data.map((m) => m.name), ["alpha", "beta", "zebra"]);
+  });
+
+  test("moduleInstalled filters out default modules", () => {
+    const helper = freshHelper();
+    helper.modulesAvailable = [
+      {name: "MMM-Custom", installed: true, isDefaultModule: false},
+      {name: "clock", installed: true, isDefaultModule: true}
+    ];
+    helper.handleGetModuleInstalled = helperFactory.handleGetModuleInstalled.bind(helper);
+
+    helper.answerGet({data: "moduleInstalled"});
+
+    const {data} = helper.__responses[0].payload;
+    assert.equal(data.length, 1);
+    assert.equal(data[0].name, "MMM-Custom");
+  });
+
+  test("moduleInstalled filters out uninstalled modules", () => {
+    const helper = freshHelper();
+    helper.modulesAvailable = [
+      {name: "MMM-Installed", installed: true, isDefaultModule: false},
+      {name: "MMM-NotInstalled", installed: false, isDefaultModule: false}
+    ];
+    helper.handleGetModuleInstalled = helperFactory.handleGetModuleInstalled.bind(helper);
+
+    helper.answerGet({data: "moduleInstalled"});
+
+    const {data} = helper.__responses[0].payload;
+    assert.equal(data.length, 1);
+    assert.equal(data[0].name, "MMM-Installed");
+  });
+
+  test("moduleInstalled sorts filtered modules by name", () => {
+    const helper = freshHelper();
+    helper.modulesAvailable = [
+      {name: "MMM-Zulu", installed: true, isDefaultModule: false},
+      {name: "MMM-Alpha", installed: true, isDefaultModule: false},
+      {name: "MMM-Bravo", installed: true, isDefaultModule: false},
+      {name: "clock", installed: true, isDefaultModule: true},
+      {name: "MMM-NotInstalled", installed: false, isDefaultModule: false}
+    ];
+    helper.handleGetModuleInstalled = helperFactory.handleGetModuleInstalled.bind(helper);
+
+    helper.answerGet({data: "moduleInstalled"});
+
+    const {data} = helper.__responses[0].payload;
+    assert.equal(data.length, 3);
+    assert.deepEqual(data.map((m) => m.name), ["MMM-Alpha", "MMM-Bravo", "MMM-Zulu"]);
+  });
+});
