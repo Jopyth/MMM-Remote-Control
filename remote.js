@@ -431,7 +431,7 @@ const Remote = {
   },
 
   loadLinks () {
-    const parent = document.getElementById("links-results");
+    const parent = document.getElementById("links-container-nav");
     if (!parent) { return; }
     while (parent.firstChild) parent.removeChild(parent.firstChild);
 
