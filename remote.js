@@ -2119,32 +2119,47 @@ const buttons = {
   }
 };
 
-// Initialize socket connection
-Remote.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
-Remote.sendSocketNotification("REMOTE_ACTION", {data: "translations"});
-Remote.loadButtons(buttons);
-Remote.loadOtherElements();
-
-Remote.setStatus("none");
-
-if (globalThis.location.hash) {
-  Remote.showMenu(globalThis.location.hash.slice(1));
-} else {
-  Remote.showMenu("main-menu");
+// Export Remote to window for testability
+if (globalThis.window !== undefined) {
+  globalThis.Remote = Remote;
 }
 
-globalThis.addEventListener("hashchange", () => {
-  if (Remote.skipHashChange) {
-    Remote.skipHashChange = false;
-    return;
-  }
+// Initialize the Remote UI when DOM is ready
+Remote.init = function () {
+  // Initialize socket connection
+  Remote.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
+  Remote.sendSocketNotification("REMOTE_ACTION", {data: "translations"});
+  Remote.loadButtons(buttons);
+  Remote.loadOtherElements();
+
+  Remote.setStatus("none");
+
   if (globalThis.location.hash) {
     Remote.showMenu(globalThis.location.hash.slice(1));
   } else {
     Remote.showMenu("main-menu");
   }
-});
 
-// loading successful, remove error message
-const loadError = document.querySelector("#load-error");
-loadError.remove();
+  globalThis.addEventListener("hashchange", () => {
+    if (Remote.skipHashChange) {
+      Remote.skipHashChange = false;
+      return;
+    }
+    if (globalThis.location.hash) {
+      Remote.showMenu(globalThis.location.hash.slice(1));
+    } else {
+      Remote.showMenu("main-menu");
+    }
+  });
+
+  // loading successful, remove error message
+  const loadError = document.querySelector("#load-error");
+  if (loadError) {
+    loadError.remove();
+  }
+};
+
+// Auto-initialize when loaded in browser
+if (globalThis.window !== undefined && document.querySelector("#load-error")) {
+  Remote.init();
+}

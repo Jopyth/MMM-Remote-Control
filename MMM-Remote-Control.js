@@ -184,8 +184,8 @@ Module.register("MMM-Remote-Control", {
     const {moduleData} = payload;
     const hideModules = {};
     for (const moduleDatum of moduleData) {
-      for (let k = 0; k < moduleDatum.lockStrings.length; k++) {
-        if (moduleDatum.lockStrings[k].includes("MMM-Remote-Control")) {
+      for (const lockString of moduleDatum.lockStrings || []) {
+        if (lockString.includes("MMM-Remote-Control")) {
           hideModules[moduleDatum.identifier] = true;
           break;
         }
@@ -256,7 +256,7 @@ Module.register("MMM-Remote-Control", {
     const modules = MM.getModules();
     const currentModuleData = [];
     modules.enumerate((module) => {
-      const moduleData = {...module.data, hidden: module.hidden, lockStrings: module.lockStrings, urlPath: module.name.replaceAll("MMM-", "").replaceAll("-", "").toLowerCase(), config: module.config};
+      const moduleData = {...module.data, hidden: module.hidden, lockStrings: module.lockStrings || [], urlPath: module.name.replaceAll("MMM-", "").replaceAll("-", "").toLowerCase(), config: module.config};
       const modulePrototype = Object.getPrototypeOf(module);
       moduleData.defaults = modulePrototype.defaults;
       currentModuleData.push(moduleData);

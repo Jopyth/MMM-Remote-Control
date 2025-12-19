@@ -8,9 +8,10 @@ This document describes the state of the automated test suite for **MMM-Remote-C
 - **Coverage:** `c8` with enforced thresholds (30% statements/lines, 20% functions, 60% branches).
 - **Quality gates:** Lint (`node --run lint`) and spell check (`node --run test:spelling`) are part of the standard `node --run test` pipeline.
 - **Execution shortcuts:**
-  - All tests: `node --run test` (includes unit + HTTP-layer)
+  - All tests: `node --run test` (includes unit + integration + DOM)
   - Unit tests only: `node --run test:unit`
   - HTTP-layer tests only: `node --run test:integration`
+  - DOM tests only: `node --run test:dom`
   - Coverage report: `node --run test:coverage`
   - Watch mode: `node --run test:watch`
 
@@ -20,6 +21,7 @@ This document describes the state of the automated test suite for **MMM-Remote-C
 tests/
 ├── unit/           # Isolated logic tests with mocked dependencies
 ├── integration/    # HTTP-layer tests with real Express routing
+├── dom/            # DOM logic tests using happy-dom (no browser required)
 └── shims/          # Minimal stubs for MagicMirror globals
 ```
 
@@ -32,7 +34,9 @@ tests/
 - JSON parsing/serialization problems
 - Authentication/error response formats
 
-Both run in CI/CD without MagicMirror runtime or browser dependencies.
+**DOM tests** verify frontend logic (`remote.js`) in a simulated DOM environment using happy-dom. Fast, CI-friendly, no browser required.
+
+All tests run in CI/CD without MagicMirror runtime or browser dependencies.
 
 ## What we cover today
 
@@ -50,6 +54,12 @@ Both run in CI/CD without MagicMirror runtime or browser dependencies.
 | `executeQuery.error.test.js`                      | Error handling for malformed JSON, missing params                                        |
 | `api.helpers.test.js`                             | JSON payload parsing, delay parameter handling                                           |
 | `utils.test.js`, `configUtils.test.js`            | String-format helpers and `cleanConfig` regressions                                      |
+
+### DOM tests (`tests/dom/`)
+
+| Suite                  | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `remote.smoke.test.js` | Frontend logic tests using happy-dom (no browser required) |
 
 ### HTTP-layer tests (`tests/integration/`)
 
@@ -78,7 +88,7 @@ Thresholds now provide meaningful regression protection while remaining achievab
 
 - **Router-to-handler wiring:** Express route-mapping tests duplicated framework behavior and broke on route reordering. Manual smoke tests or integration tests are better.
 - **System commands and hardware control (`shutdown`, `reboot`, monitor control):** Depend on Raspberry Pi hardware privileges and side effects we can't safely stub in CI.
-- **Front-end DOM or E2E coverage:** Rendering happens in MagicMirror's browser context; Puppeteer/Electron harnesses are heavy relative to payoff.
+- **E2E browser tests:** Full Puppeteer/Playwright tests with real browsers are heavy and flaky. We test frontend logic with happy-dom instead (fast, deterministic, CI-friendly).
 - **"Pass-through" notification wrappers:** Flows that simply forward parameters (`HIDE_ALERT`, `SHOW_ALERT`, etc.) are exercised indirectly; duplicating them would be noise.
 - **Git/network dependent paths:** Update and install code paths require repositories and network access. We guard their public contract via `getExternalApiByGuessing`/menu tests instead.
 
