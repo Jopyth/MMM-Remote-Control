@@ -3,6 +3,7 @@
   --border-color-light: #999;
   --bg-color-highlight: #444;
   --bg-color-alt: #222;
+  --bg-color-back: #171717;
   --bg-color-base: #000;
   --text-color-dim: #666;
   --text-color-medium: #999;
@@ -229,35 +230,13 @@ a {
 }
 
 .result-list {
-  width: 100%;
-  max-width: 1400px;
+  width: 95%;
+  max-width: 900px;
   margin-inline: auto;
 }
 
 .results:last-child {
   margin-bottom: 2em;
-}
-
-/* Settings menu items styling */
-.settings-menu .results > div {
-  background: var(--glass-bg);
-  backdrop-filter: var(--backdrop-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--border-radius);
-  padding: 1em 1.5em;
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1em;
-  transition: all var(--transition-fast);
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-elevated);
-    border-color: var(--accent-color);
-  }
 }
 
 /* Settings warning banner */
@@ -446,7 +425,6 @@ a {
 
 .module-line {
   width: 95%;
-  max-width: 900px;
   margin-inline: auto;
   margin-bottom: 5px;
   transition: background-color var(--transition-fast);
@@ -578,12 +556,10 @@ a {
   white-space: nowrap;
 }
 
-#config-modules-results > div:nth-child(even) {
-  background-color: var(--bg-color-alt);
-}
-
-:is(#add-module-results, #visible-modules-results) > div {
-  background-color: var(--bg-color-base);
+/* Zebra striping for all result lists */
+:is(#config-modules-results, #update-module-results, #add-module-results)
+  > div:nth-child(even) {
+  background-color: var(--bg-color-back);
 }
 
 :is(input, select, textarea) {
