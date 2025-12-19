@@ -894,17 +894,17 @@ const Remote = {
         const thisElement = event.currentTarget;
         label.replaceChild(self.createTypeEditSelection(key, label, type, thisElement), thisElement);
       }, "span");
-      typeLabel.className += " type-edit";
+      typeLabel.className += " module-remove";
       label.appendChild(typeLabel);
 
-      const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("DELETE_ENTRY"), (event) => {
+      const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("REMOVE"), (event) => {
         const thisElement = event.currentTarget;
         const elementToRemove = type === "array" || type === "object"
           ? thisElement.parentNode.parentNode
           : thisElement.parentNode;
         elementToRemove.remove();
       }, "span");
-      remove.className += " type-edit";
+      remove.className += " module-remove";
       label.appendChild(remove);
     }
     return label;
@@ -1280,7 +1280,7 @@ const Remote = {
         saveButton.className += " highlight";
       }
     }, "span");
-    changed.className += " type-edit";
+    changed.className += " module-remove";
     return changed;
   },
 
@@ -1303,7 +1303,7 @@ const Remote = {
       // Add repository button if URL is available (first button)
       self.getModuleUrl(data.module).then((url) => {
         if (url) {
-          const repoButton = self.createSymbolText("fa fa-fw fa-github", "Repository", () => {
+          const repoButton = self.createSymbolText("fa fa-fw fa-github", this.translate("REPOSITORY"), () => {
             window.open(url, "_blank");
           }, "span");
           repoButton.className = "button";
@@ -1311,7 +1311,7 @@ const Remote = {
         }
       });
 
-      const moduleBox = self.createSymbolText("fa fa-fw fa-pencil", "Edit", (event) => {
+      const moduleBox = self.createSymbolText("fa fa-fw fa-pencil", this.translate("EDIT"), (event) => {
         const i = event.currentTarget.id.replace("edit-module-", "");
         self.createConfigPopup(i);
       }, "span");
@@ -1322,13 +1322,13 @@ const Remote = {
         buttonsContainer.appendChild(self.createChangedWarning());
       }
 
-      const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", "Delete", (event) => {
+      const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("REMOVE"), (event) => {
         const i = event.currentTarget.parentNode.parentNode.firstChild.nextSibling.firstChild.id.replace("edit-module-", "");
         self.deletedModules.push(parseInt(i));
         const thisElement = event.currentTarget.parentNode.parentNode;
         thisElement.parentNode.removeChild(thisElement);
       }, "span");
-      remove.className += " type-edit";
+      remove.className += " module-remove";
       buttonsContainer.appendChild(remove);
 
       innerWrapper.appendChild(buttonsContainer);

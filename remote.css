@@ -3,7 +3,7 @@
   --border-color-light: #999;
   --bg-color-highlight: #444;
   --bg-color-alt: #222;
-  --bg-color-back: #171717;
+  --bg-color-back: #181818;
   --bg-color-base: #000;
   --text-color-dim: #666;
   --text-color-medium: #999;
@@ -617,11 +617,9 @@ input:focus.input-error {
   overflow-x: auto;
 }
 
-.type-edit {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  color: var(--text-color-dim);
-  justify-self: end;
+.module-remove.module-remove:hover {
+  color: #ff4444;
+  text-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
 }
 
 .highlight {
@@ -629,7 +627,7 @@ input:focus.input-error {
   background-color: var(--bg-color-highlight);
 }
 
-.highlight .type-edit {
+.highlight .module-remove {
   color: var(--text-color-medium);
 }
 
@@ -799,7 +797,7 @@ input:focus.input-error {
     align-items: flex-start;
   }
 
-  .type-edit {
+  .module-remove {
     justify-self: flex-start;
   }
 }
