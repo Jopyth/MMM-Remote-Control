@@ -704,15 +704,6 @@ const Remote = {
     }
   },
 
-  formatLabel (string) {
-
-    /*
-     * let result = string.replace(/([A-Z])/g, " $1" );
-     * return result.charAt(0).toUpperCase() + result.slice(1);
-     */
-    return string;
-  },
-
   formatPosition (string) {
     return string.replaceAll("_", " ").replaceAll(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1).toLowerCase());
   },
@@ -906,7 +897,7 @@ const Remote = {
     const label = document.createElement("label");
     label.htmlFor = key;
     label.className = "config-label";
-    const desc = Remote.createSymbolText(`fa fa-fw ${symbol}`, this.formatLabel(name), false, "span");
+    const desc = Remote.createSymbolText(`fa fa-fw ${symbol}`, name, false, "span");
     desc.className = "label-name";
     label.append(desc);
 
