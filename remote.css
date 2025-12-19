@@ -1293,3 +1293,40 @@ pre {
     box-shadow: var(--accent-glow);
   }
 }
+
+/* ===== Classes Menu Status Badges ===== */
+.class-status-badge {
+  margin-left: auto;
+  padding: 0.3em 0.6em;
+  border-radius: 1em;
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+  min-width: 2.5em;
+  text-align: center;
+}
+
+.class-active .class-status-badge {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.class-inactive .class-status-badge {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: #f44336;
+  color: #f44336;
+}
+
+.class-mixed .class-status-badge {
+  background: rgba(255, 152, 0, 0.2);
+  border-color: #ff9800;
+  color: #ff9800;
+}
+
+.class-empty .class-status-badge {
+  background: rgba(158, 158, 158, 0.2);
+  border-color: #9e9e9e;
+  color: #9e9e9e;
+}

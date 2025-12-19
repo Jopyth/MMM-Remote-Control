@@ -4,6 +4,7 @@
   "EDIT_MENU_NAME": "Edit view",
   "SHUTDOWN_MENU_NAME": "Power",
   "CONFIGURE_MENU_NAME": "Edit config.js",
+  "CLASSES_MENU_NAME": "Classes",
   "VIEW_MIRROR": "MagicMirror²",
   "LINKS": "Links",
   "API_DOCS": "API Docs",

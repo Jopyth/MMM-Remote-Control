@@ -726,6 +726,94 @@ const Remote = {
     return {status, modules: modules.join(", ")};
   },
 
+  /**
+   * Determines the status of a class based on visible/hidden modules
+   * @param {object} classData - Class data with show/hide/toggle arrays
+   * @returns {object} Status object with status and details
+   */
+  getClassStatus (classData) {
+    if (!classData || !this.savedData.modules) {
+      return {status: "unknown", details: ""};
+    }
+
+    // Create map for fast module access
+    const moduleMap = {};
+    for (const module of this.savedData.modules) {
+      moduleMap[module.name] = module;
+      moduleMap[module.identifier] = module;
+    }
+
+    let visibleCount = 0;
+    let hiddenCount = 0;
+    let totalCount = 0;
+
+    // Check show modules
+    if (classData.show) {
+      const showModules = Array.isArray(classData.show) ? classData.show : [classData.show];
+      for (const moduleName of showModules) {
+        const module = moduleMap[moduleName];
+        if (module) {
+          totalCount++;
+          if (module.hidden) {
+            hiddenCount++;
+          } else {
+            visibleCount++;
+          }
+        }
+      }
+    }
+
+    // Check hide modules
+    if (classData.hide) {
+      const hideModules = Array.isArray(classData.hide) ? classData.hide : [classData.hide];
+      for (const moduleName of hideModules) {
+        const module = moduleMap[moduleName];
+        if (module) {
+          totalCount++;
+          if (module.hidden) {
+            hiddenCount++;
+          } else {
+            visibleCount++;
+          }
+        }
+      }
+    }
+
+    // Check toggle modules (we just show if they're visible/hidden)
+    if (classData.toggle) {
+      const toggleModules = Array.isArray(classData.toggle) ? classData.toggle : [classData.toggle];
+      for (const moduleName of toggleModules) {
+        const module = moduleMap[moduleName];
+        if (module) {
+          totalCount++;
+          if (module.hidden) {
+            hiddenCount++;
+          } else {
+            visibleCount++;
+          }
+        }
+      }
+    }
+
+    // Determine status
+    let status = "class-mixed";
+    if (totalCount === 0) {
+      status = "class-empty";
+    } else if (hiddenCount === 0 && visibleCount > 0) {
+      status = "class-active";
+    } else if (visibleCount === 0 && hiddenCount > 0) {
+      status = "class-inactive";
+    }
+
+    return {
+      status,
+      details: `${visibleCount}/${totalCount}`,
+      visibleCount,
+      hiddenCount,
+      totalCount
+    };
+  },
+
   addToggleElements (parent) {
     const outerSpan = document.createElement("span");
     outerSpan.className = "stack fa-fw";
@@ -1401,7 +1489,11 @@ const Remote = {
 
   async loadClasses () {
     try {
+      // Always reload module data to get fresh status
+      const {data: moduleData} = await this.loadList("visible-modules", "modules");
+      this.savedData.modules = moduleData;
       const {data: classes} = await this.loadList("classes", "classes");
+
       for (const index in classes) {
         const node = document.createElement("div");
         node.id = "classes-before-result";
@@ -1418,7 +1510,8 @@ const Remote = {
             payload: {
               classes: index
             }
-          }
+          },
+          classData: classes[index] // Store class data for status checking
         };
 
         const existingButton = document.getElementById(`${content.id}-button`);
@@ -1787,6 +1880,102 @@ const Remote = {
     }
   },
 
+  addClassStatusBadge (item, classData) {
+    const classStatus = this.getClassStatus(classData);
+    const statusBadge = document.createElement("span");
+    statusBadge.className = `class-status-badge ${classStatus.status}`;
+    statusBadge.textContent = classStatus.details;
+    statusBadge.title = `${classStatus.visibleCount} visible, ${classStatus.hiddenCount} hidden`;
+    item.append(statusBadge);
+    item.classList.add(classStatus.status);
+  },
+
+  createMenuTypeElement (item, content, menu) {
+    const mcmArrow = document.createElement("span");
+    mcmArrow.className = "fa fa-fw fa-angle-right";
+    mcmArrow.setAttribute("aria-hidden", "true");
+    item.append(mcmArrow);
+    item.dataset.parent = menu;
+    item.dataset.type = "menu";
+    document.querySelector("#back-button").classList.add(`${content.id}-menu`);
+    const menuContent = document.querySelector(".menu-content");
+    if (menuContent) {
+      menuContent.classList.add(`${content.id}-menu`);
+    }
+    item.addEventListener("click", () => {
+      globalThis.location.hash = `${content.id}-menu`;
+    });
+  },
+
+  createSliderElement (item, content) {
+    const contain = document.createElement("div");
+    contain.classList.add("flex-1");
+
+    const slide = document.createElement("input");
+    slide.id = `${content.id}-slider`;
+    slide.className = "slider";
+    slide.type = "range";
+    slide.min = content.min || 0;
+    slide.max = content.max || 100;
+    slide.step = content.step || 10;
+    slide.value = content.defaultValue || 50;
+
+    slide.addEventListener("change", () => {
+      this.sendSocketNotification("REMOTE_ACTION", {
+        action: content.action.toUpperCase(),
+        ...content.content,
+        payload: {
+          ...content.content === undefined ? {} : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
+          value: slide.value
+        },
+        value: slide.value
+      });
+    });
+
+    contain.append(slide);
+    item.append(contain);
+  },
+
+  createInputElement (content, menu) {
+    const input = document.createElement("input");
+    input.id = `${content.id}-input`;
+    input.className = `menu-element ${menu}-menu medium`;
+    input.type = "text";
+    input.placeholder = content.text;
+
+    input.addEventListener("focusout", () => {
+      this.sendSocketNotification("REMOTE_ACTION", {
+        action: content.action.toUpperCase(),
+        ...content.content,
+        payload: {
+          ...content.content === undefined ? {} : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
+          value: input.value
+        },
+        value: input.value
+      });
+    });
+
+    return input;
+  },
+
+  addItemClickHandler (item, content, menu) {
+    item.dataset.type = "item";
+    item.addEventListener("click", () => {
+      this.sendSocketNotification("REMOTE_ACTION", {
+        action: content.action.toUpperCase(),
+        payload: {},
+        ...content.content
+      });
+
+      // Reload classes menu after executing class action to update status badges
+      if (content.action === "MANAGE_CLASSES" && menu === "classes") {
+        setTimeout(() => {
+          this.loadClasses();
+        }, 1000);
+      }
+    });
+  },
+
   createMenuElement (content, menu, insertAfter) {
     if (!content) { return; }
     const item = document.createElement("div");
@@ -1807,87 +1996,24 @@ const Remote = {
       item.append(mcmText);
     }
 
+    // Add status badge for Classes menu
+    if (menu === "classes" && content.classData) {
+      this.addClassStatusBadge(item, content.classData);
+    }
+
     switch (content.type) {
-      case "menu": {
-        const mcmArrow = document.createElement("span");
-        mcmArrow.className = "fa fa-fw fa-angle-right";
-        mcmArrow.setAttribute("aria-hidden", "true");
-        item.append(mcmArrow);
-        item.dataset.parent = menu;
-        item.dataset.type = "menu";
-        document.querySelector("#back-button").classList.add(`${content.id}-menu`);
-        const menuContent = document.querySelector(".menu-content");
-        if (menuContent) {
-          menuContent.classList.add(`${content.id}-menu`);
+      case "menu":
+        this.createMenuTypeElement(item, content, menu);
+        break;
+      case "slider":
+        this.createSliderElement(item, content);
+        break;
+      case "input":
+        return this.createInputElement(content, menu);
+      default:
+        if (content.action && content.content) {
+          this.addItemClickHandler(item, content, menu);
         }
-        item.addEventListener("click", () => {
-          globalThis.location.hash = `${content.id}-menu`;
-        });
-
-        break;
-      }
-      case "slider": {
-        const contain = document.createElement("div");
-        contain.classList.add("flex-1");
-
-        const slide = document.createElement("input");
-        slide.id = `${content.id}-slider`;
-        slide.className = "slider";
-        slide.type = "range";
-        slide.min = content.min || 0;
-        slide.max = content.max || 100;
-        slide.step = content.step || 10;
-        slide.value = content.defaultValue || 50;
-
-        slide.addEventListener("change", () => {
-          this.sendSocketNotification("REMOTE_ACTION", {
-            action: content.action.toUpperCase(),
-            ...content.content,
-            payload: {
-              ...content.content === undefined ? {} : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
-              value: slide.value
-            },
-            value: slide.value
-          });
-        });
-
-        contain.append(slide);
-        item.append(contain);
-
-        break;
-      }
-      case "input": {
-        const input = document.createElement("input");
-        input.id = `${content.id}-input`;
-        input.className = `menu-element ${menu}-menu medium`;
-        input.type = "text";
-        input.placeholder = content.text;
-
-        input.addEventListener("focusout", () => {
-          this.sendSocketNotification("REMOTE_ACTION", {
-            action: content.action.toUpperCase(),
-            ...content.content,
-            payload: {
-              ...content.content === undefined ? {} : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
-              value: input.value
-            },
-            value: input.value
-          });
-        });
-
-        return input;
-      }
-      default: if (content.action && content.content) {
-        item.dataset.type = "item";
-        item.addEventListener("click", () => {
-          this.sendSocketNotification("REMOTE_ACTION", {
-            action: content.action.toUpperCase(),
-            payload: {},
-            ...content.content
-          });
-        });
-      }
-
     }
 
     if (!globalThis.location.hash && menu !== "main" ||

@@ -4,6 +4,7 @@
   "EDIT_MENU_NAME": "编辑界面",
   "SHUTDOWN_MENU_NAME": "电源",
   "CONFIGURE_MENU_NAME": "编辑 config.js",
+  "CLASSES_MENU_NAME": "类别",
   "VIEW_MIRROR": "MagicMirror²",
   "LINKS": "链接",
   "API_DOCS": "API 文档",

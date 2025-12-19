@@ -270,6 +270,10 @@ Group modules to show/hide together with a single action. See the [Classes Guide
     }
 ```
 
+**Example of Classes in the web interface:**
+
+![Classes Example](img/menu_classes.png)
+
 ### Custom Menu Items
 
 Create custom buttons in the web interface. See the [Custom Menus Guide](docs/guide/custom-menus.md) for details.

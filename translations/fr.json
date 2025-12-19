@@ -4,6 +4,7 @@
   "EDIT_MENU_NAME": "Afficher ou cacher les modules",
   "SHUTDOWN_MENU_NAME": "Alimentation",
   "CONFIGURE_MENU_NAME": "Éditer le fichier config.js",
+  "CLASSES_MENU_NAME": "Classes",
   "VIEW_MIRROR": "MagicMirror²",
   "LINKS": "Liens",
   "API_DOCS": "Docs de l'API",
