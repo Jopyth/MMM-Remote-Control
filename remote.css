@@ -76,6 +76,10 @@ body {
   box-sizing: border-box;
 }
 
+.header-icon {
+  display: none;
+}
+
 .header-title {
   flex: 1;
   text-align: center;
@@ -83,6 +87,37 @@ body {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.header-title::before {
+  font-family: FontAwesome, sans-serif;
+  margin-right: 0.5em;
+  opacity: 0.9;
+}
+
+.header-title.icon-power::before {
+  content: "\f011";
+}
+.header-title.icon-edit::before {
+  content: "\f26c";
+}
+.header-title.icon-settings::before {
+  content: "\f0ad";
+}
+.header-title.icon-classes::before {
+  content: "\f247";
+}
+.header-title.icon-update::before {
+  content: "\f019";
+}
+.header-title.icon-alert::before {
+  content: "\f003";
+}
+.header-title.icon-links::before {
+  content: "\f0c1";
+}
+.header-title.icon-add::before {
+  content: "\f067";
 }
 
 .header-spacer {
@@ -1126,6 +1161,7 @@ pre {
   .module-description {
     font-size: 0.8em;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .module-info {

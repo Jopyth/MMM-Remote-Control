@@ -425,9 +425,25 @@ const Remote = {
       "add-module-menu": "ADD_MODULE",
       "update-menu": "UPDATE_MENU_NAME",
       "alert-menu": "ALERT_MENU_NAME",
-      "links-menu": "LINKS"
+      "links-menu": "LINKS",
+      "classes-menu": "CLASSES_MENU_NAME"
     };
     return menuTitleMap[menuName];
+  },
+
+  getMenuIcon (menuName) {
+    const menuIconMap = {
+      "main-menu": null,
+      "power-menu": "fa-power-off",
+      "edit-menu": "fa-television",
+      "settings-menu": "fa-wrench",
+      "add-module-menu": "fa-plus",
+      "update-menu": "fa-toggle-up",
+      "alert-menu": "fa-envelope-o",
+      "links-menu": "fa-link",
+      "classes-menu": "fa-object-group"
+    };
+    return menuIconMap[menuName];
   },
 
   updateHeaderTitle (menuName) {
@@ -450,6 +466,27 @@ const Remote = {
 
       if (titleText) {
         headerTitleElement.textContent = titleText;
+      }
+
+      // Update header icon via CSS class
+      const iconClassMap = {
+        "power-menu": "icon-power",
+        "edit-menu": "icon-edit",
+        "settings-menu": "icon-settings",
+        "classes-menu": "icon-classes",
+        "update-menu": "icon-update",
+        "alert-menu": "icon-alert",
+        "links-menu": "icon-links",
+        "add-module-menu": "icon-add"
+      };
+
+      // Remove all icon classes
+      headerTitleElement.classList.remove("icon-power", "icon-edit", "icon-settings", "icon-classes", "icon-update", "icon-alert", "icon-links", "icon-add");
+
+      // Add icon class for current menu
+      const iconCssClass = iconClassMap[key];
+      if (iconCssClass) {
+        headerTitleElement.classList.add(iconCssClass);
       }
     } catch (error) {
       console.warn("Failed to update header title:", error);
