@@ -814,6 +814,15 @@ module.exports = NodeHelper.create({
     });
   },
 
+  /**
+   * Sends custom notification to MagicMirror modules.
+   * Attempts to parse JSON string payloads, falls back to raw string on error.
+   * @param {Object} query - Query with notification name and optional payload
+   * @param {string} query.notification - Notification name to broadcast
+   * @param {*} query.payload - Payload (object, JSON string, or primitive)
+   * @param {Object} res - Express response object
+   * @returns {boolean} Always true (errors are handled internally)
+   */
   handleNotification (query, res) {
     try {
       let payload = {}; // Assume empty JSON-object if no payload is provided
@@ -913,6 +922,12 @@ module.exports = NodeHelper.create({
     this.sendResponse(res, undefined, query);
   },
 
+  /**
+   * Forwards action to frontend without validation.
+   * Used for SHOW/HIDE/TOGGLE - frontend filters invalid/missing module parameters.
+   * @param {Object} query - Query object containing action and optional module identifier
+   * @param {Object} res - Express response object or socket placeholder
+   */
   handleSimpleSocketNotification (query, res) {
     this.sendSocketNotification(query.action, query);
     this.sendResponse(res);
