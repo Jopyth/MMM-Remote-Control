@@ -59,4 +59,135 @@ describe("Module API", () => {
     assert.equal(captured.query.action, "SHOW");
     assert.equal(captured.query.module, "all");
   });
+
+  test("module not found returns 400 with error message", () => {
+    const captured = {};
+    const context = makeContext({
+      configData: {moduleData: [{identifier: "module_1_clock", name: "clock", urlPath: "clock"}]},
+      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = {params: {moduleName: "NonExistentModule", action: "show"}};
+    const res = {
+      status: (code) => {
+        captured.status = code;
+        return {json: (data) => { captured.response = data; }};
+      },
+      json: () => {}
+    };
+    answerModuleApi(request, res);
+
+    assert.equal(captured.status, 400);
+    assert.equal(captured.response.success, false);
+    assert.ok(captured.response.message.includes("Not Found"));
+  });
+
+  test("invalid action on custom module returns undefined (no action object)", () => {
+    const context = makeContext({
+      configData: {moduleData: [{identifier: "module_1_custom", name: "CustomModule", urlPath: "custom", actions: {}}]},
+      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = {params: {moduleName: "CustomModule", action: "invalidAction"}};
+    const res = {json: () => {}};
+
+    // Should not crash - action will be undefined and nothing happens
+    answerModuleApi(request, res);
+  });
+
+  test("custom module API with valid action calls answerNotifyApi", () => {
+    const captured = {};
+    const context = makeContext({
+      configData: {
+        moduleData: [
+          {
+            identifier: "module_1_custom",
+            name: "CustomModule",
+            urlPath: "custom",
+            actions: {customAction: {notification: "CUSTOM_NOTIFICATION"}}
+          }
+        ]
+      },
+      mergeData: function () { return {success: true, data: this.configData.moduleData}; },
+      answerNotifyApi: (request, res, action) => {
+        captured.action = action;
+        captured.called = true;
+      }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = {params: {moduleName: "CustomModule", action: "customAction"}, query: {}};
+    const res = {json: () => {}};
+    answerModuleApi(request, res);
+
+    assert.equal(captured.called, true);
+    assert.equal(captured.action.notification, "CUSTOM_NOTIFICATION");
+  });
+
+  test("custom action with wrong HTTP method returns 400", () => {
+    const captured = {};
+    const context = makeContext({
+      configData: {
+        moduleData: [
+          {
+            identifier: "module_1_api",
+            name: "APIModule",
+            urlPath: "api",
+            actions: {postOnly: {notification: "TEST", method: "POST"}}
+          }
+        ]
+      },
+      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = {params: {moduleName: "APIModule", action: "postOnly"}, method: "GET", query: {}};
+    const res = {
+      status: (code) => {
+        captured.status = code;
+        return {json: (data) => { captured.response = data; }};
+      }
+    };
+    answerModuleApi(request, res);
+
+    assert.equal(captured.status, 400);
+    assert.equal(captured.response.success, false);
+    assert.ok(captured.response.info.includes("not allowed"));
+  });
+
+  test("no moduleName returns all merged data", () => {
+    const captured = {};
+    const context = makeContext({
+      configData: {moduleData: [{identifier: "module_1_test", name: "test"}]},
+      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = {params: {}};
+    const res = {json: (data) => { captured.response = data; }};
+    answerModuleApi(request, res);
+
+    assert.equal(captured.response.success, true);
+    assert.ok(Array.isArray(captured.response.data));
+    assert.equal(captured.response.data.length, 1);
+  });
+
+  test("no action returns filtered moduleData", () => {
+    const captured = {};
+    const context = makeContext({
+      configData: {moduleData: [{identifier: "module_1_clock", name: "clock", urlPath: "clock"}]},
+      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = {params: {moduleName: "clock"}};
+    const res = {json: (data) => { captured.response = data; }};
+    answerModuleApi(request, res);
+
+    assert.equal(captured.response.success, true);
+    assert.equal(captured.response.data.length, 1);
+    assert.equal(captured.response.data[0].name, "clock");
+  });
 });
