@@ -10,7 +10,10 @@ Since we all want our [SD cards to live a long and prosper life](http://raspberr
 
 The module also includes a **RESTful API** for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
 
-**New:** The module can now display a QR code on your mirror for easy mobile access - simply scan and connect!
+**New features:**
+
+- 📱 **PWA Support**: Install the remote control as an app on your smartphone for easy access
+- 📷 **QR Code Display**: Show a QR code on your mirror for instant mobile connection - simply scan and connect!
 
 ## Screenshots
 
@@ -99,6 +102,15 @@ You can also add multiple devices in an IP range (e.g. all devices with `192.168
 - (4) Restart your MagicMirror² (i.e. `pm2 restart MagicMirror`).
 
 - (5) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
+
+### Install as PWA (Progressive Web App)
+
+You can install the remote control as an app on your smartphone:
+
+1. Open the remote interface in your mobile browser (Chrome/Safari)
+2. On **Android** (Chrome): Tap the menu (⋮) → "Install app" or "Add to Home screen"
+3. On **iOS** (Safari): Tap Share (□↑) → "Add to Home Screen"
+4. The remote control will now work like a native app with offline support!
 
 Note: If your user does not have `sudo` rights, the shutdown does not work (it _should_ work for everyone who did not change anything on this matter).
 

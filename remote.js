@@ -2299,6 +2299,17 @@ Remote.init = function () {
     }
   });
 
+  // Register service worker for PWA support
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("modules/MMM-Remote-Control/service-worker.js").
+      then((registration) => {
+        console.log("Service Worker registered:", registration);
+      }).
+      catch((error) => {
+        console.log("Service Worker registration failed:", error);
+      });
+  }
+
   // loading successful, remove error message
   const loadError = document.querySelector("#load-error");
   if (loadError) {
