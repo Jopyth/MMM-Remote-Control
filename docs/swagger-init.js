@@ -5,7 +5,7 @@ const initSwaggerUI = async () => {
   const spec = await response.json();
 
   // Build Swagger UI
-  window.ui = SwaggerUIBundle({
+  globalThis.ui = SwaggerUIBundle({
     spec,
     dom_id: "#remote",
     deepLinking: true,
@@ -15,10 +15,10 @@ const initSwaggerUI = async () => {
   });
 
   // Hide try-it buttons on GitHub Pages
-  if (window.location.href.includes("github")) {
+  if (globalThis.location.href.includes("github")) {
     const style = document.createElement("style");
     style.textContent = "button.btn.try-out__btn, .auth-wrapper {display: none !important;}";
-    document.head.appendChild(style);
+    document.head.append(style);
   }
 
   // Rearrange documentation elements
@@ -35,32 +35,32 @@ const reorganizeInfoSection = () => {
 
   if (extdocs && info) {
     const wrapper = document.createElement("div");
-    wrapper.appendChild(extdocs);
-    info.appendChild(wrapper);
+    wrapper.append(extdocs);
+    info.append(wrapper);
   }
 
-  license?.parentElement?.appendChild(license);
+  license?.parentElement?.append(license);
 };
 
 const enhanceUI = () => {
   // Move response controls to the end of their parent
-  document.querySelectorAll(".response-controls").forEach((item) => {
+  for (const item of document.querySelectorAll(".response-controls")) {
     const parent = item.parentNode;
     if (parent?.lastChild !== item) {
-      parent?.appendChild(item);
+      parent?.append(item);
     }
-  });
+  }
 
   // Remove empty content-type selects
-  document.querySelectorAll("select.content-type").forEach((select) => {
+  for (const select of document.querySelectorAll("select.content-type")) {
     if (select.childNodes.length <= 1) {
       select.parentNode?.remove();
     }
-  });
+  }
 };
 
 const observeSwaggerUI = () => {
-  const targetNode = document.getElementById("remote");
+  const targetNode = document.querySelector("#remote");
   if (!targetNode) return;
 
   const observer = new MutationObserver((mutations) => {
@@ -83,5 +83,5 @@ const observeSwaggerUI = () => {
   enhanceUI();
 };
 
-window.addEventListener("DOMContentLoaded", initSwaggerUI);
+globalThis.addEventListener("DOMContentLoaded", initSwaggerUI);
 

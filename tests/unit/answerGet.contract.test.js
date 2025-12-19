@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const {describe, test} = require("node:test");
 const path = require("node:path");
-const ModuleLib = require("module");
+const ModuleLib = require("node:module");
 
 // Ensure shims resolve like other tests
 const shimDir = path.resolve(__dirname, "../shims");
@@ -23,7 +23,7 @@ function freshHelper (overrides = {}) {
   helper.configData = {moduleData: []};
   helper.sendSocketNotification = () => {};
   helper.checkInitialized = () => true;
-  helper.callAfterUpdate = (fn) => fn();
+  helper.callAfterUpdate = (function_) => function_();
   helper.removeDefaultValues = (config) => config;
   helper.answerGet = helperFactory.answerGet.bind(helper);
   helper.getConfig = helperFactory.getConfig.bind(helper);
@@ -61,17 +61,17 @@ describe("answerGet contract coverage", () => {
     };
     helper.configData = {moduleData: [{name: "MMM-Test", config: {fizz: "buzz"}}]};
 
-    const defaultsMap = global.Module?.configDefaults || {};
-    const prevDefaults = defaultsMap["MMM-Test"];
+    const defaultsMap = globalThis.Module?.configDefaults || {};
+    const previousDefaults = defaultsMap["MMM-Test"];
     defaultsMap["MMM-Test"] = {foo: "default"};
 
     try {
       helper.answerGet({data: "config"});
     } finally {
-      if (prevDefaults === undefined) {
+      if (previousDefaults === undefined) {
         delete defaultsMap["MMM-Test"];
       } else {
-        defaultsMap["MMM-Test"] = prevDefaults;
+        defaultsMap["MMM-Test"] = previousDefaults;
       }
     }
 

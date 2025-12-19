@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
 const {cleanConfig} = require("../../lib/configUtils");
-const group = typeof describe === "function" ? describe : (_n, fn) => fn();
+const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 group("configUtils.cleanConfig edge cases", () => {
   test("removes deep-equal defaults; preserves differing arrays/objects", () => {

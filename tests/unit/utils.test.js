@@ -1,7 +1,7 @@
 /* Unit tests for lib/utils.js using Node's built-in test runner */
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, fn) => fn();
+const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 const {capitalizeFirst, formatName, includes} = require("../../lib/utils");
 
 group("utils", () => {

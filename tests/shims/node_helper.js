@@ -1,3 +1,3 @@
 module.exports = {
-  create: (obj) => obj
+  create: (object) => object
 };

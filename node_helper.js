@@ -15,7 +15,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const url = require("node:url");
-const util = require("node:util");
+const {inspect, promisify} = require("node:util");
 const simpleGit = require("simple-git");
 
 const defaultModules = require(path.resolve(`${__dirname}/../../modules/default/defaultmodules.js`));
@@ -39,13 +39,11 @@ Module = {
 module.exports = NodeHelper.create({
   // Subclass start method.
   start () {
-    const self = this;
-
     this.initialized = false;
-    Log.log(`Starting node helper for: ${self.name}`);
+    Log.log(`Starting node helper for: ${this.name}`);
 
     // load fall back translation
-    self.loadTranslation("en");
+    this.loadTranslation("en");
 
     this.configOnHd = {};
     this.configData = {};
@@ -63,8 +61,8 @@ module.exports = NodeHelper.create({
     this.activeUpdateChecks = 0;
     this.maxParallelUpdateChecks = 10;
 
-    fs.readFile(path.resolve(`${__dirname}/remote.html`), (err, data) => {
-      self.template = data.toString();
+    fs.readFile(path.resolve(`${__dirname}/remote.html`), (error, data) => {
+      this.template = data.toString();
     });
 
     this.combineConfig();
@@ -78,9 +76,9 @@ module.exports = NodeHelper.create({
 
   stop () {
     // Clear all timeouts for clean shutdown
-    Object.keys(this.delayedQueryTimers).forEach((t) => {
+    for (const t of Object.keys(this.delayedQueryTimers)) {
       clearTimeout(this.delayedQueryTimers[t]);
-    });
+    }
   },
 
   onModulesLoaded () {
@@ -95,12 +93,10 @@ module.exports = NodeHelper.create({
   loadTimers () {
     const delay = 24 * 3600;
 
-    const self = this;
-
     clearTimeout(this.delayedQueryTimers.update);
     this.delayedQueryTimers.update = setTimeout(() => {
-      self.updateModuleList();
-      self.loadTimers();
+      this.updateModuleList();
+      this.loadTimers();
     }, delay * 1000);
   },
 
@@ -122,7 +118,7 @@ module.exports = NodeHelper.create({
         }
       }
     } catch (error) {
-      if (error.code == "ENOENT") {
+      if (error.code === "ENOENT") {
         Log.error("Could not find config file. Please create one. Starting with default configuration.");
         this.configOnHd = defaults;
       } else if (error instanceof ReferenceError || error instanceof SyntaxError) {
@@ -139,48 +135,46 @@ module.exports = NodeHelper.create({
 
   getConfigPath () {
     let configPath = path.resolve(`${__dirname}/../../config/config.js`);
-    if (typeof global.configuration_file !== "undefined") {
-      configPath = path.resolve(`${__dirname}/../../${global.configuration_file}`);
+    if (globalThis.configuration_file !== undefined) {
+      configPath = path.resolve(`${__dirname}/../../${globalThis.configuration_file}`);
     }
     return configPath;
   },
 
   createRoutes () {
-    const self = this;
-
-    this.expressApp.get("/remote.html", (req, res) => {
-      if (self.template === "") {
+    this.expressApp.get("/remote.html", (request, res) => {
+      if (this.template === "") {
         res.sendStatus(503);
       } else {
         res.contentType("text/html");
         res.set("Content-Security-Policy", "frame-ancestors http://*:*");
-        const transformedData = self.fillTemplates(self.template);
+        const transformedData = this.fillTemplates(this.template);
         res.send(transformedData);
       }
     });
 
-    this.expressApp.get("/get", (req, res) => {
-      const {query} = url.parse(req.url, true);
+    this.expressApp.get("/get", (request, res) => {
+      const {query} = url.parse(request.url, true);
 
-      self.answerGet(query, res);
+      this.answerGet(query, res);
     });
-    this.expressApp.post("/post", (req, res) => {
-      const {query} = url.parse(req.url, true);
+    this.expressApp.post("/post", (request, res) => {
+      const {query} = url.parse(request.url, true);
 
-      self.answerPost(query, req, res);
-    });
-
-    this.expressApp.get("/config-help.html", (req, res) => {
-      const {query} = url.parse(req.url, true);
-
-      self.answerConfigHelp(query, res);
+      this.answerPost(query, request, res);
     });
 
-    this.expressApp.get("/remote", (req, res) => {
-      const {query} = url.parse(req.url, true);
+    this.expressApp.get("/config-help.html", (request, res) => {
+      const {query} = url.parse(request.url, true);
 
-      if (query.action && ["COMMAND"].indexOf(query.action) === -1) {
-        const result = self.executeQuery(query, res);
+      this.answerConfigHelp(query, res);
+    });
+
+    this.expressApp.get("/remote", (request, res) => {
+      const {query} = url.parse(request.url, true);
+
+      if (query.action && !["COMMAND"].includes(query.action)) {
+        const result = this.executeQuery(query, res);
         if (result === true) {
           return;
         }
@@ -205,20 +199,18 @@ module.exports = NodeHelper.create({
   },
 
   readModuleData () {
-    const self = this;
+    fs.readFile(path.resolve(`${__dirname}/modules.json`), (error, data) => {
+      this.modulesAvailable = JSON.parse(data.toString());
 
-    fs.readFile(path.resolve(`${__dirname}/modules.json`), (err, data) => {
-      self.modulesAvailable = JSON.parse(data.toString());
-
-      for (let i = 0; i < self.modulesAvailable.length; i++) {
-        self.modulesAvailable[i].name = self.formatName(self.modulesAvailable[i].longname);
-        self.modulesAvailable[i].isDefaultModule = false;
+      for (const module of this.modulesAvailable) {
+        module.name = this.formatName(module.longname);
+        module.isDefaultModule = false;
       }
 
-      for (let i = 0; i < defaultModules.length; i++) {
-        self.modulesAvailable.push({
-          longname: defaultModules[i],
-          name: self.capitalizeFirst(defaultModules[i]),
+      for (const [index, moduleName] of defaultModules.entries()) {
+        this.modulesAvailable.push({
+          longname: moduleName,
+          name: this.capitalizeFirst(moduleName),
           isDefaultModule: true,
           installed: true,
           author: "MagicMirrorOrg",
@@ -226,53 +218,48 @@ module.exports = NodeHelper.create({
           id: "MagicMirrorOrg/MagicMirror",
           url: "https://docs.magicmirror.builders/modules/introduction.html"
         });
-        const module = self.modulesAvailable[self.modulesAvailable.length - 1];
-        const modulePath = `modules/default/${defaultModules[i]}`;
-        self.loadModuleDefaultConfig(module, modulePath, i === defaultModules.length - 1);
+        const module = this.modulesAvailable.at(-1);
+        const modulePath = `modules/default/${moduleName}`;
+        this.loadModuleDefaultConfig(module, modulePath, index === defaultModules.length - 1);
       }
 
       // now check for installed modules
-      fs.readdir(path.resolve(`${__dirname}/..`), (err, files) => {
-        const installedModules = files.filter((f) => [
+      fs.readdir(path.resolve(`${__dirname}/..`), (error, files) => {
+        const installedModules = files.filter((f) => ![
           "node_modules",
           "default",
           "README.md"
-        ].indexOf(f) === -1);
-        installedModules.forEach((dir, i) => {
-          self.addModule(dir, i === installedModules.length - 1);
-        });
+        ].includes(f));
+        for (const [index, dir] of installedModules.entries()) {
+          this.addModule(dir, index === installedModules.length - 1);
+        }
       });
     });
   },
 
   getModuleDir () {
-    return this.configOnHd.foreignModulesDir
-      ? this.configOnHd.foreignModulesDir
-      : this.configOnHd.paths
-        ? this.configOnHd.paths.modules
-        : "modules";
+    return this.configOnHd.foreignModulesDir || (this.configOnHd.paths
+      ? this.configOnHd.paths.modules
+      : "modules");
   },
 
   addModule (folderName, lastOne) {
-    const self = this;
-
     const modulePath = `${this.getModuleDir()}/${folderName}`;
-    fs.stat(modulePath, (err, stats) => {
+    fs.stat(modulePath, (error, stats) => {
       if (stats.isDirectory()) {
-        let isInList = false;
-        let currentModule;
-        self.modulesInstalled.push(folderName);
-        for (let i = 0; i < self.modulesAvailable.length; i++) {
-          if (self.modulesAvailable[i].longname === folderName) {
-            isInList = true;
-            self.modulesAvailable[i].installed = true;
-            currentModule = self.modulesAvailable[i];
+        let currentModule = null;
+        this.modulesInstalled.push(folderName);
+        for (const module of this.modulesAvailable) {
+          if (module.longname === folderName) {
+            module.installed = true;
+            currentModule = module;
+            break;
           }
         }
-        if (!isInList) {
+        if (!currentModule) {
           const newModule = {
             longname: folderName,
-            name: self.formatName(folderName),
+            name: this.formatName(folderName),
             isDefaultModule: false,
             installed: true,
             author: "unknown",
@@ -280,10 +267,10 @@ module.exports = NodeHelper.create({
             id: `local/${folderName}`,
             url: ""
           };
-          self.modulesAvailable.push(newModule);
+          this.modulesAvailable.push(newModule);
           currentModule = newModule;
         }
-        self.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
+        this.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
 
         // Check if module has changelog
         try {
@@ -298,23 +285,23 @@ module.exports = NodeHelper.create({
           fs.statSync(path.join(modulePath, ".git"));
 
           // Track pending update check (only for git repos)
-          if (!self.pendingUpdateChecks) {
-            self.pendingUpdateChecks = 0;
+          if (!this.pendingUpdateChecks) {
+            this.pendingUpdateChecks = 0;
           }
-          self.pendingUpdateChecks++;
-          Log.debug(`Queuing update check for ${folderName}, pending: ${self.pendingUpdateChecks}`);
+          this.pendingUpdateChecks++;
+          Log.debug(`Queuing update check for ${folderName}, pending: ${this.pendingUpdateChecks}`);
 
           // Add to queue instead of executing immediately
-          self.updateCheckQueue.push({
+          this.updateCheckQueue.push({
             module: currentModule,
             modulePath,
             folderName
           });
 
           // Start processing queue
-          self.processUpdateCheckQueue();
+          this.processUpdateCheckQueue();
 
-          if (!isInList) {
+          if (!currentModule) {
             const sg = simpleGit(modulePath);
             sg.getRemotes(true, (error, result) => {
               if (error) {
@@ -361,8 +348,8 @@ module.exports = NodeHelper.create({
         check.module.updateAvailable = true;
         Log.info(`Module ${check.folderName} has updates available (behind ${data.behind} commits)`);
       }
-    } catch (err) {
-      Log.warn(`Error checking updates for ${check.folderName}: ${err.message || err}`);
+    } catch (error) {
+      Log.warn(`Error checking updates for ${check.folderName}: ${error.message || error}`);
     } finally {
       this.activeUpdateChecks--;
       this.pendingUpdateChecks--;
@@ -381,23 +368,23 @@ module.exports = NodeHelper.create({
 
       /* Defaults are stored when Module.register is called during require(filename); */
       require(filename);
-    } catch (e) {
-      if (e instanceof ReferenceError) {
+    } catch (error) {
+      if (error instanceof ReferenceError) {
         Log.log(`Could not get defaults for ${module.longname}. See #335.`);
-      } else if (e.code == "ENOENT") {
+      } else if (error.code === "ENOENT") {
         Log.error(`Could not find main module js file for ${module.longname}`);
-      } else if (e instanceof SyntaxError) {
+      } else if (error instanceof SyntaxError) {
         Log.error(`Could not validate main module js file for ${module.longname}`);
-        Log.error(e);
+        Log.error(error);
       } else {
-        Log.error(`Could not load main module js file for ${module.longname}. Error found: ${e}`);
+        Log.error(`Could not load main module js file for ${module.longname}. Error found: ${error}`);
       }
     }
     if (lastOne) { this.onModulesLoaded(); }
   },
 
   answerConfigHelp (query, res) {
-    if (defaultModules.indexOf(query.module) !== -1) {
+    if (defaultModules.includes(query.module)) {
       // default module
       const dir = path.resolve(`${__dirname}/..`);
       const git = simpleGit(dir);
@@ -433,8 +420,7 @@ module.exports = NodeHelper.create({
 
   getConfig () {
     const config = this.configOnHd;
-    for (let i = 0; i < config.modules.length; i++) {
-      const current = config.modules[i];
+    for (const current of config.modules) {
       const moduleDefaultsFromRequire = Module.configDefaults[current.module];
       // We need moduleDataFromBrowser for bundled modules like MMM-RAIN-MAP. See #331.
       const moduleDataFromBrowser = this.configData.moduleData?.find((item) => item.name === current.module);
@@ -463,31 +449,32 @@ module.exports = NodeHelper.create({
       moduleDefaultsMap,
       moduleDataFromBrowser
     });
-    cleaned.modules?.forEach((m) => Log.debug(m));
+    if (cleaned.modules) for (const m of cleaned.modules) Log.debug(m);
     return cleaned;
   },
 
   findBestBackupSlot () {
     const backupHistorySize = 5;
-    const backupSlots = Array.from({length: backupHistorySize - 1}, (_, i) => i + 1);
+    const backupSlots = Array.from({length: backupHistorySize - 1}, (_, index) => index + 1);
 
-    return backupSlots.reduce((best, slot) => {
+    let best = null;
+    for (const slot of backupSlots) {
       const backupPath = path.resolve(`config/config.js.backup${slot}`);
       try {
         const stats = fs.statSync(backupPath);
-        return !best || stats.mtime < best.mtime
-          ? {slot, mtime: stats.mtime}
-          : best;
-      } catch (e) {
-        if (e.code === "ENOENT") {
-          const emptySlotMtime = new Date(0);
-          return !best || emptySlotMtime < best.mtime
-            ? {slot, mtime: emptySlotMtime}
-            : best;
+        if (!best || stats.mtime < best.mtime) {
+          best = {slot, mtime: stats.mtime};
         }
-        return best;
+      } catch (error) {
+        if (error.code === "ENOENT") {
+          const emptySlotMtime = new Date(0);
+          if (!best || emptySlotMtime < best.mtime) {
+            best = {slot, mtime: emptySlotMtime};
+          }
+        }
       }
-    }, null);
+    }
+    return best;
   },
 
   async saveConfigWithBackup (configData, res, query) {
@@ -513,7 +500,7 @@ module.exports = NodeHelper.create({
       const header = "/*************** AUTO GENERATED BY REMOTE CONTROL MODULE ***************/\n\nlet config = \n";
       const footer = "\n\n/*************** DO NOT EDIT THE LINE BELOW ***************/\nif (typeof module !== 'undefined') {module.exports = config;}\n";
 
-      const configContent = header + util.inspect(this.configOnHd, {
+      const configContent = header + inspect(this.configOnHd, {
         showHidden: false,
         depth: null,
         maxArrayLength: null,
@@ -540,9 +527,9 @@ module.exports = NodeHelper.create({
     }
   },
 
-  answerPost (query, req, res) {
+  answerPost (query, request, res) {
     if (query.data === "config") {
-      this.saveConfigWithBackup(req.body, res, query);
+      this.saveConfigWithBackup(request.body, res, query);
     }
   },
 
@@ -552,8 +539,6 @@ module.exports = NodeHelper.create({
   },
 
   handleGetModuleInstalled (query, res) {
-    const self = this;
-    const filterInstalled = (value) => value.installed && !value.isDefaultModule;
 
     // Wait for pending update checks to complete before sending response
     const startTime = Date.now();
@@ -561,7 +546,7 @@ module.exports = NodeHelper.create({
 
     const waitForUpdateChecks = () => {
       const elapsed = Date.now() - startTime;
-      const {pendingUpdateChecks, activeUpdateChecks, updateCheckQueue} = self;
+      const {pendingUpdateChecks, activeUpdateChecks, updateCheckQueue} = this;
 
       if (pendingUpdateChecks > 0 && elapsed < maxWaitTime) {
         if (elapsed % 1000 < 100) { // Log every ~1 second
@@ -574,9 +559,9 @@ module.exports = NodeHelper.create({
         } else {
           Log.info(`All update checks complete after ${elapsed}ms`);
         }
-        const installed = self.modulesAvailable.filter(filterInstalled);
+        const installed = this.modulesAvailable.filter((value) => value.installed && !value.isDefaultModule);
         installed.sort((a, b) => a.name.localeCompare(b.name));
-        self.sendResponse(res, undefined, {query, data: installed});
+        this.sendResponse(res, undefined, {query, data: installed});
       }
     };
     waitForUpdateChecks();
@@ -584,12 +569,10 @@ module.exports = NodeHelper.create({
 
   handleGetMmUpdateAvailable (query, res) {
     const sg = simpleGit(`${__dirname}/..`);
-    sg.fetch().status((err, data) => {
-      if (!err) {
-        if (data.behind > 0) {
-          this.sendResponse(res, undefined, {query, result: true});
-          return;
-        }
+    sg.fetch().status((error, data) => {
+      if (!error && data.behind > 0) {
+        this.sendResponse(res, undefined, {query, result: true});
+        return;
       }
       this.sendResponse(res, undefined, {query, result: false});
     });
@@ -607,48 +590,45 @@ module.exports = NodeHelper.create({
     const backupHistorySize = 5;
     const times = [];
 
-    for (let i = backupHistorySize - 1; i > 0; i--) {
-      const backupPath = path.resolve(`config/config.js.backup${i}`);
+    for (let index = backupHistorySize - 1; index > 0; index--) {
+      const backupPath = path.resolve(`config/config.js.backup${index}`);
       try {
         const stats = fs.statSync(backupPath);
         times.push(stats.mtime);
       } catch (error) {
-        Log.debug(`Backup ${i} does not exist: ${error}.`);
+        Log.debug(`Backup ${index} does not exist: ${error}.`);
         continue;
       }
     }
-    this.sendResponse(res, undefined, {query, data: times.sort((a, b) => b - a)});
+    this.sendResponse(res, undefined, {query, data: times.toSorted((a, b) => b - a)});
   },
 
   handleGetDefaultConfig (query, res) {
-    if (!(query.module in Module.configDefaults)) {
-      this.sendResponse(res, undefined, {query, data: {}});
-    } else {
+    if (query.module in Module.configDefaults) {
       this.sendResponse(res, undefined, {query, data: Module.configDefaults[query.module]});
+    } else {
+      this.sendResponse(res, undefined, {query, data: {}});
     }
   },
 
   handleGetModules (query, res) {
-    const self = this;
     if (!this.checkInitialized(res)) { return; }
     this.callAfterUpdate(() => {
-      self.sendResponse(res, undefined, {query, data: self.configData.moduleData});
+      this.sendResponse(res, undefined, {query, data: this.configData.moduleData});
     });
   },
 
   handleGetBrightness (query, res) {
-    const self = this;
     if (!this.checkInitialized(res)) { return; }
     this.callAfterUpdate(() => {
-      self.sendResponse(res, undefined, {query, result: self.configData.brightness});
+      this.sendResponse(res, undefined, {query, result: this.configData.brightness});
     });
   },
 
   handleGetTemp (query, res) {
-    const self = this;
     if (!this.checkInitialized(res)) { return; }
     this.callAfterUpdate(() => {
-      self.sendResponse(res, undefined, {query, result: self.configData.temp});
+      this.sendResponse(res, undefined, {query, result: this.configData.temp});
     });
   },
 
@@ -688,7 +668,7 @@ module.exports = NodeHelper.create({
     const changelogPath = path.join(modulePath, "CHANGELOG.md");
 
     try {
-      const changelog = fs.readFileSync(changelogPath, "utf-8");
+      const changelog = fs.readFileSync(changelogPath, "utf8");
       this.sendResponse(res, undefined, {action: "GET_CHANGELOG", changelog, module: moduleName});
     } catch {
       this.sendResponse(res, new Error("Changelog not found"), {action: "GET_CHANGELOG", query});
@@ -752,14 +732,14 @@ module.exports = NodeHelper.create({
     return result;
   },
 
-  monitorControl (action, opts, res) {
+  monitorControl (action, options, res) {
     let status = "unknown";
-    const offArr = [
+    const offArray = new Set([
       "false",
       "TV is off",
       "standby",
       "display_power=0"
-    ];
+    ]);
     const monitorOnCommand = this.initialized && "monitorOnCommand" in this.thisConfig.customCommand
       ? this.thisConfig.customCommand.monitorOnCommand
       : "vcgencmd display_power 1";
@@ -770,36 +750,40 @@ module.exports = NodeHelper.create({
       ? this.thisConfig.customCommand.monitorStatusCommand
       : "vcgencmd display_power -1";
     switch (action) {
-      case "MONITORSTATUS": exec(monitorStatusCommand, opts, (error, stdout, stderr) => {
-        status = offArr.indexOf(stdout.trim()) !== -1
+      case "MONITORSTATUS": exec(monitorStatusCommand, options, (error, stdout, stderr) => {
+        status = offArray.has(stdout.trim())
           ? "off"
           : "on";
         this.checkForExecError(error, stdout, stderr, res, {monitor: status});
 
       });
         break;
-      case "MONITORTOGGLE": exec(monitorStatusCommand, opts, (error, stdout) => {
-        status = offArr.indexOf(stdout.trim()) !== -1
+
+      case "MONITORTOGGLE": exec(monitorStatusCommand, options, (error, stdout) => {
+        status = offArray.has(stdout.trim())
           ? "off"
           : "on";
-        if (status === "on") { this.monitorControl("MONITOROFF", opts, res); } else { this.monitorControl("MONITORON", opts, res); }
+        if (status === "on") { this.monitorControl("MONITOROFF", options, res); } else { this.monitorControl("MONITORON", options, res); }
 
       });
         break;
-      case "MONITORON": exec(monitorOnCommand, opts, (error, stdout, stderr) => {
+
+      case "MONITORON": exec(monitorOnCommand, options, (error, stdout, stderr) => {
         this.checkForExecError(error, stdout, stderr, res, {monitor: "on"});
       });
         this.sendSocketNotification("USER_PRESENCE", true);
         break;
-      case "MONITOROFF": exec(monitorOffCommand, opts, (error, stdout, stderr) => {
+
+      case "MONITOROFF": exec(monitorOffCommand, options, (error, stdout, stderr) => {
         this.checkForExecError(error, stdout, stderr, res, {monitor: "off"});
       });
         this.sendSocketNotification("USER_PRESENCE", false);
         break;
+
     }
   },
 
-  shutdownControl (action, opts) {
+  shutdownControl (action, options) {
     const shutdownCommand = this.initialized && "shutdownCommand" in this.thisConfig.customCommand
       ? this.thisConfig.customCommand.shutdownCommand
       : "sudo shutdown -h now";
@@ -807,28 +791,20 @@ module.exports = NodeHelper.create({
       ? this.thisConfig.customCommand.rebootCommand
       : "sudo shutdown -r now";
     if (action === "SHUTDOWN") {
-      exec(shutdownCommand, opts, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+      exec(shutdownCommand, options, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
     }
     if (action === "REBOOT") {
-      exec(rebootCommand, opts, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+      exec(rebootCommand, options, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
     }
   },
 
   handleShowAlert (query, res) {
     this.sendResponse(res);
 
-    const type = query.type
-      ? query.type
-      : "alert";
-    const title = query.title
-      ? query.title
-      : "Note";
-    const message = query.message
-      ? query.message
-      : "Attention!";
-    const timer = query.timer
-      ? query.timer
-      : 4;
+    const type = query.type || "alert";
+    const title = query.title || "Note";
+    const message = query.message || "Attention!";
+    const timer = query.timer || 4;
 
     this.sendSocketNotification(query.action, {
       type,
@@ -841,16 +817,12 @@ module.exports = NodeHelper.create({
   handleNotification (query, res) {
     try {
       let payload = {}; // Assume empty JSON-object if no payload is provided
-      if (typeof query.payload === "undefined") {
+      if (query.payload === undefined) {
         payload = query.payload;
       } else if (typeof query.payload === "object") {
         payload = query.payload;
       } else if (typeof query.payload === "string") {
-        if (query.payload.startsWith("{")) {
-          payload = JSON.parse(query.payload);
-        } else {
-          payload = query.payload;
-        }
+        payload = query.payload.startsWith("{") ? JSON.parse(query.payload) : query.payload;
       }
       this.sendSocketNotification(query.action, {"notification": query.notification, payload});
       this.sendResponse(res);
@@ -876,9 +848,11 @@ module.exports = NodeHelper.create({
     const classes = [];
     switch (typeof query.payload.classes) {
       case "string": classes.push(this.thisConfig.classes[query.payload.classes]); break;
-      case "object": query.payload.classes.forEach((t) => classes.push(this.thisConfig.classes[t]));
+
+      case "object": for (const t of query.payload.classes) classes.push(this.thisConfig.classes[t]);
+
     }
-    classes.forEach((cl) => {
+    for (const cl of classes) {
       for (const act in cl) {
         if ([
           "SHOW",
@@ -886,13 +860,13 @@ module.exports = NodeHelper.create({
           "TOGGLE"
         ].includes(act.toUpperCase())) {
           if (typeof cl[act] === "string") { this.sendSocketNotification(act.toUpperCase(), {module: cl[act]}); } else {
-            cl[act].forEach((t) => {
+            for (const t of cl[act]) {
               this.sendSocketNotification(act.toUpperCase(), {module: t});
-            });
+            }
           }
         }
       }
-    });
+    }
     this.sendResponse(res);
   },
 
@@ -905,24 +879,27 @@ module.exports = NodeHelper.create({
         case "MINIMIZE":
           win.minimize();
           break;
+
         case "TOGGLEFULLSCREEN":
           win.setFullScreen(!win.isFullScreen());
           break;
+
         case "DEVTOOLS":
           if (win.webContents.isDevToolsOpened()) { win.webContents.closeDevTools(); } else { win.webContents.openDevTools(); }
           break;
+
         default:
       }
       this.sendResponse(res);
-    } catch (err) {
-      this.sendResponse(res, err);
+    } catch (error) {
+      this.sendResponse(res, error);
     }
   },
 
   handleCommand (query, res) {
-    const opts = {timeout: 15000};
+    const options = {timeout: 15_000};
     if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
-      exec(this.thisConfig.customCommand[query.command], opts, (error, stdout, stderr) => {
+      exec(this.thisConfig.customCommand[query.command], options, (error, stdout, stderr) => {
         this.checkForExecError(error, stdout, stderr, res, {stdout});
       });
     } else {
@@ -983,19 +960,19 @@ module.exports = NodeHelper.create({
   },
 
   getActionHandlers () {
-    const opts = {timeout: 15000};
+    const options = {timeout: 15_000};
     return {
       GET_CHANGELOG: (q, r) => this.answerGetChangelog(q, r),
-      SHUTDOWN: (q, r) => this.shutdownControl(q.action, opts, r),
-      REBOOT: (q, r) => this.shutdownControl(q.action, opts, r),
+      SHUTDOWN: (q, r) => this.shutdownControl(q.action, options, r),
+      REBOOT: (q, r) => this.shutdownControl(q.action, options, r),
       RESTART: (q, r) => this.controlPm2(r, q),
       STOP: (q, r) => this.controlPm2(r, q),
       COMMAND: (q, r) => this.handleCommand(q, r),
       USER_PRESENCE: (q, r) => this.handleUserPresence(q, r),
-      MONITORON: (q, r) => this.monitorControl(q.action, opts, r),
-      MONITOROFF: (q, r) => this.monitorControl(q.action, opts, r),
-      MONITORTOGGLE: (q, r) => this.monitorControl(q.action, opts, r),
-      MONITORSTATUS: (q, r) => this.monitorControl(q.action, opts, r),
+      MONITORON: (q, r) => this.monitorControl(q.action, options, r),
+      MONITOROFF: (q, r) => this.monitorControl(q.action, options, r),
+      MONITORTOGGLE: (q, r) => this.monitorControl(q.action, options, r),
+      MONITORSTATUS: (q, r) => this.monitorControl(q.action, options, r),
       HIDE: (q, r) => this.handleSimpleSocketNotification(q, r),
       SHOW: (q, r) => this.handleSimpleSocketNotification(q, r),
       TOGGLE: (q, r) => this.handleSimpleSocketNotification(q, r),
@@ -1031,12 +1008,11 @@ module.exports = NodeHelper.create({
   },
 
   installModule (url, res, data) {
-    const self = this;
 
     simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), (error) => {
       if (error) {
         Log.error(error);
-        self.sendResponse(res, error);
+        this.sendResponse(res, error);
       } else {
         const workDir = path.resolve(`${__dirname}/../${path.basename(url)}`);
         const packageJsonExists = fs.existsSync(`${workDir}/package.json`);
@@ -1049,20 +1025,20 @@ module.exports = NodeHelper.create({
               ? "npm ci --omit=dev"
               : "npm install --omit=dev";
 
-            exec(command, {cwd: workDir, timeout: 120000}, (error, stdout, stderr) => {
+            exec(command, {cwd: workDir, timeout: 120_000}, (error, stdout, stderr) => {
               if (error) {
                 Log.error(error);
-                self.sendResponse(res, error, {stdout, stderr, ...data});
+                this.sendResponse(res, error, {stdout, stderr, ...data});
               } else {
                 // success part
-                self.readModuleData();
-                self.sendResponse(res, undefined, {stdout, ...data});
+                this.readModuleData();
+                this.sendResponse(res, undefined, {stdout, ...data});
               }
             });
           }
         } else {
-          self.readModuleData();
-          self.sendResponse(res, undefined, {stdout: "Module installed.", ...data});
+          this.readModuleData();
+          this.sendResponse(res, undefined, {stdout: "Module installed.", ...data});
         }
       }
     });
@@ -1075,20 +1051,20 @@ module.exports = NodeHelper.create({
     let name = "MM";
 
     if (module && module !== "undefined") {
-      const modData = this.modulesAvailable?.find((m) => m.longname === module);
-      if (!modData) {
+      const moduleData = this.modulesAvailable?.find((m) => m.longname === module);
+      if (!moduleData) {
         this.sendResponse(res, new Error("Unknown Module"), {info: module});
         return;
       }
 
-      modulePath = `${__dirname}/../${modData.longname}`;
-      name = modData.name;
+      modulePath = `${__dirname}/../${moduleData.longname}`;
+      name = moduleData.name;
     }
 
     Log.log(`path: ${modulePath} name: ${name}`);
 
     const git = simpleGit(modulePath);
-    const execPromise = util.promisify(exec);
+    const execPromise = promisify(exec);
 
     try {
       await git.fetch();
@@ -1129,7 +1105,7 @@ module.exports = NodeHelper.create({
       const command = packageLockExists ? "npm ci --omit=dev" : "npm install --omit=dev";
 
       try {
-        await execPromise(command, {cwd: modulePath, timeout: 120000});
+        await execPromise(command, {cwd: modulePath, timeout: 120_000});
         this.sendUpdateResponseWithChangelog(res, modulePath, name);
       } catch (error) {
         Log.error(error);
@@ -1146,7 +1122,7 @@ module.exports = NodeHelper.create({
     const response = {code: "restart", info: `${name} updated.`};
 
     if (fs.existsSync(changelogPath)) {
-      response.chlog = fs.readFileSync(changelogPath, "utf-8");
+      response.chlog = fs.readFileSync(changelogPath, "utf8");
     }
 
     this.sendResponse(res, undefined, response);
@@ -1174,8 +1150,8 @@ module.exports = NodeHelper.create({
     const pm2 = require("pm2");
     const processName = query.processName || this.thisConfig.pm2ProcessName || "mm";
 
-    pm2.connect((err) => {
-      if (err) {
+    pm2.connect((error) => {
+      if (error) {
         pm2.disconnect();
         const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
         Log.log(`${message}`);
@@ -1184,8 +1160,8 @@ module.exports = NodeHelper.create({
       }
 
       // Check if process is running in PM2
-      pm2.list((err, list) => {
-        if (err || !list.find((proc) => proc.name === processName && proc.pm2_env.status === "online")) {
+      pm2.list((error, list) => {
+        if (error || !list.some((proc) => proc.name === processName && proc.pm2_env.status === "online")) {
           pm2.disconnect();
           const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
           Log.log(`${message}`);
@@ -1194,11 +1170,11 @@ module.exports = NodeHelper.create({
         }
 
         // Process is running in PM2, perform action
-        pm2[actionName](processName, (err) => {
+        pm2[actionName](processName, (error) => {
           pm2.disconnect();
-          if (err) {
-            Log.error(`PM2 ${actionName} error:`, err);
-            this.sendResponse(res, err);
+          if (error) {
+            Log.error(`PM2 ${actionName} error:`, error);
+            this.sendResponse(res, error);
           } else {
             Log.log(`PM2 ${actionName}: ${processName}`);
             this.sendResponse(res, undefined, {action: actionName, processName});
@@ -1209,24 +1185,22 @@ module.exports = NodeHelper.create({
   },
 
   translate (data) {
-    Object.keys(this.translation).forEach((t) => {
+    for (const t of Object.keys(this.translation)) {
       const pattern = `%%TRANSLATE:${t}%%`;
       const re = new RegExp(pattern, "g");
       data = data.replace(re, this.translation[t]);
-    });
+    }
     return data;
   },
 
   saveDefaultSettings () {
     const {moduleData} = this.configData;
-    const simpleModuleData = [];
-    for (let k = 0; k < moduleData.length; k++) {
-      simpleModuleData.push({});
-      simpleModuleData[k].identifier = moduleData[k].identifier;
-      simpleModuleData[k].hidden = moduleData[k].hidden;
-      simpleModuleData[k].lockStrings = moduleData[k].lockStrings;
-      simpleModuleData[k].urlPath = moduleData[k].urlPath;
-    }
+    const simpleModuleData = moduleData.map((moduleDatum) => ({
+      identifier: moduleDatum.identifier,
+      hidden: moduleDatum.hidden,
+      lockStrings: moduleDatum.lockStrings,
+      urlPath: moduleDatum.urlPath
+    }));
 
     const text = JSON.stringify({
       moduleData: simpleModuleData,
@@ -1235,9 +1209,9 @@ module.exports = NodeHelper.create({
       settingsVersion: this.configData.settingsVersion
     });
 
-    fs.writeFile(path.resolve(`${__dirname}/settings.json`), text, (err) => {
-      if (err) {
-        throw err;
+    fs.writeFile(path.resolve(`${__dirname}/settings.json`), text, (error) => {
+      if (error) {
+        throw error;
       }
     });
   },
@@ -1245,17 +1219,16 @@ module.exports = NodeHelper.create({
   in (pattern, string) { return includes(pattern, string); },
 
   loadDefaultSettings () {
-    const self = this;
 
     fs.readFile(path.resolve(`${__dirname}/settings.json`), (error, data) => {
       if (error) {
-        if (self.in("no such file or directory", error.message)) {
+        if (this.in("no such file or directory", error.message)) {
           return;
         }
         Log.error(error);
       } else {
         data = JSON.parse(data.toString());
-        self.sendSocketNotification("DEFAULT_SETTINGS", data);
+        this.sendSocketNotification("DEFAULT_SETTINGS", data);
       }
     });
   },
@@ -1263,21 +1236,20 @@ module.exports = NodeHelper.create({
   fillTemplates (data) {
     data = this.translate(data);
     // Replace config path placeholder
-    const configPath = typeof global.configuration_file !== "undefined"
-      ? global.configuration_file
-      : "config/config.js";
-    data = data.replace(/%%CONFIG_PATH%%/g, configPath);
+    const configPath = globalThis.configuration_file === undefined
+      ? "config/config.js"
+      : globalThis.configuration_file;
+    data = data.replaceAll("%%CONFIG_PATH%%", configPath);
     return data;
   },
 
   loadTranslation (language) {
-    const self = this;
 
-    fs.readFile(path.resolve(`${__dirname}/translations/${language}.json`), (err, data) => {
-      if (err) {
+    fs.readFile(path.resolve(`${__dirname}/translations/${language}.json`), (error, data) => {
+      if (error) {
         return;
       } else {
-        self.translation = {...self.translation, ...JSON.parse(data.toString())};
+        this.translation = {...this.translation, ...JSON.parse(data.toString())};
       }
     });
   },
@@ -1289,8 +1261,8 @@ module.exports = NodeHelper.create({
         Log.log(`customMenu requested, but file:${menuPath} was not found.`);
         return;
       }
-      fs.readFile(menuPath, (err, data) => {
-        if (err) {
+      fs.readFile(menuPath, (error, data) => {
+        if (error) {
           return;
         } else {
           this.customMenu = {...this.customMenu, ...JSON.parse(this.translate(data.toString()))};
@@ -1316,25 +1288,24 @@ module.exports = NodeHelper.create({
   },
 
   socketNotificationReceived (notification, payload) {
-    const self = this;
 
     if (notification === "CURRENT_STATUS") {
       this.configData = payload;
       this.thisConfig = payload.remoteConfig;
-      if (!this.initialized) {
+      if (this.initialized) {
+        for (const o of this.waiting) { o.run(); }
+        this.waiting = [];
+      } else {
         // Do anything else required to initialize
         this.initialized = true;
-      } else {
-        this.waiting.forEach((o) => { o.run(); });
-        this.waiting = [];
       }
     }
     if (notification === "REQUEST_DEFAULT_SETTINGS") {
       // module started, answer with current ip addresses
-      self.sendSocketNotification("IP_ADDRESSES", self.getIpAddresses());
-      self.sendSocketNotification("LOAD_PORT", self.configOnHd.port ? self.configOnHd.port : "");
+      this.sendSocketNotification("IP_ADDRESSES", this.getIpAddresses());
+      this.sendSocketNotification("LOAD_PORT", this.configOnHd.port || "");
       // check if we have got saved default settings
-      self.loadDefaultSettings();
+      this.loadDefaultSettings();
     }
     if (notification === "REMOTE_ACTION") {
       if ("action" in payload) {
@@ -1347,16 +1318,16 @@ module.exports = NodeHelper.create({
       const backupHistorySize = 5;
       let iteration = -1;
 
-      for (let i = backupHistorySize - 1; i > 0; i--) {
-        const backupPath = path.resolve(`config/config.js.backup${i}`);
+      for (let index = backupHistorySize - 1; index > 0; index--) {
+        const backupPath = path.resolve(`config/config.js.backup${index}`);
         try {
           const stats = fs.statSync(backupPath);
           if (stats.mtime.toISOString() == payload) {
-            iteration = i;
-            i = -1;
+            iteration = index;
+            index = -1;
           }
         } catch (error) {
-          Log.debug(`Backup ${i} does not exist: ${error}.`);
+          Log.debug(`Backup ${index} does not exist: ${error}.`);
           continue;
         }
       }
@@ -1365,9 +1336,9 @@ module.exports = NodeHelper.create({
         return;
       }
       const backupPath = path.resolve(`config/config.js.backup${iteration}`);
-      const req = require(backupPath);
+      const request = require(backupPath);
 
-      this.answerPost({data: "config"}, {body: req}, {isSocket: true});
+      this.answerPost({data: "config"}, {body: request}, {isSocket: true});
     }
     if (notification === "NEW_CONFIG") {
       this.answerPost({data: "config"}, {body: payload}, {isSocket: true});
@@ -1387,16 +1358,14 @@ module.exports = NodeHelper.create({
     }
 
     /* API EXTENSION -- added v2.0.0 */
-    if (notification === "REGISTER_API") {
-      if ("module" in payload) {
-        if ("actions" in payload && Object.keys(payload.actions).length > 0) {
-          this.externalApiRoutes[payload.module] = payload;
-        } else {
+    if (notification === "REGISTER_API" && "module" in payload) {
+      if ("actions" in payload && Object.keys(payload.actions).length > 0) {
+        this.externalApiRoutes[payload.module] = payload;
+      } else {
         // Blank actions means the module has requested to be removed from API
-          delete this.externalApiRoutes[payload.module];
-        }
-        this.updateModuleApiMenu();
+        delete this.externalApiRoutes[payload.module];
       }
+      this.updateModuleApiMenu();
     }
   },
   ...require("./API/api.js")

@@ -1,10 +1,10 @@
 const assert = require("node:assert/strict");
 const {describe, test, beforeEach, afterEach} = require("node:test");
 const path = require("node:path");
-const ModuleLib = require("module");
+const ModuleLib = require("node:module");
 
 // Ensure shims resolve like other tests
-global.process = global.process || {};
+globalThis.process = globalThis.process || {};
 const shimDir = path.resolve(__dirname, "../shims");
 process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : "");
 if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
@@ -70,9 +70,9 @@ describe("answerPost config persistence", () => {
     fs.promises.copyFile = originalFs.copyFile;
     fs.promises.writeFile = originalFs.writeFile;
 
-    moduleOverrides.forEach((_entry, filePath) => {
+    for (const [filePath] of moduleOverrides.entries()) {
       delete require.cache[filePath];
-    });
+    }
     moduleOverrides.clear();
     ModuleLib._load = originalLoad;
   });
@@ -94,15 +94,15 @@ describe("answerPost config persistence", () => {
       if (mtimeBySlot[slot]) {
         return {mtime: mtimeBySlot[slot]};
       }
-      const err = new Error("missing");
-      err.code = "ENOENT";
-      throw err;
+      const error_ = new Error("missing");
+      error_.code = "ENOENT";
+      throw error_;
     };
 
     let written;
-    fs.promises.copyFile = async (src, dest) => {
-      assert.equal(src, "/mirror/config.js");
-      assert.equal(dest, path.resolve("config/config.js.backup3"));
+    fs.promises.copyFile = async (source, destination) => {
+      assert.equal(source, "/mirror/config.js");
+      assert.equal(destination, path.resolve("config/config.js.backup3"));
     };
     fs.promises.writeFile = async (target, contents) => {
       written = {target, contents};
@@ -154,9 +154,9 @@ describe("answerPost config persistence", () => {
     helper.getConfigPath = () => "/mirror/config.js";
 
     fs.statSync = () => {
-      const err = new Error("missing");
-      err.code = "ENOENT";
-      throw err;
+      const error_ = new Error("missing");
+      error_.code = "ENOENT";
+      throw error_;
     };
 
     const writeError = new Error("disk full");
@@ -183,25 +183,25 @@ describe("answerPost config persistence", () => {
   });
   test("UNDO_CONFIG restores backup when timestamp matches", () => {
     const helper = freshHelper();
-    let answerArgs;
-    helper.answerPost = (query, req, res) => {
-      answerArgs = {query, req, res};
+    let answerArguments;
+    helper.answerPost = (query, request, res) => {
+      answerArguments = {query, req: request, res};
     };
 
     const targetTime = new Date("2025-10-09T10:00:00Z");
     fs.statSync = (filePath) => {
       const match = (/backup(\d)/u).exec(filePath);
       if (!match) {
-        const err = new Error("missing");
-        err.code = "ENOENT";
-        throw err;
+        const error = new Error("missing");
+        error.code = "ENOENT";
+        throw error;
       }
       if (Number(match[1]) === 4) {
         return {mtime: targetTime};
       }
-      const err = new Error("missing");
-      err.code = "ENOENT";
-      throw err;
+      const error = new Error("missing");
+      error.code = "ENOENT";
+      throw error;
     };
 
     const restoredConfig = {modules: [{module: "newsfeed"}]};
@@ -209,24 +209,24 @@ describe("answerPost config persistence", () => {
 
     helper.socketNotificationReceived("UNDO_CONFIG", targetTime.toISOString());
 
-    assert.ok(answerArgs);
-    assert.deepEqual(answerArgs.query, {data: "config"});
-    assert.deepEqual(answerArgs.req.body, restoredConfig);
-    assert.deepEqual(answerArgs.res, {isSocket: true});
+    assert.ok(answerArguments);
+    assert.deepEqual(answerArguments.query, {data: "config"});
+    assert.deepEqual(answerArguments.req.body, restoredConfig);
+    assert.deepEqual(answerArguments.res, {isSocket: true});
   });
 
   test("UNDO_CONFIG falls back when timestamp not found", () => {
     const helper = freshHelper();
-    let answerArgs;
+    let answerArguments;
     helper.answerGet = (query, res) => {
-      answerArgs = {query, res};
+      answerArguments = {query, res};
     };
 
     helper.socketNotificationReceived("UNDO_CONFIG", new Date("2025-10-01T12:00:00Z").toISOString());
 
-    assert.ok(answerArgs);
-    assert.deepEqual(answerArgs.query, {data: "saves"});
-    assert.deepEqual(answerArgs.res, {isSocket: true});
+    assert.ok(answerArguments);
+    assert.deepEqual(answerArguments.query, {data: "saves"});
+    assert.deepEqual(answerArguments.res, {isSocket: true});
   });
 
   test("UNDO_CONFIG surfaces load errors", () => {
@@ -236,16 +236,16 @@ describe("answerPost config persistence", () => {
     fs.statSync = (filePath) => {
       const match = (/backup(\d)/u).exec(filePath);
       if (!match) {
-        const err = new Error("missing");
-        err.code = "ENOENT";
-        throw err;
+        const error = new Error("missing");
+        error.code = "ENOENT";
+        throw error;
       }
       if (Number(match[1]) === 2) {
         return {mtime: time};
       }
-      const err = new Error("missing");
-      err.code = "ENOENT";
-      throw err;
+      const error = new Error("missing");
+      error.code = "ENOENT";
+      throw error;
     };
 
     setModuleError("config/config.js.backup2", new Error("invalid"));

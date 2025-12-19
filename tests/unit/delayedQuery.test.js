@@ -1,10 +1,10 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, fn) => fn();
+const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 // Add tests/shims to module resolution so 'logger' resolves to our shim
 const path = require("node:path");
-const ModuleLib = require("module");
+const ModuleLib = require("node:module");
 const shimDir = path.resolve(__dirname, "../shims");
 process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : "");
 // Re-initialize search paths to include NODE_PATH
@@ -16,7 +16,7 @@ if (typeof ModuleLib._initPaths === "function") {
 const nodeHelperFactory = require("../../node_helper.js");
 
 // Capture originals to restore after tests
-const ORIGINAL_TIMERS = {setTimeout: global.setTimeout, clearTimeout: global.clearTimeout};
+const ORIGINAL_TIMERS = {setTimeout: globalThis.setTimeout, clearTimeout: globalThis.clearTimeout};
 
 // Builds a minimal helper instance with overridden timer functions for determinism
 function makeHelperWithFakeTimers () {
@@ -28,10 +28,10 @@ function makeHelperWithFakeTimers () {
   let nextId = 1;
 
   // Fake setTimeout: call the handler immediately but record it so we can assert
-  function fakeSetTimeout (fn, _ms) {
+  function fakeSetTimeout (function_, _ms) {
     void _ms; // mark as used for linting
     const id = nextId++;
-    timeouts.set(id, fn);
+    timeouts.set(id, function_);
     // Do not call immediately here; we want to inspect map changes first
     return id;
   }
@@ -41,12 +41,12 @@ function makeHelperWithFakeTimers () {
 
   // Replace timer methods on instance scope
   helper.delayedQueryTimers = {};
-  helper.executeQuery = (q) => { helper.__executed = (helper.__executed || []).concat([q]); };
-  helper.sendResponse = (_res, _err, data) => data || {};
+  helper.executeQuery = (q) => { helper.__executed = [...helper.__executed || [], q]; };
+  helper.sendResponse = (_res, _error, data) => data || {};
 
   // Monkey patch global timer functions used by helper.delayedQuery via closure scoping
-  global.setTimeout = (fn, ms) => fakeSetTimeout(fn, ms);
-  global.clearTimeout = (id) => fakeClearTimeout(id);
+  globalThis.setTimeout = (function_, ms) => fakeSetTimeout(function_, ms);
+  globalThis.clearTimeout = (id) => fakeClearTimeout(id);
 
   return {helper, timeouts};
 }
@@ -63,10 +63,10 @@ group("node_helper delayedQuery timers", () => {
 
     // Simulate timeout firing
     const ids = Object.values(helper.delayedQueryTimers);
-    ids.forEach((id) => {
-      const fn = timeouts.get(id);
-      if (fn) fn();
-    });
+    for (const id of ids) {
+      const function_ = timeouts.get(id);
+      if (function_) function_();
+    }
 
     assert.equal((helper.__executed || []).length, 1);
     assert.equal(helper.__executed[0].action, "TEST");
@@ -83,13 +83,13 @@ group("node_helper delayedQuery timers", () => {
 
     assert.notEqual(firstId, secondId);
     // Firing first should do nothing (cleared)
-    const fn1 = timeouts.get(firstId);
-    if (fn1) fn1();
+    const function1 = timeouts.get(firstId);
+    if (function1) function1();
     assert.equal((helper.__executed || []).length || 0, 0);
 
     // Fire second
-    const fn2 = timeouts.get(secondId);
-    if (fn2) fn2();
+    const function2 = timeouts.get(secondId);
+    if (function2) function2();
     assert.equal(helper.__executed.length, 1);
     assert.equal(helper.__executed[0].action, "TWO");
   });
@@ -104,14 +104,14 @@ group("node_helper delayedQuery timers", () => {
 
     // No timer should remain
     assert.equal(Object.keys(helper.delayedQueryTimers).length, 0);
-    const fn = timeouts.get(id);
-    if (fn) fn();
+    const function_ = timeouts.get(id);
+    if (function_) function_();
     assert.equal((helper.__executed || []).length || 0, 0);
   });
 });
 
 // Restore global timers for other tests
 test("restore timers", () => {
-  global.setTimeout = ORIGINAL_TIMERS.setTimeout;
-  global.clearTimeout = ORIGINAL_TIMERS.clearTimeout;
+  globalThis.setTimeout = ORIGINAL_TIMERS.setTimeout;
+  globalThis.clearTimeout = ORIGINAL_TIMERS.clearTimeout;
 });

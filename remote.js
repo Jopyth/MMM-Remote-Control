@@ -6,7 +6,7 @@ const Remote = {
   name: "MMM-Remote-Control",
   currentMenu: "main-menu",
   types: ["string", "number", "boolean", "array", "object", "null", "undefined"],
-  values: ["", 0.0, true, [], {}, null, undefined],
+  values: ["", 0, true, [], {}, null, undefined],
   validPositions: [
     "",
     "top_bar",
@@ -40,7 +40,7 @@ const Remote = {
    * It also registers the notification handler.
    */
   socket () {
-    if (typeof this._socket === "undefined") {
+    if (this._socket === undefined) {
       this._socket = new MMSocket(this.name);
     }
 
@@ -81,20 +81,37 @@ const Remote = {
         return;
       }
       if ("data" in payload) {
-        if (payload.query.data === "config_update") {
-          this.handleSaveConfig(payload);
-        } else if (payload.query.data === "saves") {
-          this.handleRestoreConfigMenu(payload);
-        } else if (payload.query.data === "mmUpdateAvailable") {
-          this.handleMmUpdate(payload.result);
-        } else if (payload.query.data === "brightness") {
-          const slider = document.getElementById("brightness-slider");
-          slider.value = payload.result;
-        } else if (payload.query.data === "translations") {
-          this.translations = payload.data;
-          this.onTranslationsLoaded();
-        } else {
-          this.handleLoadList(payload);
+        switch (payload.query.data) {
+          case "config_update":
+            this.handleSaveConfig(payload);
+
+            break;
+
+          case "saves":
+            this.handleRestoreConfigMenu(payload);
+
+            break;
+
+          case "mmUpdateAvailable":
+            this.handleMmUpdate(payload.result);
+
+            break;
+
+          case "brightness": {
+            const slider = document.querySelector("#brightness-slider");
+            slider.value = payload.result;
+
+            break;
+          }
+          case "translations":
+            this.translations = payload.data;
+            this.onTranslationsLoaded();
+
+            break;
+
+          default:
+            this.handleLoadList(payload);
+
         }
         return;
       }
@@ -118,32 +135,34 @@ const Remote = {
         return;
       }
     }
-    if (notification === "REFRESH") {
-      setTimeout(() => { document.location.reload(); }, 2000);
-      return;
-    }
-    if (notification === "RESTART") {
-      setTimeout(() => {
-        document.location.reload();
-      }, 62000);
-      return;
-    }
-    if (notification === "REMOTE_CLIENT_CUSTOM_MENU") {
-      this.customMenu = payload;
-      this.createDynamicMenu(this.customMenu);
-      return;
-    }
-    if (notification === "REMOTE_CLIENT_MODULEAPI_MENU") {
-      this.moduleApiMenu = payload;
-      this.createDynamicMenu(this.moduleApiMenu);
+    switch (notification) {
+      case "REFRESH":
+        setTimeout(() => { document.location.reload(); }, 2000);
+        return;
+
+      case "RESTART":
+        setTimeout(() => {
+          document.location.reload();
+        }, 62_000);
+        return;
+
+      case "REMOTE_CLIENT_CUSTOM_MENU":
+        this.customMenu = payload;
+        this.createDynamicMenu(this.customMenu);
+        return;
+
+      case "REMOTE_CLIENT_MODULEAPI_MENU":
+        this.moduleApiMenu = payload;
+        this.createDynamicMenu(this.moduleApiMenu);
+        return;
 
     }
   },
 
   loadButtons (buttons) {
-    Object.keys(buttons).forEach((key) => {
+    for (const key of Object.keys(buttons)) {
       document.getElementById(key).addEventListener("click", buttons[key], false);
-    });
+    }
   },
 
   translate (pattern) {
@@ -151,7 +170,7 @@ const Remote = {
   },
 
   hasClass (element, name) {
-    return ` ${element.className} `.indexOf(` ${name} `) > -1;
+    return ` ${element.className} `.includes(` ${name} `);
   },
 
   hide (element) {
@@ -176,7 +195,7 @@ const Remote = {
 
   filter (pattern) {
     let filterInstalled = false;
-    if ("installed".indexOf(pattern) !== -1) {
+    if ("installed".includes(pattern)) {
       filterInstalled = true;
       pattern = pattern.replace("installed");
     }
@@ -186,13 +205,13 @@ const Remote = {
     const searchIn = ["author", "desc", "longname", "name"];
 
     const data = this.savedData.moduleAvailable;
-    data.forEach((currentData, i) => {
-      const id = `install-module-${i}`;
+    for (const [index, currentData] of data.entries()) {
+      const id = `install-module-${index}`;
       const element = document.getElementById(id);
       if (!pattern) {
         // cleared search input, show all
         element.classList.remove("hidden");
-        return;
+        continue;
       }
 
       let match = filterInstalled && currentData.installed;
@@ -204,13 +223,13 @@ const Remote = {
         }
       }
       element.classList.toggle("hidden", !match);
-    });
+    }
   },
 
   updateSliderThumbColor (slider, type) {
-    const value = parseInt(slider.value, 10);
-    const min = parseInt(slider.min, 10);
-    const max = parseInt(slider.max, 10);
+    const value = Number.parseInt(slider.value, 10);
+    const min = Number.parseInt(slider.min, 10);
+    const max = Number.parseInt(slider.max, 10);
     const percent = (value - min) / (max - min);
 
     let thumbColor, trackGradient;
@@ -250,14 +269,14 @@ const Remote = {
   },
 
   closePopup () {
-    const popupContainer = document.getElementById("popup-container");
-    const popupContents = document.getElementById("popup-contents");
+    const popupContainer = document.querySelector("#popup-container");
+    const popupContents = document.querySelector("#popup-contents");
     popupContainer?.classList.add("hidden");
     if (popupContents) popupContents.innerHTML = "";
   },
 
   showPopup () {
-    const popupContainer = document.getElementById("popup-container");
+    const popupContainer = document.querySelector("#popup-container");
     popupContainer?.classList.remove("hidden");
   },
 
@@ -265,11 +284,11 @@ const Remote = {
     if (clear) {
       this.closePopup();
     }
-    return document.getElementById("popup-contents");
+    return document.querySelector("#popup-contents");
   },
 
   loadOtherElements () {
-    const slider = document.getElementById("brightness-slider");
+    const slider = document.querySelector("#brightness-slider");
     slider.addEventListener("change", () => {
       this.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: slider.value});
     }, false);
@@ -278,7 +297,7 @@ const Remote = {
     }, false);
     this.updateSliderThumbColor(slider, "brightness");
 
-    const slider2 = document.getElementById("temp-slider");
+    const slider2 = document.querySelector("#temp-slider");
     slider2.addEventListener("change", () => {
       this.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: slider2.value});
     }, false);
@@ -287,8 +306,8 @@ const Remote = {
     }, false);
     this.updateSliderThumbColor(slider2, "temp");
 
-    const input = document.getElementById("add-module-search");
-    const deleteButton = document.getElementById("delete-search-input");
+    const input = document.querySelector("#add-module-search");
+    const deleteButton = document.querySelector("#delete-search-input");
 
     input.addEventListener("input", () => {
       this.filter(input.value);
@@ -303,7 +322,6 @@ const Remote = {
   },
 
   async showMenu (newMenu) {
-    const self = this;
     if (this.currentMenu === "settings-menu") {
       // check for unsaved changes
       const changes = this.deletedModules.length + this.changedModules.length;
@@ -311,76 +329,84 @@ const Remote = {
         const wrapper = document.createElement("div");
         const text = document.createElement("span");
         text.textContent = this.translate("UNSAVED_CHANGES");
-        wrapper.appendChild(text);
+        wrapper.append(text);
 
-        const ok = self.createSymbolText("fa fa-check-circle", this.translate("OK"), () => {
-          self.setStatus("none");
+        const ok = this.createSymbolText("fa fa-check-circle", this.translate("OK"), () => {
+          this.setStatus("none");
         });
-        wrapper.appendChild(ok);
+        wrapper.append(ok);
 
-        const discard = self.createSymbolText("fa fa-warning", this.translate("DISCARD"), () => {
-          self.deletedModules = [];
-          self.changedModules = [];
-          window.location.hash = newMenu;
+        const discard = this.createSymbolText("fa fa-warning", this.translate("DISCARD"), () => {
+          this.deletedModules = [];
+          this.changedModules = [];
+          globalThis.location.hash = newMenu;
         });
-        wrapper.appendChild(discard);
+        wrapper.append(discard);
 
         this.setStatus(false, false, wrapper);
 
         this.skipHashChange = true;
-        window.location.hash = this.currentMenu;
+        globalThis.location.hash = this.currentMenu;
 
         return;
       }
     }
 
 
-    if (newMenu === "add-module-menu") {
-      this.loadModulesToAdd();
-    }
-    if (newMenu === "edit-menu") {
-      this.loadVisibleModules();
-      this.loadBrightness();
-      this.loadTemp();
-    }
-    if (newMenu === "settings-menu") {
-      this.loadConfigModules();
-    }
-    if (newMenu === "classes-menu") {
-      this.loadClasses();
-    }
-    if (newMenu === "update-menu") {
-      this.loadModulesToUpdate();
-    }
-    if (newMenu === "links-menu") {
-      this.loadLinks();
+    switch (newMenu) {
+      case "add-module-menu":
+        this.loadModulesToAdd();
+        break;
+
+      case "edit-menu":
+        this.loadVisibleModules();
+        this.loadBrightness();
+        this.loadTemp();
+        break;
+
+      case "settings-menu":
+        this.loadConfigModules();
+        break;
+
+      case "classes-menu":
+        this.loadClasses();
+        break;
+
+      case "update-menu":
+        this.loadModulesToUpdate();
+        break;
+
+      case "links-menu":
+        this.loadLinks();
+        break;
+
     }
 
     if (newMenu === "main-menu") {
       try {
         const {data: configData} = await this.loadList("config-modules", "config");
-        const alertElem = document.getElementById("alert-button");
-        if (!configData.modules.find((m) => m.module === "alert") && alertElem) { alertElem.remove(); }
+        const alertElement = document.querySelector("#alert-button");
+        if (!configData.modules.some((m) => m.module === "alert") && alertElement) { alertElement.remove(); }
 
-        const modConfig = configData.modules.find((m) => m.module === "MMM-Remote-Control").config;
-        const classesButton = document.getElementById("classes-button");
-        if ((!modConfig || !modConfig.classes) && classesButton) { classesButton.remove(); }
+        const moduleConfig = configData.modules.find((m) => m.module === "MMM-Remote-Control").config;
+        const classesButton = document.querySelector("#classes-button");
+        if ((!moduleConfig || !moduleConfig.classes) && classesButton) { classesButton.remove(); }
       } catch (error) {
         console.error("Error loading config for main menu:", error);
       }
     }
 
-    const allMenus = Array.from(document.getElementsByClassName("menu-element"));
+    const allMenus = [...document.querySelectorAll(".menu-element")];
 
-    allMenus.forEach((menu) => {
+    for (const menu of allMenus) {
       this.hide(menu);
-    });
+    }
 
-    const currentMenu = Array.from(document.getElementsByClassName(newMenu));
+    const currentMenu = [...document.getElementsByClassName(newMenu)];
 
-    currentMenu.forEach((menu) => {
+    for (const menu of currentMenu) {
       this.show(menu);
-    });
+    }
 
     this.setStatus("none");
 
@@ -406,8 +432,8 @@ const Remote = {
 
   updateHeaderTitle (menuName) {
     try {
-      const headerTitleEl = document.querySelector(".header .header-title");
-      if (!headerTitleEl) { return; }
+      const headerTitleElement = document.querySelector(".header .header-title");
+      if (!headerTitleElement) { return; }
 
       const hasTranslations = this.translations && Object.keys(this.translations).length > 0;
       if (!hasTranslations) { return; }
@@ -418,38 +444,40 @@ const Remote = {
 
       // Special case for classes-menu: use button text if available
       if (!titleText && key === "classes-menu") {
-        const classesBtn = document.getElementById("classes-button");
-        titleText = classesBtn?.querySelector(".text")?.textContent || this.translate("TITLE");
+        const classesButton = document.querySelector("#classes-button");
+        titleText = classesButton?.querySelector(".text")?.textContent || this.translate("TITLE");
       }
 
       if (titleText) {
-        headerTitleEl.textContent = titleText;
+        headerTitleElement.textContent = titleText;
       }
-    } catch (e) {
-      console.warn("Failed to update header title:", e);
+    } catch (error) {
+      console.warn("Failed to update header title:", error);
     }
   },
 
-  loadLinks () {
-    const parent = document.getElementById("links-container-nav");
-    if (!parent) { return; }
-    while (parent.firstChild) parent.removeChild(parent.firstChild);
+  openLink (url) {
+    return () => window.open(url, "_blank");
+  },
 
-    const open = (url) => () => window.open(url, "_blank");
+  loadLinks () {
+    const parent = document.querySelector("#links-container-nav");
+    if (!parent) { return; }
+    while (parent.firstChild) parent.firstChild.remove();
+
     const items = [
-      {icon: "fa-book", text: this.translate("API_DOCS"), url: `${window.location.origin}/api/docs/`},
+      {icon: "fa-book", text: this.translate("API_DOCS"), url: `${globalThis.location.origin}/api/docs/`},
       {icon: "fa-globe", text: this.translate("WEBSITE"), url: "https://magicmirror.builders/"},
       {icon: "fa-comments", text: this.translate("FORUM"), url: "https://forum.magicmirror.builders/"},
       {icon: "fa-github", text: this.translate("REPOSITORY"), url: "https://github.com/Jopyth/MMM-Remote-Control"}
     ];
 
-    items.forEach(({icon, text, url}) => {
-      parent.appendChild(this.createSymbolText(`fa fa-fw ${icon}`, text, open(url)));
-    });
+    for (const {icon, text, url} of items) {
+      parent.append(this.createSymbolText(`fa fa-fw ${icon}`, text, this.openLink(url)));
+    }
   },
 
   setStatus (status, message, customContent) {
-    const self = this;
 
     if (this.autoHideTimer !== undefined) {
       clearTimeout(this.autoHideTimer);
@@ -457,27 +485,27 @@ const Remote = {
 
     // Simple status update
     if (status === "success" && !message && !customContent) {
-      const successPopup = document.getElementById("success-popup");
+      const successPopup = document.querySelector("#success-popup");
       successPopup.classList.remove("hidden");
       this.autoHideTimer = setTimeout(() => { successPopup.classList.add("hidden"); }, this.autoHideDelay);
       return;
     }
 
-    const parent = document.getElementById("result-contents");
+    const parent = document.querySelector("#result-contents");
     while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
+      parent.firstChild.remove();
     }
 
     if (status === "none") {
-      this.hide(document.getElementById("result-overlay"));
-      this.hide(document.getElementById("result"));
+      this.hide(document.querySelector("#result-overlay"));
+      this.hide(document.querySelector("#result"));
       return;
     }
 
     if (customContent) {
-      parent.appendChild(customContent);
-      this.show(document.getElementById("result-overlay"));
-      this.show(document.getElementById("result"));
+      parent.append(customContent);
+      this.show(document.querySelector("#result-overlay"));
+      this.show(document.querySelector("#result"));
       return;
     }
 
@@ -493,12 +521,12 @@ const Remote = {
       symbol = "fa-exclamation-circle";
       text = this.translate("ERROR");
       onClick = () => {
-        self.setStatus("none");
+        this.setStatus("none");
       };
       // Only auto-hide errors if autoHideDelayError > 0, otherwise user must click to dismiss
       if (this.autoHideDelayError > 0) {
         this.autoHideTimer = setTimeout(() => {
-          self.setStatus("none");
+          this.setStatus("none");
         }, this.autoHideDelayError);
       }
     }
@@ -506,12 +534,12 @@ const Remote = {
       symbol = "fa-info-circle";
       text = this.translate("INFO");
       onClick = () => {
-        self.setStatus("none");
+        this.setStatus("none");
       };
       // Info messages (like PM2 restart/stop) should be displayed longer
       if (this.autoHideDelayInfo > 0) {
         this.autoHideTimer = setTimeout(() => {
-          self.setStatus("none");
+          this.setStatus("none");
         }, this.autoHideDelayInfo);
       }
     }
@@ -519,24 +547,24 @@ const Remote = {
       symbol = "fa-check-circle";
       text = this.translate("DONE");
       onClick = () => {
-        self.setStatus("none");
+        this.setStatus("none");
       };
       this.autoHideTimer = setTimeout(() => {
-        self.setStatus("none");
+        this.setStatus("none");
       }, this.autoHideDelay);
     }
     if (message) {
       text = typeof message === "object" ? JSON.stringify(message, undefined, 3) : message;
     }
-    parent.appendChild(this.createSymbolText(`fa fa-fw ${symbol}`, text, onClick));
+    parent.append(this.createSymbolText(`fa fa-fw ${symbol}`, text, onClick));
 
-    this.show(document.getElementById("result-overlay"));
-    this.show(document.getElementById("result"));
+    this.show(document.querySelector("#result-overlay"));
+    this.show(document.querySelector("#result"));
   },
 
-  async getWithStatus (params) {
+  async getWithStatus (parameters) {
     this.setStatus("loading");
-    const response = await this.get("remote", params);
+    const response = await this.get("remote", parameters);
 
     try {
       const result = JSON.parse(response);
@@ -564,7 +592,7 @@ const Remote = {
   },
 
   install (url, index) {
-    const downloadButton = document.getElementById("download-button");
+    const downloadButton = document.querySelector("#download-button");
     const icon = downloadButton.querySelector("span:first-child");
     const text = downloadButton.querySelector("span:last-child");
 
@@ -589,8 +617,8 @@ const Remote = {
     }
   },
 
-  async get (route, params, timeout) {
-    const url = `${route}?${params}`;
+  async get (route, parameters, timeout) {
+    const url = `${route}?${parameters}`;
     const controller = new AbortController();
     const {signal} = controller;
 
@@ -618,7 +646,7 @@ const Remote = {
         const errorMessage = document.createElement("div");
         errorMessage.className = "error-message";
         errorMessage.textContent = "The request was aborted. Please try again.";
-        document.body.appendChild(errorMessage);
+        document.body.append(errorMessage);
       } else {
         console.error("Fetch error:", error);
       }
@@ -677,9 +705,9 @@ const Remote = {
   },
 
   formatName (string) {
-    string = string.replace(/MMM?-/ig, "").replaceAll("_", " ").replaceAll("-", " ");
-    string = string.replace(/([a-z])([A-Z])/g, (txt) => `${txt[0]} ${txt[1]}`);
-    string = string.replace(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1));
+    string = string.replaceAll(/MMM?-/ig, "").replaceAll("_", " ").replaceAll("-", " ");
+    string = string.replaceAll(/([a-z])([A-Z])/g, (txt) => `${txt[0]} ${txt[1]}`);
+    string = string.replaceAll(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1));
     return string.at(0).toUpperCase() + string.slice(1);
   },
 
@@ -693,7 +721,7 @@ const Remote = {
   },
 
   formatPosition (string) {
-    return string.replaceAll("_", " ").replace(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1).toLowerCase());
+    return string.replaceAll("_", " ").replaceAll(/\w\S*/g, (txt) => txt.at(0).toUpperCase() + txt.slice(1).toLowerCase());
   },
 
   getVisibilityStatus (data) {
@@ -701,15 +729,15 @@ const Remote = {
     const modules = [];
     if (data.hidden) {
       status = "toggled-off";
-      data.lockStrings.forEach((lockString) => {
-        if (lockString.indexOf("MMM-Remote-Control") >= 0) {
-          return;
+      for (const lockString of data.lockStrings) {
+        if (lockString.includes("MMM-Remote-Control")) {
+          continue;
         }
         modules.push(lockString);
         if (modules.length === 1) {
           status += " external-locked";
         }
-      });
+      }
     }
     return {status, modules: modules.join(", ")};
   },
@@ -724,13 +752,13 @@ const Remote = {
       "fa fa-fw fa-lock inner-small-label fa-stack-1x"
     ];
 
-    spanClasses.forEach((className) => {
+    for (const className of spanClasses) {
       const innerSpan = document.createElement("span");
       innerSpan.className = className;
-      outerSpan.appendChild(innerSpan);
-    });
+      outerSpan.append(innerSpan);
+    }
 
-    parent.appendChild(outerSpan);
+    parent.append(outerSpan);
   },
 
   loadBrightness () {
@@ -748,27 +776,30 @@ const Remote = {
           const wrapper = document.createElement("div");
           const warning = document.createElement("span");
           warning.innerHTML = this.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
-          wrapper.appendChild(warning);
+          wrapper.append(warning);
 
           const ok = this.createSymbolText("fa fa-check-circle", this.translate("OK"), () => {
             this.setStatus("none");
           });
-          wrapper.appendChild(ok);
+          wrapper.append(ok);
 
           const force = this.createSymbolText("fa fa-warning", this.translate("FORCE_SHOW"), () => {
-            event.currentTarget.className = event.currentTarget.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
+            event.currentTarget.classList.remove("external-locked", "toggled-off");
+            event.currentTarget.classList.add("toggled-on");
             this.showModule(event.currentTarget.id, true);
             this.setStatus("none");
           });
-          wrapper.appendChild(force);
+          wrapper.append(force);
 
           this.setStatus("error", false, wrapper);
         } else {
-          event.currentTarget.className = event.currentTarget.className.replace("toggled-off", "toggled-on");
+          event.currentTarget.classList.remove("toggled-off");
+          event.currentTarget.classList.add("toggled-on");
           this.showModule(event.currentTarget.id);
         }
       } else {
-        event.currentTarget.className = event.currentTarget.className.replace("toggled-on", "toggled-off");
+        event.currentTarget.classList.remove("toggled-on");
+        event.currentTarget.classList.add("toggled-off");
         this.hideModule(event.currentTarget.id);
       }
     });
@@ -777,11 +808,11 @@ const Remote = {
   async loadVisibleModules () {
     try {
       const {data: moduleData} = await this.loadList("visible-modules", "modules");
-      const parent = document.getElementById("visible-modules-results");
-      moduleData.forEach((module) => {
+      const parent = document.querySelector("#visible-modules-results");
+      for (const module of moduleData) {
         if (!module.position) {
           // skip invisible modules
-          return;
+          continue;
         }
         const visibilityStatus = this.getVisibilityStatus(module);
 
@@ -797,12 +828,12 @@ const Remote = {
         if ("header" in module) {
           text.innerHTML += ` (${module.header})`;
         }
-        moduleBox.appendChild(text);
+        moduleBox.append(text);
 
-        parent.appendChild(moduleBox);
+        parent.append(moduleBox);
 
         this.makeToggleButton(moduleBox, visibilityStatus);
-      });
+      }
     } catch (error) {
       console.error("Error loading visible modules:", error);
     }
@@ -818,11 +849,11 @@ const Remote = {
     }
     const symbolElement = document.createElement("span");
     symbolElement.className = symbol;
-    wrapper.appendChild(symbolElement);
+    wrapper.append(symbolElement);
     const textElement = document.createElement("span");
     textElement.innerHTML = text;
     textElement.className = "symbol-text-padding";
-    wrapper.appendChild(textElement);
+    wrapper.append(textElement);
     if (eventListener) {
       wrapper.addEventListener("click", eventListener, false);
     }
@@ -836,11 +867,11 @@ const Remote = {
       oldGUI = input;
     }
     const path = key.split("/");
-    const name = path[path.length - 1];
+    const name = path.at(-1);
 
     let current = this.currentConfig;
-    for (let i = 1; i < path.length - 1; i++) {
-      current = current[path[i]];
+    for (let index = 1; index < path.length - 1; index++) {
+      current = current[path[index]];
     }
     const initialValue = this.values[this.types.indexOf(newType)];
     const newGUI = this.createObjectGUI(key, name, initialValue);
@@ -848,8 +879,6 @@ const Remote = {
   },
 
   createTypeEditSelection (key, parent, type, oldElement) {
-    const self = this;
-
     const previousType = oldElement.children[1].innerHTML.slice(1).toLowerCase();
     const select = document.createElement("select");
     for (const typeOption of this.types) {
@@ -859,24 +888,23 @@ const Remote = {
       if (typeOption === type) {
         option.selected = "selected";
       }
-      select.appendChild(option);
+      select.append(option);
     }
     select.addEventListener("change", () => {
       const newType = select.options[select.selectedIndex].innerHTML.toLowerCase();
-      if (previousType !== newType) {
-        self.recreateConfigElement(key, previousType, newType);
+      if (previousType === newType) {
+        select.replaceWith(oldElement);
       } else {
-        parent.replaceChild(oldElement, select);
+        this.recreateConfigElement(key, previousType, newType);
       }
     }, false);
     select.addEventListener("blur", () => {
-      parent.replaceChild(oldElement, select);
+      select.replaceWith(oldElement);
     }, false);
     return select;
   },
 
   createConfigLabel (key, name, type, forcedType, symbol = "fa-tag") {
-    const self = this;
 
     if (name.at(0) === "#") {
       symbol = "fa-hashtag";
@@ -887,15 +915,15 @@ const Remote = {
     label.className = "config-label";
     const desc = Remote.createSymbolText(`fa fa-fw ${symbol}`, this.formatLabel(name), false, "span");
     desc.className = "label-name";
-    label.appendChild(desc);
+    label.append(desc);
 
     if (!forcedType) {
       const typeLabel = Remote.createSymbolText("fa fa-fw fa-pencil", this.formatName(type), (event) => {
         const thisElement = event.currentTarget;
-        label.replaceChild(self.createTypeEditSelection(key, label, type, thisElement), thisElement);
+        label.replaceChild(this.createTypeEditSelection(key, label, type, thisElement), thisElement);
       }, "span");
       typeLabel.classList.add("module-remove");
-      label.appendChild(typeLabel);
+      label.append(typeLabel);
 
       const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("REMOVE"), (event) => {
         const thisElement = event.currentTarget;
@@ -905,7 +933,7 @@ const Remote = {
         elementToRemove.remove();
       }, "span");
       remove.classList.add("module-remove");
-      label.appendChild(remove);
+      label.append(remove);
     }
     return label;
   },
@@ -919,11 +947,11 @@ const Remote = {
     input.id = key;
     input.addEventListener("focus", (event) => {
       const label = event.currentTarget.parentNode;
-      label.className = `${label.className} highlight`;
+      label.classList.add("highlight");
     }, false);
     input.addEventListener("blur", (event) => {
       const label = event.currentTarget.parentNode;
-      label.className = label.className.replace(" highlight", "");
+      label.classList.remove("highlight");
     }, false);
 
     return input;
@@ -932,86 +960,80 @@ const Remote = {
   createVisualCheckbox (key, wrapper, input, className) {
     const visualCheckbox = document.createElement("span");
     visualCheckbox.className = `visual-checkbox fa fa-fw ${className}`;
-    wrapper.appendChild(visualCheckbox);
+    wrapper.append(visualCheckbox);
   },
 
   createConfigElement (type) {
-    const self = this;
-
     return {
-      string (key, name, value, type, forcedType) {
-        const label = self.createConfigLabel(key, name, type, forcedType);
-        const input = self.createConfigInput(key, value);
+      string: (key, name, value, type, forcedType) => {
+        const label = this.createConfigLabel(key, name, type, forcedType);
+        const input = this.createConfigInput(key, value);
         input.type = "text";
-        label.appendChild(input);
+        label.append(input);
         if (key === "<root>/header") {
-          input.placeholder = self.translate("NO_HEADER");
+          input.placeholder = this.translate("NO_HEADER");
         }
         return label;
       },
-      number (key, name, value, type, forcedType) {
-        const label = self.createConfigLabel(key, name, type, forcedType);
-        const input = self.createConfigInput(key, value);
+      number: (key, name, value, type, forcedType) => {
+        const label = this.createConfigLabel(key, name, type, forcedType);
+        const input = this.createConfigInput(key, value);
         input.type = "number";
         if (value % 1 !== 0) {
           input.step = 0.01;
         }
-        label.appendChild(input);
+        label.append(input);
         return label;
       },
-      boolean (key, name, value, type, forcedType) {
-        const label = self.createConfigLabel(key, name, type, forcedType);
+      boolean: (key, name, value, type, forcedType) => {
+        const label = this.createConfigLabel(key, name, type, forcedType);
 
-        const input = self.createConfigInput(key, value, true);
+        const input = this.createConfigInput(key, value, true);
         input.type = "checkbox";
-        label.appendChild(input);
+        label.append(input);
         if (value) {
           input.checked = true;
         }
 
-        self.createVisualCheckbox(key, label, input, "fa-check-square-o", false);
-        self.createVisualCheckbox(key, label, input, "fa-square-o", true);
+        this.createVisualCheckbox(key, label, input, "fa-check-square-o", false);
+        this.createVisualCheckbox(key, label, input, "fa-square-o", true);
         return label;
       },
-      undefined (key, name, value, type, forcedType) {
-        const label = self.createConfigLabel(key, name, type, forcedType);
-        const input = self.createConfigInput(key, value);
+      undefined: (key, name, value, type, forcedType) => {
+        const label = this.createConfigLabel(key, name, type, forcedType);
+        const input = this.createConfigInput(key, value);
         input.type = "text";
         input.disabled = "disabled";
         input.classList.add("disabled", "undefined");
         input.placeholder = "undefined";
-        label.appendChild(input);
+        label.append(input);
         return label;
       },
-      null (key, name, value, type, forcedType) {
-        const label = self.createConfigLabel(key, name, type, forcedType);
-        const input = self.createConfigInput(key, value);
+      null: (key, name, value, type, forcedType) => {
+        const label = this.createConfigLabel(key, name, type, forcedType);
+        const input = this.createConfigInput(key, value);
         input.type = "text";
         input.disabled = "disabled";
         input.classList.add("disabled", "null");
         input.placeholder = "null";
-        label.appendChild(input);
+        label.append(input);
         return label;
       },
-      position (key, name, value, type, forcedType) {
-        const label = self.createConfigLabel(key, name, type, forcedType);
-        const select = self.createConfigInput(key, value, false, "select");
+      position: (key, name, value, type, forcedType) => {
+        const label = this.createConfigLabel(key, name, type, forcedType);
+        const select = this.createConfigInput(key, value, false, "select");
         select.className = "config-input";
         select.id = key;
-        self.validPositions.forEach((position) => {
+        for (const position of this.validPositions) {
           const option = document.createElement("option");
           option.value = position;
-          if (position) {
-            option.innerHTML = self.formatPosition(position);
-          } else {
-            option.innerHTML = self.translate("NO_POSITION");
-          }
+          option.innerHTML = position ? this.formatPosition(position) : this.translate("NO_POSITION");
           if (position === value) {
             option.selected = "selected";
           }
-          select.appendChild(option);
-        });
-        label.appendChild(select);
+          select.append(option);
+        }
+        label.append(select);
         return label;
       }
     }[type];
@@ -1047,7 +1069,6 @@ const Remote = {
   },
 
   createObjectGUI (path, name, dataToEdit) {
-    const self = this;
 
     const type = this.getTypeAsString(dataToEdit, path);
     const forcedType = this.hasForcedType(path);
@@ -1064,38 +1085,38 @@ const Remote = {
       // array
       const add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_ENTRY"));
       add.classList.add("bottom-spacing", "button");
-      wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ol"));
-      wrapper.appendChild(add);
-      dataToEdit.forEach((item, i) => {
-        const newName = `#${i}`;
-        wrapper.appendChild(this.createObjectGUI(`${path}/${newName}`, newName, item));
-      });
+      wrapper.append(this.createConfigLabel(path, name, type, forcedType, "fa-list-ol"));
+      wrapper.append(add);
+      for (const [index, item] of dataToEdit.entries()) {
+        const newName = `#${index}`;
+        wrapper.append(this.createObjectGUI(`${path}/${newName}`, newName, item));
+      }
       add.addEventListener("click", () => {
         const lastIndex = dataToEdit.length - 1;
-        const lastType = self.getTypeAsString(`${path}/#${lastIndex}`, dataToEdit[lastIndex]);
-        dataToEdit.push(self.values[self.types.indexOf(lastType)]);
+        const lastType = this.getTypeAsString(`${path}/#${lastIndex}`, dataToEdit[lastIndex]);
+        dataToEdit.push(this.values[this.types.indexOf(lastType)]);
         const nextName = `#${lastIndex + 1}`;
-        wrapper.appendChild(self.createObjectGUI(`${path}/${nextName}`, nextName, dataToEdit[dataToEdit.length - 1]));
+        wrapper.append(this.createObjectGUI(`${path}/${nextName}`, nextName, dataToEdit.at(-1)));
       }, false);
       return wrapper;
     }
 
     // object
     if (path !== "<root>") {
-      wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ul"));
+      wrapper.append(this.createConfigLabel(path, name, type, forcedType, "fa-list-ul"));
 
-      const addElement = self.createConfigLabel(`${path}/<add>`, this.translate("ADD_ENTRY"), type, true, "fa-plus");
+      const addElement = this.createConfigLabel(`${path}/<add>`, this.translate("ADD_ENTRY"), type, true, "fa-plus");
       addElement.classList.add("bottom-spacing");
       const inputWrapper = document.createElement("div");
       inputWrapper.className = "add-input-wrapper";
-      const input = self.createConfigInput(`${path}/<add>`, "");
+      const input = this.createConfigInput(`${path}/<add>`, "");
       input.type = "text";
       input.placeholder = this.translate("NEW_ENTRY_NAME");
-      addElement.appendChild(inputWrapper);
-      inputWrapper.appendChild(input);
+      addElement.append(inputWrapper);
+      inputWrapper.append(input);
       const addFunction = () => {
         const existingKey = Object.keys(dataToEdit)[0];
-        const lastType = self.getTypeAsString(`${path}/${existingKey}`, dataToEdit[existingKey]);
+        const lastType = this.getTypeAsString(`${path}/${existingKey}`, dataToEdit[existingKey]);
         const key = input.value.trim();
 
         if (!key || document.getElementById(`${path}/${key}`)) {
@@ -1104,22 +1125,22 @@ const Remote = {
         }
 
         input.classList.remove("input-error");
-        dataToEdit[key] = self.values[self.types.indexOf(lastType)];
-        const newElement = self.createObjectGUI(`${path}/${key}`, key, dataToEdit[key]);
+        dataToEdit[key] = this.values[this.types.indexOf(lastType)];
+        const newElement = this.createObjectGUI(`${path}/${key}`, key, dataToEdit[key]);
         wrapper.insertBefore(newElement, addElement.nextSibling);
         input.value = "";
       };
       const symbol = document.createElement("span");
       symbol.className = "fa fa-fw fa-plus-square button";
       symbol.addEventListener("click", addFunction, false);
-      inputWrapper.appendChild(symbol);
+      inputWrapper.append(symbol);
       input.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
           event.preventDefault();
           addFunction();
         }
       });
-      wrapper.appendChild(addElement);
+      wrapper.append(addElement);
     }
     let keys = Object.keys(dataToEdit);
     if (path === "<root>") {
@@ -1131,11 +1152,11 @@ const Remote = {
         "config"
       ];
     }
-    keys.forEach((key) => {
+    for (const key of keys) {
       if (Object.hasOwn(dataToEdit, key)) {
-        wrapper.appendChild(this.createObjectGUI(`${path}/${key}`, key, dataToEdit[key]));
+        wrapper.append(this.createObjectGUI(`${path}/${key}`, key, dataToEdit[key]));
       }
-    });
+    }
     if (path === "<root>") {
       // additional css classes on root element
       wrapper.className = "flex-fill small";
@@ -1144,36 +1165,35 @@ const Remote = {
   },
 
   appendConfigMenu (index, wrapper) {
-    const self = this;
 
     const menuDiv = document.createElement("div");
     menuDiv.className = "fixed-size sub-menu";
 
-    const help = self.createSymbolText("fa fa-fw fa-question-circle", self.translate("HELP"), () => {
-      window.open(`config-help.html?module=${self.currentConfig.module}`, "_blank");
+    const help = this.createSymbolText("fa fa-fw fa-question-circle", this.translate("HELP"), () => {
+      window.open(`config-help.html?module=${this.currentConfig.module}`, "_blank");
     });
-    menuDiv.appendChild(help);
-    const undo = self.createSymbolText("fa fa-fw fa-undo", self.translate("RESET"), () => {
-      self.createConfigPopup(index);
+    menuDiv.append(help);
+    const undo = this.createSymbolText("fa fa-fw fa-undo", this.translate("RESET"), () => {
+      this.createConfigPopup(index);
     });
-    menuDiv.appendChild(undo);
-    const save = self.createSymbolText("fa fa-fw fa-save", self.translate("SAVE"), () => {
-      self.savedData.config.modules[index] = self.getModuleConfigFromUI();
-      self.changedModules.push(index);
+    menuDiv.append(undo);
+    const save = this.createSymbolText("fa fa-fw fa-save", this.translate("SAVE"), () => {
+      this.savedData.config.modules[index] = this.getModuleConfigFromUI();
+      this.changedModules.push(index);
       const parent = document.getElementById(`edit-module-${index}`).parentNode;
       if (parent.children.length === 2) {
-        parent.insertBefore(self.createChangedWarning(), parent.children[1]);
+        parent.insertBefore(this.createChangedWarning(), parent.children[1]);
       }
-      self.closePopup();
+      this.closePopup();
     });
-    menuDiv.appendChild(save);
+    menuDiv.append(save);
 
-    wrapper.appendChild(menuDiv);
+    wrapper.append(menuDiv);
 
   },
 
   setValue (parent, name, value) {
-    if (name.indexOf("#") !== -1) {
+    if (name.includes("#")) {
       parent.push(value);
     } else {
       parent[name] = value;
@@ -1181,8 +1201,8 @@ const Remote = {
   },
 
   navigate (parent, name) {
-    if (name.indexOf("#") !== -1) {
-      return parent[parent.length - 1];
+    if (name.includes("#")) {
+      return parent.at(-1);
     }
     return parent[name];
 
@@ -1190,7 +1210,7 @@ const Remote = {
 
   getModuleConfigFromUI () {
     const rootElement = {};
-    const elements = Array.from(document.getElementsByClassName("config-input"));
+    const elements = [...document.querySelectorAll(".config-input")];
     for (const element of elements) {
       const path = element.id;
       const splitPath = path.split("/");
@@ -1198,7 +1218,7 @@ const Remote = {
       for (let k = 1; k < splitPath.length - 1; k++) {
         parent = this.navigate(parent, splitPath[k]);
       }
-      const name = splitPath[splitPath.length - 1];
+      const name = splitPath.at(-1);
       if (this.hasClass(element, "null")) {
         this.setValue(parent, name, null);
         continue;
@@ -1224,7 +1244,7 @@ const Remote = {
         value = element.checked;
       }
       if (element.type === "number") {
-        value = parseFloat(value);
+        value = Number.parseFloat(value);
       }
       this.setValue(parent, name, value);
     }
@@ -1232,50 +1252,49 @@ const Remote = {
   },
 
   createConfigPopup (index) {
-    const self = this;
     if (typeof index === "string") {
-      index = parseInt(index);
+      index = Number.parseInt(index);
     }
 
     const moduleData = this.savedData.config.modules;
     const data = moduleData[index];
 
-    self.currentConfig = data;
-    if (!("header" in self.currentConfig)) {
-      self.currentConfig.header = "";
+    this.currentConfig = data;
+    if (!("header" in this.currentConfig)) {
+      this.currentConfig.header = "";
     }
-    if (!("position" in self.currentConfig)) {
-      self.currentConfig.position = "";
+    if (!("position" in this.currentConfig)) {
+      this.currentConfig.position = "";
     }
 
     const wrapper = this.getPopupContent();
 
     const name = document.createElement("div");
-    name.innerHTML = self.formatName(data.module);
+    name.innerHTML = this.formatName(data.module);
     name.className = "bright title medium";
-    wrapper.appendChild(name);
+    wrapper.append(name);
 
     const n = document.createElement("div");
     n.innerHTML = `${data.module} (#${index + 1})`;
     n.className = "subtitle xsmall dimmed";
-    wrapper.appendChild(n);
+    wrapper.append(n);
 
-    self.appendConfigMenu(index, wrapper);
+    this.appendConfigMenu(index, wrapper);
 
-    wrapper.append(self.createObjectGUI("<root>", "", self.currentConfig));
+    wrapper.append(this.createObjectGUI("<root>", "", this.currentConfig));
 
     // disable input for module name
-    document.getElementById("<root>/module").disabled = true;
-    document.getElementById("<root>/module").classList.add("disabled");
+    const moduleInput = document.getElementById("<root>/module");
+    moduleInput.disabled = true;
+    moduleInput.classList.add("disabled");
 
     this.showPopup();
   },
 
   createChangedWarning () {
-    const self = this;
     const changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), () => {
-      const saveButton = document.getElementById("save-config");
-      if (!self.hasClass(saveButton, "highlight")) {
+      const saveButton = document.querySelector("#save-config");
+      if (!this.hasClass(saveButton, "highlight")) {
         saveButton.classList.add("highlight");
       }
     }, "span");
@@ -1284,25 +1303,24 @@ const Remote = {
   },
 
   appendModuleEditElements (wrapper, moduleData) {
-    const self = this;
-    moduleData.forEach((data, i) => {
+    for (const [index, data] of moduleData.entries()) {
       const innerWrapper = document.createElement("div");
       innerWrapper.className = "module-line";
 
       // Module name (left side)
       const moduleName = document.createElement("div");
       moduleName.className = "module-name";
-      moduleName.textContent = self.formatName(data.module);
-      innerWrapper.appendChild(moduleName);
+      moduleName.textContent = this.formatName(data.module);
+      innerWrapper.append(moduleName);
 
       // Buttons container (right side)
       const buttonsContainer = document.createElement("div");
       buttonsContainer.className = "module-buttons";
 
       // Add repository button if URL is available (first button)
-      self.getModuleUrl(data.module).then((url) => {
+      this.getModuleUrl(data.module).then((url) => {
         if (url) {
-          const repoButton = self.createSymbolText("fa fa-fw fa-github", this.translate("REPOSITORY"), () => {
+          const repoButton = this.createSymbolText("fa fa-fw fa-github", this.translate("REPOSITORY"), () => {
             window.open(url, "_blank");
           }, "span");
           repoButton.className = "button";
@@ -1310,29 +1328,29 @@ const Remote = {
         }
       });
 
-      const moduleBox = self.createSymbolText("fa fa-fw fa-pencil", this.translate("EDIT"), (event) => {
-        const i = event.currentTarget.id.replace("edit-module-", "");
-        self.createConfigPopup(i);
+      const moduleBox = this.createSymbolText("fa fa-fw fa-pencil", this.translate("EDIT"), (event) => {
+        const index_ = event.currentTarget.id.replace("edit-module-", "");
+        this.createConfigPopup(index_);
       }, "span");
-      moduleBox.id = `edit-module-${i}`;
-      buttonsContainer.appendChild(moduleBox);
+      moduleBox.id = `edit-module-${index}`;
+      buttonsContainer.append(moduleBox);
 
-      if (self.changedModules.indexOf(i) !== -1) {
-        buttonsContainer.appendChild(self.createChangedWarning());
+      if (this.changedModules.includes(index)) {
+        buttonsContainer.append(this.createChangedWarning());
       }
 
       const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("REMOVE"), (event) => {
-        const i = event.currentTarget.parentNode.parentNode.firstChild.nextSibling.firstChild.id.replace("edit-module-", "");
-        self.deletedModules.push(parseInt(i));
+        const index = event.currentTarget.parentNode.parentNode.firstChild.nextSibling.firstChild.id.replace("edit-module-", "");
+        this.deletedModules.push(Number.parseInt(index));
         const thisElement = event.currentTarget.parentNode.parentNode;
-        thisElement.parentNode.removeChild(thisElement);
+        thisElement.remove();
       }, "span");
       remove.classList.add("module-remove");
-      buttonsContainer.appendChild(remove);
+      buttonsContainer.append(remove);
 
-      innerWrapper.appendChild(buttonsContainer);
-      wrapper.appendChild(innerWrapper);
-    });
+      innerWrapper.append(buttonsContainer);
+      wrapper.append(innerWrapper);
+    }
   },
 
   async loadConfigModules () {
@@ -1340,7 +1358,7 @@ const Remote = {
 
     try {
       const {data: configData} = await this.loadList("config-modules", "config");
-      const parent = document.getElementById("config-modules-results");
+      const parent = document.querySelector("#config-modules-results");
       const moduleData = configData.modules;
       if (this.addModule) {
         const name = this.addModule;
@@ -1372,11 +1390,7 @@ const Remote = {
 
     this.installedModulesCachePromise = new Promise((resolve) => {
       const handleResponse = (result) => {
-        if (result.success && result.data) {
-          this.installedModulesCache = result.data;
-        } else {
-          this.installedModulesCache = [];
-        }
+        this.installedModulesCache = result.success && result.data ? result.data : [];
         resolve();
       };
 
@@ -1404,21 +1418,21 @@ const Remote = {
   async loadClasses () {
     try {
       const {data: classes} = await this.loadList("classes", "classes");
-      for (const i in classes) {
+      for (const index in classes) {
         const node = document.createElement("div");
         node.id = "classes-before-result";
         node.hidden = true;
-        document.getElementById("classes-results").appendChild(node);
+        document.querySelector("#classes-results").append(node);
 
         const content = {
-          id: i,
-          text: i,
+          id: index,
+          text: index,
           icon: "dot-circle-o",
           type: "item",
           action: "MANAGE_CLASSES",
           content: {
             payload: {
-              classes: i
+              classes: index
             }
           }
         };
@@ -1436,9 +1450,8 @@ const Remote = {
   },
 
   createAddingPopup (index) {
-    const self = this;
     if (typeof index === "string") {
-      index = parseInt(index);
+      index = Number.parseInt(index);
     }
 
     const data = this.savedData.moduleAvailable[index];
@@ -1447,47 +1460,47 @@ const Remote = {
     const name = document.createElement("div");
     name.innerHTML = data.name;
     name.className = "bright title";
-    wrapper.appendChild(name);
+    wrapper.append(name);
 
     const author = document.createElement("div");
-    author.innerHTML = `${self.translate("BY")} ${data.author}`;
+    author.innerHTML = `${this.translate("BY")} ${data.author}`;
     author.className = "subtitle small";
-    wrapper.appendChild(author);
+    wrapper.append(author);
 
     const desc = document.createElement("div");
     desc.innerHTML = data.desc;
     desc.className = "small flex-fill";
-    wrapper.appendChild(desc);
+    wrapper.append(desc);
 
     const footer = document.createElement("div");
     footer.className = "fixed-size sub-menu";
 
     if (data.installed) {
-      const add = self.createSymbolText("fa fa-fw fa-plus", self.translate("ADD_THIS"), () => {
-        self.closePopup();
-        self.addModule = data.longname;
-        window.location.hash = "settings-menu";
+      const add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_THIS"), () => {
+        this.closePopup();
+        this.addModule = data.longname;
+        globalThis.location.hash = "settings-menu";
       });
-      footer.appendChild(add);
+      footer.append(add);
     }
 
     if (data.installed) {
-      const statusElement = self.createSymbolText("fa fa-fw fa-check-circle", self.translate("INSTALLED"));
-      footer.appendChild(statusElement);
+      const statusElement = this.createSymbolText("fa fa-fw fa-check-circle", this.translate("INSTALLED"));
+      footer.append(statusElement);
     } else {
-      const statusElement = self.createSymbolText("fa fa-fw fa-download", self.translate("DOWNLOAD"), () => {
-        self.install(data.url, index);
+      const statusElement = this.createSymbolText("fa fa-fw fa-download", this.translate("DOWNLOAD"), () => {
+        this.install(data.url, index);
       });
       statusElement.id = "download-button";
-      footer.appendChild(statusElement);
+      footer.append(statusElement);
     }
 
-    const githubElement = self.createSymbolText("fa fa-fw fa-github", self.translate("CODE_LINK"), () => {
+    const githubElement = this.createSymbolText("fa fa-fw fa-github", this.translate("CODE_LINK"), () => {
       window.open(data.url, "_blank");
     });
-    footer.appendChild(githubElement);
+    footer.append(githubElement);
 
-    wrapper.appendChild(footer);
+    wrapper.append(footer);
 
     this.showPopup();
   },
@@ -1495,8 +1508,8 @@ const Remote = {
   async loadModulesToAdd () {
     try {
       const {data: modules} = await this.loadList("add-module", "moduleAvailable");
-      const parent = document.getElementById("add-module-results");
-      modules.forEach((module, i) => {
+      const parent = document.querySelector("#add-module-results");
+      for (const [index, module] of modules.entries()) {
         const moduleWrapper = document.createElement("div");
         moduleWrapper.className = "module-line";
 
@@ -1507,16 +1520,16 @@ const Remote = {
         const moduleName = document.createElement("div");
         moduleName.className = "module-name";
         moduleName.textContent = module.name;
-        moduleInfo.appendChild(moduleName);
+        moduleInfo.append(moduleName);
 
         if (module.desc) {
           const moduleDesc = document.createElement("div");
           moduleDesc.className = "module-description";
           moduleDesc.innerHTML = module.desc;
-          moduleInfo.appendChild(moduleDesc);
+          moduleInfo.append(moduleDesc);
         }
 
-        moduleWrapper.appendChild(moduleInfo);
+        moduleWrapper.append(moduleInfo);
 
         // Right side: Buttons
         const buttonsContainer = document.createElement("div");
@@ -1528,7 +1541,7 @@ const Remote = {
             window.open(module.url, "_blank");
           }, "span");
           repoButton.className = "button";
-          buttonsContainer.appendChild(repoButton);
+          buttonsContainer.append(repoButton);
         }
 
         // Install/Installed button
@@ -1548,12 +1561,12 @@ const Remote = {
           }
         }, "span");
         installButton.className = buttonClass;
-        installButton.id = `install-module-${i}`;
-        buttonsContainer.appendChild(installButton);
+        installButton.id = `install-module-${index}`;
+        buttonsContainer.append(installButton);
 
-        moduleWrapper.appendChild(buttonsContainer);
-        parent.appendChild(moduleWrapper);
-      });
+        moduleWrapper.append(buttonsContainer);
+        parent.append(moduleWrapper);
+      }
     } catch (error) {
       console.error("Error loading modules to add:", error);
     }
@@ -1564,11 +1577,11 @@ const Remote = {
 
     const info = document.createElement("span");
     info.innerHTML = message;
-    wrapper.appendChild(info);
+    wrapper.append(info);
 
     const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
     restart.children[1].classList.add("text");
-    wrapper.appendChild(restart);
+    wrapper.append(restart);
     this.setStatus("success", false, wrapper);
   },
 
@@ -1577,15 +1590,15 @@ const Remote = {
 
     const info = document.createElement("span");
     info.innerHTML = message;
-    wrapper.appendChild(info);
+    wrapper.append(info);
 
     const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
     restart.children[1].classList.add("text");
-    wrapper.appendChild(restart);
+    wrapper.append(restart);
 
     const reload = this.createSymbolText("fa fa-fw fa-globe", this.translate("REFRESHMM"), buttons["refresh-mm-button"]);
     reload.children[1].classList.add("text");
-    wrapper.appendChild(reload);
+    wrapper.append(reload);
 
     this.setStatus("success", false, wrapper);
   },
@@ -1594,12 +1607,12 @@ const Remote = {
     const wrapper = document.createElement("div");
     const info = document.createElement("span");
     info.innerHTML = message;
-    wrapper.appendChild(info);
+    wrapper.append(info);
 
     for (const b in data) {
       const restart = this.createSymbolText("fa fa-fw fa-recycle", b, data[b]);
       restart.children[1].classList.add("text");
-      wrapper.appendChild(restart);
+      wrapper.append(restart);
     }
 
     this.setStatus("success", false, wrapper);
@@ -1610,8 +1623,8 @@ const Remote = {
   },
 
   handleMmUpdate (result) {
-    if (window.location.hash.substring(1) == "update-menu") {
-      const updateButton = document.getElementById("update-mm-button");
+    if (globalThis.location.hash.slice(1) == "update-menu") {
+      const updateButton = document.querySelector("#update-mm-button");
       if (result) {
         updateButton?.classList.remove("hidden");
         updateButton?.classList.add("bright");
@@ -1628,7 +1641,7 @@ const Remote = {
 
     try {
       const {data: modules} = await this.loadList("update-module", "moduleInstalled");
-      const parent = document.getElementById("update-module-results");
+      const parent = document.querySelector("#update-module-results");
 
       // Create MagicMirror² update line first
       const mmWrapper = document.createElement("div");
@@ -1638,31 +1651,31 @@ const Remote = {
       const mmName = document.createElement("div");
       mmName.className = "module-name";
       mmName.textContent = "MagicMirror²";
-      mmWrapper.appendChild(mmName);
+      mmWrapper.append(mmName);
 
       const mmButtons = document.createElement("div");
       mmButtons.className = "module-buttons";
 
       // MM Update button (initially hidden, shown by handleMmUpdate)
       const mmUpdateButton = this.createSymbolText("fa fa-fw fa-toggle-up", "Update", () => {
-        this.updateModule(undefined);
+        this.updateModule();
       });
       mmUpdateButton.id = "update-mm-button";
       mmUpdateButton.className = "button hidden";
-      mmButtons.appendChild(mmUpdateButton);
+      mmButtons.append(mmUpdateButton);
 
       // MM Changelog button (always visible) - opens GitHub releases
       const mmChangelogButton = this.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", () => {
         window.open("https://github.com/MagicMirrorOrg/MagicMirror/releases", "_blank");
       });
       mmChangelogButton.className = "button";
-      mmButtons.appendChild(mmChangelogButton);
+      mmButtons.append(mmChangelogButton);
 
-      mmWrapper.appendChild(mmButtons);
-      parent.appendChild(mmWrapper);
+      mmWrapper.append(mmButtons);
+      parent.append(mmWrapper);
 
       // Now load module updates
-      modules.forEach((module) => {
+      for (const module of modules) {
         const innerWrapper = document.createElement("div");
         innerWrapper.className = "module-line";
 
@@ -1670,7 +1683,7 @@ const Remote = {
         const moduleName = document.createElement("div");
         moduleName.className = "module-name";
         moduleName.textContent = module.name;
-        innerWrapper.appendChild(moduleName);
+        innerWrapper.append(moduleName);
 
         // Buttons container
         const buttonsContainer = document.createElement("div");
@@ -1684,7 +1697,7 @@ const Remote = {
           });
           updateButton.className = "button bright";
           updateButton.id = `update-module-${module.longname}`;
-          buttonsContainer.appendChild(updateButton);
+          buttonsContainer.append(updateButton);
         }
 
         // Add changelog button if module has changelog
@@ -1694,12 +1707,12 @@ const Remote = {
             this.showChangelog(module.longname);
           });
           changelogButton.className = "button";
-          buttonsContainer.appendChild(changelogButton);
+          buttonsContainer.append(changelogButton);
         }
 
-        innerWrapper.appendChild(buttonsContainer);
-        parent.appendChild(innerWrapper);
-      });
+        innerWrapper.append(buttonsContainer);
+        parent.append(innerWrapper);
+      }
     } catch (error) {
       console.error("Error loading modules to update:", error);
     }
@@ -1724,8 +1737,8 @@ const Remote = {
     if (this.saving) {
       return;
     }
-    const restoreButton = document.getElementById("restore-config");
-    restoreButton.className = restoreButton.className.replace(" highlight", "");
+    const restoreButton = document.querySelector("#restore-config");
+    restoreButton.classList.remove("highlight");
     this.setStatus("loading");
     this.sendSocketNotification("REMOTE_ACTION", {data: "saves"});
   },
@@ -1733,9 +1746,9 @@ const Remote = {
   handleRestoreConfigMenu (result) {
     if (result.success) {
       const dates = {};
-      for (const i in result.data) {
-        dates[new Date(result.data[i])] = () => {
-          this.restoreConfig(result.data[i]);
+      for (const index in result.data) {
+        dates[new Date(result.data[index])] = () => {
+          this.restoreConfig(result.data[index]);
         };
       }
       this.offerOptions(this.translate("RESTORE"), dates);
@@ -1760,26 +1773,24 @@ const Remote = {
     if (this.saving) {
       return;
     }
-    const saveButton = document.getElementById("save-config");
-    saveButton.className = saveButton.className.replace(" highlight", "");
+    const saveButton = document.querySelector("#save-config");
+    saveButton.classList.remove("highlight");
     this.saving = true;
     this.setStatus("loading");
     const configData = this.savedData.config;
-    configData.modules = configData.modules.filter((_, i) => this.deletedModules.indexOf(i) === -1);
+    configData.modules = configData.modules.filter((_, index) => !this.deletedModules.includes(index));
     this.deletedModules = [];
     this.sendSocketNotification("NEW_CONFIG", configData);
   },
 
   handleSaveConfig (result) {
-    const self = this;
-
     if (result.success) {
-      self.offerReload(self.translate("DONE"));
+      this.offerReload(this.translate("DONE"));
     } else {
-      self.setStatus("error");
+      this.setStatus("error");
     }
-    self.saving = false;
-    self.loadConfigModules();
+    this.saving = false;
+    this.loadConfigModules();
   },
 
   onTranslationsLoaded () {
@@ -1802,100 +1813,110 @@ const Remote = {
       const mcmIcon = document.createElement("span");
       mcmIcon.className = `fa fa-fw fa-${content.icon}`;
       mcmIcon.setAttribute("aria-hidden", "true");
-      item.appendChild(mcmIcon);
+      item.append(mcmIcon);
     }
 
     if (content.text) {
       const mcmText = document.createElement("span");
       mcmText.className = "text";
       mcmText.textContent = content.text;
-      item.appendChild(mcmText);
+      item.append(mcmText);
     }
 
-    if (content.type === "menu") {
-      const mcmArrow = document.createElement("span");
-      mcmArrow.className = "fa fa-fw fa-angle-right";
-      mcmArrow.setAttribute("aria-hidden", "true");
-      item.appendChild(mcmArrow);
-      item.setAttribute("data-parent", menu);
-      item.setAttribute("data-type", "menu");
-      document.getElementById("back-button").classList.add(`${content.id}-menu`);
-      const menuContent = document.querySelector(".menu-content");
-      if (menuContent) {
-        menuContent.classList.add(`${content.id}-menu`);
+    switch (content.type) {
+      case "menu": {
+        const mcmArrow = document.createElement("span");
+        mcmArrow.className = "fa fa-fw fa-angle-right";
+        mcmArrow.setAttribute("aria-hidden", "true");
+        item.append(mcmArrow);
+        item.dataset.parent = menu;
+        item.dataset.type = "menu";
+        document.querySelector("#back-button").classList.add(`${content.id}-menu`);
+        const menuContent = document.querySelector(".menu-content");
+        if (menuContent) {
+          menuContent.classList.add(`${content.id}-menu`);
+        }
+        item.addEventListener("click", () => {
+          globalThis.location.hash = `${content.id}-menu`;
+        });
+
+        break;
       }
-      item.addEventListener("click", () => {
-        window.location.hash = `${content.id}-menu`;
-      });
-    } else if (content.type === "slider") {
-      const contain = document.createElement("div");
-      contain.classList.add("flex-1");
+      case "slider": {
+        const contain = document.createElement("div");
+        contain.classList.add("flex-1");
 
-      const slide = document.createElement("input");
-      slide.id = `${content.id}-slider`;
-      slide.className = "slider";
-      slide.type = "range";
-      slide.min = content.min || 0;
-      slide.max = content.max || 100;
-      slide.step = content.step || 10;
-      slide.value = content.defaultValue || 50;
+        const slide = document.createElement("input");
+        slide.id = `${content.id}-slider`;
+        slide.className = "slider";
+        slide.type = "range";
+        slide.min = content.min || 0;
+        slide.max = content.max || 100;
+        slide.step = content.step || 10;
+        slide.value = content.defaultValue || 50;
 
-      slide.addEventListener("change", () => {
-        this.sendSocketNotification("REMOTE_ACTION", {
-          action: content.action.toUpperCase(),
-          ...content.content,
-          payload: {
-            ...content.content === undefined ? {} : typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload,
+        slide.addEventListener("change", () => {
+          this.sendSocketNotification("REMOTE_ACTION", {
+            action: content.action.toUpperCase(),
+            ...content.content,
+            payload: {
+              ...content.content === undefined ? {} : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
+              value: slide.value
+            },
             value: slide.value
-          },
-          value: slide.value
+          });
         });
-      });
 
-      contain.appendChild(slide);
-      item.appendChild(contain);
-    } else if (content.type === "input") {
-      const input = document.createElement("input");
-      input.id = `${content.id}-input`;
-      input.className = `menu-element ${menu}-menu medium`;
-      input.type = "text";
-      input.placeholder = content.text;
+        contain.append(slide);
+        item.append(contain);
 
-      input.addEventListener("focusout", () => {
-        this.sendSocketNotification("REMOTE_ACTION", {
-          action: content.action.toUpperCase(),
-          ...content.content,
-          payload: {
-            ...content.content === undefined ? {} : typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload,
+        break;
+      }
+      case "input": {
+        const input = document.createElement("input");
+        input.id = `${content.id}-input`;
+        input.className = `menu-element ${menu}-menu medium`;
+        input.type = "text";
+        input.placeholder = content.text;
+
+        input.addEventListener("focusout", () => {
+          this.sendSocketNotification("REMOTE_ACTION", {
+            action: content.action.toUpperCase(),
+            ...content.content,
+            payload: {
+              ...content.content === undefined ? {} : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
+              value: input.value
+            },
             value: input.value
-          },
-          value: input.value
+          });
         });
-      });
 
-      return input;
-    } else if (content.action && content.content) {
-      item.setAttribute("data-type", "item");
-      item.addEventListener("click", () => {
-        this.sendSocketNotification("REMOTE_ACTION", {
-          action: content.action.toUpperCase(),
-          payload: {},
-          ...content.content
+        return input;
+      }
+      default: if (content.action && content.content) {
+        item.dataset.type = "item";
+        item.addEventListener("click", () => {
+          this.sendSocketNotification("REMOTE_ACTION", {
+            action: content.action.toUpperCase(),
+            payload: {},
+            ...content.content
+          });
         });
-      });
+      }
+
     }
 
-    if (!window.location.hash && menu !== "main" ||
-      window.location.hash && window.location.hash.substring(1) !== `${menu}-menu`) {
+    if (!globalThis.location.hash && menu !== "main" ||
+      globalThis.location.hash && globalThis.location.hash.slice(1) !== `${menu}-menu`) {
       item.classList.add("hidden");
     }
 
     insertAfter.parentNode.insertBefore(item, insertAfter.nextSibling);
 
     if ("items" in content) {
-      content.items.forEach((i) => {
-        this.createMenuElement(i, content.id, item);
-      });
+      for (const index of content.items) {
+        this.createMenuElement(index, content.id, item);
+      }
     }
 
     return item;
@@ -1909,65 +1930,65 @@ const Remote = {
       }
 
       const menuElements = document.querySelectorAll(`.${content.id}-menu`);
-      menuElements.forEach((menuElement) => menuElement.remove());
+      for (const menuElement of menuElements) menuElement.remove();
 
-      if (window.location.hash === `#${content.id}-menu`) {
-        window.location.hash = "main-menu";
+      if (globalThis.location.hash === `#${content.id}-menu`) {
+        globalThis.location.hash = "main-menu";
       }
     }
-    this.createMenuElement(content, "main", document.getElementById("alert-button"));
+    this.createMenuElement(content, "main", document.querySelector("#alert-button"));
   }
 };
 
 const buttons = {
   // navigation buttons
   "power-button" () {
-    window.location.hash = "power-menu";
+    globalThis.location.hash = "power-menu";
   },
   "edit-button" () {
-    window.location.hash = "edit-menu";
+    globalThis.location.hash = "edit-menu";
   },
   "settings-button" () {
-    window.location.hash = "settings-menu";
+    globalThis.location.hash = "settings-menu";
   },
   "mirror-link-button" () {
     window.open("/", "_blank");
   },
   "classes-button" () {
-    window.location.hash = "classes-menu";
+    globalThis.location.hash = "classes-menu";
   },
   "back-button" () {
-    if (window.location.hash === "#add-module-menu") {
-      window.location.hash = "settings-menu";
+    if (globalThis.location.hash === "#add-module-menu") {
+      globalThis.location.hash = "settings-menu";
       return;
     }
-    const currentButton = document.querySelector(window.location.hash.replace("-menu", "-button"));
+    const currentButton = document.querySelector(globalThis.location.hash.replace("-menu", "-button"));
     if (currentButton && currentButton.dataset.parent) {
-      window.location.hash = `${currentButton.dataset.parent}-menu`;
+      globalThis.location.hash = `${currentButton.dataset.parent}-menu`;
       return;
     }
-    window.location.hash = "main-menu";
+    globalThis.location.hash = "main-menu";
   },
   "update-button" () {
-    window.location.hash = "update-menu";
+    globalThis.location.hash = "update-menu";
   },
   "alert-button" () {
-    window.location.hash = "alert-menu";
+    globalThis.location.hash = "alert-menu";
   },
   "links-button" () {
-    window.location.hash = "links-menu";
+    globalThis.location.hash = "links-menu";
   },
 
   // settings menu buttons
   "brightness-reset" () {
-    const element = document.getElementById("brightness-slider");
+    const element = document.querySelector("#brightness-slider");
     element.value = 100;
     Remote.updateSliderThumbColor(element, "brightness");
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "BRIGHTNESS", value: element.value});
   },
 
   "temp-reset" () {
-    const element = document.getElementById("temp-slider");
+    const element = document.querySelector("#temp-slider");
     element.value = 327;
     Remote.updateSliderThumbColor(element, "temp");
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: element.value});
@@ -1975,21 +1996,23 @@ const buttons = {
 
   // edit menu buttons
   "show-all-button" () {
-    const parent = document.getElementById("visible-modules-results");
-    const buttons = Array.from(parent.children);
+    const parent = document.querySelector("#visible-modules-results");
+    const buttons = [...parent.children];
     for (const button of buttons) {
       if (Remote.hasClass(button, "external-locked")) {
         continue;
       }
-      button.className = button.className.replace("toggled-off", "toggled-on");
+      button.classList.remove("toggled-off");
+      button.classList.add("toggled-on");
       Remote.showModule(button.id);
     }
   },
   "hide-all-button" () {
-    const parent = document.getElementById("visible-modules-results");
-    const buttons = Array.from(parent.children);
+    const parent = document.querySelector("#visible-modules-results");
+    const buttons = [...parent.children];
     for (const button of buttons) {
-      button.className = button.className.replace("toggled-on", "toggled-off");
+      button.classList.remove("toggled-on");
+      button.classList.add("toggled-off");
       Remote.hideModule(button.id);
     }
   },
@@ -2001,17 +2024,17 @@ const buttons = {
     const wrapper = document.createElement("div");
     const text = document.createElement("span");
     text.innerHTML = self.translate("CONFIRM_SHUTDOWN");
-    wrapper.appendChild(text);
+    wrapper.append(text);
 
     const ok = self.createSymbolText("fa fa-power-off", self.translate("SHUTDOWN"), () => {
       Remote.sendSocketNotification("REMOTE_ACTION", {action: "SHUTDOWN"});
     });
-    wrapper.appendChild(ok);
+    wrapper.append(ok);
 
     const cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), () => {
       self.setStatus("none");
     });
-    wrapper.appendChild(cancel);
+    wrapper.append(cancel);
 
     self.setStatus(false, false, wrapper);
   },
@@ -2021,17 +2044,17 @@ const buttons = {
     const wrapper = document.createElement("div");
     const text = document.createElement("span");
     text.innerHTML = self.translate("CONFIRM_RESTART");
-    wrapper.appendChild(text);
+    wrapper.append(text);
 
     const ok = self.createSymbolText("fa fa-refresh", self.translate("RESTART"), () => {
       Remote.sendSocketNotification("REMOTE_ACTION", {action: "REBOOT"});
     });
-    wrapper.appendChild(ok);
+    wrapper.append(ok);
 
     const cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), () => {
       self.setStatus("none");
     });
-    wrapper.appendChild(cancel);
+    wrapper.append(cancel);
 
     self.setStatus(false, false, wrapper);
   },
@@ -2039,7 +2062,7 @@ const buttons = {
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "RESTART"});
     setTimeout(() => {
       document.location.reload();
-    }, 60000);
+    }, 60_000);
   },
   "monitor-on-button" () {
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "MONITORON"});
@@ -2062,7 +2085,7 @@ const buttons = {
 
   // config menu buttons
   "add-module" () {
-    window.location.hash = "add-module-menu";
+    globalThis.location.hash = "add-module-menu";
   },
   "save-config" () {
     Remote.saveConfig();
@@ -2085,7 +2108,7 @@ const buttons = {
   // alert menu
   "send-alert-button" () {
     const kvpairs = {};
-    const form = document.getElementById("alert");
+    const form = document.querySelector("#alert");
     for (const e of form.elements) {
       kvpairs[e.name] = e.value;
     }
@@ -2104,24 +2127,24 @@ Remote.loadOtherElements();
 
 Remote.setStatus("none");
 
-if (window.location.hash) {
-  Remote.showMenu(window.location.hash.substring(1));
+if (globalThis.location.hash) {
+  Remote.showMenu(globalThis.location.hash.slice(1));
 } else {
   Remote.showMenu("main-menu");
 }
 
-window.onhashchange = () => {
+globalThis.addEventListener("hashchange", () => {
   if (Remote.skipHashChange) {
     Remote.skipHashChange = false;
     return;
   }
-  if (window.location.hash) {
-    Remote.showMenu(window.location.hash.substring(1));
+  if (globalThis.location.hash) {
+    Remote.showMenu(globalThis.location.hash.slice(1));
   } else {
     Remote.showMenu("main-menu");
   }
-};
+});
 
 // loading successful, remove error message
-const loadError = document.getElementById("load-error");
-loadError.parentNode.removeChild(loadError);
+const loadError = document.querySelector("#load-error");
+loadError.remove();

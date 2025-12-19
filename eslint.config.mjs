@@ -6,6 +6,7 @@ import js from "@eslint/js";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
 import stylistic from "@stylistic/eslint-plugin";
+import unicorn from "eslint-plugin-unicorn";
 
 export default defineConfig([
   globalIgnores(["**/*.min.js", "coverage/**"]),
@@ -22,7 +23,7 @@ export default defineConfig([
       }
     },
     "plugins": {js, stylistic},
-    "extends": [importX.recommended, "js/recommended", "stylistic/all"],
+    "extends": [importX.recommended, "js/recommended", "stylistic/all", unicorn.configs.recommended],
     "rules": {
       "@stylistic/array-element-newline": ["error", "consistent"],
       "@stylistic/brace-style": ["error", "1tbs", {"allowSingleLine": true}],
@@ -30,6 +31,7 @@ export default defineConfig([
       "@stylistic/indent": ["error", 2],
       "@stylistic/multiline-ternary": "off",
       "@stylistic/newline-per-chained-call": "off",
+      "@stylistic/no-extra-parens": "off",
       "@stylistic/object-property-newline": ["error", {"allowAllPropertiesOnSameLine": true}],
       "@stylistic/padded-blocks": "off",
       "@stylistic/quote-props": ["error", "consistent"],
@@ -40,7 +42,13 @@ export default defineConfig([
       "no-magic-numbers": "off",
       "no-var": "error",
       "one-var": "off",
-      "sort-keys": "off"
+      "sort-keys": "off",
+      "unicorn/filename-case": "off",
+      "unicorn/no-null": "off",
+      "unicorn/prefer-module": "off",
+      "unicorn/prefer-query-selector": "off",
+      "unicorn/prevent-abbreviations": "off",
+      "unicorn/switch-case-braces": ["error", "avoid"]
     }
   },
   {
@@ -53,14 +61,15 @@ export default defineConfig([
       "sourceType": "module"
     },
     "plugins": {js, stylistic},
-    "extends": [importX.recommended, "js/all", "stylistic/all"],
+    "extends": [importX.recommended, "js/all", "stylistic/all", unicorn.configs.recommended],
     "rules": {
       "@stylistic/array-element-newline": ["error", "consistent"],
       "@stylistic/indent": ["error", 2],
       "@stylistic/object-property-newline": ["error", {"allowAllPropertiesOnSameLine": true}],
       "import-x/no-unresolved": ["error", {"ignore": ["eslint/config"]}],
       "no-magic-numbers": "off",
-      "sort-keys": "off"
+      "sort-keys": "off",
+      "unicorn/filename-case": "off"
     }
   },
   {"files": ["**/*.json"], "ignores": ["package-lock.json"], "plugins": {json}, "extends": ["json/recommended"], "language": "json/json"},

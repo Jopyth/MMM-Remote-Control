@@ -1,10 +1,10 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, fn) => fn();
+const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 // Add tests/shims to module resolution so 'logger' and 'node_helper' resolve to our shims
 const path = require("node:path");
-const ModuleLib = require("module");
+const ModuleLib = require("node:module");
 const shimDir = path.resolve(__dirname, "../shims");
 process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : "");
 if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
@@ -17,7 +17,7 @@ function freshHelper () {
   h.__sent = [];
   h.__responses = [];
   h.sendSocketNotification = (what, payload) => { h.__sent.push({what, payload}); };
-  h.sendResponse = (_res, err, data) => { h.__responses.push({err, data}); };
+  h.sendResponse = (_res, error, data) => { h.__responses.push({err: error, data}); };
   return h;
 }
 
@@ -62,7 +62,10 @@ group("executeQuery core actions", () => {
     const res = {};
     h.executeQuery({action: "MANAGE_CLASSES", payload: {classes: "Group1"}}, res);
     // Order depends on object key iteration; check membership instead of order.
-    const sent = h.__sent.reduce((acc, s) => acc.add(`${s.what}:${JSON.stringify(s.payload)}`), new Set());
+    const sent = new Set();
+    for (const s of h.__sent) {
+      sent.add(`${s.what}:${JSON.stringify(s.payload)}`);
+    }
     assert.ok(sent.has("HIDE:{\"module\":\"calendar\"}"));
     assert.ok(sent.has("SHOW:{\"module\":\"newsfeed\"}"));
     assert.ok(sent.has("TOGGLE:{\"module\":\"clock\"}"));
@@ -76,9 +79,12 @@ group("executeQuery core actions", () => {
       A: {show: ["one"]},
       B: {hide: ["two"], toggle: "three"}
     }};
-    const res = {};
-    h.executeQuery({action: "MANAGE_CLASSES", payload: {classes: ["A", "B"]}}, res);
-    const sent = h.__sent.reduce((acc, s) => acc.add(`${s.what}:${JSON.stringify(s.payload)}`), new Set());
+    const response = {};
+    h.executeQuery({action: "MANAGE_CLASSES", payload: {classes: ["A", "B"]}}, response);
+    const sent = new Set();
+    for (const s of h.__sent) {
+      sent.add(`${s.what}:${JSON.stringify(s.payload)}`);
+    }
     assert.ok(sent.has("SHOW:{\"module\":\"one\"}"));
     assert.ok(sent.has("HIDE:{\"module\":\"two\"}"));
     assert.ok(sent.has("TOGGLE:{\"module\":\"three\"}"));

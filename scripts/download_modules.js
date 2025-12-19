@@ -38,16 +38,16 @@ const downloadModules = {
       const modules = [];
 
       if (data.modules && Array.isArray(data.modules)) {
-        data.modules.forEach((module) => {
-          const modDetail = {
+        for (const module of data.modules) {
+          const moduleDetail = {
             longname: module.name,
             id: module.id,
             url: module.url,
             author: module.maintainer,
             desc: module.description
           };
-          modules.push(modDetail);
-        });
+          modules.push(moduleDetail);
+        }
       }
 
       return modules;
@@ -65,9 +65,9 @@ const downloadModules = {
         const modules = this.parseList(body);
         const json = `${JSON.stringify(modules, null, 2)}\n`;
         const jsonPath = this.config.modulesFile;
-        fs.writeFile(jsonPath, json, "utf8", (err) => {
-          if (err) {
-            console.error(`MODULE LIST ERROR: modules.json updating fail:${err.message}`);
+        fs.writeFile(jsonPath, json, "utf8", (error) => {
+          if (error) {
+            console.error(`MODULE LIST ERROR: modules.json updating fail:${error.message}`);
             this.config.callback("ERROR_UPDATING");
           } else {
             this.config.callback("UPDATED");
@@ -97,13 +97,13 @@ const downloadModules = {
       } else {
         this.config.callback("NO_UPDATE_REQUIRED");
       }
-    } catch (err) {
+    } catch (error) {
       // If file doesn't exist or can't be read, download it
-      if (err.code === "ENOENT") {
+      if (error.code === "ENOENT") {
         console.log("MODULE LIST INFO: modules.json not found, downloading...");
         this.getPackages();
       } else {
-        console.error("MODULE LIST ERROR: Could not check last modified time.", err);
+        console.error("MODULE LIST ERROR: Could not check last modified time.", error);
         this.config.callback("ERROR_CHECKING_LAST_MODIFIED");
       }
     }
@@ -111,10 +111,11 @@ const downloadModules = {
   }
 };
 
-if (typeof module !== "undefined") {
-  module.exports = function (config) {
-    downloadModules.init(config);
-    downloadModules.checkLastModified();
+function downloadModulesMain (config) {
+  downloadModules.init(config);
+  downloadModules.checkLastModified();
+}
 
-  };
+if (typeof module !== "undefined") {
+  module.exports = downloadModulesMain;
 }

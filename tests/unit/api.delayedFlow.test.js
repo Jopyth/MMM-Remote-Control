@@ -1,10 +1,10 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, fn) => fn();
+const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 
 const apiModule = require("../../API/api.js");
 
-function makeCtx (overrides = {}) {
+function makeContext (overrides = {}) {
   return {
     configOnHd: {modules: []},
     externalApiRoutes: {},
@@ -25,19 +25,19 @@ function makeCtx (overrides = {}) {
 group("Delayed flow (/delay)", () => {
   test("answerNotifyApi wraps query into DELAYED and preserves payload", () => {
     const captured = {};
-    const ctx = makeCtx({
+    const context = makeContext({
       delayedQuery: (query) => { captured.query = query; }
     });
-    const answerNotifyApi = apiModule.answerNotifyApi.bind(ctx);
+    const answerNotifyApi = apiModule.answerNotifyApi.bind(context);
 
-    const req = {
+    const request = {
       method: "GET",
       params: {notification: "HELLO", delayed: "delay"},
       query: {did: "ID1", timeout: 5}
     };
     const res = {json: () => {}};
 
-    answerNotifyApi(req, res);
+    answerNotifyApi(request, res);
 
     assert.equal(captured.query.action, "DELAYED");
     assert.equal(captured.query.did, "ID1");

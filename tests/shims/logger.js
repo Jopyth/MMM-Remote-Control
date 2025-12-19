@@ -6,21 +6,21 @@
 const isTestEnvironment = process.env.NODE_ENV === "test" || typeof process.env.npm_lifecycle_event === "string" && process.env.npm_lifecycle_event.includes("test");
 
 module.exports = {
-  log: (...args) => {
+  log: (...arguments_) => {
     if (!isTestEnvironment) {
-      console.log(...args);
+      console.log(...arguments_);
     }
   },
-  info: (...args) => {
+  info: (...arguments_) => {
     if (!isTestEnvironment) {
-      console.info(...args);
+      console.info(...arguments_);
     }
   },
-  warn: (...args) => console.warn(...args),
-  error: (...args) => console.error(...args),
-  debug: (...args) => {
+  warn: (...arguments_) => console.warn(...arguments_),
+  error: (...arguments_) => console.error(...arguments_),
+  debug: (...arguments_) => {
     if (!isTestEnvironment) {
-      console.debug(...args);
+      console.debug(...arguments_);
     }
   }
 };

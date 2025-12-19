@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const group = typeof describe === "function" ? describe : (_n, fn) => fn();
+const group = typeof describe === "function" ? describe : (_n, function_) => function_();
 const {cleanConfig} = require("../../lib/configUtils");
 
 group("configUtils.cleanConfig", () => {
@@ -21,18 +21,18 @@ group("configUtils.cleanConfig", () => {
     assert.ok(!("language" in config));
     assert.equal(config.timeFormat, 12);
     // modA cleaned
-    const modA = config.modules[0];
-    assert.ok(!("foo" in modA.config));
-    assert.ok(!("bar" in modA.config));
-    assert.equal(modA.config.baz, 9);
-    assert.ok(!("position" in modA.config));
-    assert.ok(!("header" in modA));
+    const moduleA = config.modules[0];
+    assert.ok(!("foo" in moduleA.config));
+    assert.ok(!("bar" in moduleA.config));
+    assert.equal(moduleA.config.baz, 9);
+    assert.ok(!("position" in moduleA.config));
+    assert.ok(!("header" in moduleA));
     // modB cleaned
-    const modB = config.modules[1];
-    assert.ok(!("alpha" in modB.config));
+    const moduleB = config.modules[1];
+    assert.ok(!("alpha" in moduleB.config));
     // modC untouched
-    const modC = config.modules[2];
-    assert.equal(modC.config.value, 42);
+    const moduleC = config.modules[2];
+    assert.equal(moduleC.config.value, 42);
   });
 
   test("handles configs without a modules array", () => {
