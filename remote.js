@@ -894,7 +894,7 @@ const Remote = {
         const thisElement = event.currentTarget;
         label.replaceChild(self.createTypeEditSelection(key, label, type, thisElement), thisElement);
       }, "span");
-      typeLabel.className += " module-remove";
+      typeLabel.classList.add("module-remove");
       label.appendChild(typeLabel);
 
       const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("REMOVE"), (event) => {
@@ -904,7 +904,7 @@ const Remote = {
           : thisElement.parentNode;
         elementToRemove.remove();
       }, "span");
-      remove.className += " module-remove";
+      remove.classList.add("module-remove");
       label.appendChild(remove);
     }
     return label;
@@ -978,7 +978,7 @@ const Remote = {
         const input = self.createConfigInput(key, value);
         input.type = "text";
         input.disabled = "disabled";
-        input.className += " disabled undefined";
+        input.classList.add("disabled", "undefined");
         input.placeholder = "undefined";
         label.appendChild(input);
         return label;
@@ -988,7 +988,7 @@ const Remote = {
         const input = self.createConfigInput(key, value);
         input.type = "text";
         input.disabled = "disabled";
-        input.className += " disabled null";
+        input.classList.add("disabled", "null");
         input.placeholder = "null";
         label.appendChild(input);
         return label;
@@ -1063,7 +1063,7 @@ const Remote = {
     if (type === "array") {
       // array
       const add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_ENTRY"));
-      add.className += " bottom-spacing button";
+      add.classList.add("bottom-spacing", "button");
       wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ol"));
       wrapper.appendChild(add);
       dataToEdit.forEach((item, i) => {
@@ -1085,7 +1085,7 @@ const Remote = {
       wrapper.appendChild(this.createConfigLabel(path, name, type, forcedType, "fa-list-ul"));
 
       const addElement = self.createConfigLabel(`${path}/<add>`, this.translate("ADD_ENTRY"), type, true, "fa-plus");
-      addElement.className += " bottom-spacing";
+      addElement.classList.add("bottom-spacing");
       const inputWrapper = document.createElement("div");
       inputWrapper.className = "add-input-wrapper";
       const input = self.createConfigInput(`${path}/<add>`, "");
@@ -1099,7 +1099,7 @@ const Remote = {
         const key = input.value;
         if (key === "" || document.getElementById(`${path}/${key}`)) {
           if (!self.hasClass(input, "input-error")) {
-            input.className += " input-error";
+            input.classList.add("input-error");
           }
           return;
         }
@@ -1267,7 +1267,7 @@ const Remote = {
 
     // disable input for module name
     document.getElementById("<root>/module").disabled = true;
-    document.getElementById("<root>/module").className += " disabled";
+    document.getElementById("<root>/module").classList.add("disabled");
 
     this.showPopup();
   },
@@ -1277,10 +1277,10 @@ const Remote = {
     const changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), () => {
       const saveButton = document.getElementById("save-config");
       if (!self.hasClass(saveButton, "highlight")) {
-        saveButton.className += " highlight";
+        saveButton.classList.add("highlight");
       }
     }, "span");
-    changed.className += " module-remove";
+    changed.classList.add("module-remove");
     return changed;
   },
 
@@ -1328,7 +1328,7 @@ const Remote = {
         const thisElement = event.currentTarget.parentNode.parentNode;
         thisElement.parentNode.removeChild(thisElement);
       }, "span");
-      remove.className += " module-remove";
+      remove.classList.add("module-remove");
       buttonsContainer.appendChild(remove);
 
       innerWrapper.appendChild(buttonsContainer);
@@ -1568,7 +1568,7 @@ const Remote = {
     wrapper.appendChild(info);
 
     const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
-    restart.children[1].className += " text";
+    restart.children[1].classList.add("text");
     wrapper.appendChild(restart);
     this.setStatus("success", false, wrapper);
   },
@@ -1581,11 +1581,11 @@ const Remote = {
     wrapper.appendChild(info);
 
     const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
-    restart.children[1].className += " text";
+    restart.children[1].classList.add("text");
     wrapper.appendChild(restart);
 
     const reload = this.createSymbolText("fa fa-fw fa-globe", this.translate("REFRESHMM"), buttons["refresh-mm-button"]);
-    reload.children[1].className += " text";
+    reload.children[1].classList.add("text");
     wrapper.appendChild(reload);
 
     this.setStatus("success", false, wrapper);
@@ -1599,7 +1599,7 @@ const Remote = {
 
     for (const b in data) {
       const restart = this.createSymbolText("fa fa-fw fa-recycle", b, data[b]);
-      restart.children[1].className += " text";
+      restart.children[1].classList.add("text");
       wrapper.appendChild(restart);
     }
 
