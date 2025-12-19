@@ -464,6 +464,13 @@ const Remote = {
         titleText = classesButton?.querySelector(".text")?.textContent || this.translate("TITLE");
       }
 
+      // For custom/dynamic menus, use button text
+      if (!titleText && key.endsWith("-menu")) {
+        const buttonId = key.replace("-menu", "-button");
+        const button = document.getElementById(buttonId);
+        titleText = button?.querySelector(".text")?.textContent;
+      }
+
       if (titleText) {
         headerTitleElement.textContent = titleText;
       }
@@ -2083,7 +2090,29 @@ const Remote = {
         globalThis.location.hash = "main-menu";
       }
     }
-    this.createMenuElement(content, "main", document.querySelector("#alert-button"));
+
+    // Create button in main menu
+    const button = this.createMenuElement(content, "main", document.querySelector("#alert-button"));
+
+    // Create dedicated nav element for this menu
+    if (button && content.items && content.items.length > 0) {
+      const mainElement = document.querySelector("main");
+      const nav = document.createElement("nav");
+      nav.className = `menu-nav menu-element hidden ${content.id}-menu`;
+
+      // Insert nav after other nav elements
+      const lastNav = mainElement.querySelector("nav:last-of-type");
+      if (lastNav) {
+        lastNav.parentNode.insertBefore(nav, lastNav.nextSibling);
+      } else {
+        mainElement.append(nav);
+      }
+
+      // Create menu items inside the new nav
+      for (const item of content.items) {
+        this.createMenuElement(item, content.id, nav.lastChild || nav);
+      }
+    }
   }
 };
 

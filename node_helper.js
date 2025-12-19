@@ -72,6 +72,7 @@ module.exports = NodeHelper.create({
     /* API EXTENSION - Added v2.0.0 */
     this.externalApiRoutes = {};
     this.moduleApiMenu = {};
+    this.customMenu = {};
   },
 
   stop () {
@@ -1281,6 +1282,7 @@ module.exports = NodeHelper.create({
       }
       fs.readFile(menuPath, (error, data) => {
         if (error) {
+          Log.error(`Error reading custom menu: ${error}`);
           return;
         } else {
           this.customMenu = {...this.customMenu, ...JSON.parse(this.translate(data.toString()))};

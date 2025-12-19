@@ -92,6 +92,7 @@ let config = {
       position: "bottom_right",
       config: {
         secureEndpoints: false,
+        customMenu: "custom_menu.example.json",
         classes: {
           "Toggle Weather": {
             toggle: ["weather"]
