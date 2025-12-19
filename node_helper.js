@@ -853,24 +853,27 @@ module.exports = NodeHelper.create({
   },
 
   handleManageClasses (query, res) {
-    if (!query.payload || !query.payload.classes || !this.thisConfig || !this.thisConfig.classes) { return; }
-    const classes = [];
-    switch (typeof query.payload.classes) {
-      case "string": classes.push(this.thisConfig.classes[query.payload.classes]); break;
+    if (query.payload && query.payload.classes && this.thisConfig && this.thisConfig.classes) {
+      const classes = [];
+      switch (typeof query.payload.classes) {
+        case "string": classes.push(this.thisConfig.classes[query.payload.classes]); break;
 
-      case "object": for (const t of query.payload.classes) classes.push(this.thisConfig.classes[t]);
+        case "object": for (const t of query.payload.classes) classes.push(this.thisConfig.classes[t]);
 
-    }
-    for (const cl of classes) {
-      for (const act in cl) {
-        if ([
-          "SHOW",
-          "HIDE",
-          "TOGGLE"
-        ].includes(act.toUpperCase())) {
-          if (typeof cl[act] === "string") { this.sendSocketNotification(act.toUpperCase(), {module: cl[act]}); } else {
-            for (const t of cl[act]) {
-              this.sendSocketNotification(act.toUpperCase(), {module: t});
+      }
+      for (const cl of classes) {
+        for (const act in cl) {
+          if ([
+            "SHOW",
+            "HIDE",
+            "TOGGLE"
+          ].includes(act.toUpperCase())) {
+            if (typeof cl[act] === "string") {
+              this.sendSocketNotification(act.toUpperCase(), {module: cl[act]});
+            } else {
+              for (const t of cl[act]) {
+                this.sendSocketNotification(act.toUpperCase(), {module: t});
+              }
             }
           }
         }
