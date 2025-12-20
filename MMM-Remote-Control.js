@@ -33,6 +33,20 @@ Module.register("MMM-Remote-Control", {
     this.qrCodeDataUrl = null;
   },
 
+  createOverlays () {
+    if (!document.getElementById("remote-control-overlay-brightness")) {
+      const brightnessOverlay = document.createElement("div");
+      brightnessOverlay.id = "remote-control-overlay-brightness";
+      document.body.insertBefore(brightnessOverlay, document.body.firstChild);
+    }
+
+    if (!document.getElementById("remote-control-overlay-temp")) {
+      const tempOverlay = document.createElement("div");
+      tempOverlay.id = "remote-control-overlay-temp";
+      document.body.insertBefore(tempOverlay, document.body.firstChild);
+    }
+  },
+
   getStyles () {
     return ["MMM-Remote-Control.css"];
   },
@@ -138,27 +152,16 @@ Module.register("MMM-Remote-Control", {
     newBrightnessValue = Math.max(0, Math.min(100, newBrightnessValue));
     Log.debug("BRIGHTNESS", newBrightnessValue);
 
-    let overlay = document.getElementById("remote-control-overlay-brightness");
-    if (!overlay) {
-      overlay = document.createElement("div");
-      overlay.id = "remote-control-overlay-brightness";
-      document.body.insertBefore(overlay, document.body.firstChild);
-    }
-
+    this.createOverlays();
+    const overlay = document.getElementById("remote-control-overlay-brightness");
     const opacity = (100 - newBrightnessValue) / 100;
     overlay.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
     this.brightness = newBrightnessValue;
   },
 
   setTemp (temperature) {
-    let overlay = document.querySelector("#remote-control-overlay-temp");
-    if (!overlay) {
-      // if not existing, create overlay
-      overlay = document.createElement("div");
-      overlay.id = "remote-control-overlay-temp";
-      const parent = document.body;
-      parent.insertBefore(overlay, parent.firstChild);
-    }
+    this.createOverlays();
+    const overlay = document.getElementById("remote-control-overlay-temp");
 
     if (temperature > 327) {
       overlay.style.backgroundColor = `rgba(255,215,0,${(temperature - 325) / 865})`;
