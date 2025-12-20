@@ -192,13 +192,13 @@ See the [Examples Guide](docs/guide/examples.md) for more integration examples w
 
 #### MagicMirror² Control
 
-|   Action   | Description                                                                                                                            |
-| :--------: | -------------------------------------------------------------------------------------------------------------------------------------- |
-|  RESTART   | Restart your MagicMirror²                                                                                                              |
-|  REFRESH   | Refresh mirror page                                                                                                                    |
-|   UPDATE   | Update MagicMirror² and any of it's modules                                                                                            |
-|    SAVE    | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts              |
-| BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
+|   Action   | Description                                                                                                                                                     |
+| :--------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  RESTART   | Restart your MagicMirror²                                                                                                                                       |
+|  REFRESH   | Refresh mirror page                                                                                                                                             |
+|   UPDATE   | Update MagicMirror² and any of it's modules                                                                                                                     |
+|    SAVE    | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts                                       |
+| BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default (full brightness), possible range is between `0` (black) and `100`. |
 
 #### MagicMirror² Electron Browser Window Control
 

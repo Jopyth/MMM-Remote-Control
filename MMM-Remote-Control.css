@@ -1,4 +1,6 @@
-#remote-control-overlay-temp {
+/* Overlays for temperature and brightness visualization - allow interaction through them */
+#remote-control-overlay-temp,
+#remote-control-overlay-brightness {
   position: fixed;
   top: 0;
   left: 0;
@@ -7,11 +9,6 @@
   height: 100vh;
   transition: background-color 1.5s ease;
   pointer-events: none;
-}
-
-/* Class for elements that receive brightness filter animation */
-.brightness-filtered {
-  transition: filter 1.5s ease-in-out;
 }
 
 /* QR Code Styling */

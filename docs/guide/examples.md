@@ -77,7 +77,7 @@ Action: [
   },
   {
     notification: "REMOTE_ACTION",
-    payload: { action: "BRIGHTNESS", value: 200 }
+    payload: { action: "BRIGHTNESS", value: 100 }
   },
   { notification: "REMOTE_ACTION", payload: { action: "REFRESH" } },
   { notification: "REMOTE_ACTION", payload: { action: "RESTART" } }

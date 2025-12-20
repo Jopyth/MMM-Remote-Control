@@ -135,25 +135,18 @@ Module.register("MMM-Remote-Control", {
   },
 
   setBrightness (newBrightnessValue) {
-    if (newBrightnessValue < 10) {
-      newBrightnessValue = 0; // Setting Brightness to 0 turns off some displays backlight, it's neat for power saving
-    } else if (newBrightnessValue > 200) {
-      newBrightnessValue = 200;
-    }
-    const filterValue = `brightness(${newBrightnessValue}%)`;
+    newBrightnessValue = Math.max(0, Math.min(100, newBrightnessValue));
     Log.debug("BRIGHTNESS", newBrightnessValue);
-    const childNodesList = document.body.childNodes;
-    for (const node of childNodesList) {
-      // Only process Element nodes, skip scripts and text nodes
-      if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== "SCRIPT") {
-        node.style.filter = filterValue;
-        // Only add animation class to elements without backdrop-filter
-        const computed = globalThis.getComputedStyle(node);
-        if (computed.backdropFilter === "none" && this.brightness !== newBrightnessValue) {
-          node.classList.add("brightness-filtered");
-        }
-      }
+
+    let overlay = document.getElementById("remote-control-overlay-brightness");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "remote-control-overlay-brightness";
+      document.body.insertBefore(overlay, document.body.firstChild);
     }
+
+    const opacity = (100 - newBrightnessValue) / 100;
+    overlay.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
     this.brightness = newBrightnessValue;
   },
 
