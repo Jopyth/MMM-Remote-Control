@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.0.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.2...v4.0.3) (2025-12-20)
+
+### Bug Fixes
+
+- ensure smooth transition on first brightness/temp change ([f49da0c](https://github.com/jopyth/MMM-Remote-Control/commit/f49da0c5c3b34e509ebc870cf8d93a04b95f463f))
+
+### Code Refactoring
+
+- remove installer.sh and simplify installation ([2d2ee30](https://github.com/jopyth/MMM-Remote-Control/commit/2d2ee30d83c5fe49936ec1d7af30b2936a5c5353))
+
 ## [4.0.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.1...v4.0.2) (2025-12-20)
 
 ### Bug Fixes
