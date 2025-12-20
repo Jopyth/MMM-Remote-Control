@@ -23,6 +23,9 @@
     "https://github.com/jopyth/MMM-Remote-Control/graphs/contributors"
   ],
   "type": "commonjs",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "demo": "cd ../../ && MM_CONFIG_FILE=modules/MMM-Remote-Control/demo.config.js node --run start:wayland:dev",
     "download_modules": "node ./scripts/download_modules_manually.mjs",
