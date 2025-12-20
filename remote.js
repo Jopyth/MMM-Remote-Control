@@ -80,7 +80,7 @@ const Remote = {
         this.handleShowChangelog(payload);
         return;
       }
-      if ("data" in payload) {
+      if ("query" in payload && "data" in payload.query) {
         switch (payload.query.data) {
           case "config_update":
             this.handleSaveConfig(payload);
@@ -100,6 +100,14 @@ const Remote = {
           case "brightness": {
             const slider = document.querySelector("#brightness-slider");
             slider.value = payload.result;
+            this.updateSliderThumbColor(slider, "brightness");
+
+            break;
+          }
+          case "temp": {
+            const slider = document.querySelector("#temp-slider");
+            slider.value = payload.result;
+            this.updateSliderThumbColor(slider, "temp");
 
             break;
           }
@@ -296,6 +304,7 @@ const Remote = {
       this.updateSliderThumbColor(slider, "brightness");
     }, false);
     this.updateSliderThumbColor(slider, "brightness");
+    this.loadBrightness();
 
     const slider2 = document.querySelector("#temp-slider");
     slider2.addEventListener("change", () => {
@@ -305,6 +314,7 @@ const Remote = {
       this.updateSliderThumbColor(slider2, "temp");
     }, false);
     this.updateSliderThumbColor(slider2, "temp");
+    this.loadTemp();
 
     const input = document.querySelector("#add-module-search");
     const deleteButton = document.querySelector("#delete-search-input");
