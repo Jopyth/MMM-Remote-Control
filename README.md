@@ -35,7 +35,7 @@ The module also includes a **RESTful API** for controlling all aspects of your m
 
 ## Installation
 
-1. Clone this repository in your `modules` folder, and install dependencies:
+1. Clone this repository in your `modules` directory, and install dependencies:
 
    ```bash
    cd ~/MagicMirror/modules
@@ -106,7 +106,7 @@ You can install the remote control as an app on your smartphone:
 
 ### Update
 
-Update this module by navigating into its folder on the command line and using `git pull`:
+Update this module by navigating into its directory on the command line and using `git pull`:
 
 ```bash
 cd ~/MagicMirror/modules/MMM-Remote-Control
@@ -283,7 +283,7 @@ Group modules to show/hide together with a single action. See the [Classes Guide
 
 Create custom buttons in the web interface. See the [Custom Menus Guide](docs/guide/custom-menus.md) for details.
 
-Copy `custom_menu.example.json` to your MagicMirror `config/` folder, rename it, and add to your config:
+Copy `custom_menu.example.json` to your MagicMirror `config/` directory, rename it, and add to your config:
 
 ```js
     customMenu: "custom_menu.json",
@@ -291,7 +291,7 @@ Copy `custom_menu.example.json` to your MagicMirror `config/` folder, rename it,
 
 ## Documentation
 
-For detailed documentation, see the [docs/guide/](docs/guide/) folder:
+For detailed documentation, see the [docs/guide/](docs/guide/) directory or the following links:
 
 - [Configuration](docs/guide/configuration.md) - All config options
 - [Monitor Control](docs/guide/monitor-control.md) - Wayland, X11, CEC commands

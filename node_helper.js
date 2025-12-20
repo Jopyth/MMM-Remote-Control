@@ -250,14 +250,14 @@ module.exports = NodeHelper.create({
       : "modules");
   },
 
-  addModule (folderName, lastOne) {
-    const modulePath = `${this.getModuleDir()}/${folderName}`;
+  addModule (directoryName, lastOne) {
+    const modulePath = `${this.getModuleDir()}/${directoryName}`;
     fs.stat(modulePath, (error, stats) => {
       if (stats.isDirectory()) {
         let currentModule = null;
-        this.modulesInstalled.push(folderName);
+        this.modulesInstalled.push(directoryName);
         for (const module of this.modulesAvailable) {
-          if (module.longname === folderName) {
+          if (module.longname === directoryName) {
             module.installed = true;
             currentModule = module;
             break;
@@ -265,13 +265,13 @@ module.exports = NodeHelper.create({
         }
         if (!currentModule) {
           const newModule = {
-            longname: folderName,
-            name: folderName,
+            longname: directoryName,
+            name: directoryName,
             isDefaultModule: false,
             installed: true,
             author: "unknown",
             desc: "",
-            id: `local/${folderName}`,
+            id: `local/${directoryName}`,
             url: ""
           };
           this.modulesAvailable.push(newModule);
@@ -296,13 +296,13 @@ module.exports = NodeHelper.create({
             this.pendingUpdateChecks = 0;
           }
           this.pendingUpdateChecks++;
-          Log.debug(`Queuing update check for ${folderName}, pending: ${this.pendingUpdateChecks}`);
+          Log.debug(`Queuing update check for ${directoryName}, pending: ${this.pendingUpdateChecks}`);
 
           // Add to queue instead of executing immediately
           this.updateCheckQueue.push({
             module: currentModule,
             modulePath,
-            folderName
+            directoryName
           });
 
           // Start processing queue
@@ -322,13 +322,13 @@ module.exports = NodeHelper.create({
                 currentModule.url = baseUrl.replace("git@", "https://");
               } catch (error) {
                 // Something happened. Skip it.
-                Log.debug(`Could not get remote URL for module ${folderName}: ${error}`);
+                Log.debug(`Could not get remote URL for module ${directoryName}: ${error}`);
 
               }
             });
           }
         } catch {
-          Log.debug(`Module ${folderName} is not managed with git, skipping update check`);
+          Log.debug(`Module ${directoryName} is not managed with git, skipping update check`);
         }
       }
     });
@@ -353,15 +353,15 @@ module.exports = NodeHelper.create({
 
       if (data.behind > 0) {
         check.module.updateAvailable = true;
-        Log.info(`Module ${check.folderName} has updates available (behind ${data.behind} commits)`);
+        Log.info(`Module ${check.directoryName} has updates available (behind ${data.behind} commits)`);
       }
     } catch (error) {
-      Log.warn(`Error checking updates for ${check.folderName}: ${error.message || error}`);
+      Log.warn(`Error checking updates for ${check.directoryName}: ${error.message || error}`);
     } finally {
       this.activeUpdateChecks--;
       this.pendingUpdateChecks--;
-      Log.debug(`Finished update check for ${check.folderName}, pending: ${this.pendingUpdateChecks}, active: ${this.activeUpdateChecks}, queued: ${this.updateCheckQueue.length}`);
 
+      Log.debug(`Finished update check for ${check.directoryName}, pending: ${this.pendingUpdateChecks}, active: ${this.activeUpdateChecks}, queued: ${this.updateCheckQueue.length}`);
       // Process next item in queue
       this.processUpdateCheckQueue();
     }

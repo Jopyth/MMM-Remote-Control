@@ -4,7 +4,7 @@ Create custom menu buttons for the Remote Control web interface.
 
 ## Setup
 
-1. Copy `custom_menu.example.json` from the module folder to your MagicMirror `config/` folder
+1. Copy `custom_menu.example.json` from the module directory to your MagicMirror `config/` directory
 2. Rename it (e.g., `custom_menu.json`)
 3. Add the filename to your config:
 
@@ -154,7 +154,7 @@ Send notifications to any module:
 
 ## Translations
 
-Use `%%TRANSLATE:KEY%%` in your text and add the translation to the files in the `translations/` folder:
+Use `%%TRANSLATE:KEY%%` in your text and add the translation to the files in the `translations/` directory:
 
 ```json
 {

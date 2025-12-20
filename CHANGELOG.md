@@ -792,7 +792,7 @@ Huge shout out to [shbatm](https://github.com/shbatm) for his work on this new m
 - Menu to update your MagicMirror² installation and your modules (through `git pull`)
 - Menu to change the `config.js`
   - Modules can be installed, added, removed, configured
-  - There will be backups of the five last versions of the `config.js` in the `config` folder
+  - There will be backups of the five last versions of the `config.js` in the `config` directory
   - Some of these parts are hidden behind an "experimental" warning, do **not** ignore that warning
 - NOTIFICATION action, see [README.md](README.md#notification-request) for details
 
