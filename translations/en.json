@@ -19,7 +19,6 @@
   "REFRESHMM": "Refresh Browser",
   "MONITOROFF": "Turn monitor OFF",
   "MONITORON": "Turn monitor ON",
-  "MONITORTIMED": "Turn monitor ON briefly",
   "REBOOT": "Reboot System",
   "RESTARTMM": "Restart MagicMirror²",
   "SHUTDOWN": "Shutdown",
@@ -40,7 +39,6 @@
   "BY": "by",
   "ADD_THIS": "Add this module",
   "HELP": "Show readme",
-  "MENU": "Menu",
   "RESET": "Reset",
   "NO_HEADER": "(no header)",
   "NO_POSITION": "(invisible)",
@@ -57,8 +55,6 @@
   "SAVE": "Save",
 
   "EXPERIMENTAL": "This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!",
-  "PANIC": "Never mind.",
-  "NO_RISK_NO_FUN": "No risk no fun!",
 
   "CONFIRM_SHUTDOWN": "The system will shut down.",
   "CONFIRM_REBOOT": "The system will restart.",
@@ -76,8 +72,6 @@
   "FORCE_SHOW": "Do it anyway.",
 
   "UPDATE_MENU_NAME": "Updates",
-  "UPDATEMM": "Update MagicMirror²",
-  "UPDATE_AVAILABLE": "Update available",
 
   "ALERT_MENU_NAME": "Alert",
   "SENDALERT": "Send",

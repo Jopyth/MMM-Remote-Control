@@ -19,7 +19,6 @@
   "REFRESHMM": "Recargar Navegador",
   "MONITOROFF": "Apagar monitor",
   "MONITORON": "Encender monitor",
-  "MONITORTIMED": "Encender monitor brevemente",
   "REBOOT": "Reiniciar sistema",
   "RESTARTMM": "Reiniciar MagicMirror²",
   "SHUTDOWN": "Apagar sistema",
@@ -40,7 +39,6 @@
   "BY": "por",
   "ADD_THIS": "Añadir este módulo",
   "HELP": "Ver Readme",
-  "MENU": "Menú",
   "RESET": "Reset",
   "NO_HEADER": "(sin cabecera)",
   "NO_POSITION": "(invisible)",
@@ -57,8 +55,6 @@
   "SAVE": "Guardar",
 
   "EXPERIMENTAL": "Esta es una función experimental, puede corromper tu archivo config. Haz copia de tu configuración primero, por si acaso!",
-  "PANIC": "No me importa.",
-  "NO_RISK_NO_FUN": "Sin riesgo no hay recompensa!",
 
   "CONFIRM_SHUTDOWN": "El sistema se apagará.",
   "CONFIRM_REBOOT": "El sistema se reiniciará.",
@@ -69,14 +65,13 @@
 
   "DONE": "Hecho.",
   "ERROR": "Error!",
+  "INFO": "Info",
   "LOADING": "Cargando …",
 
   "LOCKSTRING_WARNING": "Este módulo fué ocultado por LIST_OF_MODULES, no puede ser mostrado.",
   "FORCE_SHOW": "Hazlo igualmente.",
 
   "UPDATE_MENU_NAME": "Actualizaciones",
-  "UPDATEMM": "Actualiza MagicMirror²",
-  "UPDATE_AVAILABLE": "Actualización disponible",
 
   "ALERT_MENU_NAME": "Alertas / Notificaciones",
   "SENDALERT": "Envía alerta",

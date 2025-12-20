@@ -19,7 +19,6 @@
   "REFRESHMM": "刷新界面",
   "MONITOROFF": "关闭显示器",
   "MONITORON": "打开显示器",
-  "MONITORTIMED": "短暂打开显示器",
   "REBOOT": "重启系统",
   "RESTARTMM": "重启 MagicMirror²",
   "SHUTDOWN": "关闭",
@@ -40,7 +39,6 @@
   "BY": "by",
   "ADD_THIS": "添加此模块",
   "HELP": "帮助",
-  "MENU": "菜单",
   "RESET": "重置",
   "NO_HEADER": "(无标题)",
   "NO_POSITION": "(隐藏)",
@@ -57,8 +55,6 @@
   "SAVE": "保存",
 
   "EXPERIMENTAL": "这是一个实验特性, 它可能会损坏你的配置文件.",
-  "PANIC": "不搞了.",
-  "NO_RISK_NO_FUN": "就是折腾!",
 
   "CONFIRM_SHUTDOWN": "即将关机.",
   "CONFIRM_REBOOT": "系统即将重启.",
@@ -69,14 +65,13 @@
 
   "DONE": "完成.",
   "ERROR": "错误!",
+  "INFO": "信息",
   "LOADING": "加载中 …",
 
   "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
   "FORCE_SHOW": "继续.",
 
   "UPDATE_MENU_NAME": "更新",
-  "UPDATEMM": "更新 MagicMirror²",
-  "UPDATE_AVAILABLE": "更新可用",
 
   "ALERT_MENU_NAME": "通知",
   "SENDALERT": "发送",

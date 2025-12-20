@@ -19,7 +19,6 @@
   "REFRESHMM": "Tarayıcıyı Yenile",
   "MONITOROFF": "Monitörü KAPAT",
   "MONITORON": "Monitörü AÇ",
-  "MONITORTIMED": "Monitörü kısa süreliğine AÇ",
   "REBOOT": "Sistemi yeniden başlat",
   "RESTARTMM": "MagicMirror²'u yeniden başlat",
   "SHUTDOWN": "Kapat",
@@ -40,7 +39,6 @@
   "BY": "by",
   "ADD_THIS": "Bu modülü ekle",
   "HELP": "Beni Oku dosyasını göster",
-  "MENU": "Menü",
   "RESET": "Sıfırla",
   "NO_HEADER": "(başlık yok)",
   "NO_POSITION": "(görünmez)",
@@ -57,8 +55,6 @@
   "SAVE": "Kaydet",
 
   "EXPERIMENTAL": "Bu deneysel bir özellik dolayısıyla config.js dosyanız zarar görebilir. Önce config.js dosyanızı yedekleyin!",
-  "PANIC": "Böyle zor bir kararı alamam. Ben vazgeçtim.",
-  "NO_RISK_NO_FUN": "Risk yoksa eğlence de yoktur! Devam et...",
 
   "CONFIRM_SHUTDOWN": "Sistem kapatılacak.",
   "CONFIRM_REBOOT": "Sistem yeniden başlatılacak.",
@@ -69,14 +65,13 @@
 
   "DONE": "Tamamlandı.",
   "ERROR": "Hata!",
+  "INFO": "Bilgi",
   "LOADING": "Yükleniyor …",
 
   "LOCKSTRING_WARNING": "Bu modül LIST_OF_MODULES kısmında gizlendiği için gösterilemez.",
   "FORCE_SHOW": "Yine de göster.",
 
   "UPDATE_MENU_NAME": "Güncellemeler",
-  "UPDATEMM": "MagicMirror²'u Güncelle",
-  "UPDATE_AVAILABLE": "Güncelleme Var",
 
   "ALERT_MENU_NAME": "Uyarı",
   "SENDALERT": "Gönder",

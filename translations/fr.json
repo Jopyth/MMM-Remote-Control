@@ -19,7 +19,6 @@
   "REFRESHMM": "Recharger l'affichage",
   "MONITOROFF": "Éteindre le miroir",
   "MONITORON": "Allumer le miroir",
-  "MONITORTIMED": "Allumer brièvement le miroir",
   "REBOOT": "Redémarrer le système",
   "RESTARTMM": "Redémarrer MagicMirror²",
   "SHUTDOWN": "Éteindre RPI",
@@ -40,7 +39,6 @@
   "BY": "par",
   "ADD_THIS": "Ajouter ce module",
   "HELP": "Voir le readme",
-  "MENU": "Menu",
   "RESET": "Réinitialiser",
   "NO_HEADER": "(no header)",
   "NO_POSITION": "(invisible)",
@@ -57,8 +55,6 @@
   "SAVE": "Enregistrer",
 
   "EXPERIMENTAL": "Ceci est une fonctionnalité expérimentale, elle peut casser votre configuration. Enregistrez votre configuration au cas où !",
-  "PANIC": "Non, tant pis !",
-  "NO_RISK_NO_FUN": "On a qu'une vie ! Go !",
 
   "CONFIRM_SHUTDOWN": "Le système va s'éteindre.",
   "CONFIRM_REBOOT": "Le système va redémarrer.",
@@ -69,14 +65,13 @@
 
   "DONE": "Fait.",
   "ERROR": "Erreur!",
+  "INFO": "Info",
   "LOADING": "Chargement …",
 
   "LOCKSTRING_WARNING": "Ce module a été masqué par LIST_OF_MODULES, il ne peut pas être affiché.",
   "FORCE_SHOW": "Fais-le quand même.",
 
   "UPDATE_MENU_NAME": "Mises à jour",
-  "UPDATEMM": "Update MagicMirror²",
-  "UPDATE_AVAILABLE": "Mise à jour disponible",
 
   "ALERT_MENU_NAME": "Alerte",
   "SENDALERT": "Envoyer",
@@ -88,5 +83,9 @@
   "FORM_TITLE_PLACEHOLDER": "Entrez le titre...",
   "FORM_MESSAGE": "Message:",
   "FORM_MESSAGE_PLACEHOLDER": "Entrez le message...",
-  "FORM_SECONDS": "Secondes:"
+  "FORM_SECONDS": "Secondes:",
+
+  "RESPONSE_ERROR": "Cela n'a pas fonctionné. Consultez les journaux MM pour plus de détails.",
+  "MODULE_CONTROLS": "Contrôles de module",
+  "CUSTOM_MENU": "Mon menu personnalisé"
 }

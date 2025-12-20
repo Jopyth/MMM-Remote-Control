@@ -19,7 +19,6 @@
   "REFRESHMM": "Browser neu laden",
   "MONITOROFF": "Bildschirm ausschalten",
   "MONITORON": "Bildschirm einschalten",
-  "MONITORTIMED": "Bildschirm kurz einschalten",
   "REBOOT": "System neu starten",
   "RESTARTMM": "Starte MagicMirror² neu",
   "SHUTDOWN": "Ausschalten",
@@ -40,7 +39,6 @@
   "BY": "von",
   "ADD_THIS": "Hinzufügen",
   "HELP": "Hilfe",
-  "MENU": "Menü",
   "RESET": "Zurücksetzen",
   "NO_HEADER": "(kein Header)",
   "NO_POSITION": "(unsichtbar)",
@@ -57,8 +55,6 @@
   "SAVE": "Speichern",
 
   "EXPERIMENTAL": "Dies ist ein experimentelles Feature, es könnte Probleme verursachen. Mache ein Backup von deiner config!",
-  "PANIC": "Lieber nicht.",
-  "NO_RISK_NO_FUN": "Ich liebe das Risiko!",
 
   "CONFIRM_SHUTDOWN": "Das System wird ausgeschaltet.",
   "CONFIRM_REBOOT": "Das System wird neu starten.",
@@ -73,11 +69,9 @@
   "LOADING": "Lade …",
 
   "LOCKSTRING_WARNING": "Dieses Modul wurde durch LIST_OF_MODULES versteckt, es kann nicht angezeigt werden.",
-  "FORCE_SHOW": "Mach es trootzdem!",
+  "FORCE_SHOW": "Mach es trotzdem!",
 
   "UPDATE_MENU_NAME": "Aktualisierungen",
-  "UPDATEMM": "Aktualisiere MagicMirror²",
-  "UPDATE_AVAILABLE": "Aktualisierungen verfügbar",
 
   "ALERT_MENU_NAME": "Alert",
   "SENDALERT": "Senden",

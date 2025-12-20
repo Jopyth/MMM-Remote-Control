@@ -19,7 +19,6 @@
   "REFRESHMM": "Genindlæs Browser",
   "MONITOROFF": "Sluk skærm",
   "MONITORON": "Tænd skærm",
-  "MONITORTIMED": "Tænd skærm kortvarig",
   "REBOOT": "Genstart system",
   "RESTARTMM": "Genstart MagicMirror²",
   "SHUTDOWN": "Luk ned",
@@ -40,7 +39,6 @@
   "BY": "af",
   "ADD_THIS": "Tilføj dette modul",
   "HELP": "Vis readme",
-  "MENU": "Menu",
   "RESET": "Nulstil",
   "NO_HEADER": "(ingen overskrift)",
   "NO_POSITION": "(usynlig)",
@@ -57,8 +55,6 @@
   "SAVE": "Gem",
 
   "EXPERIMENTAL": "Dette er en eksperimentel funktion, det kan ødelægge din konfigurationsfil. Sikkerhedskopier først din konfiguration, hvis det er tilfældet!",
-  "PANIC": "Glem det.",
-  "NO_RISK_NO_FUN": "Selvfølgelig!",
 
   "CONFIRM_SHUTDOWN": "Systemet lukker ned.",
   "CONFIRM_REBOOT": "Systemet genstarter.",
@@ -69,14 +65,13 @@
 
   "DONE": "Færdig.",
   "ERROR": "Fejl!",
+  "INFO": "Info",
   "LOADING": "Indlæser …",
 
   "LOCKSTRING_WARNING": "Dette modul blev skjult af LIST_OF_MODULES, det kan ikke vises.",
   "FORCE_SHOW": "Gør det alligevel.",
 
   "UPDATE_MENU_NAME": "Opdateringer",
-  "UPDATEMM": "Opdater MagicMirror²",
-  "UPDATE_AVAILABLE": "Opdatering tilgængelig",
 
   "ALERT_MENU_NAME": "Alarm",
   "SENDALERT": "Send",

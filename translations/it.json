@@ -19,7 +19,6 @@
   "REFRESHMM": "Aggiorna browser",
   "MONITOROFF": "Spegni il monitor",
   "MONITORON": "Accendi il monitor",
-  "MONITORTIMED": "Accendi brevemente il monitor",
   "REBOOT": "Riavvia il sistema",
   "RESTARTMM": "Riavvia MagicMirror²",
   "SHUTDOWN": "Spegni",
@@ -39,7 +38,6 @@
   "BY": "di",
   "ADD_THIS": "Aggiungi questo modulo",
   "HELP": "Visualizza il file readme",
-  "MENU": "Menù",
   "RESET": "Ripristina",
   "NO_HEADER": "(nessuna intestazione)",
   "NO_POSITION": "(invisibile)",
@@ -56,8 +54,6 @@
   "SAVE": "Salva",
 
   "EXPERIMENTAL": "Questa è una funzione sperimentale e potrebbe rendere illeggibile il file config. Effettua prima il backup del tuo config per sicurezza!",
-  "PANIC": "Nessun problema.",
-  "NO_RISK_NO_FUN": "Chi non risica non rosica!",
 
   "CONFIRM_SHUTDOWN": "Il sistema verrà arrestato.",
   "CONFIRM_REBOOT": "Il sistema verrà riavviato.",
@@ -68,14 +64,13 @@
 
   "DONE": "Fatto.",
   "ERROR": "Errore!",
+  "INFO": "Info",
   "LOADING": "Sto caricando …",
 
   "LOCKSTRING_WARNING": "Questo modulo è stato nascosto da LIST_OF_MODULES e non può essere mostrato.",
   "FORCE_SHOW": "Procedi comunque.",
 
   "UPDATE_MENU_NAME": "Aggiornamenti",
-  "UPDATEMM": "Aggiorna MagicMirror²",
-  "UPDATE_AVAILABLE": "Aggiornamento disponibile",
 
   "ALERT_MENU_NAME": "Avviso",
   "SENDALERT": "Invia",
@@ -87,5 +82,9 @@
   "FORM_TITLE_PLACEHOLDER": "Inserisci il titolo...",
   "FORM_MESSAGE": "Messaggio:",
   "FORM_MESSAGE_PLACEHOLDER": "Inserisci il messaggio...",
-  "FORM_SECONDS": "Secondi:"
+  "FORM_SECONDS": "Secondi:",
+
+  "RESPONSE_ERROR": "Non ha funzionato. Controlla i log MM per maggiori dettagli.",
+  "MODULE_CONTROLS": "Controlli Modulo",
+  "CUSTOM_MENU": "Il Mio Menu Personalizzato"
 }

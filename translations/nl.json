@@ -19,7 +19,6 @@
   "REFRESHMM": "Browser verversen",
   "MONITOROFF": "Schakel monitor UIT",
   "MONITORON": "Schakel monitor AAN",
-  "MONITORTIMED": "Schakel monitor korstondig AAN",
   "REBOOT": "Systeem herstarten",
   "RESTARTMM": "MagicMirror² herstarten",
   "SHUTDOWN": "Uitschakelen",
@@ -40,7 +39,6 @@
   "BY": "door",
   "ADD_THIS": "Voeg deze module toe",
   "HELP": "Toon 'readme'",
-  "MENU": "Menu",
   "RESET": "Reset",
   "NO_HEADER": "(geen header)",
   "NO_POSITION": "(onzichtbaar)",
@@ -57,8 +55,6 @@
   "SAVE": "Opslaan",
 
   "EXPERIMENTAL": "Dit is een experimentele feature, het kan je configuratie bestand onleesbaar maken. Sla voor de zekerheid eerst je configuratie op!",
-  "PANIC": "Laat maar.",
-  "NO_RISK_NO_FUN": "No guts, no glory!",
 
   "CONFIRM_SHUTDOWN": "Het systeem wordt uitgeschakeld.",
   "CONFIRM_REBOOT": "Het systeem wordt opnieuw gestart.",
@@ -69,11 +65,13 @@
 
   "DONE": "Klaar.",
   "ERROR": "Fout!",
+  "INFO": "Info",
   "LOADING": "Laden …",
 
+  "LOCKSTRING_WARNING": "Deze module is verborgen door LIST_OF_MODULES en kan niet worden weergegeven.",
+  "FORCE_SHOW": "Doe het toch.",
+
   "UPDATE_MENU_NAME": "Updates",
-  "UPDATEMM": "MagicMirror² updaten",
-  "UPDATE_AVAILABLE": "Update beschikbaar",
 
   "ALERT_MENU_NAME": "Waarschuwing",
   "SENDALERT": "Verstuur",
@@ -85,5 +83,9 @@
   "FORM_TITLE_PLACEHOLDER": "Voor titel in...",
   "FORM_MESSAGE": "Bericht:",
   "FORM_MESSAGE_PLACEHOLDER": "Voer bericht in...",
-  "FORM_SECONDS": "Seconden:"
+  "FORM_SECONDS": "Seconden:",
+
+  "RESPONSE_ERROR": "Dat heeft niet gewerkt. Bekijk de MM-logboeken voor meer details.",
+  "MODULE_CONTROLS": "Modulebesturing",
+  "CUSTOM_MENU": "Mijn Aangepaste Menu"
 }

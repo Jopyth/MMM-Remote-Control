@@ -19,7 +19,6 @@
   "REFRESHMM": "Refresh Browser",
   "MONITOROFF": "Matikan monitor",
   "MONITORON": "Nyalakan monitor",
-  "MONITORTIMED": "Nyalakan monitor sebentar",
   "REBOOT": "Restart sistem",
   "RESTARTMM": "Restart MagicMirror²",
   "SHUTDOWN": "Matikan",
@@ -40,7 +39,6 @@
   "BY": "oleh",
   "ADD_THIS": "Tambahkan modul ini",
   "HELP": "Lihat readme",
-  "MENU": "Menu",
   "RESET": "Reset",
   "NO_HEADER": "(tidak ada judul)",
   "NO_POSITION": "(tersembunyi)",
@@ -57,8 +55,6 @@
   "SAVE": "Simpan",
 
   "EXPERIMENTAL": "Ini adalah fitur percobaan, dapat merusak file config Anda. Backup config Anda terlebih dahulu, untuk berjaga-jaga!",
-  "PANIC": "Gak usah dipikirin.",
-  "NO_RISK_NO_FUN": "Tanpa resiko tidak ada kesenangan!",
 
   "CONFIRM_SHUTDOWN": "Sistem akan matikan.",
   "CONFIRM_REBOOT": "Sistem akan restart.",
@@ -69,11 +65,13 @@
 
   "DONE": "Selesai.",
   "ERROR": "Error!",
+  "INFO": "Info",
   "LOADING": "Memuat …",
 
+  "LOCKSTRING_WARNING": "Modul ini disembunyikan oleh LIST_OF_MODULES, tidak dapat ditampilkan.",
+  "FORCE_SHOW": "Lakukan saja.",
+
   "UPDATE_MENU_NAME": "Pembaharuan",
-  "UPDATEMM": "Perbarui MagicMirror²",
-  "UPDATE_AVAILABLE": "Pembaharuan tersedia",
 
   "ALERT_MENU_NAME": "Peringatan",
   "SENDALERT": "Kirim",
@@ -85,5 +83,9 @@
   "FORM_TITLE_PLACEHOLDER": "Tuliskan judul...",
   "FORM_MESSAGE": "Pesan:",
   "FORM_MESSAGE_PLACEHOLDER": "Tuliskan pesan...",
-  "FORM_SECONDS": "Detik:"
+  "FORM_SECONDS": "Detik:",
+
+  "RESPONSE_ERROR": "Tidak berhasil. Periksa log MM untuk detail lebih lanjut.",
+  "MODULE_CONTROLS": "Kontrol Modul",
+  "CUSTOM_MENU": "Menu Kustom Saya"
 }

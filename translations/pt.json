@@ -19,7 +19,6 @@
   "REFRESHMM": "Atualizar página",
   "MONITOROFF": "Desligar o monitor",
   "MONITORON": "Ligar o monitor",
-  "MONITORTIMED": "Ligar o monitor temporariamente",
   "REBOOT": "Reiniciar o sistema",
   "RESTARTMM": "Reiniciar o MagicMirror²",
   "SHUTDOWN": "Desligar",
@@ -40,7 +39,6 @@
   "BY": "por",
   "ADD_THIS": "Adicionar este módulo",
   "HELP": "Instruções",
-  "MENU": "Menu",
   "RESET": "Reset",
   "NO_HEADER": "(sem cabeçalho)",
   "NO_POSITION": "(invisível)",
@@ -57,8 +55,6 @@
   "SAVE": "Guardar",
 
   "EXPERIMENTAL": "Esta é uma função experimental e pode corromper o seu ficheiro de configuração. Faça backup da sua configuração por precaução!",
-  "PANIC": "Deixa lá.",
-  "NO_RISK_NO_FUN": "Quem não arrisca, não petisca!",
 
   "CONFIRM_SHUTDOWN": "O sistema irá desligar.",
   "CONFIRM_REBOOT": "O sistema irá reiniciar.",
@@ -69,11 +65,13 @@
 
   "DONE": "Concluído.",
   "ERROR": "Erro!",
+  "INFO": "Info",
   "LOADING": "A carregar …",
 
+  "LOCKSTRING_WARNING": "Este módulo foi ocultado por LIST_OF_MODULES, não pode ser mostrado.",
+  "FORCE_SHOW": "Fazer mesmo assim.",
+
   "UPDATE_MENU_NAME": "Atualizações",
-  "UPDATEMM": "Atualizar o MagicMirror²",
-  "UPDATE_AVAILABLE": "Atualização disponível",
 
   "ALERT_MENU_NAME": "Alerta",
   "SENDALERT": "Enviar",
@@ -85,5 +83,9 @@
   "FORM_TITLE_PLACEHOLDER": "Digite o título...",
   "FORM_MESSAGE": "Mensagem:",
   "FORM_MESSAGE_PLACEHOLDER": "Digite a mensagem...",
-  "FORM_SECONDS": "Segundos:"
+  "FORM_SECONDS": "Segundos:",
+
+  "RESPONSE_ERROR": "Isso não funcionou. Verifique os logs do MM para mais detalhes.",
+  "MODULE_CONTROLS": "Controles de Módulo",
+  "CUSTOM_MENU": "Meu Menu Personalizado"
 }

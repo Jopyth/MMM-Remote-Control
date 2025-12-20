@@ -19,7 +19,6 @@
   "REFRESHMM": "Uppdatea Webläsaren",
   "MONITOROFF": "Sätt skärmen i vila",
   "MONITORON": "Väck skärmen",
-  "MONITORTIMED": "Väck skärmen en kort stund",
   "REBOOT": "Starta om system",
   "RESTARTMM": "Starta om MagicMirror²",
   "SHUTDOWN": "Stäng av",
@@ -40,7 +39,6 @@
   "BY": "av",
   "ADD_THIS": "Lägg till modul",
   "HELP": "Visa läsmig",
-  "MENU": "Meny",
   "RESET": "Återgå",
   "NO_HEADER": "(ingen överskrift)",
   "NO_POSITION": "(osynlig)",
@@ -57,8 +55,6 @@
   "SAVE": "Spara",
 
   "EXPERIMENTAL": "Detta är en experimentell funktion, den skulle kunna förstöra din konfigfil. Se till du har en kopia på din konfigfil innan du går vidare, för att vara på säkra sidan!",
-  "PANIC": "Nej, strunta i det.",
-  "NO_RISK_NO_FUN": "Ja, kör på! Ingen risk, inget kul!",
 
   "CONFIRM_SHUTDOWN": "Systemet stängs av.",
   "CONFIRM_REBOOT": "Systemet startas om.",
@@ -69,11 +65,13 @@
 
   "DONE": "Klart.",
   "ERROR": "Fel!",
+  "INFO": "Info",
   "LOADING": "Laddar …",
 
+  "LOCKSTRING_WARNING": "Denna modul doldes av LIST_OF_MODULES, den kan inte visas.",
+  "FORCE_SHOW": "Gör det ändå.",
+
   "UPDATE_MENU_NAME": "Uppdateringar",
-  "UPDATEMM": "Uppdatera MagicMirror²",
-  "UPDATE_AVAILABLE": "Uppdatering tillgänglig",
 
   "ALERT_MENU_NAME": "Larm",
   "SENDALERT": "Skicka",
@@ -85,5 +83,9 @@
   "FORM_TITLE_PLACEHOLDER": "Skriv titel...",
   "FORM_MESSAGE": "Meddelande:",
   "FORM_MESSAGE_PLACEHOLDER": "Skriv meddelande...",
-  "FORM_SECONDS": "Sekunder:"
+  "FORM_SECONDS": "Sekunder:",
+
+  "RESPONSE_ERROR": "Det fungerade inte. Kontrollera MM-loggarna för mer information.",
+  "MODULE_CONTROLS": "Modulkontroller",
+  "CUSTOM_MENU": "Min Anpassade Meny"
 }
