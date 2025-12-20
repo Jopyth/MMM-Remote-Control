@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.0.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.1...v4.0.2) (2025-12-20)
+
+### Bug Fixes
+
+- add express as devDependency for CI tests ([890933f](https://github.com/jopyth/MMM-Remote-Control/commit/890933f1766651a76c9d12e7551b1c4b0248beea))
+- load saved brightness/temp values on remote page refresh ([4fa33fe](https://github.com/jopyth/MMM-Remote-Control/commit/4fa33feb0a47a88db4f2d48b8bfbcfa2b08fea69))
+- preserve backdrop-filter during brightness transitions ([2c7d56d](https://github.com/jopyth/MMM-Remote-Control/commit/2c7d56da490da424cea595575382ec8f62827c44)), closes [#373](https://github.com/jopyth/MMM-Remote-Control/issues/373)
+- **ui:** fix scrolling and consistent header height on small displays ([46f3e4a](https://github.com/jopyth/MMM-Remote-Control/commit/46f3e4ae29e4de73f5a3268f10c0016cccce3b98))
+
+### Chores
+
+- require Node.js >= 22.0.0 ([0ba3598](https://github.com/jopyth/MMM-Remote-Control/commit/0ba35982e785e49914aeefbbde00e8dcf9bcd6b1))
+
+### Tests
+
+- add test suite to GitHub Actions ([8029896](https://github.com/jopyth/MMM-Remote-Control/commit/802989666631cf3474de60925cbb4a89000c0385))
+
 ## [4.0.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.0...v4.0.1) (2025-12-19)
 
 ### Bug Fixes
