@@ -20,11 +20,11 @@
   "MONITOROFF": "Sluk skærm",
   "MONITORON": "Tænd skærm",
   "MONITORTIMED": "Tænd skærm kortvarig",
-  "RESTART": "Genstart",
+  "REBOOT": "Genstart system",
   "RESTARTMM": "Genstart MagicMirror²",
   "SHUTDOWN": "Luk ned",
   "FULLSCREEN": "Toggle fuldskærm",
-  "MINIMIZE": "Minimer Browser",
+  "MINIMIZE": "Minimer (genstart for at gendanne)",
   "DEVTOOLS": "Åben DevTools",
 
   "SHOWALL": "Vis alle",
@@ -61,7 +61,8 @@
   "NO_RISK_NO_FUN": "Selvfølgelig!",
 
   "CONFIRM_SHUTDOWN": "Systemet lukker ned.",
-  "CONFIRM_RESTART": "Systemet genstarter",
+  "CONFIRM_REBOOT": "Systemet genstarter.",
+  "CONFIRM_RESTARTMM": "MagicMirror² genstarter.",
 
   "LOAD_ERROR": "Hvis du ser denne meddelelse, opstod der en fejl under indlæsning af javascript-filen. Gå til følgende link og se, om dette er et kendt problem med din browser:",
   "ISSUE_LINK": "Github fejlrapportering",

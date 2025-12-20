@@ -20,9 +20,12 @@
   "MONITOROFF": "Spegni il monitor",
   "MONITORON": "Accendi il monitor",
   "MONITORTIMED": "Accendi brevemente il monitor",
-  "RESTART": "Riavvia",
+  "REBOOT": "Riavvia il sistema",
   "RESTARTMM": "Riavvia MagicMirror²",
   "SHUTDOWN": "Spegni",
+  "FULLSCREEN": "Attiva/disattiva schermo intero",
+  "MINIMIZE": "Minimizza (riavvia per ripristinare)",
+  "DEVTOOLS": "Attiva/disattiva DevTools",
 
   "SHOWALL": "Mostra tutto",
   "HIDEALL": "Nascondi tutto",
@@ -57,7 +60,8 @@
   "NO_RISK_NO_FUN": "Chi non risica non rosica!",
 
   "CONFIRM_SHUTDOWN": "Il sistema verrà arrestato.",
-  "CONFIRM_RESTART": "Il sistema verrà riavviato.",
+  "CONFIRM_REBOOT": "Il sistema verrà riavviato.",
+  "CONFIRM_RESTARTMM": "MagicMirror² verrà riavviato.",
 
   "LOAD_ERROR": "Se leggi questo messaggo allora c'è stato un errore nel caricare il file javascript. Per favore vai al link seguente e verifica se sia un problema conosciuto del tuo browser:",
   "ISSUE_LINK": "Pagina Github del problema",

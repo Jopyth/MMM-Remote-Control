@@ -20,9 +20,12 @@
   "MONITOROFF": "Schakel monitor UIT",
   "MONITORON": "Schakel monitor AAN",
   "MONITORTIMED": "Schakel monitor korstondig AAN",
-  "RESTART": "Herstarten",
+  "REBOOT": "Systeem herstarten",
   "RESTARTMM": "MagicMirror² herstarten",
   "SHUTDOWN": "Uitschakelen",
+  "FULLSCREEN": "Schakel volledig scherm in/uit",
+  "MINIMIZE": "Minimaliseren (herstart om te herstellen)",
+  "DEVTOOLS": "Schakel DevTools in/uit",
 
   "SHOWALL": "Toon alles",
   "HIDEALL": "Verberg alles",
@@ -58,7 +61,8 @@
   "NO_RISK_NO_FUN": "No guts, no glory!",
 
   "CONFIRM_SHUTDOWN": "Het systeem wordt uitgeschakeld.",
-  "CONFIRM_RESTART": "Het systeem wordt opnieuw gestart.",
+  "CONFIRM_REBOOT": "Het systeem wordt opnieuw gestart.",
+  "CONFIRM_RESTARTMM": "MagicMirror² wordt opnieuw gestart.",
 
   "LOAD_ERROR": "Wanneer je dit bericht ziet, dan is er een fout opgetreden bij het laden van het javascript bestand. Ga naar de volgende link en controlleer of dit een bekend probleem is het de browser die je gebruikt:",
   "ISSUE_LINK": "Github issue pagina",

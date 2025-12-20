@@ -2,23 +2,39 @@
 
 ## System Issues
 
-### RPi not shutting down? Getting "Interactive Authorization" error
+### Shutdown or Reboot not working? "System requires password" error
 
-You need passwordless sudo for shutdown commands. See [this guide](https://askubuntu.com/questions/168879/shutdown-from-terminal-without-entering-password).
+Your system requires a password for shutdown/reboot commands. To fix this:
+
+1. Open the sudoers file (safely):
+
+   ```bash
+   sudo visudo
+   ```
+
+2. Add this line at the end (replace `pi` with your username):
+
+   ```bash
+   pi ALL=(ALL) NOPASSWD: /sbin/shutdown
+   ```
+
+3. Save and exit (Ctrl+X, then Y, then Enter)
+
+Now shutdown and reboot should work without password prompts.
+
+See also: [Ubuntu guide on passwordless shutdown](https://askubuntu.com/questions/168879/shutdown-from-terminal-without-entering-password)
 
 ### MagicMirror instance isn't restarting
 
-You probably don't have PM2 installed, or the process name is different.
+The restart function depends on your process manager setup.
 
-1. Check if PM2 is running: `pm2 list`
-2. If your process name isn't `mm`, add to config:
-   ```js
-   config: {
-       pm2ProcessName: 'MagicMirror',  // your process name
-   }
-   ```
+1. In Desktop mode (with Electron), restart uses `app.relaunch()` and `app.quit()`
+2. In Server mode, the process exits cleanly and your process manager (systemd, PM2, Docker, etc.) should restart it
+3. Make sure your process manager is configured to restart on clean exit (exit code 0)
 
-See [MagicMirror Docs](https://docs.magicmirror.builders/configuration/autostart.html) for PM2 setup.
+For example, with systemd set `Restart=on-success`, or with PM2 use the default auto-restart behavior.
+
+See [MagicMirror Docs](https://docs.magicmirror.builders/configuration/autostart.html) for setup instructions.
 
 ---
 

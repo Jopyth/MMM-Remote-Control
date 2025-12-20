@@ -32,7 +32,7 @@ const Remote = {
   autoHideTimer: undefined, // Internal: Reference to the active auto-hide timeout (do not modify manually)
   autoHideDelay: 2000, // ms - Time after which success messages are auto hidden
   autoHideDelayError: 30 * 1000, // ms - Time for error messages (0 = no auto-hide, must be clicked away)
-  autoHideDelayInfo: 30 * 1000, // ms - Time for info messages like PM2 restart/stop
+  autoHideDelayInfo: 30 * 1000, // ms - Time for info messages like restart/stop
 
   /*
    * socket()
@@ -590,7 +590,7 @@ const Remote = {
       onClick = () => {
         this.setStatus("none");
       };
-      // Info messages (like PM2 restart/stop) should be displayed longer
+      // Info messages (like restart/stop) should be displayed longer
       if (this.autoHideDelayInfo > 0) {
         this.autoHideTimer = setTimeout(() => {
           this.setStatus("none");
@@ -2238,10 +2238,10 @@ const buttons = {
 
     const wrapper = document.createElement("div");
     const text = document.createElement("span");
-    text.innerHTML = self.translate("CONFIRM_RESTART");
+    text.innerHTML = self.translate("CONFIRM_REBOOT");
     wrapper.append(text);
 
-    const ok = self.createSymbolText("fa fa-refresh", self.translate("RESTART"), () => {
+    const ok = self.createSymbolText("fa fa-refresh", self.translate("REBOOT"), () => {
       Remote.sendSocketNotification("REMOTE_ACTION", {action: "REBOOT"});
     });
     wrapper.append(ok);
@@ -2254,10 +2254,24 @@ const buttons = {
     self.setStatus(false, false, wrapper);
   },
   "restart-mm-button" () {
-    Remote.sendSocketNotification("REMOTE_ACTION", {action: "RESTART"});
-    setTimeout(() => {
-      document.location.reload();
-    }, 60_000);
+    const self = Remote;
+
+    const wrapper = document.createElement("div");
+    const text = document.createElement("span");
+    text.innerHTML = self.translate("CONFIRM_RESTARTMM");
+    wrapper.append(text);
+
+    const ok = self.createSymbolText("fa fa-recycle", self.translate("RESTARTMM"), () => {
+      Remote.sendSocketNotification("REMOTE_ACTION", {action: "RESTART"});
+    });
+    wrapper.append(ok);
+
+    const cancel = self.createSymbolText("fa fa-times", self.translate("CANCEL"), () => {
+      self.setStatus("none");
+    });
+    wrapper.append(cancel);
+
+    self.setStatus(false, false, wrapper);
   },
   "monitor-on-button" () {
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "MONITORON"});

@@ -24,7 +24,6 @@ function freshHelper (overrides = {}) {
   helper.thisConfig = {classes: {}};
   helper.configOnHd = {};
   helper.configData = {moduleData: []};
-  helper.controlPm2 = () => {}; // Stub PM2 operations
   helper.checkInitialized = () => true;
   helper.executeQuery = helperFactory.executeQuery.bind(helper);
   helper.handleNotification = helperFactory.handleNotification.bind(helper);

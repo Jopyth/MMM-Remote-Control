@@ -20,9 +20,12 @@
   "MONITOROFF": "Desligar o monitor",
   "MONITORON": "Ligar o monitor",
   "MONITORTIMED": "Ligar o monitor temporariamente",
-  "RESTART": "Reiniciar",
+  "REBOOT": "Reiniciar o sistema",
   "RESTARTMM": "Reiniciar o MagicMirror²",
   "SHUTDOWN": "Desligar",
+  "FULLSCREEN": "Alternar para ecrã completo",
+  "MINIMIZE": "Minimizar (reiniciar para restaurar)",
+  "DEVTOOLS": "Alternar DevTools",
 
   "SHOWALL": "Mostrar tudo",
   "HIDEALL": "Esconder tudo",
@@ -58,7 +61,8 @@
   "NO_RISK_NO_FUN": "Quem não arrisca, não petisca!",
 
   "CONFIRM_SHUTDOWN": "O sistema irá desligar.",
-  "CONFIRM_RESTART": "O sistema irá reiniciar.",
+  "CONFIRM_REBOOT": "O sistema irá reiniciar.",
+  "CONFIRM_RESTARTMM": "O MagicMirror² irá reiniciar.",
 
   "LOAD_ERROR": "Ocorreu um erro ao ler o seu ficheiro. Por favor, visite este website e veja se o caso aplica-se a si.",
   "ISSUE_LINK": "Página do problema no Github",

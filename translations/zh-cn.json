@@ -20,11 +20,11 @@
   "MONITOROFF": "关闭显示器",
   "MONITORON": "打开显示器",
   "MONITORTIMED": "短暂打开显示器",
-  "RESTART": "重启",
+  "REBOOT": "重启系统",
   "RESTARTMM": "重启 MagicMirror²",
   "SHUTDOWN": "关闭",
   "FULLSCREEN": "切换全屏",
-  "MINIMIZE": "最小化魔镜",
+  "MINIMIZE": "最小化 (重启以恢复)",
   "DEVTOOLS": "打开开发者工具",
 
   "SHOWALL": "打开全部",
@@ -61,7 +61,8 @@
   "NO_RISK_NO_FUN": "就是折腾!",
 
   "CONFIRM_SHUTDOWN": "即将关机.",
-  "CONFIRM_RESTART": "即将重启.",
+  "CONFIRM_REBOOT": "系统即将重启.",
+  "CONFIRM_RESTARTMM": "MagicMirror²即将重启.",
 
   "LOAD_ERROR": "如果你看到这个消息, 说明加载javascript文件时出错。请转到以下链接，查看浏览器是否存在已知问题:",
   "ISSUE_LINK": "Issue链接",

@@ -89,7 +89,7 @@ The module also includes a **RESTful API** for controlling all aspects of your m
    ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.1/120", "192.168.0.1/24"],
    ```
 
-4. Restart your MagicMirror² (i.e. `pm2 restart MagicMirror`).
+4. Restart MagicMirror².
 
 5. Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
 
@@ -149,15 +149,15 @@ For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders
 
 ### Examples
 
-- Example for a REST API GET request to trigger a RaspberryPi restart:
+- Example for a REST API GET request to trigger a system reboot:
 
-`http://192.168.xxx.xxx:8080/api/restart`
+  `http://192.168.xxx.xxx:8080/api/reboot`
 
-- Example to trigger a RaspberryPi restart in your module:
+- Example to trigger MagicMirror² restart in your module:
 
-```js
-this.sendNotification("REMOTE_ACTION", { action: "RESTART" });
-```
+  ```js
+  this.sendNotification("REMOTE_ACTION", { action: "RESTART" });
+  ```
 
 See the [Examples Guide](docs/guide/examples.md) for more integration examples with MMM-ModuleScheduler, MMM-Navigate, Home Assistant, and more.
 
@@ -178,7 +178,8 @@ See the [Examples Guide](docs/guide/examples.md) for more integration examples w
 
 |   Action   | Description                                                                                                                                                     |
 | :--------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  RESTART   | Restart your MagicMirror²                                                                                                                                       |
+|  RESTART   | Restart MagicMirror² (Electron relaunch or clean process exit for process managers like systemd/PM2/Docker)                                                     |
+|    STOP    | Stop MagicMirror² without restarting (exits with error code, process managers won't auto-restart)                                                               |
 |  REFRESH   | Refresh mirror page                                                                                                                                             |
 |   UPDATE   | Update MagicMirror² and any of it's modules                                                                                                                     |
 |    SAVE    | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts                                       |
@@ -186,11 +187,11 @@ See the [Examples Guide](docs/guide/examples.md) for more integration examples w
 
 #### MagicMirror² Electron Browser Window Control
 
-|      Action      | Description                        |
-| :--------------: | ---------------------------------- |
-|     MINIMIZE     | Minimize the browser window.       |
-| TOGGLEFULLSCREEN | Toggle fullscreen mode on and off. |
-|     DEVTOOLS     | Open the DevTools console window.  |
+|      Action      | Description                                                                                 |
+| :--------------: | ------------------------------------------------------------------------------------------- |
+|     MINIMIZE     | Minimize the browser window. **Warning:** Cannot be undone via remote (Wayland limitation). |
+| TOGGLEFULLSCREEN | Toggle fullscreen mode on and off.                                                          |
+|     DEVTOOLS     | Open the DevTools console window.                                                           |
 
 #### Module Control
 

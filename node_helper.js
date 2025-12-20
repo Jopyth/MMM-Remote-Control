@@ -790,7 +790,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  shutdownControl (action, options) {
+  shutdownControl (action, options, res) {
     const shutdownCommand = this.initialized && "shutdownCommand" in this.thisConfig.customCommand
       ? this.thisConfig.customCommand.shutdownCommand
       : "sudo shutdown -h now";
@@ -798,10 +798,38 @@ module.exports = NodeHelper.create({
       ? this.thisConfig.customCommand.rebootCommand
       : "sudo shutdown -r now";
     if (action === "SHUTDOWN") {
-      exec(shutdownCommand, options, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+      this.sendResponse(res, undefined, {action: "SHUTDOWN", info: "Shutting down system..."});
+      Log.log(`Executing shutdown command: ${shutdownCommand}`);
+      exec(shutdownCommand, options, (error, stdout, stderr) => {
+        if (error) {
+          // Check for sudo password requirement
+          if (error.killed && error.signal === "SIGTERM") {
+            Log.error("Shutdown failed: System requires password for shutdown.");
+            Log.error("See setup guide: https://github.com/Jopyth/MMM-Remote-Control#faq");
+            return;
+          }
+          Log.error(`Shutdown error: ${stderr || error.message}`);
+        } else {
+          Log.log("Shutdown command executed successfully - system should be shutting down...");
+        }
+      });
     }
     if (action === "REBOOT") {
-      exec(rebootCommand, options, (error, stdout, stderr, res) => { this.checkForExecError(error, stdout, stderr, res); });
+      this.sendResponse(res, undefined, {action: "REBOOT", info: "Rebooting system..."});
+      Log.log(`Executing reboot command: ${rebootCommand}`);
+      exec(rebootCommand, options, (error, stdout, stderr) => {
+        if (error) {
+          // Check for sudo password requirement
+          if (error.killed && error.signal === "SIGTERM") {
+            Log.error("Reboot failed: System requires password for reboot.");
+            Log.error("See setup guide: https://github.com/Jopyth/MMM-Remote-Control#faq");
+            return;
+          }
+          Log.error(`Reboot error: ${stderr || error.message}`);
+        } else {
+          Log.log("Reboot command executed successfully - system should be rebooting...");
+        }
+      });
     }
   },
 
@@ -915,6 +943,49 @@ module.exports = NodeHelper.create({
     }
   },
 
+  handleRestart (query, res) {
+    try {
+      const {app} = require("electron");
+      if (!app) { throw "Could not get Electron app instance."; }
+      this.sendResponse(res, undefined, {action: "RESTART", info: "Restarting Electron..."});
+      app.relaunch();
+      app.quit();
+    } catch (error) {
+      // Electron not available (server mode) - exit cleanly and let process manager restart
+      Log.log(`Electron not available (${error?.message || "server mode"}), exiting process for restart by process manager...`);
+      this.sendResponse(res, undefined, {action: "RESTART", info: "Exiting process for restart..."});
+
+      // Wait for response to be sent before exiting
+      if (res && res.on) {
+        res.on("finish", () => {
+          // eslint-disable-next-line unicorn/no-process-exit
+          process.exit(0);
+        });
+      } else {
+        // Fallback if res doesn't have event emitter (socket response)
+        // eslint-disable-next-line unicorn/no-process-exit
+        setTimeout(() => process.exit(0), 1000);
+      }
+    }
+  },
+
+  handleStop (query, res) {
+    Log.log("Stopping MagicMirror...");
+    this.sendResponse(res, undefined, {action: "STOP", info: "Stopping process..."});
+
+    // Wait for response to be sent before exiting
+    if (res && res.on) {
+      res.on("finish", () => {
+        // eslint-disable-next-line unicorn/no-process-exit
+        process.exit(1);
+      });
+    } else {
+      // Fallback if res doesn't have event emitter (socket response)
+      // eslint-disable-next-line unicorn/no-process-exit
+      setTimeout(() => process.exit(1), 1000);
+    }
+  },
+
   handleCommand (query, res) {
     const options = {timeout: 15_000};
     if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
@@ -990,8 +1061,8 @@ module.exports = NodeHelper.create({
       GET_CHANGELOG: (q, r) => this.answerGetChangelog(q, r),
       SHUTDOWN: (q, r) => this.shutdownControl(q.action, options, r),
       REBOOT: (q, r) => this.shutdownControl(q.action, options, r),
-      RESTART: (q, r) => this.controlPm2(r, q),
-      STOP: (q, r) => this.controlPm2(r, q),
+      RESTART: (q, r) => this.handleRestart(q, r),
+      STOP: (q, r) => this.handleStop(q, r),
       COMMAND: (q, r) => this.handleCommand(q, r),
       USER_PRESENCE: (q, r) => this.handleUserPresence(q, r),
       MONITORON: (q, r) => this.monitorControl(q.action, options, r),
@@ -1156,57 +1227,6 @@ module.exports = NodeHelper.create({
   checkForExecError (error, stdout, stderr, res, data) {
     if (error) { Log.error(stderr); }
     this.sendResponse(res, error, data);
-  },
-
-  controlPm2 (res, query) {
-    const actionName = query.action.toLowerCase();
-
-    // Check if PM2 is available
-    try {
-      require.resolve("pm2");
-    } catch {
-      // PM2 not installed
-      const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
-      Log.log(`${message}`);
-      this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
-      return;
-    }
-
-    const pm2 = require("pm2");
-    const processName = query.processName || this.thisConfig.pm2ProcessName || "mm";
-
-    pm2.connect((error) => {
-      if (error) {
-        pm2.disconnect();
-        const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
-        Log.log(`${message}`);
-        this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
-        return;
-      }
-
-      // Check if process is running in PM2
-      pm2.list((error, list) => {
-        if (error || !list.some((proc) => proc.name === processName && proc.pm2_env.status === "online")) {
-          pm2.disconnect();
-          const message = `MagicMirror² is not running under PM2. Please ${actionName} manually.`;
-          Log.log(`${message}`);
-          this.sendResponse(res, undefined, {action: actionName, info: message, status: "info"});
-          return;
-        }
-
-        // Process is running in PM2, perform action
-        pm2[actionName](processName, (error) => {
-          pm2.disconnect();
-          if (error) {
-            Log.error(`PM2 ${actionName} error:`, error);
-            this.sendResponse(res, error);
-          } else {
-            Log.log(`PM2 ${actionName}: ${processName}`);
-            this.sendResponse(res, undefined, {action: actionName, processName});
-          }
-        });
-      });
-    });
   },
 
   translate (data) {

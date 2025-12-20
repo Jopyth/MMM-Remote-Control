@@ -459,7 +459,7 @@
     "/api/restart": {
       "get": {
         "tags": ["Mirror Control", "API"],
-        "summary": "Restart your MagicMirror² instance if using PM2 to control it.",
+        "summary": "Restart your MagicMirror² instance (Electron relaunch or process manager restart).",
         "security": [
           {
             "apikey": []
@@ -623,11 +623,11 @@
                     "MONITOROFF": "Turn monitor OFF",
                     "MONITORON": "Turn monitor ON",
                     "MONITORTIMED": "Turn monitor ON briefly",
-                    "RESTART": "Restart",
+                    "REBOOT": "Reboot System",
                     "RESTARTMM": "Restart MagicMirror²",
                     "SHUTDOWN": "Shutdown",
                     "FULLSCREEN": "Toggle Fullscreen",
-                    "MINIMIZE": "Minimize Browser",
+                    "MINIMIZE": "Minimize Browser (restart to restore)",
                     "DEVTOOLS": "Open DevTools",
                     "SHOWALL": "All",
                     "HIDEALL": "All",
@@ -658,7 +658,8 @@
                     "PANIC": "Never mind.",
                     "NO_RISK_NO_FUN": "No risk no fun!",
                     "CONFIRM_SHUTDOWN": "The system will shut down.",
-                    "CONFIRM_RESTART": "The system will restart.",
+                    "CONFIRM_REBOOT": "The system will restart.",
+                    "CONFIRM_RESTARTMM": "MagicMirror² will restart.",
                     "LOAD_ERROR": "If you see this message, an error occurred when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
                     "ISSUE_LINK": "Github issue page",
                     "DONE": "Done.",

@@ -20,9 +20,12 @@
   "MONITOROFF": "Matikan monitor",
   "MONITORON": "Nyalakan monitor",
   "MONITORTIMED": "Nyalakan monitor sebentar",
-  "RESTART": "Restart",
+  "REBOOT": "Restart sistem",
   "RESTARTMM": "Restart MagicMirror²",
   "SHUTDOWN": "Matikan",
+  "FULLSCREEN": "Beralih ke Layar Penuh",
+  "MINIMIZE": "Perkecil (mulai ulang untuk memulihkan)",
+  "DEVTOOLS": "Beralih ke DevTools",
 
   "SHOWALL": "Tampilkan semua",
   "HIDEALL": "Sembunyikan semua",
@@ -58,7 +61,8 @@
   "NO_RISK_NO_FUN": "Tanpa resiko tidak ada kesenangan!",
 
   "CONFIRM_SHUTDOWN": "Sistem akan matikan.",
-  "CONFIRM_RESTART": "Sistem akan restart.",
+  "CONFIRM_REBOOT": "Sistem akan restart.",
+  "CONFIRM_RESTARTMM": "MagicMirror² akan restart.",
 
   "LOAD_ERROR": "Jika Anda melihat pesan ini, telah terjadi kesalahan ketika memuat file javascript. Silakan kunjungi link berikut dan cek masalah ini di browser Anda:",
   "ISSUE_LINK": "Halaman isu Github",

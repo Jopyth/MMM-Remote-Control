@@ -20,9 +20,12 @@
   "MONITOROFF": "Éteindre le miroir",
   "MONITORON": "Allumer le miroir",
   "MONITORTIMED": "Allumer brièvement le miroir",
-  "RESTART": "Redémarrer RPI",
+  "REBOOT": "Redémarrer le système",
   "RESTARTMM": "Redémarrer MagicMirror²",
   "SHUTDOWN": "Éteindre RPI",
+  "FULLSCREEN": "Basculer en plein écran",
+  "MINIMIZE": "Minimiser (redémarrer pour restaurer)",
+  "DEVTOOLS": "Ouvrir les outils de développement",
 
   "SHOWALL": "Tout voir",
   "HIDEALL": "Tout cacher",
@@ -58,7 +61,8 @@
   "NO_RISK_NO_FUN": "On a qu'une vie ! Go !",
 
   "CONFIRM_SHUTDOWN": "Le système va s'éteindre.",
-  "CONFIRM_RESTART": "Le système va redémarrer.",
+  "CONFIRM_REBOOT": "Le système va redémarrer.",
+  "CONFIRM_RESTARTMM": "MagicMirror² va redémarrer.",
 
   "LOAD_ERROR": "Si vous voyez ce message, une erreur s'est produite lors du chargement du fichier javascript. S'il vous plaît allez sur le lien suivant et voir si cela est un problème connu avec votre navigateur:",
   "ISSUE_LINK": "Page d'aide sur Github",

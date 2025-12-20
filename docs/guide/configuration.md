@@ -92,16 +92,6 @@ config: {
 },
 ```
 
-### pm2ProcessName
-
-If your PM2 process name is not the default `mm`:
-
-```js
-config: {
-    pm2ProcessName: 'MagicMirror',
-},
-```
-
 ## Position
 
 Setting a `position` displays the mirror's IP address on screen. You can hide it later from the module menu.

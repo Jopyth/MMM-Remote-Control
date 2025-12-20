@@ -20,9 +20,12 @@
   "MONITOROFF": "Sätt skärmen i vila",
   "MONITORON": "Väck skärmen",
   "MONITORTIMED": "Väck skärmen en kort stund",
-  "RESTART": "Starta om",
+  "REBOOT": "Starta om system",
   "RESTARTMM": "Starta om MagicMirror²",
   "SHUTDOWN": "Stäng av",
+  "FULLSCREEN": "Växla fullskärm",
+  "MINIMIZE": "Minimera (starta om för att återställa)",
+  "DEVTOOLS": "Växla DevTools",
 
   "SHOWALL": "Visa alla",
   "HIDEALL": "Dölj alla",
@@ -58,7 +61,8 @@
   "NO_RISK_NO_FUN": "Ja, kör på! Ingen risk, inget kul!",
 
   "CONFIRM_SHUTDOWN": "Systemet stängs av.",
-  "CONFIRM_RESTART": "Systemet startas om.",
+  "CONFIRM_REBOOT": "Systemet startas om.",
+  "CONFIRM_RESTARTMM": "MagicMirror² startas om.",
 
   "LOAD_ERROR": "Om du ser detta meddelande så har något gott fel när javascriptfilen laddades. Vänligen gå till följande länk och se om det är ett känt problem med din Webbläsare:",
   "ISSUE_LINK": "Githubs ärendesida",

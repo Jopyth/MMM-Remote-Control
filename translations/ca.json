@@ -20,11 +20,11 @@
   "MONITOROFF": "Apagar monitor",
   "MONITORON": "Encendre monitor",
   "MONITORTIMED": "Encendre monitor breument",
-  "RESTART": "Reiniciar RPi",
-  "RESTARTMM": "Recarregar MagicMirror²",
-  "SHUTDOWN": "Apagar RPi",
+  "REBOOT": "Reiniciar sistema",
+  "RESTARTMM": "Reiniciar MagicMirror²",
+  "SHUTDOWN": "Apagar sistema",
   "FULLSCREEN": "Pantalla sencera",
-  "MINIMIZE": "Minimitzar Navegador",
+  "MINIMIZE": "Minimitzar (reiniciar per restaurar)",
   "DEVTOOLS": "Obrir Eines per desenvolupadors",
 
   "SHOWALL": "Mostrar Tots",
@@ -61,7 +61,8 @@
   "NO_RISK_NO_FUN": "Qui no arrisca no pisca!",
 
   "CONFIRM_SHUTDOWN": "El sistema s'apagarà.",
-  "CONFIRM_RESTART": "El sistema es recarregarà.",
+  "CONFIRM_REBOOT": "El sistema es reiniciarà.",
+  "CONFIRM_RESTARTMM": "El MagicMirror² es reiniciarà.",
 
   "LOAD_ERROR": "Si ves este mensaje, un error ha ocurrido cargando el archivo javascript. Si us plau, revisa aquest enllaç per veure si es un problema amb el teu navegador:",
   "ISSUE_LINK": "Pàgina de problemes de Github",

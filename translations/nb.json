@@ -20,9 +20,12 @@
   "MONITOROFF": "Slå av skjermen",
   "MONITORON": "Slå på skjermen",
   "MONITORTIMED": "Slå skjermen på kort",
-  "RESTART": "Omstart",
-  "RESTARTMM": "Restart MagicMirror²",
+  "REBOOT": "Omstart system",
+  "RESTARTMM": "Omstart MagicMirror²",
   "SHUTDOWN": "Slå av",
+  "FULLSCREEN": "Bytt til fullskjerm",
+  "MINIMIZE": "Minimer (start på nytt for å gjenopprette)",
+  "DEVTOOLS": "Bytt til DevTools",
 
   "SHOWALL": "Vis alle",
   "HIDEALL": "Skjul alle",
@@ -58,7 +61,8 @@
   "NO_RISK_NO_FUN": "Ingen risiko, ingen morro!",
 
   "CONFIRM_SHUTDOWN": "Systemet slås av.",
-  "CONFIRM_RESTART": "Systemet vil starte på nytt.",
+  "CONFIRM_REBOOT": "Systemet vil starte på nytt.",
+  "CONFIRM_RESTARTMM": "MagicMirror² vil starte på nytt.",
 
   "LOAD_ERROR": "Hvis du ser denne meldingen, oppstod det en feil ved lasting av javascriptfilen. Vennligst gå til den følgende lenken og se om dette er et kjent problem med nettleseren din:",
   "ISSUE_LINK": "Github problem side",

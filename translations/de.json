@@ -20,11 +20,11 @@
   "MONITOROFF": "Bildschirm ausschalten",
   "MONITORON": "Bildschirm einschalten",
   "MONITORTIMED": "Bildschirm kurz einschalten",
-  "RESTART": "Neu starten",
+  "REBOOT": "System neu starten",
   "RESTARTMM": "Starte MagicMirror² neu",
   "SHUTDOWN": "Ausschalten",
   "FULLSCREEN": "Vollbildmodus",
-  "MINIMIZE": "Browser minimieren",
+  "MINIMIZE": "Minimieren (Neustart zum Wiederherstellen)",
   "DEVTOOLS": "Entwicklerwerkzeuge",
 
   "SHOWALL": "Alle anzeigen",
@@ -61,7 +61,8 @@
   "NO_RISK_NO_FUN": "Ich liebe das Risiko!",
 
   "CONFIRM_SHUTDOWN": "Das System wird ausgeschaltet.",
-  "CONFIRM_RESTART": "Das System wird neu starten.",
+  "CONFIRM_REBOOT": "Das System wird neu starten.",
+  "CONFIRM_RESTARTMM": "MagicMirror² wird neu gestartet.",
 
   "LOAD_ERROR": "Wenn du diese Nachricht lesen kannst, konnte die javascript Datei nicht korrekt geladen werden. Bitte folge dem Link, und sehe nach, ob dies ein bekanntes Problem mit deinem Browser ist:",
   "ISSUE_LINK": "Github-Issue-Seite",

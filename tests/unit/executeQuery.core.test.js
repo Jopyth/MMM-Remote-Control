@@ -187,9 +187,9 @@ describe("executeQuery core actions", () => {
 
   test("RESTART sends socket notification to restart MagicMirror", () => {
     const h = freshHelper();
-    h.thisConfig = {pm2ProcessName: "mm"};
-    // Stub controlPm2 since we don't have PM2 in test environment
-    h.controlPm2 = (res) => {
+    h.thisConfig = {};
+    // Stub handleRestart since we don't have Electron in test environment
+    h.handleRestart = (query, res) => {
       h.sendResponse(res, undefined, {action: "RESTART"});
     };
     const res = {};

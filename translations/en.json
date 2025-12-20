@@ -20,11 +20,11 @@
   "MONITOROFF": "Turn monitor OFF",
   "MONITORON": "Turn monitor ON",
   "MONITORTIMED": "Turn monitor ON briefly",
-  "RESTART": "Restart",
+  "REBOOT": "Reboot System",
   "RESTARTMM": "Restart MagicMirror²",
   "SHUTDOWN": "Shutdown",
   "FULLSCREEN": "Toggle Fullscreen",
-  "MINIMIZE": "Minimize Browser",
+  "MINIMIZE": "Minimize (restart to restore)",
   "DEVTOOLS": "Toggle DevTools",
 
   "SHOWALL": "Show all",
@@ -61,7 +61,8 @@
   "NO_RISK_NO_FUN": "No risk no fun!",
 
   "CONFIRM_SHUTDOWN": "The system will shut down.",
-  "CONFIRM_RESTART": "The system will restart.",
+  "CONFIRM_REBOOT": "The system will restart.",
+  "CONFIRM_RESTARTMM": "MagicMirror² will restart.",
 
   "LOAD_ERROR": "If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
   "ISSUE_LINK": "Github issue page",

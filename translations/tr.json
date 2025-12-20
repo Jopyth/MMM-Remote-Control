@@ -19,12 +19,12 @@
   "REFRESHMM": "Tarayıcıyı Yenile",
   "MONITOROFF": "Monitörü KAPAT",
   "MONITORON": "Monitörü AÇ",
-  "MONITORTIMED": "Turn monitor ON briefly",
-  "RESTART": "Yeniden Başlat",
-  "RESTARTMM": "MagicMirror²'u Yeniden Başlat",
+  "MONITORTIMED": "Monitörü kısa süreliğine AÇ",
+  "REBOOT": "Sistemi yeniden başlat",
+  "RESTARTMM": "MagicMirror²'u yeniden başlat",
   "SHUTDOWN": "Kapat",
   "FULLSCREEN": "Tam Ekran",
-  "MINIMIZE": "Tarayıcıyı Küçült",
+  "MINIMIZE": "Küçült (geri yüklemek için yeniden başlat)",
   "DEVTOOLS": "DevTools Aracını Çalıştır",
 
   "SHOWALL": "Hepsi Göster",
@@ -61,7 +61,8 @@
   "NO_RISK_NO_FUN": "Risk yoksa eğlence de yoktur! Devam et...",
 
   "CONFIRM_SHUTDOWN": "Sistem kapatılacak.",
-  "CONFIRM_RESTART": "Sistem yeniden başlatılacak.",
+  "CONFIRM_REBOOT": "Sistem yeniden başlatılacak.",
+  "CONFIRM_RESTARTMM": "MagicMirror² yeniden başlatılacak.",
 
   "LOAD_ERROR": "Eğer bu mesajı görüyorsanız, javascript dosyası yüklenirken bir hata oluşmuş demektir. Lütfen aşağıdaki linke gidin ve tarayıcınızla yaşadığınız problemin daha önceden farkedilip edilmediğine bakın:",
   "ISSUE_LINK": "Github Sorun Sayfası",
