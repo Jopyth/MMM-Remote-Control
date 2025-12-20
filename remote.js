@@ -2075,7 +2075,16 @@ const Remote = {
       item.classList.add("hidden");
     }
 
-    insertAfter.parentNode.insertBefore(item, insertAfter.nextSibling);
+    /*
+     * Insert element: if insertAfter is a container (nav/section), append to it
+     * Otherwise insert after the specified element
+     */
+    if (insertAfter.tagName === "NAV" || insertAfter.tagName === "SECTION" ||
+      insertAfter.classList.contains("menu-element-container")) {
+      insertAfter.append(item);
+    } else {
+      insertAfter.parentNode.insertBefore(item, insertAfter.nextSibling);
+    }
 
     if ("items" in content) {
       for (const index of content.items) {
@@ -2120,7 +2129,7 @@ const Remote = {
 
       // Create menu items inside the new nav
       for (const item of content.items) {
-        this.createMenuElement(item, content.id, nav.lastChild || nav);
+        this.createMenuElement(item, content.id, nav);
       }
     }
   }

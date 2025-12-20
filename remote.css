@@ -67,7 +67,7 @@ body {
   margin-inline: auto;
   width: 90%;
   max-width: 85%;
-  min-height: 50px;
+  min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -160,6 +160,7 @@ body {
     max-width: 95%;
     font-size: 1.3em;
     padding: 0.8em 0;
+    min-height: 100px;
     gap: 0.3em;
   }
 
@@ -216,7 +217,8 @@ a {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .menu-content {
@@ -268,6 +270,10 @@ a {
   width: 95%;
   max-width: 900px;
   margin-inline: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .results:last-child {
@@ -303,10 +309,11 @@ a {
 .menu-element-container {
   display: flex;
   flex-direction: column;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   width: 100%;
   max-width: 1400px;
   margin-inline: auto;
+  overflow-y: auto;
 }
 
 .one-line {
