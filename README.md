@@ -35,75 +35,67 @@ The module also includes a **RESTful API** for controlling all aspects of your m
 
 ## Installation
 
-### Quick install
+1. Clone this repository in your `modules` folder, and install dependencies:
 
-If you followed the default installation instructions for the [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) project, you should be able to use the automatic installer.
+   ```bash
+   cd ~/MagicMirror/modules
+   git clone https://github.com/Jopyth/MMM-Remote-Control
+   cd MMM-Remote-Control
+   npm ci --omit=dev
+   ```
 
-The following command will download the installer and execute it:
+   The installation will display a sample API key that you can use (optional).
 
-```bash
-bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh)"
-```
+2. Add the module to your `config.js` file. **Note:** You must set a `position` to display the URL/QR code on the mirror.
 
-### Manual install
+   ```js
+   {
+       module: 'MMM-Remote-Control',
+       position: 'bottom_left', // Required to show URL/QR code on mirror
+       // you can hide this module afterwards from the remote control itself
+       config: {
+           customCommand: {},  // Optional, See "Using Custom Commands" below
+           showModuleApiMenu: true, // Optional, Enable the Module Controls menu
+           secureEndpoints: true, // Optional, See API/README.md
+           // uncomment any of the lines below if you're gonna use it
+           // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
+           // apiKey: "", // Optional, See API/README.md for details
+           // classes: {}, // Optional, See "Custom Classes" below
 
-- (1) Clone this repository in your `modules` folder, and install dependencies:
+           // QR Code options (new!)
+           // showQRCode: true, // Optional, display QR code for easy mobile access (default: true)
+           // qrCodeSize: 150, // Optional, size of QR code in pixels (default: 150)
+           // qrCodePosition: "below" // Optional:
+           //   "below" - Show URL above, QR code below (default)
+           //   "above" - Show QR code above, URL below
+           //   "replace" - Show only QR code, no URL text
+       }
+   },
+   ```
 
-```bash
-cd ~/MagicMirror/modules
-git clone https://github.com/Jopyth/MMM-Remote-Control
-cd MMM-Remote-Control
-npm ci --omit=dev
-```
+3. For security reasons, the MagicMirror² (and therefore the Remote Control) is _not_ reachable externally.
+   To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
+   For example change `address` to `0.0.0.0` and add two allowed devices with IP addresses `192.168.0.42` and `192.168.0.50`:
 
-- (2) Add the module to your `config.js` file. **Note:** You must set a `position` to display the URL/QR code on the mirror.
+   ```js
+   address : '0.0.0.0',
+   port: 8080,
+   ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.42", "::ffff:192.168.0.50"],"
+   ```
 
-```js
-    {
-        module: 'MMM-Remote-Control',
-        position: 'bottom_left', // Required to show URL/QR code on mirror
-        // you can hide this module afterwards from the remote control itself
-        config: {
-            customCommand: {},  // Optional, See "Using Custom Commands" below
-            showModuleApiMenu: true, // Optional, Enable the Module Controls menu
-            secureEndpoints: true, // Optional, See API/README.md
-            // uncomment any of the lines below if you're gonna use it
-            // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
-            // apiKey: "", // Optional, See API/README.md for details
-            // classes: {}, // Optional, See "Custom Classes" below
+   You can also add multiple devices in an IP range (e.g. all devices with `192.168.0.X`):
 
-            // QR Code options (new!)
-            // showQRCode: true, // Optional, display QR code for easy mobile access (default: true)
-            // qrCodeSize: 150, // Optional, size of QR code in pixels (default: 150)
-            // qrCodePosition: "below" // Optional:
-            //   "below" - Show URL above, QR code below (default)
-            //   "above" - Show QR code above, URL below
-            //   "replace" - Show only QR code, no URL text
-        }
-    },
-```
+   ```js
+   ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.1/120", "192.168.0.1/24"],
+   ```
 
-- (3) For security reasons, the MagicMirror² (and therefore the Remote Control) is _not_ reachable externally.
-  To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
-  For example change `address` to `0.0.0.0` and add two allowed devices with IP addresses `192.168.0.42` and `192.168.0.50`:
+4. Restart your MagicMirror² (i.e. `pm2 restart MagicMirror`).
 
-```js
-    address : '0.0.0.0',
-    port: 8080,
-    ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.42", "::ffff:192.168.0.50"],"
-```
-
-You can also add multiple devices in an IP range (e.g. all devices with `192.168.0.X`):
-
-```js
-    ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.1/120", "192.168.0.1/24"],
-```
-
-- (4) Restart your MagicMirror² (i.e. `pm2 restart MagicMirror`).
-
-- (5) Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
+5. Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
 
 ### Install as PWA (Progressive Web App)
+
+> **Note:** PWA installation may require HTTPS. If you experience issues, this feature might only work when MagicMirror² is running under HTTPS. Feedback would be appreciated!
 
 You can install the remote control as an app on your smartphone:
 
@@ -111,8 +103,6 @@ You can install the remote control as an app on your smartphone:
 2. On **Android** (Chrome): Tap the menu (⋮) → "Install app" or "Add to Home screen"
 3. On **iOS** (Safari): Tap Share (□↑) → "Add to Home Screen"
 4. The remote control will now work like a native app with offline support!
-
-Note: If your user does not have `sudo` rights, the shutdown does not work (it _should_ work for everyone who did not change anything on this matter).
 
 ### Update
 
@@ -122,12 +112,6 @@ Update this module by navigating into its folder on the command line and using `
 cd ~/MagicMirror/modules/MMM-Remote-Control
 git pull
 npm ci --omit=dev
-```
-
-Alternatively you can run the `installer.sh` script again:
-
-```bash
-~/MagicMirror/modules/MMM-Remote-Control/installer.sh
 ```
 
 ### Select version manually

@@ -47,9 +47,7 @@ $ curl -X POST http://magicmirrorip:8080/api/notification/HELLO_WORLD \
 
 ## Authentication
 
-Providing an API key is recommended; however, remains optional. If you wish to use an API key to authenticate, add an `apiKey:` option to the config section for this module.
-
-If you ran the `installer.sh` script when you installed the module, a non-canonical UUID is generated for you to use; you can use this unique code, or use any string you wish.
+Providing an API key is recommended; however, remains optional. If you wish to use an API key to authenticate, add an `apiKey:` option to the config section for this module. You can use any string you prefer.
 
 ### Example Config Section
 
