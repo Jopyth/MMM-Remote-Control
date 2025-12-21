@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.3...v4.1.0) (2025-12-21)
+
+### Features
+
+- enforce JSDoc and add central type definitions ([e3f8222](https://github.com/jopyth/MMM-Remote-Control/commit/e3f82224aed24914a5b2cfd0ce64beebf6e7e51a))
+
+### Bug Fixes
+
+- **i18n:** add missing translation keys and remove 6 unused keys ([d69c8bd](https://github.com/jopyth/MMM-Remote-Control/commit/d69c8bdfae4729d1915c22955b0b65d41c530c58))
+
+### Chores
+
+- correct command in postinstall script for generating API key ([e0b9e96](https://github.com/jopyth/MMM-Remote-Control/commit/e0b9e96e5d58c174c28efaf1d5230cd748017413))
+- update contributors format in package.json ([e4ac809](https://github.com/jopyth/MMM-Remote-Control/commit/e4ac809005b416bba408283717ac5de1cc68b4bd))
+
+### Code Refactoring
+
+- adopt upstream 3rd-party-modules schema ([368747e](https://github.com/jopyth/MMM-Remote-Control/commit/368747e85c8c08363030ac3e5b0496ed27282b8a))
+- remove PM2 dependency, add universal process manager support ([1ebc12f](https://github.com/jopyth/MMM-Remote-Control/commit/1ebc12f73d98c55a677cdde59e71f510eb6b038a))
+- rename folder to directory for constancy ([d998dcf](https://github.com/jopyth/MMM-Remote-Control/commit/d998dcf16486b00652b115dbcd3996ac3ab06aab))
+
+### Tests
+
+- add comprehensive tests for translation completeness and usage ([c6202a8](https://github.com/jopyth/MMM-Remote-Control/commit/c6202a8dc69c16d9a3abe0a0813e9a6836ae2053))
+
 ## [4.0.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.2...v4.0.3) (2025-12-20)
 
 ### Bug Fixes
