@@ -37,6 +37,21 @@ export default defineConfig([
       "@stylistic/padded-blocks": "off",
       "@stylistic/quote-props": ["error", "consistent"],
       "capitalized-comments": "off",
+      "jsdoc/require-jsdoc": [
+        "error", {
+          "require": {
+            "FunctionDeclaration": true,
+            "MethodDefinition": true,
+            "ClassDeclaration": true,
+            "ArrowFunctionExpression": false,
+            "FunctionExpression": false
+          }
+        }
+      ],
+      "jsdoc/require-param": "error",
+      "jsdoc/require-param-type": "error",
+      "jsdoc/require-returns": "error",
+      "jsdoc/require-returns-type": "error",
       "max-lines-per-function": ["warn", 250],
       "max-statements": ["warn", 60],
       "no-inline-comments": "off",

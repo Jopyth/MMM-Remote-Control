@@ -1,5 +1,18 @@
 /* global Module */
 
+/**
+ * @file MagicMirror² Remote Control Module - Node Helper
+ * @module node_helper
+ */
+
+/**
+ * @typedef {import('./types').ModuleData} ModuleData
+ * @typedef {import('./types').ConfigData} ConfigData
+ * @typedef {import('./types').ModuleConfig} ModuleConfig
+ * @typedef {import('./types').BackupInfo} BackupInfo
+ * @typedef {import('./types').ApiResponse} ApiResponse
+ */
+
 /*
  * MagicMirror²
  * Module: Remote Control
@@ -97,6 +110,10 @@ module.exports = NodeHelper.create({
     this.loadTimers();
   },
 
+  /**
+   * Set up periodic timers for module list updates
+   * @returns {void}
+   */
   loadTimers () {
     const delay = 24 * 3600;
 
@@ -107,6 +124,11 @@ module.exports = NodeHelper.create({
     }, delay * 1000);
   },
 
+  /**
+   * Combine default config with user config from config.js
+   * Sets this.configOnHd and this.thisConfig
+   * @returns {void}
+   */
   combineConfig () {
     // function copied from MagicMirrorOrg (MIT)
     const defaults = require(`${__dirname}/../../js/defaults.js`);
@@ -140,6 +162,10 @@ module.exports = NodeHelper.create({
     this.loadTranslation(this.configOnHd.language);
   },
 
+  /**
+   * Get the MagicMirror config file path
+   * @returns {string} Absolute path to config.js
+   */
   getConfigPath () {
     let configPath = path.resolve(`${__dirname}/../../config/config.js`);
     if (globalThis.configuration_file !== undefined) {
@@ -194,6 +220,11 @@ module.exports = NodeHelper.create({
 
   formatName (string) { return formatName(string); },
 
+  /**
+   * Update the list of available modules from 3rd-party repository
+   * @param {boolean} force - Force re-download even if cache exists
+   * @returns {void}
+   */
   updateModuleList (force) {
     const downloadModules = require("./scripts/download_modules");
     downloadModules({
@@ -205,6 +236,11 @@ module.exports = NodeHelper.create({
     });
   },
 
+  /**
+   * Read and parse modules.json file
+   * Populates this.modulesAvailable with ModuleData[]
+   * @returns {void}
+   */
   readModuleData () {
     fs.readFile(path.resolve(`${__dirname}/modules.json`), (error, data) => {
       this.modulesAvailable = JSON.parse(data.toString());
@@ -242,6 +278,10 @@ module.exports = NodeHelper.create({
     });
   },
 
+  /**
+   * Get the modules directory path from config or use default
+   * @returns {string} Modules directory path (relative or absolute)
+   */
   getModuleDir () {
     return this.configOnHd.foreignModulesDir || (this.configOnHd.paths
       ? this.configOnHd.paths.modules
@@ -531,17 +571,36 @@ module.exports = NodeHelper.create({
     }
   },
 
+  /**
+   * Handle POST API requests
+   * @param {object} query - Query parameters
+   * @param {object} request - Express request object
+   * @param {object} res - Express response object
+   * @returns {void}
+   */
   answerPost (query, request, res) {
     if (query.data === "config") {
       this.saveConfigWithBackup(request.body, res, query);
     }
   },
 
+  /**
+   * Handle request for list of available modules
+   * @param {object} query - Query parameters
+   * @param {object} res - Express response object
+   * @returns {void}
+   */
   handleGetModuleAvailable (query, res) {
     this.modulesAvailable.sort((a, b) => a.name.localeCompare(b.name));
     this.sendResponse(res, undefined, {query, data: this.modulesAvailable});
   },
 
+  /**
+   * Handle request for list of installed modules
+   * @param {object} query - Query parameters
+   * @param {object} res - Express response object
+   * @returns {void}
+   */
   handleGetModuleInstalled (query, res) {
 
     // Wait for pending update checks to complete before sending response
@@ -653,6 +712,13 @@ module.exports = NodeHelper.create({
     };
   },
 
+  /**
+   * Handle GET API requests
+   * @param {object} query - Query parameters
+   * @param {string} query.data - Data type requested
+   * @param {object} res - Express response object
+   * @returns {void}
+   */
   answerGet (query, res) {
     const handlers = this.getDataHandlers();
     const handler = handlers[query.data];
@@ -1100,6 +1166,13 @@ module.exports = NodeHelper.create({
     return false;
   },
 
+  /**
+   * Install a module from a git repository
+   * @param {string} url - Git repository URL
+   * @param {object} res - Express response object
+   * @param {object} data - Additional installation data
+   * @returns {void}
+   */
   installModule (url, res, data) {
 
     simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), (error) => {
@@ -1330,6 +1403,12 @@ module.exports = NodeHelper.create({
     return addresses;
   },
 
+  /**
+   * Handle socket notifications from the frontend module
+   * @param {string} notification - Notification type
+   * @param {object | ConfigData} payload - Notification payload (varies by type)
+   * @returns {void}
+   */
   socketNotificationReceived (notification, payload) {
 
     if (notification === "CURRENT_STATUS") {
