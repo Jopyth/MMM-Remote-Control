@@ -946,12 +946,11 @@
                   },
                   "data": [
                     {
-                      "longname": "MMM-Remote-Control",
+                      "name": "MMM-Remote-Control",
                       "id": "Jopyth/MMM-Remote-Control",
                       "url": "https://github.com/Jopyth/MMM-Remote-Control",
-                      "author": "Jopyth",
-                      "desc": "Cleanly shutdown (or reboot) your mirror, edit which modules are shown on your mirror and turn your monitor off and on from a simple website, i.e. from your smartphone.",
-                      "name": "Remote Control",
+                      "maintainer": "Jopyth",
+                      "description": "Cleanly shutdown (or reboot) your mirror, edit which modules are shown on your mirror and turn your monitor off and on from a simple website, i.e. from your smartphone.",
                       "isDefaultModule": false,
                       "installed": true
                     }
@@ -984,12 +983,11 @@
                   },
                   "data": [
                     {
-                      "longname": "MMM-Remote-Control",
+                      "name": "MMM-Remote-Control",
                       "id": "Jopyth/MMM-Remote-Control",
                       "url": "https://github.com/Jopyth/MMM-Remote-Control",
-                      "author": "Jopyth",
-                      "desc": "Cleanly shutdown (or reboot) your mirror, edit which modules are shown on your mirror and turn your monitor off and on from a simple website, i.e. from your smartphone.",
-                      "name": "Remote Control",
+                      "maintainer": "Jopyth",
+                      "description": "Cleanly shutdown (or reboot) your mirror, edit which modules are shown on your mirror and turn your monitor off and on from a simple website, i.e. from your smartphone.",
                       "isDefaultModule": false,
                       "installed": true
                     }

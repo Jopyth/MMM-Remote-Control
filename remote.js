@@ -210,7 +210,7 @@ const Remote = {
     pattern = pattern.trim();
 
     const regex = new RegExp(pattern, "i");
-    const searchIn = ["author", "desc", "longname", "name"];
+    const searchIn = ["maintainer", "description", "name"];
 
     const data = this.savedData.moduleAvailable;
     for (const [index, currentData] of data.entries()) {
@@ -1533,7 +1533,7 @@ const Remote = {
       if (!this.installedModulesCache) {
         await this.loadInstalledModulesCache();
       }
-      const module = this.installedModulesCache.find((m) => m.longname === moduleName);
+      const module = this.installedModulesCache.find((m) => m.name === moduleName);
       return module?.url || "";
     } catch (error) {
       console.error("Error loading module URL:", error);
@@ -1594,12 +1594,12 @@ const Remote = {
     wrapper.append(name);
 
     const author = document.createElement("div");
-    author.innerHTML = `${this.translate("BY")} ${data.author}`;
+    author.innerHTML = `${this.translate("BY")} ${data.maintainer}`;
     author.className = "subtitle small";
     wrapper.append(author);
 
     const desc = document.createElement("div");
-    desc.innerHTML = data.desc;
+    desc.innerHTML = data.description;
     desc.className = "small flex-fill";
     wrapper.append(desc);
 
@@ -1609,7 +1609,7 @@ const Remote = {
     if (data.installed) {
       const add = this.createSymbolText("fa fa-fw fa-plus", this.translate("ADD_THIS"), () => {
         this.closePopup();
-        this.addModule = data.longname;
+        this.addModule = data.name;
         globalThis.location.hash = "settings-menu";
       });
       footer.append(add);
@@ -1653,10 +1653,10 @@ const Remote = {
         moduleName.textContent = module.name;
         moduleInfo.append(moduleName);
 
-        if (module.desc) {
+        if (module.description) {
           const moduleDesc = document.createElement("div");
           moduleDesc.className = "module-description";
-          moduleDesc.innerHTML = module.desc;
+          moduleDesc.innerHTML = module.description;
           moduleInfo.append(moduleDesc);
         }
 
@@ -1827,7 +1827,7 @@ const Remote = {
             this.updateModule(module);
           });
           updateButton.className = "button bright";
-          updateButton.id = `update-module-${module.longname}`;
+          updateButton.id = `update-module-${module.name}`;
           buttonsContainer.append(updateButton);
         }
 
@@ -1835,7 +1835,7 @@ const Remote = {
         if (module.hasChangelog) {
           const changelogButton = this.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", (event) => {
             event.stopPropagation();
-            this.showChangelog(module.longname);
+            this.showChangelog(module.name);
           });
           changelogButton.className = "button";
           buttonsContainer.append(changelogButton);

@@ -34,9 +34,9 @@ describe("answerGet contract coverage", () => {
   test("moduleInstalled returns array of metadata objects", () => {
     const helper = freshHelper();
     helper.modulesAvailable = [
-      {name: "MMM-News", longname: "News Feed", installed: true, isDefaultModule: false, repo: "news"},
-      {name: "clock", longname: "Clock", installed: true, isDefaultModule: true},
-      {name: "MMM-Weather", longname: "Weather", installed: false, isDefaultModule: false}
+      {name: "News Feed", installed: true, isDefaultModule: false, repo: "news"},
+      {name: "Clock", installed: true, isDefaultModule: true},
+      {name: "Weather", installed: false, isDefaultModule: false}
     ];
 
     helper.answerGet({data: "moduleInstalled"});
@@ -47,7 +47,6 @@ describe("answerGet contract coverage", () => {
     assert.equal(response.data.length, 1, "filters defaults and non-installed modules");
     const [entry] = response.data;
     assert.equal(typeof entry.name, "string");
-    assert.equal(typeof entry.longname, "string");
   });
 
   test("config returns config object with modules array", () => {
@@ -269,22 +268,20 @@ describe("answerGet data assembly logic", () => {
     const helper = freshHelper();
     helper.modulesAvailable = [
       {
-        longname: "MMM-Example",
-        name: "Example",
+        name: "MMM-Example",
         isDefaultModule: false,
         installed: true,
-        author: "test-author",
-        desc: "Test description",
+        maintainer: "test-author",
+        description: "Test description",
         id: "test/MMM-Example",
         url: "https://example.com"
       },
       {
-        longname: "clock",
         name: "Clock",
         isDefaultModule: true,
         installed: true,
-        author: "MagicMirrorOrg",
-        desc: "",
+        maintainer: "MagicMirrorOrg",
+        description: "",
         id: "MagicMirrorOrg/MagicMirror",
         url: "https://docs.magicmirror.builders"
       }
@@ -298,12 +295,11 @@ describe("answerGet data assembly logic", () => {
 
     // Verify all required fields are present and have correct types
     for (const module of data) {
-      assert.equal(typeof module.longname, "string", "longname should be string");
       assert.equal(typeof module.name, "string", "name should be string");
       assert.equal(typeof module.isDefaultModule, "boolean", "isDefaultModule should be boolean");
       assert.equal(typeof module.installed, "boolean", "installed should be boolean");
-      assert.equal(typeof module.author, "string", "author should be string");
-      assert.equal(typeof module.desc, "string", "desc should be string");
+      assert.equal(typeof module.maintainer, "string", "maintainer should be string");
+      assert.equal(typeof module.description, "string", "description should be string");
       assert.equal(typeof module.id, "string", "id should be string");
       assert.equal(typeof module.url, "string", "url should be string");
     }
@@ -313,24 +309,22 @@ describe("answerGet data assembly logic", () => {
     const helper = freshHelper();
     helper.modulesAvailable = [
       {
-        longname: "MMM-WithChangelog",
-        name: "WithChangelog",
+        name: "MMM-WithChangelog",
         isDefaultModule: false,
         installed: true,
-        author: "test",
-        desc: "",
+        maintainer: "test",
+        description: "",
         id: "test/MMM-WithChangelog",
         url: "",
         hasChangelog: true,
         defaultConfig: {option1: "value1"}
       },
       {
-        longname: "MMM-WithoutChangelog",
-        name: "WithoutChangelog",
+        name: "MMM-WithoutChangelog",
         isDefaultModule: false,
         installed: true,
-        author: "test",
-        desc: "",
+        maintainer: "test",
+        description: "",
         id: "test/MMM-WithoutChangelog",
         url: "",
         hasChangelog: false

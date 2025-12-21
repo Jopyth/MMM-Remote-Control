@@ -210,18 +210,16 @@ module.exports = NodeHelper.create({
       this.modulesAvailable = JSON.parse(data.toString());
 
       for (const module of this.modulesAvailable) {
-        module.name = module.longname;
         module.isDefaultModule = false;
       }
 
       for (const [index, moduleName] of defaultModules.entries()) {
         this.modulesAvailable.push({
-          longname: moduleName,
           name: moduleName,
           isDefaultModule: true,
           installed: true,
-          author: "MagicMirrorOrg",
-          desc: "",
+          maintainer: "MagicMirrorOrg",
+          description: "",
           id: "MagicMirrorOrg/MagicMirror",
           url: "https://docs.magicmirror.builders/modules/introduction.html"
         });
@@ -257,7 +255,7 @@ module.exports = NodeHelper.create({
         let currentModule = null;
         this.modulesInstalled.push(directoryName);
         for (const module of this.modulesAvailable) {
-          if (module.longname === directoryName) {
+          if (module.name === directoryName) {
             module.installed = true;
             currentModule = module;
             break;
@@ -265,12 +263,11 @@ module.exports = NodeHelper.create({
         }
         if (!currentModule) {
           const newModule = {
-            longname: directoryName,
             name: directoryName,
             isDefaultModule: false,
             installed: true,
-            author: "unknown",
-            desc: "",
+            maintainer: "unknown",
+            description: "",
             id: `local/${directoryName}`,
             url: ""
           };
@@ -368,7 +365,7 @@ module.exports = NodeHelper.create({
   },
 
   loadModuleDefaultConfig (module, modulePath, lastOne) {
-    const filename = path.resolve(`${modulePath}/${module.longname}.js`);
+    const filename = path.resolve(`${modulePath}/${module.name}.js`);
 
     try {
       fs.accessSync(filename, fs.constants.F_OK);
@@ -377,14 +374,14 @@ module.exports = NodeHelper.create({
       require(filename);
     } catch (error) {
       if (error instanceof ReferenceError) {
-        Log.log(`Could not get defaults for ${module.longname}. See #335.`);
+        Log.log(`Could not get defaults for ${module.name}. See #335.`);
       } else if (error.code === "ENOENT") {
-        Log.error(`Could not find main module js file for ${module.longname}`);
+        Log.error(`Could not find main module js file for ${module.name}`);
       } else if (error instanceof SyntaxError) {
-        Log.error(`Could not validate main module js file for ${module.longname}`);
+        Log.error(`Could not validate main module js file for ${module.name}`);
         Log.error(error);
       } else {
-        Log.error(`Could not load main module js file for ${module.longname}. Error found: ${error}`);
+        Log.error(`Could not load main module js file for ${module.name}. Error found: ${error}`);
       }
     }
     if (lastOne) { this.onModulesLoaded(); }
@@ -1147,13 +1144,13 @@ module.exports = NodeHelper.create({
     let name = "MM";
 
     if (module && module !== "undefined") {
-      const moduleData = this.modulesAvailable?.find((m) => m.longname === module);
+      const moduleData = this.modulesAvailable?.find((m) => m.name === module);
       if (!moduleData) {
         this.sendResponse(res, new Error("Unknown Module"), {info: module});
         return;
       }
 
-      modulePath = `${__dirname}/../${moduleData.longname}`;
+      modulePath = `${__dirname}/../${moduleData.name}`;
       name = moduleData.name;
     }
 
