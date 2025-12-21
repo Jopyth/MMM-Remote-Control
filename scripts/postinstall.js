@@ -25,11 +25,11 @@ try {
 
   // Always generate and display a fresh API key
   const apiKey = uuid();
-  console.log("\n\u001B[1m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001B[0m");
+  console.log("\n\u001B[1m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001B[0m");
   console.log("\u001B[1m Sample API key for your config.js:\u001B[0m");
   console.log("\u001B[33m  apiKey: \"" + apiKey + "\"\u001B[0m");
-  console.log("\u001B[2m (Optional - or use 'npm run generate-apikey' anytime)\u001B[0m");
-  console.log("\u001B[1m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001B[0m\n");
+  console.log("\u001B[2m (Optional - or use 'node --run generate-apikey' anytime)\u001B[0m");
+  console.log("\u001B[1m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001B[0m\n");
 
   process.exit(0);
 } catch (error) {
