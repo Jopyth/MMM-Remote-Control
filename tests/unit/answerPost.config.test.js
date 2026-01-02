@@ -257,3 +257,118 @@ describe("answerPost config persistence", () => {
     }, /invalid/);
   });
 });
+
+describe("findBestBackupSlot", () => {
+  const originalFs = {};
+  const fs = require("node:fs");
+
+  beforeEach(() => {
+    originalFs.stat = fs.promises.stat;
+  });
+
+  afterEach(() => {
+    fs.promises.stat = originalFs.stat;
+  });
+
+  test("selects oldest backup when all slots exist", async () => {
+    const helper = freshHelper();
+
+    const mtimes = {
+      1: new Date("2025-01-03T10:00:00Z"), // newest
+      2: new Date("2025-01-01T10:00:00Z"), // oldest - should be selected
+      3: new Date("2025-01-02T15:00:00Z"),
+      4: new Date("2025-01-02T10:00:00Z")
+    };
+
+    fs.promises.stat = async (filePath) => {
+      const match = (/backup(\d)/u).exec(filePath);
+      if (match && mtimes[Number(match[1])]) {
+        return {mtime: mtimes[Number(match[1])]};
+      }
+      const error = new Error("missing");
+      error.code = "ENOENT";
+      throw error;
+    };
+
+    const result = await helper.findBestBackupSlot();
+
+    assert.equal(result.slot, 2);
+    assert.deepEqual(result.mtime, mtimes[2]);
+  });
+
+  test("selects empty slot over old backups", async () => {
+    const helper = freshHelper();
+
+    fs.promises.stat = async (filePath) => {
+      const match = (/backup(\d)/u).exec(filePath);
+      if (!match) {
+        const error = new Error("missing");
+        error.code = "ENOENT";
+        throw error;
+      }
+
+      const slot = Number(match[1]);
+      // Slot 2 is missing (ENOENT), others exist
+      if (slot === 2) {
+        const error = new Error("missing");
+        error.code = "ENOENT";
+        throw error;
+      }
+
+      // Return old timestamps for existing backups
+      return {mtime: new Date("2020-01-01T10:00:00Z")};
+    };
+
+    const result = await helper.findBestBackupSlot();
+
+    // Should prefer empty slot (epoch timestamp) over old backups
+    assert.equal(result.slot, 2);
+    assert.deepEqual(result.mtime, new Date(0));
+  });
+
+  test("handles all slots missing", async () => {
+    const helper = freshHelper();
+
+    fs.promises.stat = async () => {
+      const error = new Error("missing");
+      error.code = "ENOENT";
+      throw error;
+    };
+
+    const result = await helper.findBestBackupSlot();
+
+    // Should return first empty slot (they all have epoch time, first wins)
+    assert.equal(result.slot, 1);
+    assert.deepEqual(result.mtime, new Date(0));
+  });
+
+  test("ignores other stat errors", async () => {
+    const helper = freshHelper();
+
+    fs.promises.stat = async (filePath) => {
+      const match = (/backup(\d)/u).exec(filePath);
+      const slot = Number(match[1]);
+
+      if (slot === 1) {
+        return {mtime: new Date("2025-01-01T10:00:00Z")};
+      }
+
+      // Permission error for slot 2
+      if (slot === 2) {
+        const error = new Error("permission denied");
+        error.code = "EACCES";
+        throw error;
+      }
+
+      // Others missing
+      const error = new Error("missing");
+      error.code = "ENOENT";
+      throw error;
+    };
+
+    // Should still work, selecting from available slots
+    const result = await helper.findBestBackupSlot();
+    assert.ok(result);
+    assert.ok(result.slot);
+  });
+});
