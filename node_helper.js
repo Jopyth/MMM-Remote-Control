@@ -1308,7 +1308,7 @@ module.exports = NodeHelper.create({
     return data;
   },
 
-  saveDefaultSettings () {
+  async saveDefaultSettings () {
     const {moduleData} = this.configData;
     const simpleModuleData = moduleData.map((moduleDatum) => ({
       identifier: moduleDatum.identifier,
@@ -1324,11 +1324,11 @@ module.exports = NodeHelper.create({
       settingsVersion: this.configData.settingsVersion
     });
 
-    fs.writeFile(path.resolve(`${__dirname}/settings.json`), text, (error) => {
-      if (error) {
-        throw error;
-      }
-    });
+    try {
+      await fs.promises.writeFile(path.resolve(`${__dirname}/settings.json`), text, "utf8");
+    } catch (error) {
+      Log.error(`Failed to save default settings: ${error}`);
+    }
   },
 
   in (pattern, string) { return includes(pattern, string); },
