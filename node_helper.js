@@ -38,7 +38,7 @@ try {
   // Fallback for test environment or standalone usage
   defaultModules = require("./tests/shims/defaultmodules.js");
 }
-const {capitalizeFirst, formatName, includes} = require("./lib/utils.js");
+const {includes} = require("./lib/utils.js");
 const {cleanConfig} = require("./lib/configUtils.js");
 
 // eslint-disable-next-line no-global-assign
@@ -215,10 +215,6 @@ module.exports = NodeHelper.create({
       res.send({"status": "error", "reason": "unknown_command", "info": `original input: ${JSON.stringify(query)}`});
     });
   },
-
-  capitalizeFirst (string) { return capitalizeFirst(string); },
-
-  formatName (string) { return formatName(string); },
 
   /**
    * Update the list of available modules from 3rd-party repository
