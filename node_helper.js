@@ -1201,6 +1201,10 @@ module.exports = NodeHelper.create({
                 this.sendResponse(res, undefined, {stdout, ...data});
               }
             });
+          } else {
+            // Module has package.json but no dependencies/install scripts
+            this.readModuleData();
+            this.sendResponse(res, undefined, {stdout: "Module installed (no dependencies).", ...data});
           }
         } else {
           this.readModuleData();
