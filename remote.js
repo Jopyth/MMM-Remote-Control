@@ -1682,14 +1682,12 @@ const Remote = {
         if (module.installed) {
           symbol = "fa fa-fw fa-check-circle";
           buttonText = "Installed";
-          buttonClass = "button disabled";
+          buttonClass = "button";
         }
 
         const installButton = this.createSymbolText(symbol, buttonText, (event) => {
-          if (!module.installed) {
-            const index = event.currentTarget.id.replace("install-module-", "");
-            this.createAddingPopup(index);
-          }
+          const index = event.currentTarget.id.replace("install-module-", "");
+          this.createAddingPopup(index);
         }, "span");
         installButton.className = buttonClass;
         installButton.id = `install-module-${index}`;
