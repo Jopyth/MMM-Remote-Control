@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.0...v4.1.1) (2026-01-02)
+
+### Bug Fixes
+
+- **remote:** display custom menu submenu items correctly ([e21736a](https://github.com/jopyth/MMM-Remote-Control/commit/e21736ab4abfc9d165ddf33c80648f47f9f4e24c))
+- **remote:** enable install button for modules regardless of installation status ([6c0d52a](https://github.com/jopyth/MMM-Remote-Control/commit/6c0d52aa145a1bb9d5681757f976b9f05838d00f))
+- **remote:** raise z-index for temperature and brightness overlays ([bf29c6a](https://github.com/jopyth/MMM-Remote-Control/commit/bf29c6a9d0fd22dbc33f5a0f847197726b6c5c94)), closes [#374](https://github.com/jopyth/MMM-Remote-Control/issues/374)
+- **remote:** send response when installing modules without dependencies ([a1dc147](https://github.com/jopyth/MMM-Remote-Control/commit/a1dc1470804090b5c436320028b3586a03c60c9a))
+
+### Chores
+
+- update actions/checkout to v6 in automated tests workflow ([f632396](https://github.com/jopyth/MMM-Remote-Control/commit/f632396732cfdc72907e125e1857a2426a4e7215))
+- update devDependencies ([2ac3f79](https://github.com/jopyth/MMM-Remote-Control/commit/2ac3f79bc612e72629ba659b2111952eef21f891))
+
+### Code Refactoring
+
+- convert loadDefaultSettings, loadTranslation, and loadCustomMenus to async functions ([1502086](https://github.com/jopyth/MMM-Remote-Control/commit/15020863ecbba0ee46ea1719109ff0723cac912e))
+- convert saveDefaultSettings to async and handle errors ([de5f092](https://github.com/jopyth/MMM-Remote-Control/commit/de5f092bd4b99c2e7f68346145b488214e06767a))
+- convert sync fs operations to async/await ([3ecfdf5](https://github.com/jopyth/MMM-Remote-Control/commit/3ecfdf5baeed051eb3f01161b0d7221030fa6883))
+- remove unused utility functions from node_helper ([7b69fd0](https://github.com/jopyth/MMM-Remote-Control/commit/7b69fd004a824d5cf7ef08d3f7624e6cfd5b84c2))
+
+### Tests
+
+- add unit tests for findBestBackupSlot functionality ([0b0caac](https://github.com/jopyth/MMM-Remote-Control/commit/0b0caac6105f330b8c7a75e1b1cf6fe78f5d5843))
+
 ## [4.1.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.0.3...v4.1.0) (2025-12-21)
 
 ### Features
