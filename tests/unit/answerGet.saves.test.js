@@ -26,14 +26,14 @@ describe("/api/saves contract", () => {
   const fs = require("node:fs");
 
   beforeEach(() => {
-    originalFs.statSync = fs.statSync;
+    originalFs.stat = fs.promises.stat;
   });
 
   afterEach(() => {
-    fs.statSync = originalFs.statSync;
+    fs.promises.stat = originalFs.stat;
   });
 
-  test("returns backup timestamps in descending order (newest first)", () => {
+  test("returns backup timestamps in descending order (newest first)", async () => {
     const helper = freshHelper();
 
     // Mock 3 backups with different timestamps
@@ -41,7 +41,7 @@ describe("/api/saves contract", () => {
     const middleTime = new Date("2025-01-02T15:00:00Z");
     const newestTime = new Date("2025-01-03T20:00:00Z");
 
-    fs.statSync = (filePath) => {
+    fs.promises.stat = async (filePath) => {
       if (filePath.includes("backup4")) {
         return {mtime: oldTime};
       }
@@ -59,7 +59,7 @@ describe("/api/saves contract", () => {
       throw new Error("Unexpected file path");
     };
 
-    helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({data: "saves"}, {});
 
     assert.equal(helper.__responses.length, 1);
     const {payload} = helper.__responses[0];
@@ -71,12 +71,12 @@ describe("/api/saves contract", () => {
     assert.deepEqual(payload.data, [newestTime, middleTime, oldTime]);
   });
 
-  test("skips missing backup files (ENOENT)", () => {
+  test("skips missing backup files (ENOENT)", async () => {
     const helper = freshHelper();
 
     const time1 = new Date("2025-01-01T10:00:00Z");
 
-    fs.statSync = (filePath) => {
+    fs.promises.stat = async (filePath) => {
       if (filePath.includes("backup4")) {
         return {mtime: time1};
       }
@@ -86,40 +86,40 @@ describe("/api/saves contract", () => {
       throw error;
     };
 
-    helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({data: "saves"}, {});
 
     const {payload} = helper.__responses[0];
     assert.equal(payload.data.length, 1);
     assert.deepEqual(payload.data, [time1]);
   });
 
-  test("returns empty array when no backups exist", () => {
+  test("returns empty array when no backups exist", async () => {
     const helper = freshHelper();
 
-    fs.statSync = () => {
+    fs.promises.stat = async () => {
       const error = new Error("missing");
       error.code = "ENOENT";
       throw error;
     };
 
-    helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({data: "saves"}, {});
 
     const {payload} = helper.__responses[0];
     assert.deepEqual(payload.data, []);
   });
 
-  test("checks backup files 1-4 (not backup0)", () => {
+  test("checks backup files 1-4 (not backup0)", async () => {
     const helper = freshHelper();
     const checkedFiles = [];
 
-    fs.statSync = (filePath) => {
+    fs.promises.stat = async (filePath) => {
       checkedFiles.push(path.basename(filePath));
       const error = new Error("missing");
       error.code = "ENOENT";
       throw error;
     };
 
-    helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({data: "saves"}, {});
 
     // Should check backup4, backup3, backup2, backup1 (not backup0)
     assert.deepEqual(checkedFiles, [

@@ -43,6 +43,7 @@ describe("answerPost config persistence", () => {
 
   beforeEach(() => {
     // Store original methods
+    originalFs.stat = fs.promises.stat;
     originalFs.statSync = fs.statSync;
     originalFs.copyFile = fs.promises.copyFile;
     originalFs.writeFile = fs.promises.writeFile;
@@ -66,6 +67,7 @@ describe("answerPost config persistence", () => {
 
   afterEach(() => {
     // Restore original methods
+    fs.promises.stat = originalFs.stat;
     fs.statSync = originalFs.statSync;
     fs.promises.copyFile = originalFs.copyFile;
     fs.promises.writeFile = originalFs.writeFile;
@@ -87,7 +89,7 @@ describe("answerPost config persistence", () => {
       2: new Date("2025-10-08T12:00:00Z"),
       1: new Date("2025-10-06T12:00:00Z")
     };
-    fs.statSync = (filePath) => {
+    fs.promises.stat = async (filePath) => {
       const match = (/backup(\d)/u).exec(filePath);
       if (!match) throw Object.assign(new Error("unexpected"), {code: "ENOENT"});
       const slot = Number(match[1]);
@@ -118,7 +120,7 @@ describe("answerPost config persistence", () => {
       };
     });
 
-    helper.answerPost({data: "config"}, {body: payload}, {});
+    await helper.answerPost({data: "config"}, {body: payload}, {});
 
     const {error, data} = await responsePromise;
     assert.equal(error, undefined);
@@ -128,11 +130,11 @@ describe("answerPost config persistence", () => {
     assert.deepEqual(data.data, payload);
   });
 
-  test("aborts when no backup slot available", () => {
+  test("aborts when no backup slot available", async () => {
     const helper = freshHelper();
     helper.getConfigPath = () => "/mirror/config.js";
 
-    fs.statSync = () => {
+    fs.promises.stat = async () => {
       throw new Error("stat failed");
     };
 
@@ -142,7 +144,7 @@ describe("answerPost config persistence", () => {
       return !error;
     };
 
-    helper.answerPost({data: "config"}, {body: {}}, {});
+    await helper.answerPost({data: "config"}, {body: {}}, {});
 
     assert.equal(responses.length, 1);
     assert.ok(responses[0].error instanceof Error);
@@ -153,7 +155,7 @@ describe("answerPost config persistence", () => {
     const helper = freshHelper();
     helper.getConfigPath = () => "/mirror/config.js";
 
-    fs.statSync = () => {
+    fs.promises.stat = async () => {
       const error_ = new Error("missing");
       error_.code = "ENOENT";
       throw error_;
@@ -174,7 +176,7 @@ describe("answerPost config persistence", () => {
       };
     });
 
-    helper.answerPost({data: "config"}, {body: {foo: "bar"}}, {});
+    await helper.answerPost({data: "config"}, {body: {foo: "bar"}}, {});
 
     const {error, data} = await responsePromise;
     assert.equal(error, writeError);

@@ -44,7 +44,7 @@ describe("answerGetChangelog", () => {
     }
   });
 
-  test("returns changelog content when file exists", () => {
+  test("returns changelog content when file exists", async () => {
     const helper = freshHelper();
     helper.answerGetChangelog = helperFactory.answerGetChangelog.bind(helper);
     const mockRes = {
@@ -53,7 +53,7 @@ describe("answerGetChangelog", () => {
       }
     };
 
-    helper.answerGetChangelog({module: "test-module"}, mockRes);
+    await helper.answerGetChangelog({module: "test-module"}, mockRes);
 
     assert.equal(helper.__responses.length, 1);
     assert.equal(helper.__responses[0].err, undefined);
@@ -63,7 +63,7 @@ describe("answerGetChangelog", () => {
     assert.ok(helper.__responses[0].data.changelog.includes("Initial release"));
   });
 
-  test("returns error when changelog not found", () => {
+  test("returns error when changelog not found", async () => {
     const helper = freshHelper();
     helper.answerGetChangelog = helperFactory.answerGetChangelog.bind(helper);
     const mockRes = {
@@ -72,7 +72,7 @@ describe("answerGetChangelog", () => {
       }
     };
 
-    helper.answerGetChangelog({module: "nonexistent-module"}, mockRes);
+    await helper.answerGetChangelog({module: "nonexistent-module"}, mockRes);
 
     assert.equal(helper.__responses.length, 1);
     assert.ok(helper.__responses[0].err instanceof Error);
@@ -80,13 +80,13 @@ describe("answerGetChangelog", () => {
     assert.equal(helper.__responses[0].data.action, "GET_CHANGELOG");
   });
 
-  test("includes query in error response", () => {
+  test("includes query in error response", async () => {
     const helper = freshHelper();
     helper.answerGetChangelog = helperFactory.answerGetChangelog.bind(helper);
     const mockRes = {};
     const query = {module: "missing-module", other: "data"};
 
-    helper.answerGetChangelog(query, mockRes);
+    await helper.answerGetChangelog(query, mockRes);
 
     assert.equal(helper.__responses[0].data.query, query);
   });

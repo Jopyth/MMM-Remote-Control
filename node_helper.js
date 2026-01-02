@@ -404,14 +404,13 @@ module.exports = NodeHelper.create({
     const filename = path.resolve(`${modulePath}/${module.name}.js`);
 
     try {
-      fs.accessSync(filename, fs.constants.F_OK);
 
       /* Defaults are stored when Module.register is called during require(filename); */
       require(filename);
     } catch (error) {
       if (error instanceof ReferenceError) {
         Log.log(`Could not get defaults for ${module.name}. See #335.`);
-      } else if (error.code === "ENOENT") {
+      } else if (error.code === "MODULE_NOT_FOUND" || error.code === "ENOENT") {
         Log.error(`Could not find main module js file for ${module.name}`);
       } else if (error instanceof SyntaxError) {
         Log.error(`Could not validate main module js file for ${module.name}`);
@@ -493,7 +492,7 @@ module.exports = NodeHelper.create({
     return cleaned;
   },
 
-  findBestBackupSlot () {
+  async findBestBackupSlot () {
     const backupHistorySize = 5;
     const backupSlots = Array.from({length: backupHistorySize - 1}, (_, index) => index + 1);
 
@@ -501,7 +500,7 @@ module.exports = NodeHelper.create({
     for (const slot of backupSlots) {
       const backupPath = path.resolve(`config/config.js.backup${slot}`);
       try {
-        const stats = fs.statSync(backupPath);
+        const stats = await fs.promises.stat(backupPath);
         if (!best || stats.mtime < best.mtime) {
           best = {slot, mtime: stats.mtime};
         }
@@ -519,7 +518,7 @@ module.exports = NodeHelper.create({
 
   async saveConfigWithBackup (configData, res, query) {
     const configPath = this.getConfigPath();
-    const backupSlot = this.findBestBackupSlot();
+    const backupSlot = await this.findBestBackupSlot();
 
     if (!backupSlot) {
       const error = new Error("Backing up config failed, not saving!");
@@ -574,9 +573,9 @@ module.exports = NodeHelper.create({
    * @param {object} res - Express response object
    * @returns {void}
    */
-  answerPost (query, request, res) {
+  async answerPost (query, request, res) {
     if (query.data === "config") {
-      this.saveConfigWithBackup(request.body, res, query);
+      await this.saveConfigWithBackup(request.body, res, query);
     }
   },
 
@@ -645,14 +644,14 @@ module.exports = NodeHelper.create({
     });
   },
 
-  handleGetSaves (query, res) {
+  async handleGetSaves (query, res) {
     const backupHistorySize = 5;
     const times = [];
 
     for (let index = backupHistorySize - 1; index > 0; index--) {
       const backupPath = path.resolve(`config/config.js.backup${index}`);
       try {
-        const stats = fs.statSync(backupPath);
+        const stats = await fs.promises.stat(backupPath);
         times.push(stats.mtime);
       } catch (error) {
         Log.debug(`Backup ${index} does not exist: ${error}.`);
@@ -728,13 +727,13 @@ module.exports = NodeHelper.create({
     this.sendResponse(res, "Unknown or Bad Command.", query);
   },
 
-  answerGetChangelog (query, res) {
+  async answerGetChangelog (query, res) {
     const moduleName = query.module;
     const modulePath = `${this.getModuleDir()}/${moduleName}`;
     const changelogPath = path.join(modulePath, "CHANGELOG.md");
 
     try {
-      const changelog = fs.readFileSync(changelogPath, "utf8");
+      const changelog = await fs.promises.readFile(changelogPath, "utf8");
       this.sendResponse(res, undefined, {action: "GET_CHANGELOG", changelog, module: moduleName});
     } catch {
       this.sendResponse(res, new Error("Changelog not found"), {action: "GET_CHANGELOG", query});
@@ -1171,18 +1170,24 @@ module.exports = NodeHelper.create({
    */
   installModule (url, res, data) {
 
-    simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), (error) => {
+    simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), async (error) => {
       if (error) {
         Log.error(error);
         this.sendResponse(res, error);
       } else {
         const workDir = path.resolve(`${__dirname}/../${path.basename(url)}`);
-        const packageJsonExists = fs.existsSync(`${workDir}/package.json`);
-        if (packageJsonExists) {
-          const packageJson = JSON.parse(fs.readFileSync(`${workDir}/package.json`, "utf8"));
+        try {
+          const packageJsonData = await fs.promises.readFile(`${workDir}/package.json`, "utf8");
+          const packageJson = JSON.parse(packageJsonData);
           const installNecessary = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
           if (installNecessary) {
-            const packageLockExists = fs.existsSync(`${workDir}/package-lock.json`);
+            let packageLockExists = false;
+            try {
+              await fs.promises.access(`${workDir}/package-lock.json`, fs.constants.F_OK);
+              packageLockExists = true;
+            } catch {
+              packageLockExists = false;
+            }
             const command = packageLockExists
               ? "npm ci --omit=dev"
               : "npm install --omit=dev";
@@ -1202,7 +1207,8 @@ module.exports = NodeHelper.create({
             this.readModuleData();
             this.sendResponse(res, undefined, {stdout: "Module installed (no dependencies).", ...data});
           }
-        } else {
+        } catch {
+          // No package.json found
           this.readModuleData();
           this.sendResponse(res, undefined, {stdout: "Module installed.", ...data});
         }
@@ -1253,29 +1259,36 @@ module.exports = NodeHelper.create({
 
       // Check if npm install is needed
       const packageJsonPath = `${modulePath}/package.json`;
-      if (!fs.existsSync(packageJsonPath)) {
-        this.sendUpdateResponseWithChangelog(res, modulePath, name);
-        return;
-      }
-
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-      const needsInstall = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
-
-      if (!needsInstall) {
-        this.sendUpdateResponseWithChangelog(res, modulePath, name);
-        return;
-      }
-
-      // Run npm install
-      const packageLockExists = fs.existsSync(`${modulePath}/package-lock.json`);
-      const command = packageLockExists ? "npm ci --omit=dev" : "npm install --omit=dev";
-
       try {
-        await execPromise(command, {cwd: modulePath, timeout: 120_000});
-        this.sendUpdateResponseWithChangelog(res, modulePath, name);
-      } catch (error) {
-        Log.error(error);
-        this.sendResponse(res, error, {stdout: error.stdout, stderr: error.stderr});
+        const packageJsonData = await fs.promises.readFile(packageJsonPath, "utf8");
+        const packageJson = JSON.parse(packageJsonData);
+        const needsInstall = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
+
+        if (!needsInstall) {
+          await this.sendUpdateResponseWithChangelog(res, modulePath, name);
+          return;
+        }
+
+        // Run npm install
+        let packageLockExists = false;
+        try {
+          await fs.promises.access(`${modulePath}/package-lock.json`, fs.constants.F_OK);
+          packageLockExists = true;
+        } catch {
+          packageLockExists = false;
+        }
+        const command = packageLockExists ? "npm ci --omit=dev" : "npm install --omit=dev";
+
+        try {
+          await execPromise(command, {cwd: modulePath, timeout: 120_000});
+          await this.sendUpdateResponseWithChangelog(res, modulePath, name);
+        } catch (error) {
+          Log.error(error);
+          this.sendResponse(res, error, {stdout: error.stdout, stderr: error.stderr});
+        }
+      } catch {
+        // No package.json or error reading it
+        await this.sendUpdateResponseWithChangelog(res, modulePath, name);
       }
     } catch (error) {
       Log.warn(`Error updating ${name}: ${error.message || error}`);
@@ -1283,12 +1296,14 @@ module.exports = NodeHelper.create({
     }
   },
 
-  sendUpdateResponseWithChangelog (res, modulePath, name) {
+  async sendUpdateResponseWithChangelog (res, modulePath, name) {
     const changelogPath = `${modulePath}/CHANGELOG.md`;
     const response = {code: "restart", info: `${name} updated.`};
 
-    if (fs.existsSync(changelogPath)) {
-      response.chlog = fs.readFileSync(changelogPath, "utf8");
+    try {
+      response.chlog = await fs.promises.readFile(changelogPath, "utf8");
+    } catch {
+      // Changelog not found, continue without it
     }
 
     this.sendResponse(res, undefined, response);
