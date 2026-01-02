@@ -1333,19 +1333,15 @@ module.exports = NodeHelper.create({
 
   in (pattern, string) { return includes(pattern, string); },
 
-  loadDefaultSettings () {
-
-    fs.readFile(path.resolve(`${__dirname}/settings.json`), (error, data) => {
-      if (error) {
-        if (this.in("no such file or directory", error.message)) {
-          return;
-        }
+  async loadDefaultSettings () {
+    try {
+      const data = await fs.promises.readFile(path.resolve(`${__dirname}/settings.json`), "utf8");
+      this.sendSocketNotification("DEFAULT_SETTINGS", JSON.parse(data));
+    } catch (error) {
+      if (error.code !== "ENOENT") {
         Log.error(error);
-      } else {
-        data = JSON.parse(data.toString());
-        this.sendSocketNotification("DEFAULT_SETTINGS", data);
       }
-    });
+    }
   },
 
   fillTemplates (data) {
@@ -1358,33 +1354,29 @@ module.exports = NodeHelper.create({
     return data;
   },
 
-  loadTranslation (language) {
-
-    fs.readFile(path.resolve(`${__dirname}/translations/${language}.json`), (error, data) => {
-      if (error) {
-        return;
-      } else {
-        this.translation = {...this.translation, ...JSON.parse(data.toString())};
-      }
-    });
+  async loadTranslation (language) {
+    try {
+      const data = await fs.promises.readFile(path.resolve(`${__dirname}/translations/${language}.json`), "utf8");
+      this.translation = {...this.translation, ...JSON.parse(data)};
+    } catch {
+      // Silently ignore missing translation files
+    }
   },
 
-  loadCustomMenus () {
+  async loadCustomMenus () {
     if ("customMenu" in this.thisConfig) {
       const menuPath = path.resolve(`${__dirname}/../../config/${this.thisConfig.customMenu}`);
-      if (!fs.existsSync(menuPath)) {
-        Log.log(`customMenu requested, but file:${menuPath} was not found.`);
-        return;
-      }
-      fs.readFile(menuPath, (error, data) => {
-        if (error) {
-          Log.error(`Error reading custom menu: ${error}`);
-          return;
+      try {
+        const data = await fs.promises.readFile(menuPath, "utf8");
+        this.customMenu = {...this.customMenu, ...JSON.parse(this.translate(data))};
+        this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
+      } catch (error) {
+        if (error.code === "ENOENT") {
+          Log.log(`customMenu requested, but file:${menuPath} was not found.`);
         } else {
-          this.customMenu = {...this.customMenu, ...JSON.parse(this.translate(data.toString()))};
-          this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
+          Log.error(`Error reading custom menu: ${error}`);
         }
-      });
+      }
     }
   },
 
