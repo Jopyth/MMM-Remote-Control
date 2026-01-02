@@ -1951,7 +1951,7 @@ const Remote = {
     item.append(mcmArrow);
     item.dataset.parent = menu;
     item.dataset.type = "menu";
-    document.querySelector("#back-button").classList.add(`${content.id}-menu`);
+    document.querySelector("#back-button")?.classList.add(`${content.id}-menu`);
     const menuContent = document.querySelector(".menu-content");
     if (menuContent) {
       menuContent.classList.add(`${content.id}-menu`);
@@ -1959,6 +1959,8 @@ const Remote = {
     item.addEventListener("click", () => {
       globalThis.location.hash = `${content.id}-menu`;
     });
+
+    return menuContent;
   },
 
   createSliderElement (item, content) {
@@ -2055,9 +2057,10 @@ const Remote = {
       this.addClassStatusBadge(item, content.classData);
     }
 
+    let nestedNav;
     switch (content.type) {
       case "menu":
-        this.createMenuTypeElement(item, content, menu);
+        nestedNav = this.createMenuTypeElement(item, content, menu);
         break;
       case "slider":
         this.createSliderElement(item, content);
@@ -2088,7 +2091,7 @@ const Remote = {
 
     if ("items" in content) {
       for (const index of content.items) {
-        this.createMenuElement(index, content.id, item);
+        this.createMenuElement(index, content.id, nestedNav || item);
       }
     }
 
@@ -2111,27 +2114,7 @@ const Remote = {
     }
 
     // Create button in main menu
-    const button = this.createMenuElement(content, "main", document.querySelector("#alert-button"));
-
-    // Create dedicated nav element for this menu
-    if (button && content.items && content.items.length > 0) {
-      const mainElement = document.querySelector("main");
-      const nav = document.createElement("nav");
-      nav.className = `menu-nav menu-element hidden ${content.id}-menu`;
-
-      // Insert nav after other nav elements
-      const lastNav = mainElement.querySelector("nav:last-of-type");
-      if (lastNav) {
-        lastNav.parentNode.insertBefore(nav, lastNav.nextSibling);
-      } else {
-        mainElement.append(nav);
-      }
-
-      // Create menu items inside the new nav
-      for (const item of content.items) {
-        this.createMenuElement(item, content.id, nav);
-      }
-    }
+    this.createMenuElement(content, "main", document.querySelector("#alert-button"));
   }
 };
 
