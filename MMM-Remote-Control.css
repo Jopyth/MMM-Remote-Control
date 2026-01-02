@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 90;
   width: 100vw;
   height: 100vh;
   transition: background-color 1.5s ease;
