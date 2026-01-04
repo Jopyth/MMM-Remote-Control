@@ -12,6 +12,7 @@ const path = require("node:path");
 const url = require("node:url");
 const {v4: uuid} = require("uuid");
 const express = require("express");
+const {formatName} = require("../lib/utils.js");
 
 const getActions = (content) => {
   const re = /notification ===? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
@@ -533,7 +534,7 @@ module.exports = {
         id: `mc-${r.path}`,
         type: "menu",
         icon: "bars",
-        text: this.formatName(r.module),
+        text: formatName(r.module),
         items: []
       };
       for (const a of Object.keys(r.actions)) {
