@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.1...v4.1.2) (2026-01-04)
+
+### Bug Fixes
+
+- import formatName in API module to resolve TypeError ([6b6a002](https://github.com/jopyth/MMM-Remote-Control/commit/6b6a002b94eea3eff652c1eeb932ce09f7173540))
+
+### Code Refactoring
+
+- extract config management into lib/configManager.js ([9738742](https://github.com/jopyth/MMM-Remote-Control/commit/973874208f331f86912ae81474864c70ed77e48e))
+
 ## [4.1.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.0...v4.1.1) (2026-01-02)
 
 ### Bug Fixes
