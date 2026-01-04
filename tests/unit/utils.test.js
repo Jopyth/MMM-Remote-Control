@@ -1,7 +1,7 @@
 /* Unit tests for lib/utils.js using Node's built-in test runner */
 const assert = require("node:assert/strict");
 const {test, describe} = require("node:test");
-const {capitalizeFirst, formatName, includes} = require("../../lib/utils");
+const {capitalizeFirst, includes} = require("../../lib/utils");
 
 describe("utils", () => {
   describe("capitalizeFirst", () => {
@@ -10,15 +10,6 @@ describe("utils", () => {
     });
     test("returns empty string unchanged", () => {
       assert.equal(capitalizeFirst(""), "");
-    });
-  });
-
-  describe("formatName", () => {
-    test("removes MMM- prefix and splits camelCase", () => {
-      assert.equal(formatName("MMM-Remote-Control"), "Remote Control");
-    });
-    test("converts hyphen/underscore to spaces and capitalizes", () => {
-      assert.equal(formatName("my-module_name"), "My Module Name");
     });
   });
 

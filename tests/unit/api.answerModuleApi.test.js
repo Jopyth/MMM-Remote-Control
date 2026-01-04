@@ -15,7 +15,6 @@ function makeContext (overrides = {}) {
     sendResponse: () => {},
     checkInitialized: () => true,
     translate: (s) => s,
-    formatName: (s) => s,
     thisConfig: {},
     ...overrides
   };

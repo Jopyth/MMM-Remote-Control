@@ -14,7 +14,6 @@ function makeContext (overrides = {}) {
     checkInitialized: () => true,
     checkDelay: apiModule.checkDelay,
     translate: (s) => s,
-    formatName: (s) => s,
     delayedQuery: () => {},
     thisConfig: {},
     ...overrides
