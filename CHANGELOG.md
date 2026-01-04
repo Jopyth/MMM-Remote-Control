@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.2...v4.1.3) (2026-01-04)
+
+### Bug Fixes
+
+- **ci:** handle missing defaults.js in test environments ([494f037](https://github.com/jopyth/MMM-Remote-Control/commit/494f03731a3d7e12add790a44eddd0bce123b37b))
+
+### Code Refactoring
+
+- remove formatName utility and update related references ([642e0fa](https://github.com/jopyth/MMM-Remote-Control/commit/642e0fa9c723515a0aece80f0239109b5923ea9e))
+
+### Tests
+
+- add unit tests for updateModuleApiMenu functionality ([96e2607](https://github.com/jopyth/MMM-Remote-Control/commit/96e26075361d2fb53727b3615a45d334bf781ff0))
+
 ## [4.1.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.1...v4.1.2) (2026-01-04)
 
 ### Bug Fixes
