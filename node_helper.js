@@ -28,7 +28,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const url = require("node:url");
-const {inspect, promisify} = require("node:util");
+const {promisify} = require("node:util");
 const simpleGit = require("simple-git");
 
 let defaultModules;
@@ -39,7 +39,7 @@ try {
   defaultModules = require("./tests/shims/defaultmodules.js");
 }
 const {includes} = require("./lib/utils.js");
-const {cleanConfig} = require("./lib/configUtils.js");
+const configManager = require("./lib/configManager.js");
 
 // eslint-disable-next-line no-global-assign
 Module = {
@@ -84,7 +84,9 @@ module.exports = NodeHelper.create({
       this.template = data.toString();
     });
 
-    this.combineConfig();
+    const result = configManager.combineConfig(__dirname, (language) => this.loadTranslation(language));
+    this.configOnHd = result.configOnHd;
+    this.thisConfig = result.thisConfig;
     this.updateModuleList();
     this.createRoutes();
 
@@ -122,56 +124,6 @@ module.exports = NodeHelper.create({
       this.updateModuleList();
       this.loadTimers();
     }, delay * 1000);
-  },
-
-  /**
-   * Combine default config with user config from config.js
-   * Sets this.configOnHd and this.thisConfig
-   * @returns {void}
-   */
-  combineConfig () {
-    // function copied from MagicMirrorOrg (MIT)
-    const defaults = require(`${__dirname}/../../js/defaults.js`);
-    const configPath = this.getConfigPath();
-    this.thisConfig = {};
-    try {
-      fs.accessSync(configPath, fs.constants.F_OK);
-      const c = require(configPath);
-      const config = {...defaults, ...c};
-      this.configOnHd = config;
-      // Get the configuration for this module.
-      if ("modules" in this.configOnHd) {
-        const thisModule = this.configOnHd.modules.find((m) => m.module === "MMM-Remote-Control");
-        if (thisModule && "config" in thisModule) {
-          this.thisConfig = thisModule.config;
-        }
-      }
-    } catch (error) {
-      if (error.code === "ENOENT") {
-        Log.error("Could not find config file. Please create one. Starting with default configuration.");
-        this.configOnHd = defaults;
-      } else if (error instanceof ReferenceError || error instanceof SyntaxError) {
-        Log.error("Could not validate config file. Please correct syntax errors. Starting with default configuration.");
-        this.configOnHd = defaults;
-      } else {
-        Log.error(`Could not load config file. Starting with default configuration. Error found: ${error}`);
-        this.configOnHd = defaults;
-      }
-    }
-
-    this.loadTranslation(this.configOnHd.language);
-  },
-
-  /**
-   * Get the MagicMirror config file path
-   * @returns {string} Absolute path to config.js
-   */
-  getConfigPath () {
-    let configPath = path.resolve(`${__dirname}/../../config/config.js`);
-    if (globalThis.configuration_file !== undefined) {
-      configPath = path.resolve(`${__dirname}/../../${globalThis.configuration_file}`);
-    }
-    return configPath;
   },
 
   createRoutes () {
@@ -457,68 +409,22 @@ module.exports = NodeHelper.create({
     });
   },
 
-  getConfig () {
-    const config = this.configOnHd;
-    for (const current of config.modules) {
-      const moduleDefaultsFromRequire = Module.configDefaults[current.module];
-      // We need moduleDataFromBrowser for bundled modules like MMM-RAIN-MAP. See #331.
-      const moduleDataFromBrowser = this.configData.moduleData?.find((item) => item.name === current.module);
-
-      const moduleConfig = moduleDefaultsFromRequire || moduleDataFromBrowser?.config || {};
-
-      if (!current.config) current.config = {};
-      for (const key in moduleConfig) {
-        if (!(key in current.config)) {
-          current.config[key] = moduleConfig[key];
-        }
-      }
+  /**
+   * Handle POST API requests
+   * @param {object} query - Query parameters
+   * @param {object} request - Express request object
+   * @param {object} res - Express response object
+   * @returns {void}
+   */
+  async answerPost (query, request, res) {
+    if (query.data === "config") {
+      await this.saveConfigWithBackup(request.body, res, query);
     }
-    return config;
-  },
-
-  removeDefaultValues (config) {
-    // Reload default config (avoid module cache if updated during runtime)
-    delete require.cache[require.resolve(`${__dirname}/../../js/defaults.js`)];
-    const defaultConfig = require(`${__dirname}/../../js/defaults.js`);
-    const moduleDefaultsMap = Module.configDefaults;
-    const moduleDataFromBrowser = this.configData.moduleData || [];
-    const cleaned = cleanConfig({
-      config,
-      defaultConfig,
-      moduleDefaultsMap,
-      moduleDataFromBrowser
-    });
-    if (cleaned.modules) for (const m of cleaned.modules) Log.debug(m);
-    return cleaned;
-  },
-
-  async findBestBackupSlot () {
-    const backupHistorySize = 5;
-    const backupSlots = Array.from({length: backupHistorySize - 1}, (_, index) => index + 1);
-
-    let best = null;
-    for (const slot of backupSlots) {
-      const backupPath = path.resolve(`config/config.js.backup${slot}`);
-      try {
-        const stats = await fs.promises.stat(backupPath);
-        if (!best || stats.mtime < best.mtime) {
-          best = {slot, mtime: stats.mtime};
-        }
-      } catch (error) {
-        if (error.code === "ENOENT") {
-          const emptySlotMtime = new Date(0);
-          if (!best || emptySlotMtime < best.mtime) {
-            best = {slot, mtime: emptySlotMtime};
-          }
-        }
-      }
-    }
-    return best;
   },
 
   async saveConfigWithBackup (configData, res, query) {
-    const configPath = this.getConfigPath();
-    const backupSlot = await this.findBestBackupSlot();
+    const configPath = configManager.getConfigPath(__dirname);
+    const backupSlot = await configManager.findBestBackupSlot();
 
     if (!backupSlot) {
       const error = new Error("Backing up config failed, not saving!");
@@ -530,14 +436,13 @@ module.exports = NodeHelper.create({
     const backupPath = path.resolve(`config/config.js.backup${backupSlot.slot}`);
 
     try {
-      // Create backup using fs.promises
       await fs.promises.copyFile(configPath, backupPath);
 
-      // Prepare and write new config
-      this.configOnHd = this.removeDefaultValues(configData);
+      this.configOnHd = configManager.removeDefaultValues(__dirname, configData, this.configData);
 
       const header = "/*************** AUTO GENERATED BY REMOTE CONTROL MODULE ***************/\n\nlet config = \n";
       const footer = "\n\n/*************** DO NOT EDIT THE LINE BELOW ***************/\nif (typeof module !== 'undefined') {module.exports = config;}\n";
+      const {inspect} = require("node:util");
 
       const configContent = header + inspect(this.configOnHd, {
         showHidden: false,
@@ -563,19 +468,6 @@ module.exports = NodeHelper.create({
         backup: backupPath,
         data: this.configOnHd
       });
-    }
-  },
-
-  /**
-   * Handle POST API requests
-   * @param {object} query - Query parameters
-   * @param {object} request - Express request object
-   * @param {object} res - Express response object
-   * @returns {void}
-   */
-  async answerPost (query, request, res) {
-    if (query.data === "config") {
-      await this.saveConfigWithBackup(request.body, res, query);
     }
   },
 
@@ -637,7 +529,8 @@ module.exports = NodeHelper.create({
   },
 
   handleGetClasses (query, res) {
-    const thisConfig = this.getConfig().modules.find((m) => m.module === "MMM-Remote-Control")?.config || {};
+    const config = configManager.getConfig(this.configOnHd, this.configData);
+    const thisConfig = config.modules.find((m) => m.module === "MMM-Remote-Control")?.config || {};
     this.sendResponse(res, undefined, {
       query,
       data: thisConfig.classes || {}
@@ -696,7 +589,7 @@ module.exports = NodeHelper.create({
       moduleInstalled: (q, r) => this.handleGetModuleInstalled(q, r),
       translations: (q, r) => this.sendResponse(r, undefined, {query: q, data: this.translation}),
       mmUpdateAvailable: (q, r) => this.handleGetMmUpdateAvailable(q, r),
-      config: (q, r) => this.sendResponse(r, undefined, {query: q, data: this.getConfig()}),
+      config: (q, r) => this.sendResponse(r, undefined, {query: q, data: configManager.getConfig(this.configOnHd, this.configData)}),
       classes: (q, r) => this.handleGetClasses(q, r),
       saves: (q, r) => this.handleGetSaves(q, r),
       defaultConfig: (q, r) => this.handleGetDefaultConfig(q, r),
@@ -1324,38 +1217,15 @@ module.exports = NodeHelper.create({
   },
 
   async saveDefaultSettings () {
-    const {moduleData} = this.configData;
-    const simpleModuleData = moduleData.map((moduleDatum) => ({
-      identifier: moduleDatum.identifier,
-      hidden: moduleDatum.hidden,
-      lockStrings: moduleDatum.lockStrings,
-      urlPath: moduleDatum.urlPath
-    }));
-
-    const text = JSON.stringify({
-      moduleData: simpleModuleData,
-      brightness: this.configData.brightness,
-      temp: this.configData.temp,
-      settingsVersion: this.configData.settingsVersion
-    });
-
-    try {
-      await fs.promises.writeFile(path.resolve(`${__dirname}/settings.json`), text, "utf8");
-    } catch (error) {
-      Log.error(`Failed to save default settings: ${error}`);
-    }
+    await configManager.saveDefaultSettings(__dirname, this.configData);
   },
 
   in (pattern, string) { return includes(pattern, string); },
 
   async loadDefaultSettings () {
-    try {
-      const data = await fs.promises.readFile(path.resolve(`${__dirname}/settings.json`), "utf8");
-      this.sendSocketNotification("DEFAULT_SETTINGS", JSON.parse(data));
-    } catch (error) {
-      if (error.code !== "ENOENT") {
-        Log.error(error);
-      }
+    const settings = await configManager.loadDefaultSettings(__dirname);
+    if (settings) {
+      this.sendSocketNotification("DEFAULT_SETTINGS", settings);
     }
   },
 
@@ -1370,28 +1240,14 @@ module.exports = NodeHelper.create({
   },
 
   async loadTranslation (language) {
-    try {
-      const data = await fs.promises.readFile(path.resolve(`${__dirname}/translations/${language}.json`), "utf8");
-      this.translation = {...this.translation, ...JSON.parse(data)};
-    } catch {
-      // Silently ignore missing translation files
-    }
+    this.translation = await configManager.loadTranslation(__dirname, language, this.translation);
   },
 
   async loadCustomMenus () {
-    if ("customMenu" in this.thisConfig) {
-      const menuPath = path.resolve(`${__dirname}/../../config/${this.thisConfig.customMenu}`);
-      try {
-        const data = await fs.promises.readFile(menuPath, "utf8");
-        this.customMenu = {...this.customMenu, ...JSON.parse(this.translate(data))};
-        this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
-      } catch (error) {
-        if (error.code === "ENOENT") {
-          Log.log(`customMenu requested, but file:${menuPath} was not found.`);
-        } else {
-          Log.error(`Error reading custom menu: ${error}`);
-        }
-      }
+    const customMenu = await configManager.loadCustomMenus(__dirname, this.thisConfig, (data) => this.translate(data));
+    if (customMenu) {
+      this.customMenu = {...this.customMenu, ...customMenu};
+      this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
     }
   },
 

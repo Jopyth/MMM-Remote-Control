@@ -26,7 +26,6 @@ function freshHelper (overrides = {}) {
   helper.callAfterUpdate = (function_) => function_();
   helper.removeDefaultValues = (config) => config;
   helper.answerGet = helperFactory.answerGet.bind(helper);
-  helper.getConfig = helperFactory.getConfig.bind(helper);
   return Object.assign(helper, overrides);
 }
 

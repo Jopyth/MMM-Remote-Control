@@ -135,7 +135,6 @@ describe("API HTTP-Layer Smoke Tests", () => {
       // Bind helper methods
       modulesAvailable: [],
       translation: {},
-      getConfig: helperModule.getConfig,
       answerGet: helperModule.answerGet,
       handleGetModuleAvailable: helperModule.handleGetModuleAvailable,
       handleGetModuleInstalled: helperModule.handleGetModuleInstalled,
@@ -147,7 +146,6 @@ describe("API HTTP-Layer Smoke Tests", () => {
     };
 
     // Bind all methods to context
-    mockContext.getConfig = mockContext.getConfig.bind(mockContext);
     mockContext.answerGet = mockContext.answerGet.bind(mockContext);
     mockContext.handleGetModuleAvailable = mockContext.handleGetModuleAvailable.bind(mockContext);
     mockContext.handleGetModuleInstalled = mockContext.handleGetModuleInstalled.bind(mockContext);
