@@ -2,9 +2,10 @@
  * @file Tests for moduleManager.js
  */
 
-const {describe, it} = require("node:test");
+const {describe, it, before, after} = require("node:test");
 const assert = require("node:assert/strict");
 const moduleManager = require("../../lib/moduleManager.js");
+const Log = require("../../tests/shims/logger.js");
 
 describe("lib/moduleManager exports", () => {
   it("should export updateModuleList function", () => {
@@ -37,6 +38,15 @@ describe("lib/moduleManager exports", () => {
 });
 
 describe("lib/moduleManager basic functionality", () => {
+  // Suppress expected error logs for these error-handling tests
+  before(() => {
+    Log.suppressExpectedErrors(true);
+  });
+
+  after(() => {
+    Log.suppressExpectedErrors(false);
+  });
+
   it("readModuleData should handle missing modules.json", async () => {
     try {
       await moduleManager.readModuleData("/nonexistent", "modules", null);

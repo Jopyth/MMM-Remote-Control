@@ -9,6 +9,7 @@ process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + proc
 if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
+const Log = require("../shims/logger.js");
 
 function freshHelper () {
   const h = Object.create(helperFactory);
@@ -86,6 +87,7 @@ describe("sendResponse", () => {
   });
 
   test("sends error response with status 400 when error provided", () => {
+    Log.suppressExpectedErrors(true);
     const helper = freshHelper();
     helper.sendResponse = helperFactory.sendResponse.bind(helper);
     const mockRes = {
@@ -104,6 +106,7 @@ describe("sendResponse", () => {
     assert.equal(mockRes.jsonData.success, false);
     assert.equal(mockRes.jsonData.status, "error");
     assert.equal(mockRes.jsonData.info, "Something went wrong");
+    Log.suppressExpectedErrors(false);
   });
 
   test("merges data into response when provided", () => {
@@ -179,6 +182,7 @@ describe("sendResponse", () => {
 
 describe("checkForExecError", () => {
   test("sends error response when error provided", () => {
+    Log.suppressExpectedErrors(true);
     const helper = freshHelper();
     helper.sendResponse = helperFactory.sendResponse.bind(helper);
     helper.checkForExecError = helperFactory.checkForExecError.bind(helper);
@@ -192,6 +196,7 @@ describe("checkForExecError", () => {
     helper.checkForExecError("Command failed", "output", "error message", mockRes, {info: "test"});
 
     assert.equal(mockRes.jsonData.success, false);
+    Log.suppressExpectedErrors(false);
   });
 
   test("sends success response when no error", () => {
