@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.5](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.4...v4.1.5) (2026-01-06)
+
+### Fixed
+
+- use exact match for specific module instances in API ([1c26553](https://github.com/jopyth/MMM-Remote-Control/commit/1c2655345c6b649cdcd9149d6cd8c5315c77a843))
+
+### Chores
+
+- add "postchangelog" to cspell configuration ([77b53a5](https://github.com/jopyth/MMM-Remote-Control/commit/77b53a5924e5872fba1e45c26351cca02b066df5))
+
+### Code Refactoring
+
+- extract systemControl to lib/systemControl.js ([d114eea](https://github.com/jopyth/MMM-Remote-Control/commit/d114eeae872857bcb980a047f117ace29ab92a87))
+
 ## [4.1.4](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.3...v4.1.4) (2026-01-06)
 
 ### Fixed
