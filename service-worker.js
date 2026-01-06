@@ -1,4 +1,4 @@
-const CACHE_NAME = "mmm-remote-control-v4.1.3";
+const CACHE_NAME = "mmm-remote-control-v4.1.4";
 const urlsToCache = [
   "/remote.html",
   "/css/main.css",

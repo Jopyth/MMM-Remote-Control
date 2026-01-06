@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.4](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.3...v4.1.4) (2026-01-06)
+
+### Fixed
+
+- prevent duplicate HTTP responses for multi-instance modules ([aae4801](https://github.com/jopyth/MMM-Remote-Control/commit/aae4801efdbc15925d45a256dd3d1825c53d1e25))
+
+### Chores
+
+- switch changelog config format ([ba3c058](https://github.com/jopyth/MMM-Remote-Control/commit/ba3c0583c7d7cf86e873bf2e86cca678c0ae86ba))
+
+### Code Refactoring
+
+- extract module manager to lib/moduleManager.js ([bf7d660](https://github.com/jopyth/MMM-Remote-Control/commit/bf7d6607d28d522ee166d3863ad0520004460b8e))
+
+### Tests
+
+- add suppressExpectedErrors functionality to logger for cleaner test output ([ca7b536](https://github.com/jopyth/MMM-Remote-Control/commit/ca7b53692ac20dacd0e3a4c80fca1217e596712b))
+
 ## [4.1.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.2...v4.1.3) (2026-01-04)
 
 ### Bug Fixes
