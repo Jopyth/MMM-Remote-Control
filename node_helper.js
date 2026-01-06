@@ -1041,16 +1041,18 @@ module.exports = NodeHelper.create({
     };
   },
 
-  executeQuery (query, res) {
+  executeQuery (query, res, skipResponse = false) {
     const handlers = this.getActionHandlers();
     const handler = handlers[query.action];
 
     if (handler) {
-      handler(query, res);
+      handler(query, skipResponse ? null : res);
       return true;
     }
 
-    this.sendResponse(res, new Error(`Invalid Option: ${query.action}`));
+    if (!skipResponse) {
+      this.sendResponse(res, new Error(`Invalid Option: ${query.action}`));
+    }
     return false;
   },
 

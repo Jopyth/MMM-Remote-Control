@@ -431,7 +431,8 @@ module.exports = {
         return;
       }
 
-      for (const module_ of moduleData) {
+      for (let index = 0; index < moduleData.length; index++) {
+        const module_ = moduleData[index];
         const query = {module: module_.identifier};
         if (action === "FORCE") {
           query.action = "SHOW";
@@ -439,7 +440,9 @@ module.exports = {
         } else {
           query.action = action;
         }
-        this.executeQuery(this.checkDelay(query, request), res);
+        // Skip response for all but the last module to avoid "headers already sent" error
+        const skipResponse = index < moduleData.length - 1;
+        this.executeQuery(this.checkDelay(query, request), res, skipResponse);
       }
       this.sendSocketNotification("UPDATE");
       return;
