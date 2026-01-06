@@ -28,7 +28,6 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const url = require("node:url");
-const {promisify} = require("node:util");
 const simpleGit = require("simple-git");
 
 let defaultModules;
@@ -40,6 +39,7 @@ try {
 }
 const {includes} = require("./lib/utils.js");
 const configManager = require("./lib/configManager.js");
+const moduleManager = require("./lib/moduleManager.js");
 
 // eslint-disable-next-line no-global-assign
 Module = {
@@ -174,11 +174,12 @@ module.exports = NodeHelper.create({
    * @returns {void}
    */
   updateModuleList (force) {
-    const downloadModules = require("./scripts/download_modules");
-    downloadModules({
+    moduleManager.updateModuleList({
       force,
       callback: (result) => {
-        if (result && result.startsWith("ERROR")) { Log.error(result); }
+        if (result?.startsWith("ERROR")) {
+          Log.error(result);
+        }
         this.readModuleData();
       }
     });
@@ -187,43 +188,28 @@ module.exports = NodeHelper.create({
   /**
    * Read and parse modules.json file
    * Populates this.modulesAvailable with ModuleData[]
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  readModuleData () {
-    fs.readFile(path.resolve(`${__dirname}/modules.json`), (error, data) => {
-      this.modulesAvailable = JSON.parse(data.toString());
-
-      for (const module of this.modulesAvailable) {
-        module.isDefaultModule = false;
-      }
-
-      for (const [index, moduleName] of defaultModules.entries()) {
-        this.modulesAvailable.push({
-          name: moduleName,
-          isDefaultModule: true,
-          installed: true,
-          maintainer: "MagicMirrorOrg",
-          description: "",
-          id: "MagicMirrorOrg/MagicMirror",
-          url: "https://docs.magicmirror.builders/modules/introduction.html"
-        });
-        const module = this.modulesAvailable.at(-1);
-        const modulePath = `modules/default/${moduleName}`;
-        this.loadModuleDefaultConfig(module, modulePath, index === defaultModules.length - 1);
-      }
-
-      // now check for installed modules
-      fs.readdir(path.resolve(`${__dirname}/..`), (error, files) => {
-        const installedModules = files.filter((f) => ![
-          "node_modules",
-          "default",
-          "README.md"
-        ].includes(f));
-        for (const [index, dir] of installedModules.entries()) {
-          this.addModule(dir, index === installedModules.length - 1);
+  async readModuleData () {
+    try {
+      const result = await moduleManager.readModuleData(
+        __dirname,
+        this.getModuleDir(),
+        async (module, modulePath) => {
+          await this.loadModuleDefaultConfig(module, modulePath, false);
         }
-      });
-    });
+      );
+
+      this.modulesAvailable = result.modulesAvailable;
+      this.modulesInstalled = result.modulesInstalled;
+
+      // Process installed modules
+      for (const [index, dir] of result.installedModules.entries()) {
+        await this.addModule(dir, index === result.installedModules.length - 1);
+      }
+    } catch (error) {
+      Log.error(`Error reading module data: ${error.message || error}`);
+    }
   },
 
   /**
@@ -236,86 +222,30 @@ module.exports = NodeHelper.create({
       : "modules");
   },
 
-  addModule (directoryName, lastOne) {
-    const modulePath = `${this.getModuleDir()}/${directoryName}`;
-    fs.stat(modulePath, (error, stats) => {
-      if (stats.isDirectory()) {
-        let currentModule = null;
-        this.modulesInstalled.push(directoryName);
-        for (const module of this.modulesAvailable) {
-          if (module.name === directoryName) {
-            module.installed = true;
-            currentModule = module;
-            break;
-          }
+  async addModule (directoryName, lastOne) {
+    await moduleManager.addModule({
+      directoryName,
+      modulesDir: this.getModuleDir(),
+      modulesAvailable: this.modulesAvailable,
+      modulesInstalled: this.modulesInstalled,
+      onModuleLoaded: (module, modulePath) => {
+        this.loadModuleDefaultConfig(module, modulePath, lastOne);
+      },
+      onUpdateCheckQueued: (check) => {
+        // Track pending update check
+        if (!this.pendingUpdateChecks) {
+          this.pendingUpdateChecks = 0;
         }
-        if (!currentModule) {
-          const newModule = {
-            name: directoryName,
-            isDefaultModule: false,
-            installed: true,
-            maintainer: "unknown",
-            description: "",
-            id: `local/${directoryName}`,
-            url: ""
-          };
-          this.modulesAvailable.push(newModule);
-          currentModule = newModule;
-        }
-        this.loadModuleDefaultConfig(currentModule, modulePath, lastOne);
+        this.pendingUpdateChecks++;
+        Log.debug(`Queuing update check for ${check.directoryName}, pending: ${this.pendingUpdateChecks}`);
 
-        // Check if module has changelog
-        try {
-          fs.accessSync(path.join(modulePath, "CHANGELOG.md"), fs.constants.F_OK);
-          currentModule.hasChangelog = true;
-        } catch {
-          currentModule.hasChangelog = false;
-        }
+        // Add to queue
+        this.updateCheckQueue.push(check);
 
-        // check for available updates
-        try {
-          fs.statSync(path.join(modulePath, ".git"));
-
-          // Track pending update check (only for git repos)
-          if (!this.pendingUpdateChecks) {
-            this.pendingUpdateChecks = 0;
-          }
-          this.pendingUpdateChecks++;
-          Log.debug(`Queuing update check for ${directoryName}, pending: ${this.pendingUpdateChecks}`);
-
-          // Add to queue instead of executing immediately
-          this.updateCheckQueue.push({
-            module: currentModule,
-            modulePath,
-            directoryName
-          });
-
-          // Start processing queue
-          this.processUpdateCheckQueue();
-
-          if (!currentModule) {
-            const sg = simpleGit(modulePath);
-            sg.getRemotes(true, (error, result) => {
-              if (error) {
-                Log.error(error);
-              }
-              try {
-                let baseUrl = result[0].refs.fetch;
-                // replacements
-                baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
-                // if cloned with ssh
-                currentModule.url = baseUrl.replace("git@", "https://");
-              } catch (error) {
-                // Something happened. Skip it.
-                Log.debug(`Could not get remote URL for module ${directoryName}: ${error}`);
-
-              }
-            });
-          }
-        } catch {
-          Log.debug(`Module ${directoryName} is not managed with git, skipping update check`);
-        }
-      }
+        // Start processing queue
+        this.processUpdateCheckQueue();
+      },
+      isLast: lastOne
     });
   },
 
@@ -330,18 +260,8 @@ module.exports = NodeHelper.create({
   },
 
   async checkModuleUpdate (check) {
-    const sg = simpleGit(check.modulePath);
-
     try {
-      await sg.fetch();
-      const data = await sg.status();
-
-      if (data.behind > 0) {
-        check.module.updateAvailable = true;
-        Log.info(`Module ${check.directoryName} has updates available (behind ${data.behind} commits)`);
-      }
-    } catch (error) {
-      Log.warn(`Error checking updates for ${check.directoryName}: ${error.message || error}`);
+      await moduleManager.checkModuleUpdate(check);
     } finally {
       this.activeUpdateChecks--;
       this.pendingUpdateChecks--;
@@ -352,13 +272,9 @@ module.exports = NodeHelper.create({
     }
   },
 
-  loadModuleDefaultConfig (module, modulePath, lastOne) {
-    const filename = path.resolve(`${modulePath}/${module.name}.js`);
-
+  async loadModuleDefaultConfig (module, modulePath, lastOne) {
     try {
-
-      /* Defaults are stored when Module.register is called during require(filename); */
-      require(filename);
+      await moduleManager.loadModuleDefaultConfig(module, modulePath);
     } catch (error) {
       if (error instanceof ReferenceError) {
         Log.log(`Could not get defaults for ${module.name}. See #335.`);
@@ -1063,145 +979,35 @@ module.exports = NodeHelper.create({
    * @param {object} data - Additional installation data
    * @returns {void}
    */
-  installModule (url, res, data) {
-
-    simpleGit(path.resolve(`${__dirname}/..`)).clone(url, path.basename(url), async (error) => {
-      if (error) {
-        Log.error(error);
-        this.sendResponse(res, error);
-      } else {
-        const workDir = path.resolve(`${__dirname}/../${path.basename(url)}`);
-        try {
-          const packageJsonData = await fs.promises.readFile(`${workDir}/package.json`, "utf8");
-          const packageJson = JSON.parse(packageJsonData);
-          const installNecessary = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
-          if (installNecessary) {
-            let packageLockExists = false;
-            try {
-              await fs.promises.access(`${workDir}/package-lock.json`, fs.constants.F_OK);
-              packageLockExists = true;
-            } catch {
-              packageLockExists = false;
-            }
-            const command = packageLockExists
-              ? "npm ci --omit=dev"
-              : "npm install --omit=dev";
-
-            exec(command, {cwd: workDir, timeout: 120_000}, (error, stdout, stderr) => {
-              if (error) {
-                Log.error(error);
-                this.sendResponse(res, error, {stdout, stderr, ...data});
-              } else {
-                // success part
-                this.readModuleData();
-                this.sendResponse(res, undefined, {stdout, ...data});
-              }
-            });
-          } else {
-            // Module has package.json but no dependencies/install scripts
-            this.readModuleData();
-            this.sendResponse(res, undefined, {stdout: "Module installed (no dependencies).", ...data});
-          }
-        } catch {
-          // No package.json found
-          this.readModuleData();
-          this.sendResponse(res, undefined, {stdout: "Module installed.", ...data});
-        }
+  async installModule (url, res, data) {
+    await moduleManager.installModule({
+      url,
+      baseDir: __dirname,
+      onSuccess: async (result) => {
+        await this.readModuleData();
+        this.sendResponse(res, undefined, {stdout: result.stdout, ...data});
+      },
+      onError: (error, result) => {
+        this.sendResponse(res, error, {stdout: result.stdout, stderr: result.stderr, ...data});
       }
     });
   },
 
   async updateModule (module, res) {
-    Log.log(`UPDATE ${module || "MagicMirror"}`);
-
-    let modulePath = `${__dirname}/../../`;
-    let name = "MM";
-
-    if (module && module !== "undefined") {
-      const moduleData = this.modulesAvailable?.find((m) => m.name === module);
-      if (!moduleData) {
-        this.sendResponse(res, new Error("Unknown Module"), {info: module});
-        return;
-      }
-
-      modulePath = `${__dirname}/../${moduleData.name}`;
-      name = moduleData.name;
-    }
-
-    Log.log(`path: ${modulePath} name: ${name}`);
-
-    const git = simpleGit(modulePath);
-    const execPromise = promisify(exec);
-
-    try {
-      await git.fetch();
-
-      // Check if there are changes before resetting
-      const status = await git.status();
-      const hasUpdates = status.behind > 0;
-
-      if (!hasUpdates) {
-        this.sendResponse(res, undefined, {code: "up-to-date", info: `${name} already up to date.`});
-        return;
-      }
-
-      // Reset to remote and pull
-      await git.reset(["--hard", "FETCH_HEAD"]);
-      await git.pull(["--ff-only"]);
-
-      // Changes detected, reload module data
-      this.readModuleData();
-
-      // Check if npm install is needed
-      const packageJsonPath = `${modulePath}/package.json`;
-      try {
-        const packageJsonData = await fs.promises.readFile(packageJsonPath, "utf8");
-        const packageJson = JSON.parse(packageJsonData);
-        const needsInstall = packageJson.dependencies || packageJson.scripts?.preinstall || packageJson.scripts?.postinstall;
-
-        if (!needsInstall) {
-          await this.sendUpdateResponseWithChangelog(res, modulePath, name);
-          return;
+    await moduleManager.updateModule({
+      moduleName: module,
+      baseDir: __dirname,
+      modulesAvailable: this.modulesAvailable,
+      onSuccess: (result) => {
+        if (result.code !== "up-to-date") {
+          this.readModuleData();
         }
-
-        // Run npm install
-        let packageLockExists = false;
-        try {
-          await fs.promises.access(`${modulePath}/package-lock.json`, fs.constants.F_OK);
-          packageLockExists = true;
-        } catch {
-          packageLockExists = false;
-        }
-        const command = packageLockExists ? "npm ci --omit=dev" : "npm install --omit=dev";
-
-        try {
-          await execPromise(command, {cwd: modulePath, timeout: 120_000});
-          await this.sendUpdateResponseWithChangelog(res, modulePath, name);
-        } catch (error) {
-          Log.error(error);
-          this.sendResponse(res, error, {stdout: error.stdout, stderr: error.stderr});
-        }
-      } catch {
-        // No package.json or error reading it
-        await this.sendUpdateResponseWithChangelog(res, modulePath, name);
+        this.sendResponse(res, undefined, result);
+      },
+      onError: (error, result) => {
+        this.sendResponse(res, error, result);
       }
-    } catch (error) {
-      Log.warn(`Error updating ${name}: ${error.message || error}`);
-      this.sendResponse(res, error);
-    }
-  },
-
-  async sendUpdateResponseWithChangelog (res, modulePath, name) {
-    const changelogPath = `${modulePath}/CHANGELOG.md`;
-    const response = {code: "restart", info: `${name} updated.`};
-
-    try {
-      response.chlog = await fs.promises.readFile(changelogPath, "utf8");
-    } catch {
-      // Changelog not found, continue without it
-    }
-
-    this.sendResponse(res, undefined, response);
+    });
   },
 
   checkForExecError (error, stdout, stderr, res, data) {
