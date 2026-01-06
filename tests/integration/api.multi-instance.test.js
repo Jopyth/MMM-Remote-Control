@@ -301,4 +301,57 @@ describe("API Multi-Instance Module Tests", () => {
     // Restore original moduleData
     mockContext.configData.moduleData = originalModuleData;
   });
+
+  test("SHOW on specific module instance by identifier should only affect that instance", async () => {
+    notifications.length = 0;
+
+    // Call SHOW on module_0_MMM-MotionEye specifically
+    const response = await fetch(`${baseUrl}/api/module/module_0_MMM-MotionEye/SHOW`, {
+      method: "GET"
+    });
+
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    assert.equal(data.success, true);
+
+    // Should only send notification for module_0_MMM-MotionEye, not module_1_MMM-MotionEye
+    const showNotifications = notifications.filter((n) => n.what === "SHOW");
+    assert.equal(showNotifications.length, 1, "Should send SHOW notification for only one instance");
+    assert.equal(showNotifications[0].payload.module, "module_0_MMM-MotionEye");
+  });
+
+  test("HIDE on specific module instance by number_name format should only affect that instance", async () => {
+    notifications.length = 0;
+
+    // Call HIDE on module_3_MMM-homeassistant-sensors specifically (the middle one of three)
+    const response = await fetch(`${baseUrl}/api/module/module_3_MMM-homeassistant-sensors/HIDE`, {
+      method: "GET"
+    });
+
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    assert.equal(data.success, true);
+
+    // Should only send notification for module_3, not module_2 or module_4
+    const hideNotifications = notifications.filter((n) => n.what === "HIDE");
+    assert.equal(hideNotifications.length, 1, "Should send HIDE notification for only one instance");
+    assert.equal(hideNotifications[0].payload.module, "module_3_MMM-homeassistant-sensors");
+  });
+
+  test("SHOW by exact module name matches all instances (backwards compatibility)", async () => {
+    notifications.length = 0;
+
+    // Call SHOW with just the module name "MMM-MotionEye" should affect both instances
+    const response = await fetch(`${baseUrl}/api/module/MMM-MotionEye/SHOW`, {
+      method: "GET"
+    });
+
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    assert.equal(data.success, true);
+
+    // Should send notification for both MMM-MotionEye instances (backwards compatible behavior)
+    const showNotifications = notifications.filter((n) => n.what === "SHOW");
+    assert.equal(showNotifications.length, 2, "Should send SHOW notification for all instances when using module name");
+  });
 });

@@ -392,12 +392,23 @@ module.exports = {
     if (request.params.moduleName === "all") {
       moduleData = dataMerged;
     } else {
-      moduleData = dataMerged.filter((m) => {
-        const name = request.params.moduleName;
-        return name.includes(m.identifier) || name.includes(m.name) || name.includes(m.urlPath);
-      });
+      const name = request.params.moduleName;
+      // First, try exact match on identifier (for specific instances like "module_0_MMM-MotionEye")
+      moduleData = dataMerged.filter((m) => m.identifier === name);
+
+      // If no exact match, try exact match on module name
       if (moduleData.length === 0) {
-        moduleData = dataMerged.filter((m) => request.params.moduleName.includes(m.name));
+        moduleData = dataMerged.filter((m) => m.name === name);
+      }
+
+      // If still no match, try partial match on identifier (for urlPath or custom identifiers)
+      if (moduleData.length === 0) {
+        moduleData = dataMerged.filter((m) => m.identifier.includes(name) || (m.urlPath && m.urlPath.includes(name)));
+      }
+
+      // Finally, try partial match on module name (for backwards compatibility)
+      if (moduleData.length === 0) {
+        moduleData = dataMerged.filter((m) => m.name.includes(name) || name.includes(m.name));
       }
     }
 
