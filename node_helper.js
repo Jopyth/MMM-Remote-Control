@@ -40,6 +40,7 @@ try {
 const {includes} = require("./lib/utils.js");
 const configManager = require("./lib/configManager.js");
 const moduleManager = require("./lib/moduleManager.js");
+const systemControl = require("./lib/systemControl.js");
 
 // eslint-disable-next-line no-global-assign
 Module = {
@@ -606,100 +607,6 @@ module.exports = NodeHelper.create({
     return result;
   },
 
-  monitorControl (action, options, res) {
-    let status = "unknown";
-    const offArray = new Set([
-      "false",
-      "TV is off",
-      "standby",
-      "display_power=0"
-    ]);
-    const monitorOnCommand = this.initialized && "monitorOnCommand" in this.thisConfig.customCommand
-      ? this.thisConfig.customCommand.monitorOnCommand
-      : "vcgencmd display_power 1";
-    const monitorOffCommand = this.initialized && "monitorOffCommand" in this.thisConfig.customCommand
-      ? this.thisConfig.customCommand.monitorOffCommand
-      : "vcgencmd display_power 0";
-    const monitorStatusCommand = this.initialized && "monitorStatusCommand" in this.thisConfig.customCommand
-      ? this.thisConfig.customCommand.monitorStatusCommand
-      : "vcgencmd display_power -1";
-    switch (action) {
-      case "MONITORSTATUS": exec(monitorStatusCommand, options, (error, stdout, stderr) => {
-        status = offArray.has(stdout.trim())
-          ? "off"
-          : "on";
-        this.checkForExecError(error, stdout, stderr, res, {monitor: status});
-
-      });
-        break;
-
-      case "MONITORTOGGLE": exec(monitorStatusCommand, options, (error, stdout) => {
-        status = offArray.has(stdout.trim())
-          ? "off"
-          : "on";
-        if (status === "on") { this.monitorControl("MONITOROFF", options, res); } else { this.monitorControl("MONITORON", options, res); }
-
-      });
-        break;
-
-      case "MONITORON": exec(monitorOnCommand, options, (error, stdout, stderr) => {
-        this.checkForExecError(error, stdout, stderr, res, {monitor: "on"});
-      });
-        this.sendSocketNotification("USER_PRESENCE", true);
-        break;
-
-      case "MONITOROFF": exec(monitorOffCommand, options, (error, stdout, stderr) => {
-        this.checkForExecError(error, stdout, stderr, res, {monitor: "off"});
-      });
-        this.sendSocketNotification("USER_PRESENCE", false);
-        break;
-
-    }
-  },
-
-  shutdownControl (action, options, res) {
-    const shutdownCommand = this.initialized && "shutdownCommand" in this.thisConfig.customCommand
-      ? this.thisConfig.customCommand.shutdownCommand
-      : "sudo shutdown -h now";
-    const rebootCommand = this.initialized && "rebootCommand" in this.thisConfig.customCommand
-      ? this.thisConfig.customCommand.rebootCommand
-      : "sudo shutdown -r now";
-    if (action === "SHUTDOWN") {
-      this.sendResponse(res, undefined, {action: "SHUTDOWN", info: "Shutting down system..."});
-      Log.log(`Executing shutdown command: ${shutdownCommand}`);
-      exec(shutdownCommand, options, (error, stdout, stderr) => {
-        if (error) {
-          // Check for sudo password requirement
-          if (error.killed && error.signal === "SIGTERM") {
-            Log.error("Shutdown failed: System requires password for shutdown.");
-            Log.error("See setup guide: https://github.com/Jopyth/MMM-Remote-Control#faq");
-            return;
-          }
-          Log.error(`Shutdown error: ${stderr || error.message}`);
-        } else {
-          Log.log("Shutdown command executed successfully - system should be shutting down...");
-        }
-      });
-    }
-    if (action === "REBOOT") {
-      this.sendResponse(res, undefined, {action: "REBOOT", info: "Rebooting system..."});
-      Log.log(`Executing reboot command: ${rebootCommand}`);
-      exec(rebootCommand, options, (error, stdout, stderr) => {
-        if (error) {
-          // Check for sudo password requirement
-          if (error.killed && error.signal === "SIGTERM") {
-            Log.error("Reboot failed: System requires password for reboot.");
-            Log.error("See setup guide: https://github.com/Jopyth/MMM-Remote-Control#faq");
-            return;
-          }
-          Log.error(`Reboot error: ${stderr || error.message}`);
-        } else {
-          Log.log("Reboot command executed successfully - system should be rebooting...");
-        }
-      });
-    }
-  },
-
   handleShowAlert (query, res) {
     this.sendResponse(res);
 
@@ -782,32 +689,6 @@ module.exports = NodeHelper.create({
       }
     }
     this.sendResponse(res);
-  },
-
-  handleElectronActions (query, res) {
-    try {
-      const electron = require("electron").BrowserWindow;
-      if (!electron) { throw "Could not get Electron window instance."; }
-      const win = electron.getAllWindows()[0];
-      switch (query.action) {
-        case "MINIMIZE":
-          win.minimize();
-          break;
-
-        case "TOGGLEFULLSCREEN":
-          win.setFullScreen(!win.isFullScreen());
-          break;
-
-        case "DEVTOOLS":
-          if (win.webContents.isDevToolsOpened()) { win.webContents.closeDevTools(); } else { win.webContents.openDevTools(); }
-          break;
-
-        default:
-      }
-      this.sendResponse(res);
-    } catch (error) {
-      this.sendResponse(res, error);
-    }
   },
 
   handleRestart (query, res) {
@@ -924,18 +805,32 @@ module.exports = NodeHelper.create({
 
   getActionHandlers () {
     const options = {timeout: 15_000};
+
+    const callMonitorControl = (action, res) => systemControl.monitorControl(
+      action,
+      this.thisConfig,
+      options,
+      res,
+      this.checkForExecError.bind(this),
+      this.sendSocketNotification.bind(this)
+    );
+
+    const callShutdownControl = (action, res) => systemControl.shutdownControl(action, this.thisConfig, options, res, this.sendResponse.bind(this));
+
+    const callElectronActions = (query, res) => systemControl.handleElectronActions(query, res, this.sendResponse.bind(this));
+
     return {
       GET_CHANGELOG: (q, r) => this.answerGetChangelog(q, r),
-      SHUTDOWN: (q, r) => this.shutdownControl(q.action, options, r),
-      REBOOT: (q, r) => this.shutdownControl(q.action, options, r),
+      SHUTDOWN: (q, r) => callShutdownControl(q.action, r),
+      REBOOT: (q, r) => callShutdownControl(q.action, r),
       RESTART: (q, r) => this.handleRestart(q, r),
       STOP: (q, r) => this.handleStop(q, r),
       COMMAND: (q, r) => this.handleCommand(q, r),
       USER_PRESENCE: (q, r) => this.handleUserPresence(q, r),
-      MONITORON: (q, r) => this.monitorControl(q.action, options, r),
-      MONITOROFF: (q, r) => this.monitorControl(q.action, options, r),
-      MONITORTOGGLE: (q, r) => this.monitorControl(q.action, options, r),
-      MONITORSTATUS: (q, r) => this.monitorControl(q.action, options, r),
+      MONITORON: (q, r) => callMonitorControl(q.action, r),
+      MONITOROFF: (q, r) => callMonitorControl(q.action, r),
+      MONITORTOGGLE: (q, r) => callMonitorControl(q.action, r),
+      MONITORSTATUS: (q, r) => callMonitorControl(q.action, r),
       HIDE: (q, r) => this.handleSimpleSocketNotification(q, r),
       SHOW: (q, r) => this.handleSimpleSocketNotification(q, r),
       TOGGLE: (q, r) => this.handleSimpleSocketNotification(q, r),
@@ -950,9 +845,9 @@ module.exports = NodeHelper.create({
       UPDATE: (q, r) => this.updateModule(decodeURI(q.module), r),
       NOTIFICATION: (q, r) => this.handleNotification(q, r),
       MANAGE_CLASSES: (q, r) => this.handleManageClasses(q, r),
-      MINIMIZE: (q, r) => this.handleElectronActions(q, r),
-      TOGGLEFULLSCREEN: (q, r) => this.handleElectronActions(q, r),
-      DEVTOOLS: (q, r) => this.handleElectronActions(q, r),
+      MINIMIZE: (q, r) => callElectronActions(q, r),
+      TOGGLEFULLSCREEN: (q, r) => callElectronActions(q, r),
+      DEVTOOLS: (q, r) => callElectronActions(q, r),
       DELAYED: (q, r) => this.handleDelayed(q, r)
     };
   },
