@@ -24,9 +24,16 @@ childProcess.exec = (command) => {
 // Mock logger as console (has .log, .error, .warn methods)
 const Module = require("node:module");
 const originalRequire = Module.prototype.require;
+
+// Global electron mock for handleElectronActions tests
+let currentElectronMock = null;
+
 Module.prototype.require = function (id, ...args) {
   if (id === "logger") {
     return console;
+  }
+  if (id === "electron" && currentElectronMock) {
+    return currentElectronMock;
   }
   return Reflect.apply(originalRequire, this, [id, ...args]);
 };
@@ -119,9 +126,10 @@ describe("systemControl", () => {
         monitorControl("MONITOROFF", config, options, res, mocks.mockCheckForExecError, mocks.mockSendSocketNotification);
 
         setTimeout(() => {
-          assert.strictEqual(mocks.execResults.length, 1);
-          assert.ok(mocks.execResults[0].command.includes("vcgencmd display_power 0"));
-          assert.strictEqual(mocks.socketNotifications.length, 1);
+          assert.strictEqual(mocks.execResults.length, 1, "Should execute one command");
+          assert.ok(mocks.execResults[0].command.includes("vcgencmd display_power 0"), "Should execute monitor off command");
+          assert.strictEqual(mocks.errorCheckResults.length, 1, "Should call error check callback");
+          assert.strictEqual(mocks.socketNotifications.length, 1, "Should send one socket notification");
           assert.strictEqual(mocks.socketNotifications[0].notification, "USER_PRESENCE");
           assert.strictEqual(mocks.socketNotifications[0].payload, false);
           done();
@@ -244,16 +252,23 @@ describe("systemControl", () => {
     beforeEach(() => {
       responses = [];
       windowActions = [];
-      // Mock electron module
-      require.cache[require.resolve("electron")] = {exports: mockElectron};
-      // Load handleElectronActions
+      // Set electron mock globally so Module.prototype.require can return it
+      currentElectronMock = mockElectron;
+      // Load handleElectronActions with mocked electron
       delete require.cache[require.resolve("../../lib/systemControl.js")];
       const sc = require("../../lib/systemControl.js");
       handleElectronActions = sc.handleElectronActions;
     });
 
     afterEach(() => {
-      delete require.cache[require.resolve("electron")];
+      currentElectronMock = null;
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
+      const sc = require("../../lib/systemControl.js");
+      handleElectronActions = sc.handleElectronActions;
+    });
+
+    afterEach(() => {
+      currentElectronMock = null;
     });
 
     it("should minimize window", () => {
