@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.2.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.5...v4.2.0) (2026-01-28)
+
+### Added
+
+- support new default modules path for MM >= 2.35.0 ([5109efa](https://github.com/jopyth/MMM-Remote-Control/commit/5109efa8b84a30538e18b202fcab68c43a4253d3)), closes [#377](https://github.com/jopyth/MMM-Remote-Control/issues/377)
+
+### Fixed
+
+- change runner from ubuntu-latest to ubuntu-slim in workflows ([58369cd](https://github.com/jopyth/MMM-Remote-Control/commit/58369cd71d489e67788f37d43f62aab98c94b939))
+- initialize API routes before modules load to prevent 404 errors ([3f9309a](https://github.com/jopyth/MMM-Remote-Control/commit/3f9309a4f4b176152b4cd6d1b217a69c4035b78d))
+- mock electron module for CI environment in systemControl tests ([5b0850d](https://github.com/jopyth/MMM-Remote-Control/commit/5b0850d79ed173a318d45d35f79ed99ae5e4a4c6))
+
+### Chores
+
+- update devDependencies ([fd6c37d](https://github.com/jopyth/MMM-Remote-Control/commit/fd6c37d583f106f92b7f0068bfd6b7b128fab831))
+- update modules.json.template ([765de75](https://github.com/jopyth/MMM-Remote-Control/commit/765de75198810c5833d1d332baf347d1458aac0f))
+
+### Code Refactoring
+
+- handle linter issues after eslint plugin update ([f2f2f8d](https://github.com/jopyth/MMM-Remote-Control/commit/f2f2f8d5628e0724f023d6ad7fa2ca8919e0098b))
+
 ## [4.1.5](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.4...v4.1.5) (2026-01-06)
 
 ### Fixed
