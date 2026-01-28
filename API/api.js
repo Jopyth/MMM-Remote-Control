@@ -336,8 +336,6 @@ module.exports = {
     this.expressRouter.route("/timers").get((request, res) => { this.sendResponse(res, undefined, this.delayedQueryTimers); });
 
     this.expressApp.use("/api", this.expressRouter);
-
-    this.getExternalApiByGuessing();
   },
 
   checkDelay: (query, request) => {

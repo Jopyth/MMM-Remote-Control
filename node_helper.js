@@ -95,6 +95,7 @@ module.exports = NodeHelper.create({
     this.externalApiRoutes = {};
     this.moduleApiMenu = {};
     this.customMenu = {};
+    this.createApiRoutes();
   },
 
   stop() {
@@ -108,7 +109,7 @@ module.exports = NodeHelper.create({
 
     /* CALLED AFTER MODULES AND CONFIG DATA ARE LOADED */
     /* API EXTENSION - Added v2.0.0 */
-    this.createApiRoutes();
+    this.getExternalApiByGuessing();
 
     this.loadTimers();
   },
