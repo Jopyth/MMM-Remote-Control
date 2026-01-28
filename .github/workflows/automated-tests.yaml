@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   code-quality:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
       - run: "echo '🚀 Starting code quality checks for ${{ github.repository }} (ref: ${{ github.ref }})'"
