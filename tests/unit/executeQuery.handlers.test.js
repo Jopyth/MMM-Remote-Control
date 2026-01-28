@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {test, describe} = require("node:test");
+const { test, describe } = require("node:test");
 
 // Add tests/shims to module resolution
 const path = require("node:path");
@@ -10,14 +10,14 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
-function freshHelper () {
+function freshHelper() {
   const h = Object.create(helperFactory);
   h.__socketNotifications = [];
   h.__responses = [];
   h.sendSocketNotification = (action, payload) => {
-    h.__socketNotifications.push({action, payload});
+    h.__socketNotifications.push({ action, payload });
   };
-  h.sendResponse = (_res, error, data) => { h.__responses.push({err: error, data}); };
+  h.sendResponse = (_res, error, data) => { h.__responses.push({ err: error, data }); };
   h.waiting = [];
   return h;
 }
@@ -109,7 +109,7 @@ describe("getActionHandlers", () => {
     const handlers = helper.getActionHandlers();
 
     // Call REFRESH handler
-    handlers.REFRESH({action: "REFRESH"});
+    handlers.REFRESH({ action: "REFRESH" });
 
     // Should send notification via helper's method
     assert.equal(helper.__socketNotifications.length, 1);
@@ -138,7 +138,7 @@ describe("getDataHandlers", () => {
 
   test("translations handler returns translation data", () => {
     const helper = freshHelper();
-    helper.translation = {HELLO: "Hello", WORLD: "World"};
+    helper.translation = { HELLO: "Hello", WORLD: "World" };
     helper.sendResponse = helperFactory.sendResponse.bind(helper);
     helper.getDataHandlers = helperFactory.getDataHandlers.bind(helper);
     const mockRes = {
@@ -149,10 +149,10 @@ describe("getDataHandlers", () => {
     };
 
     const handlers = helper.getDataHandlers();
-    handlers.translations({data: "translations"}, mockRes);
+    handlers.translations({ data: "translations" }, mockRes);
 
     assert.equal(mockRes.jsonData.success, true);
-    assert.deepEqual(mockRes.jsonData.data, {HELLO: "Hello", WORLD: "World"});
+    assert.deepEqual(mockRes.jsonData.data, { HELLO: "Hello", WORLD: "World" });
   });
 
   test("userPresence handler returns presence status", () => {
@@ -168,7 +168,7 @@ describe("getDataHandlers", () => {
     };
 
     const handlers = helper.getDataHandlers();
-    handlers.userPresence({data: "userPresence"}, mockRes);
+    handlers.userPresence({ data: "userPresence" }, mockRes);
 
     assert.equal(mockRes.jsonData.success, true);
     assert.equal(mockRes.jsonData.result, false);

@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {test, describe, mock, afterEach} = require("node:test");
+const { test, describe, mock, afterEach } = require("node:test");
 
 // Add tests/shims to module resolution so 'logger' resolves to our shim
 const path = require("node:path");
@@ -15,7 +15,7 @@ if (typeof ModuleLib._initPaths === "function") {
 const nodeHelperFactory = require("../../node_helper.js");
 
 // Builds a minimal helper instance for testing
-function makeHelper () {
+function makeHelper() {
   const helper = Object.assign({}, nodeHelperFactory);
   helper.delayedQueryTimers = {};
   helper.executeQuery = (q) => { helper.__executed = [...helper.__executed || [], q]; };
@@ -29,10 +29,10 @@ describe("node_helper delayedQuery timers", () => {
   });
 
   test("schedules and executes action once timeout fires", () => {
-    mock.timers.enable({apis: ["setTimeout"]});
+    mock.timers.enable({ apis: ["setTimeout"] });
     const helper = makeHelper();
     const res = {};
-    const q = {did: "A", timeout: 1000, query: {action: "TEST"}};
+    const q = { did: "A", timeout: 1000, query: { action: "TEST" } };
 
     helper.delayedQuery(q, res);
     // One timer should be recorded
@@ -46,13 +46,13 @@ describe("node_helper delayedQuery timers", () => {
   });
 
   test("reset with same did replaces prior timer", () => {
-    mock.timers.enable({apis: ["setTimeout"]});
+    mock.timers.enable({ apis: ["setTimeout"] });
     const helper = makeHelper();
     const res = {};
 
-    helper.delayedQuery({did: "X", timeout: 1000, query: {action: "ONE"}}, res);
+    helper.delayedQuery({ did: "X", timeout: 1000, query: { action: "ONE" } }, res);
     const firstId = Object.values(helper.delayedQueryTimers)[0];
-    helper.delayedQuery({did: "X", timeout: 1000, query: {action: "TWO"}}, res);
+    helper.delayedQuery({ did: "X", timeout: 1000, query: { action: "TWO" } }, res);
     const secondId = Object.values(helper.delayedQueryTimers)[0];
 
     assert.notEqual(firstId, secondId);
@@ -63,12 +63,12 @@ describe("node_helper delayedQuery timers", () => {
   });
 
   test("abort cancels scheduled timer", () => {
-    mock.timers.enable({apis: ["setTimeout"]});
+    mock.timers.enable({ apis: ["setTimeout"] });
     const helper = makeHelper();
     const res = {};
 
-    helper.delayedQuery({did: "Y", timeout: 1000, query: {action: "NEVER"}}, res);
-    helper.delayedQuery({did: "Y", abort: true, query: {action: "NEVER"}}, res);
+    helper.delayedQuery({ did: "Y", timeout: 1000, query: { action: "NEVER" } }, res);
+    helper.delayedQuery({ did: "Y", abort: true, query: { action: "NEVER" } }, res);
 
     // No timer should remain
     assert.equal(Object.keys(helper.delayedQueryTimers).length, 0);

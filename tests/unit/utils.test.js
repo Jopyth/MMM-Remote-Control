@@ -1,7 +1,7 @@
 /* Unit tests for lib/utils.js using Node's built-in test runner */
 const assert = require("node:assert/strict");
-const {test, describe} = require("node:test");
-const {capitalizeFirst, includes} = require("../../lib/utils");
+const { test, describe } = require("node:test");
+const { capitalizeFirst, includes } = require("../../lib/utils");
 
 describe("utils", () => {
   describe("capitalizeFirst", () => {

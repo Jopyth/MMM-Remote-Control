@@ -1,5 +1,5 @@
 const config = {
-  "trailingComma": "none"
+  trailingComma: "none"
 };
 
 export default config;

@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {describe, test, beforeEach, afterEach} = require("node:test");
+const { describe, test, beforeEach, afterEach } = require("node:test");
 const path = require("node:path");
 const ModuleLib = require("node:module");
 
@@ -10,11 +10,11 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
-function freshHelper () {
+function freshHelper() {
   const helper = Object.assign({}, helperFactory);
   helper.__responses = [];
   helper.sendResponse = function (_res, error, payload) {
-    this.__responses.push({error, payload});
+    this.__responses.push({ error, payload });
     return !error;
   };
   helper.handleGetSaves = helperFactory.handleGetSaves.bind(helper);
@@ -43,13 +43,13 @@ describe("/api/saves contract", () => {
 
     fs.promises.stat = async (filePath) => {
       if (filePath.includes("backup4")) {
-        return {mtime: oldTime};
+        return { mtime: oldTime };
       }
       if (filePath.includes("backup3")) {
-        return {mtime: newestTime};
+        return { mtime: newestTime };
       }
       if (filePath.includes("backup2")) {
-        return {mtime: middleTime};
+        return { mtime: middleTime };
       }
       if (filePath.includes("backup1")) {
         const error = new Error("missing");
@@ -59,10 +59,10 @@ describe("/api/saves contract", () => {
       throw new Error("Unexpected file path");
     };
 
-    await helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({ data: "saves" }, {});
 
     assert.equal(helper.__responses.length, 1);
-    const {payload} = helper.__responses[0];
+    const { payload } = helper.__responses[0];
     assert.equal(payload.query.data, "saves");
     assert.ok(Array.isArray(payload.data));
     assert.equal(payload.data.length, 3);
@@ -78,7 +78,7 @@ describe("/api/saves contract", () => {
 
     fs.promises.stat = async (filePath) => {
       if (filePath.includes("backup4")) {
-        return {mtime: time1};
+        return { mtime: time1 };
       }
       // All others missing
       const error = new Error("missing");
@@ -86,9 +86,9 @@ describe("/api/saves contract", () => {
       throw error;
     };
 
-    await helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({ data: "saves" }, {});
 
-    const {payload} = helper.__responses[0];
+    const { payload } = helper.__responses[0];
     assert.equal(payload.data.length, 1);
     assert.deepEqual(payload.data, [time1]);
   });
@@ -102,9 +102,9 @@ describe("/api/saves contract", () => {
       throw error;
     };
 
-    await helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({ data: "saves" }, {});
 
-    const {payload} = helper.__responses[0];
+    const { payload } = helper.__responses[0];
     assert.deepEqual(payload.data, []);
   });
 
@@ -119,7 +119,7 @@ describe("/api/saves contract", () => {
       throw error;
     };
 
-    await helper.handleGetSaves({data: "saves"}, {});
+    await helper.handleGetSaves({ data: "saves" }, {});
 
     // Should check backup4, backup3, backup2, backup1 (not backup0)
     assert.deepEqual(checkedFiles, [

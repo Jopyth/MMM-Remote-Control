@@ -2,7 +2,7 @@
  * @file Tests for moduleManager.js
  */
 
-const {describe, it, before, after} = require("node:test");
+const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const moduleManager = require("../../lib/moduleManager.js");
 const Log = require("../../tests/shims/logger.js");
@@ -57,7 +57,7 @@ describe("lib/moduleManager basic functionality", () => {
   });
 
   it("loadModuleDefaultConfig should handle missing module file", async () => {
-    const module = {name: "nonexistent-module"};
+    const module = { name: "nonexistent-module" };
     // Should not throw - errors are caught internally
     await assert.doesNotReject(async () => {
       await moduleManager.loadModuleDefaultConfig(module, "/nonexistent/path");

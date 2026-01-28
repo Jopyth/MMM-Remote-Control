@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {test, describe} = require("node:test");
+const { test, describe } = require("node:test");
 const path = require("node:path");
 
 // Add tests/shims to module resolution
@@ -11,12 +11,12 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 const helperFactory = require("../../node_helper.js");
 const Log = require("../shims/logger.js");
 
-function freshHelper () {
+function freshHelper() {
   const h = Object.create(helperFactory);
   h.__socketNotifications = [];
   h.__responses = [];
   h.sendSocketNotification = (action, payload) => {
-    h.__socketNotifications.push({action, payload});
+    h.__socketNotifications.push({ action, payload });
   };
   return h;
 }
@@ -37,7 +37,7 @@ describe("translate", () => {
 
   test("replaces multiple occurrences of same placeholder", () => {
     const helper = freshHelper();
-    helper.translation = {FOO: "bar"};
+    helper.translation = { FOO: "bar" };
     helper.translate = helperFactory.translate.bind(helper);
 
     const result = helper.translate("%%TRANSLATE:FOO%% and %%TRANSLATE:FOO%%");
@@ -47,7 +47,7 @@ describe("translate", () => {
 
   test("returns unchanged string when no placeholders present", () => {
     const helper = freshHelper();
-    helper.translation = {KEY: "value"};
+    helper.translation = { KEY: "value" };
     helper.translate = helperFactory.translate.bind(helper);
 
     const result = helper.translate("No placeholders here");
@@ -83,7 +83,7 @@ describe("sendResponse", () => {
     helper.sendResponse(mockRes);
 
     assert.equal(mockRes.statusCode, 200);
-    assert.deepEqual(mockRes.jsonData, {success: true});
+    assert.deepEqual(mockRes.jsonData, { success: true });
   });
 
   test("sends error response with status 400 when error provided", () => {
@@ -122,7 +122,7 @@ describe("sendResponse", () => {
       }
     };
 
-    helper.sendResponse(mockRes, null, {customField: "value", count: 42});
+    helper.sendResponse(mockRes, null, { customField: "value", count: 42 });
 
     assert.equal(mockRes.jsonData.success, true);
     assert.equal(mockRes.jsonData.customField, "value");
@@ -132,9 +132,9 @@ describe("sendResponse", () => {
   test("sends socket notification when res.isSocket is true", () => {
     const helper = freshHelper();
     helper.sendResponse = helperFactory.sendResponse.bind(helper);
-    const mockRes = {isSocket: true};
+    const mockRes = { isSocket: true };
 
-    helper.sendResponse(mockRes, null, {result: "success"});
+    helper.sendResponse(mockRes, null, { result: "success" });
 
     assert.equal(helper.__socketNotifications.length, 1);
     assert.equal(helper.__socketNotifications[0].action, "REMOTE_ACTION_RESULT");
@@ -193,7 +193,7 @@ describe("checkForExecError", () => {
       }
     };
 
-    helper.checkForExecError("Command failed", "output", "error message", mockRes, {info: "test"});
+    helper.checkForExecError("Command failed", "output", "error message", mockRes, { info: "test" });
 
     assert.equal(mockRes.jsonData.success, false);
     Log.suppressExpectedErrors(false);
@@ -210,7 +210,7 @@ describe("checkForExecError", () => {
       }
     };
 
-    helper.checkForExecError(null, "output", "", mockRes, {result: "done"});
+    helper.checkForExecError(null, "output", "", mockRes, { result: "done" });
 
     assert.equal(mockRes.jsonData.success, true);
     assert.equal(mockRes.jsonData.result, "done");

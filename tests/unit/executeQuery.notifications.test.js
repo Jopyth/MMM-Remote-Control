@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {test, describe} = require("node:test");
+const { test, describe } = require("node:test");
 
 // Add tests/shims to module resolution
 const path = require("node:path");
@@ -10,14 +10,14 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
-function freshHelper () {
+function freshHelper() {
   const h = Object.create(helperFactory);
   h.__socketNotifications = [];
   h.__responses = [];
   h.sendSocketNotification = (action, payload) => {
-    h.__socketNotifications.push({action, payload});
+    h.__socketNotifications.push({ action, payload });
   };
-  h.sendResponse = (_res, error, data) => { h.__responses.push({err: error, data}); };
+  h.sendResponse = (_res, error, data) => { h.__responses.push({ err: error, data }); };
   h.checkInitialized = () => true;
   h.thisConfig = {};
   return h;
@@ -28,11 +28,11 @@ describe("executeQuery - Simple notification wrappers", () => {
     const helper = freshHelper();
     helper.handleSimpleSocketNotification = helperFactory.handleSimpleSocketNotification.bind(helper);
 
-    helper.handleSimpleSocketNotification({action: "HIDE", module: "clock"});
+    helper.handleSimpleSocketNotification({ action: "HIDE", module: "clock" });
 
     assert.equal(helper.__socketNotifications.length, 1);
     assert.equal(helper.__socketNotifications[0].action, "HIDE");
-    assert.deepEqual(helper.__socketNotifications[0].payload, {action: "HIDE", module: "clock"});
+    assert.deepEqual(helper.__socketNotifications[0].payload, { action: "HIDE", module: "clock" });
     assert.equal(helper.__responses.length, 1);
   });
 
@@ -40,7 +40,7 @@ describe("executeQuery - Simple notification wrappers", () => {
     const helper = freshHelper();
     helper.handleSimpleValueNotification = helperFactory.handleSimpleValueNotification.bind(helper);
 
-    helper.handleSimpleValueNotification({action: "BRIGHTNESS", value: 150});
+    helper.handleSimpleValueNotification({ action: "BRIGHTNESS", value: 150 });
 
     assert.equal(helper.__socketNotifications.length, 1);
     assert.equal(helper.__socketNotifications[0].action, "BRIGHTNESS");
@@ -52,7 +52,7 @@ describe("executeQuery - Simple notification wrappers", () => {
     const helper = freshHelper();
     helper.handleSimpleNotification = helperFactory.handleSimpleNotification.bind(helper);
 
-    helper.handleSimpleNotification({action: "REFRESH"});
+    helper.handleSimpleNotification({ action: "REFRESH" });
 
     assert.equal(helper.__socketNotifications.length, 1);
     assert.equal(helper.__socketNotifications[0].action, "REFRESH");
@@ -65,12 +65,12 @@ describe("executeQuery - Simple notification wrappers", () => {
     let delayedQueryCalled = false;
     helper.delayedQuery = (query, res) => {
       delayedQueryCalled = true;
-      assert.deepEqual(query, {action: "DELAYED", did: "test123"});
+      assert.deepEqual(query, { action: "DELAYED", did: "test123" });
       assert.equal(res, "mock-res");
     };
     helper.handleDelayed = helperFactory.handleDelayed.bind(helper);
 
-    helper.handleDelayed({action: "DELAYED", did: "test123"}, "mock-res");
+    helper.handleDelayed({ action: "DELAYED", did: "test123" }, "mock-res");
 
     assert.ok(delayedQueryCalled, "Should call delayedQuery");
   });
@@ -80,7 +80,7 @@ describe("executeQuery - Simple notification wrappers", () => {
     helper.getActionHandlers = helperFactory.getActionHandlers.bind(helper);
     helper.executeQuery = helperFactory.executeQuery.bind(helper);
 
-    const result = helper.executeQuery({action: "INVALID_ACTION"});
+    const result = helper.executeQuery({ action: "INVALID_ACTION" });
 
     assert.equal(result, false);
     assert.equal(helper.__responses.length, 1);
@@ -94,7 +94,7 @@ describe("executeQuery - Simple notification wrappers", () => {
     helper.executeQuery = helperFactory.executeQuery.bind(helper);
     helper.handleSimpleNotification = helperFactory.handleSimpleNotification.bind(helper);
 
-    const result = helper.executeQuery({action: "REFRESH"});
+    const result = helper.executeQuery({ action: "REFRESH" });
 
     assert.equal(result, true);
     assert.equal(helper.__socketNotifications.length, 1);

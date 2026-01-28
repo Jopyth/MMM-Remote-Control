@@ -19,7 +19,7 @@ Module.register("MMM-Remote-Control", {
   },
 
   // Define start sequence.
-  start () {
+  start() {
     Log.info(`Starting module: ${this.name}`);
 
     this.settingsVersion = 2;
@@ -33,7 +33,7 @@ Module.register("MMM-Remote-Control", {
     this.qrCodeDataUrl = null;
   },
 
-  createOverlays () {
+  createOverlays() {
     if (!document.getElementById("remote-control-overlay-brightness")) {
       const brightnessOverlay = document.createElement("div");
       brightnessOverlay.id = "remote-control-overlay-brightness";
@@ -47,11 +47,11 @@ Module.register("MMM-Remote-Control", {
     }
   },
 
-  getStyles () {
+  getStyles() {
     return ["MMM-Remote-Control.css"];
   },
 
-  notificationReceived (notification, payload, sender) {
+  notificationReceived(notification, payload, sender) {
     Log.debug(`${this.name} received a module notification: ${notification} from sender: ${sender}`);
     switch (notification) {
       case "DOM_OBJECTS_CREATED":
@@ -69,7 +69,7 @@ Module.register("MMM-Remote-Control", {
   },
 
   // Override socket notification handler.
-  socketNotificationReceived (notification, payload) {
+  socketNotificationReceived(notification, payload) {
     switch (notification) {
       case "UPDATE":
         this.sendCurrentData();
@@ -148,7 +148,7 @@ Module.register("MMM-Remote-Control", {
     }
   },
 
-  setBrightness (newBrightnessValue) {
+  setBrightness(newBrightnessValue) {
     newBrightnessValue = Math.max(0, Math.min(100, newBrightnessValue));
     Log.debug("BRIGHTNESS", newBrightnessValue);
 
@@ -159,7 +159,7 @@ Module.register("MMM-Remote-Control", {
     this.brightness = newBrightnessValue;
   },
 
-  setTemp (temperature) {
+  setTemp(temperature) {
     this.createOverlays();
     const overlay = document.getElementById("remote-control-overlay-temp");
 
@@ -179,19 +179,19 @@ Module.register("MMM-Remote-Control", {
    * Handle DEFAULT_SETTINGS notification - manage module visibility
    * @param {object} payload - Settings data
    */
-  handleDefaultSettings (payload) {
-    let {settingsVersion} = payload;
+  handleDefaultSettings(payload) {
+    let { settingsVersion } = payload;
 
     if (settingsVersion === undefined) {
       settingsVersion = 0;
     }
     if (settingsVersion < this.settingsVersion && settingsVersion === 0) {
       // move old data into moduleData
-      payload = {moduleData: payload, brightness: 100};
-      payload = {moduleData: payload, temp: 327};
+      payload = { moduleData: payload, brightness: 100 };
+      payload = { moduleData: payload, temp: 327 };
     }
 
-    const {moduleData} = payload;
+    const { moduleData } = payload;
     const hideModules = {};
     for (const moduleDatum of moduleData) {
       for (const lockString of moduleDatum.lockStrings || []) {
@@ -203,7 +203,7 @@ Module.register("MMM-Remote-Control", {
     }
 
     const modules = MM.getModules();
-    const options = {lockString: this.identifier};
+    const options = { lockString: this.identifier };
 
     modules.enumerate((module) => {
       if (Object.hasOwn(hideModules, module.identifier)) {
@@ -220,8 +220,8 @@ Module.register("MMM-Remote-Control", {
    * @param {string} notification - Type of visibility action
    * @param {object} payload - Notification data with module info
    */
-  handleModuleVisibility (notification, payload) {
-    const options = {lockString: this.identifier};
+  handleModuleVisibility(notification, payload) {
+    const options = { lockString: this.identifier };
     if (payload.force) { options.force = true; }
 
     // Get all modules or filter by identifier/name
@@ -233,10 +233,8 @@ Module.register("MMM-Remote-Control", {
 
     // Apply visibility action to each module
     for (const module of modules) {
-      const shouldHide = notification === "HIDE" ||
-        (notification === "TOGGLE" && !module.hidden);
-      const shouldShow = notification === "SHOW" ||
-        (notification === "TOGGLE" && module.hidden);
+      const shouldHide = notification === "HIDE" || (notification === "TOGGLE" && !module.hidden);
+      const shouldShow = notification === "SHOW" || (notification === "TOGGLE" && module.hidden);
 
       if (shouldHide) {
         module.hide(1000, () => {}, options);
@@ -246,7 +244,7 @@ Module.register("MMM-Remote-Control", {
     }
   },
 
-  getDom () {
+  getDom() {
     const wrapper = document.createElement("div");
     let portToShow = "";
     if (this.addresses.length === 0) {
@@ -310,11 +308,11 @@ Module.register("MMM-Remote-Control", {
     return wrapper;
   },
 
-  sendCurrentData () {
+  sendCurrentData() {
     const modules = MM.getModules();
     const currentModuleData = [];
     modules.enumerate((module) => {
-      const moduleData = {...module.data, hidden: module.hidden, lockStrings: module.lockStrings || [], urlPath: module.name.replaceAll("MMM-", "").replaceAll("-", "").toLowerCase(), config: module.config};
+      const moduleData = { ...module.data, hidden: module.hidden, lockStrings: module.lockStrings || [], urlPath: module.name.replaceAll("MMM-", "").replaceAll("-", "").toLowerCase(), config: module.config };
       const modulePrototype = Object.getPrototypeOf(module);
       moduleData.defaults = modulePrototype.defaults;
       currentModuleData.push(moduleData);
@@ -334,13 +332,13 @@ Module.register("MMM-Remote-Control", {
    * @param {string|Array<string>} filter - Module identifier(s) or name(s) to match
    * @returns {Array} Matching modules
    */
-  getModulesByFilter (filter) {
+  getModulesByFilter(filter) {
     const allModules = MM.getModules();
     const filters = Array.isArray(filter) ? filter : [filter];
 
     return allModules.filter((module) => {
       if (!module) return false;
-      return filters.some((f) => module.identifier === f || module.name === f);
+      return filters.some(f => module.identifier === f || module.name === f);
     });
   }
 });

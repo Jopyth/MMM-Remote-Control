@@ -1,11 +1,11 @@
 const assert = require("node:assert/strict");
-const {test, describe} = require("node:test");
+const { test, describe } = require("node:test");
 
 const apiModule = require("../../API/api.js");
 
-function makeContext (overrides = {}) {
+function makeContext(overrides = {}) {
   return {
-    configOnHd: {modules: []},
+    configOnHd: { modules: [] },
     externalApiRoutes: {},
     moduleApiMenu: {},
     translation: {},
@@ -13,7 +13,7 @@ function makeContext (overrides = {}) {
     sendResponse: () => {},
     checkInitialized: () => true,
     checkDelay: apiModule.checkDelay,
-    translate: (s) => s,
+    translate: s => s,
     delayedQuery: () => {},
     thisConfig: {},
     ...overrides
@@ -30,10 +30,10 @@ describe("Delayed flow (/delay)", () => {
 
     const request = {
       method: "GET",
-      params: {notification: "HELLO", delayed: "delay"},
-      query: {did: "ID1", timeout: 5}
+      params: { notification: "HELLO", delayed: "delay" },
+      query: { did: "ID1", timeout: 5 }
     };
-    const res = {json: () => {}};
+    const res = { json: () => {} };
 
     answerNotifyApi(request, res);
 

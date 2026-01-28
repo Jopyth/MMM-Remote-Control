@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {test, describe, before, after} = require("node:test");
+const { test, describe, before, after } = require("node:test");
 const path = require("node:path");
 const fs = require("node:fs");
 
@@ -11,13 +11,13 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
-function freshHelper () {
+function freshHelper() {
   const h = Object.create(helperFactory);
   h.__responses = [];
   h.sendResponse = (res, error, data) => {
-    h.__responses.push({err: error, data});
+    h.__responses.push({ err: error, data });
     if (res && res.json) {
-      res.json(data || {success: !error});
+      res.json(data || { success: !error });
     }
   };
   h.getModuleDir = () => "test_modules";
@@ -31,14 +31,14 @@ describe("answerGetChangelog", () => {
 
   before(() => {
     // Create test module directory and CHANGELOG
-    fs.mkdirSync(testModuleDir, {recursive: true});
+    fs.mkdirSync(testModuleDir, { recursive: true });
     fs.writeFileSync(changelogPath, "# Changelog\n\n## v1.0.0\n- Initial release\n");
   });
 
   after(() => {
     // Clean up test files
     try {
-      fs.rmSync(testModulesDir, {recursive: true, force: true});
+      fs.rmSync(testModulesDir, { recursive: true, force: true });
     } catch {
       // Ignore cleanup errors
     }
@@ -53,7 +53,7 @@ describe("answerGetChangelog", () => {
       }
     };
 
-    await helper.answerGetChangelog({module: "test-module"}, mockRes);
+    await helper.answerGetChangelog({ module: "test-module" }, mockRes);
 
     assert.equal(helper.__responses.length, 1);
     assert.equal(helper.__responses[0].err, undefined);
@@ -72,7 +72,7 @@ describe("answerGetChangelog", () => {
       }
     };
 
-    await helper.answerGetChangelog({module: "nonexistent-module"}, mockRes);
+    await helper.answerGetChangelog({ module: "nonexistent-module" }, mockRes);
 
     assert.equal(helper.__responses.length, 1);
     assert.ok(helper.__responses[0].err instanceof Error);
@@ -84,7 +84,7 @@ describe("answerGetChangelog", () => {
     const helper = freshHelper();
     helper.answerGetChangelog = helperFactory.answerGetChangelog.bind(helper);
     const mockRes = {};
-    const query = {module: "missing-module", other: "data"};
+    const query = { module: "missing-module", other: "data" };
 
     await helper.answerGetChangelog(query, mockRes);
 

@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {test, describe, mock, afterEach} = require("node:test");
+const { test, describe, mock, afterEach } = require("node:test");
 
 // Add tests/shims to module resolution so 'logger' and 'node_helper' resolve to our shims
 const path = require("node:path");
@@ -10,19 +10,19 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
-function freshHelper () {
+function freshHelper() {
   const helper = Object.create(helperFactory);
   helper.__socketNotifications = [];
   helper.__responses = [];
   helper.sendSocketNotification = (action, payload) => {
-    helper.__socketNotifications.push({action, payload});
+    helper.__socketNotifications.push({ action, payload });
   };
   helper.sendResponse = (res, error, payload) => {
-    helper.__responses.push({res, error, payload});
+    helper.__responses.push({ res, error, payload });
   };
-  helper.expressApp = {post: () => {}};
-  helper.expressRouter = {post: () => {}, get: () => {}};
-  helper.io = {emit: () => {}};
+  helper.expressApp = { post: () => {} };
+  helper.expressRouter = { post: () => {}, get: () => {} };
+  helper.io = { emit: () => {} };
   return helper;
 }
 
@@ -59,7 +59,7 @@ describe("executeQuery - Alert handling", () => {
     const helper = freshHelper();
     helper.handleShowAlert = helperFactory.handleShowAlert.bind(helper);
 
-    helper.executeQuery({action: "SHOW_ALERT"});
+    helper.executeQuery({ action: "SHOW_ALERT" });
 
     const notification = helper.__socketNotifications[0];
     assert.deepEqual(notification.payload, {
@@ -74,7 +74,7 @@ describe("executeQuery - Alert handling", () => {
     const helper = freshHelper();
     helper.handleShowAlert = helperFactory.handleShowAlert.bind(helper);
 
-    helper.executeQuery({action: "SHOW_ALERT", timer: 5});
+    helper.executeQuery({ action: "SHOW_ALERT", timer: 5 });
 
     const notification = helper.__socketNotifications[0];
     assert.equal(notification.payload.timer, 5000);
@@ -84,7 +84,7 @@ describe("executeQuery - Alert handling", () => {
     const helper = freshHelper();
     helper.handleSimpleNotification = helperFactory.handleSimpleNotification.bind(helper);
 
-    helper.executeQuery({action: "HIDE_ALERT"});
+    helper.executeQuery({ action: "HIDE_ALERT" });
 
     assert.equal(helper.__responses.length, 1);
     assert.equal(helper.__socketNotifications.length, 1);

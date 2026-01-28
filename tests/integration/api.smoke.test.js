@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {describe, test, before, after} = require("node:test");
+const { describe, test, before, after } = require("node:test");
 const express = require("express");
 const path = require("node:path");
 const ModuleLib = require("node:module");
@@ -65,7 +65,7 @@ describe("API HTTP-Layer Smoke Tests", () => {
     // Setup minimal Express app
     const app = express();
     app.use(express.json());
-    app.use(express.urlencoded({extended: true}));
+    app.use(express.urlencoded({ extended: true }));
 
     // Load required modules
     const apiModule = require("../../API/api.js");
@@ -89,26 +89,26 @@ describe("API HTTP-Layer Smoke Tests", () => {
       secureEndpoints: false,
 
       // Capture socket notifications
-      sendSocketNotification (what, payload) {
-        notifications.push({what, payload});
+      sendSocketNotification(what, payload) {
+        notifications.push({ what, payload });
       },
 
       // Minimal response handler
-      sendResponse (res, error, data) {
-        let response = {success: true};
+      sendResponse(res, error, data) {
+        let response = { success: true };
         let status = 200;
         if (error) {
-          response = {success: false, status: "error", reason: "unknown", info: error};
+          response = { success: false, status: "error", reason: "unknown", info: error };
           status = 400;
         }
         if (data) {
-          response = {...response, ...data};
+          response = { ...response, ...data };
         }
         res.status(status).json(response);
         return !error;
       },
 
-      checkInitialized (res) {
+      checkInitialized(res) {
         if (!this.initialized) {
           this.sendResponse(res, new Error("System not initialized"));
           return false;
@@ -116,19 +116,19 @@ describe("API HTTP-Layer Smoke Tests", () => {
         return true;
       },
 
-      getApiKey () {
+      getApiKey() {
         // No API key for smoke test
       },
 
-      delayedQuery () {
+      delayedQuery() {
         // Stub - not tested in smoke
       },
 
-      getExternalApiByGuessing () {
+      getExternalApiByGuessing() {
         // Stub - module API guessing not needed for smoke test
       },
 
-      updateModuleApiMenu () {
+      updateModuleApiMenu() {
         // Stub - menu update not needed for smoke test
       },
 
@@ -189,15 +189,15 @@ describe("API HTTP-Layer Smoke Tests", () => {
 
     const response = await fetch(`${baseUrl}/api/notification/TEST_NOTIFICATION`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({foo: "bar"})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ foo: "bar" })
     });
     const data = await response.json();
 
     assert.equal(response.status, 200);
     assert.equal(data.success, true);
     assert.equal(data.notification, "TEST_NOTIFICATION");
-    assert.deepEqual(data.payload, {foo: "bar"});
+    assert.deepEqual(data.payload, { foo: "bar" });
 
     // Verify socket notification was captured
     assert.equal(notifications.length, 1);
@@ -219,7 +219,7 @@ describe("API HTTP-Layer Smoke Tests", () => {
   test("POST without Content-Type application/json returns 400", async () => {
     const response = await fetch(`${baseUrl}/api/notification/TEST`, {
       method: "POST",
-      headers: {"Content-Type": "text/plain"},
+      headers: { "Content-Type": "text/plain" },
       body: "invalid"
     });
     const data = await response.json();

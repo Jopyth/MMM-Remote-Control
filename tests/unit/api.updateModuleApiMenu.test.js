@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {describe, test} = require("node:test");
+const { describe, test } = require("node:test");
 
 const apiModule = require("../../API/api.js");
 
@@ -7,29 +7,29 @@ describe("updateModuleApiMenu", () => {
   test("generates menu structure from externalApiRoutes", () => {
     const sentNotifications = [];
     const context = {
-      thisConfig: {showModuleApiMenu: true},
+      thisConfig: { showModuleApiMenu: true },
       externalApiRoutes: {
         "weather-api": {
           path: "weather-api",
           module: "MMM-Weather",
           actions: {
-            UPDATE: {notification: "WEATHER_UPDATE", payload: {}},
-            REFRESH: {notification: "WEATHER_REFRESH"}
+            UPDATE: { notification: "WEATHER_UPDATE", payload: {} },
+            REFRESH: { notification: "WEATHER_REFRESH" }
           }
         },
         "calendar-ext": {
           path: "calendar-ext",
           module: "MMM-CalendarExt3",
           actions: {
-            NEXT: {notification: "CALENDAR_NEXT"},
-            PREV: {notification: "CALENDAR_PREV"}
+            NEXT: { notification: "CALENDAR_NEXT" },
+            PREV: { notification: "CALENDAR_PREV" }
           }
         }
       },
       moduleApiMenu: null,
-      translate: (key) => key.replace("%%TRANSLATE:", "").replace("%%", ""),
+      translate: key => key.replace("%%TRANSLATE:", "").replace("%%", ""),
       sendSocketNotification: (notification, payload) => {
-        sentNotifications.push({notification, payload});
+        sentNotifications.push({ notification, payload });
       }
     };
 
@@ -52,7 +52,7 @@ describe("updateModuleApiMenu", () => {
     const updateAction = weatherMenu.items[0];
     assert.equal(updateAction.id, "mc-weather-api-UPDATE");
     assert.equal(updateAction.action, "NOTIFICATION");
-    assert.deepEqual(updateAction.content, {notification: "WEATHER_UPDATE", payload: {}});
+    assert.deepEqual(updateAction.content, { notification: "WEATHER_UPDATE", payload: {} });
 
     // Check notification was sent
     assert.equal(sentNotifications.length, 1);
@@ -61,10 +61,10 @@ describe("updateModuleApiMenu", () => {
 
   test("handles empty externalApiRoutes", () => {
     const context = {
-      thisConfig: {showModuleApiMenu: true},
+      thisConfig: { showModuleApiMenu: true },
       externalApiRoutes: {},
       moduleApiMenu: null,
-      translate: (key) => key,
+      translate: key => key,
       sendSocketNotification: () => {}
     };
 
@@ -76,8 +76,8 @@ describe("updateModuleApiMenu", () => {
 
   test("skips when showModuleApiMenu is false", () => {
     const context = {
-      thisConfig: {showModuleApiMenu: false},
-      externalApiRoutes: {test: {path: "test", module: "MMM-Test", actions: {}}},
+      thisConfig: { showModuleApiMenu: false },
+      externalApiRoutes: { test: { path: "test", module: "MMM-Test", actions: {} } },
       moduleApiMenu: null
     };
 
@@ -88,16 +88,16 @@ describe("updateModuleApiMenu", () => {
 
   test("preserves module name unchanged", () => {
     const context = {
-      thisConfig: {showModuleApiMenu: true},
+      thisConfig: { showModuleApiMenu: true },
       externalApiRoutes: {
         test: {
           path: "test",
           module: "MMM-PublicTransportHafas",
-          actions: {TEST: {notification: "TEST"}}
+          actions: { TEST: { notification: "TEST" } }
         }
       },
       moduleApiMenu: null,
-      translate: (key) => key,
+      translate: key => key,
       sendSocketNotification: () => {}
     };
 
