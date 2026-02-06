@@ -82,7 +82,33 @@ describe("Module API", () => {
     assert.ok(captured.response.message.includes("Not Found"));
   });
 
+  test("module without actions property returns 400", () => {
+    const captured = {};
+    const context = makeContext({
+      configData: { moduleData: [{ identifier: "module_1_alert", name: "alert" }] },
+      mergeData: function () { return { success: true, data: this.configData.moduleData }; }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = { params: { moduleName: "alert", action: "showalert" } };
+    const res = {
+      status: (code) => {
+        captured.status = code;
+        return { json: (data) => { captured.response = data; } };
+      },
+      json: () => {}
+    };
+
+    answerModuleApi(request, res);
+
+    // Should return 400 error when module has no actions property
+    assert.equal(captured.status, 400);
+    assert.equal(captured.response.success, false);
+    assert.ok(captured.response.message.includes("does not have any actions defined"));
+  });
+
   test("invalid action on custom module returns undefined (no action object)", () => {
+    const captured = {};
     const context = makeContext({
       configData: { moduleData: [{ identifier: "module_1_custom", name: "CustomModule", urlPath: "custom", actions: {} }] },
       mergeData: function () { return { success: true, data: this.configData.moduleData }; }
@@ -90,10 +116,20 @@ describe("Module API", () => {
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
     const request = { params: { moduleName: "CustomModule", action: "invalidAction" } };
-    const res = { json: () => {} };
+    const res = {
+      status: (code) => {
+        captured.status = code;
+        return { json: (data) => { captured.response = data; } };
+      },
+      json: () => {}
+    };
 
-    // Should not crash - action will be undefined and nothing happens
     answerModuleApi(request, res);
+
+    // Should return 400 error when action doesn't exist
+    assert.equal(captured.status, 400);
+    assert.equal(captured.response.success, false);
+    assert.ok(captured.response.message.includes("Action invalidAction not found"));
   });
 
   test("custom module API with valid action calls answerNotifyApi", () => {
@@ -153,7 +189,7 @@ describe("Module API", () => {
 
     assert.equal(captured.status, 400);
     assert.equal(captured.response.success, false);
-    assert.ok(captured.response.info.includes("not allowed"));
+    assert.ok(captured.response.message.includes("not allowed"));
   });
 
   test("no moduleName returns all merged data", () => {

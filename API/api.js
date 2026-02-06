@@ -454,14 +454,22 @@ module.exports = {
       return;
     }
 
+    // Check if the module has actions defined
+    if (!moduleData[0].actions) {
+      res.status(400).json({ success: false, message: `Module ${request.params.moduleName} does not have any actions defined.` });
+      return;
+    }
+
     action = moduleData[0].actions[request.params.action];
 
     if (action) {
       if ("method" in action && action.method !== request.method) {
-        res.status(400).json({ success: false, info: `Method ${request.method} is not allowed for ${request.params.moduleName}/${request.params.action}.` });
+        res.status(400).json({ success: false, message: `Method ${request.method} is not allowed for ${request.params.moduleName}/${request.params.action}.` });
         return;
       }
       this.answerNotifyApi(request, res, action);
+    } else {
+      res.status(400).json({ success: false, message: `Action ${request.params.action} not found for module ${request.params.moduleName}.` });
     }
   },
 
