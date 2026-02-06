@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.2.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.0...v4.2.1) (2026-02-06)
+
+### Fixed
+
+- handle undefined module actions in API endpoints ([5a41e4b](https://github.com/jopyth/MMM-Remote-Control/commit/5a41e4b79f7d754f5d8193060998acd6108502db))
+
+### Chores
+
+- update devDependencies ([9437bf3](https://github.com/jopyth/MMM-Remote-Control/commit/9437bf32d7172ba7f83eb74d10d41228abfabc14))
+
 ## [4.2.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.1.5...v4.2.0) (2026-01-28)
 
 ### Added
