@@ -456,6 +456,11 @@ module.exports = {
 
     // Check if the module has actions defined
     if (!moduleData[0].actions) {
+      // Special case: alert/showalert maps to SHOW_ALERT (MM default module without REGISTER_API)
+      if (request.params.moduleName === "alert" && request.params.action === "showalert") {
+        this.answerNotifyApi(request, res, { notification: "SHOW_ALERT", prettyName: "Show Alert" });
+        return;
+      }
       res.status(400).json({ success: false, message: `Module ${request.params.moduleName} does not have any actions defined.` });
       return;
     }

@@ -85,12 +85,12 @@ describe("Module API", () => {
   test("module without actions property returns 400", () => {
     const captured = {};
     const context = makeContext({
-      configData: { moduleData: [{ identifier: "module_1_alert", name: "alert" }] },
+      configData: { moduleData: [{ identifier: "module_1_custommod", name: "custommod" }] },
       mergeData: function () { return { success: true, data: this.configData.moduleData }; }
     });
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
-    const request = { params: { moduleName: "alert", action: "showalert" } };
+    const request = { params: { moduleName: "custommod", action: "someaction" } };
     const res = {
       status: (code) => {
         captured.status = code;
@@ -105,6 +105,28 @@ describe("Module API", () => {
     assert.equal(captured.status, 400);
     assert.equal(captured.response.success, false);
     assert.ok(captured.response.message.includes("does not have any actions defined"));
+  });
+
+  test("alert/showalert works as special case for default alert module", () => {
+    const captured = {};
+    const context = makeContext({
+      configData: { moduleData: [{ identifier: "module_0_alert", name: "alert" }] },
+      mergeData: function () { return { success: true, data: this.configData.moduleData }; },
+      answerNotifyApi: (request, res, action) => {
+        captured.action = action;
+        captured.called = true;
+      }
+    });
+    const answerModuleApi = apiModule.answerModuleApi.bind(context);
+
+    const request = { params: { moduleName: "alert", action: "showalert" }, query: { message: "Test", timer: 3000 }, method: "GET" };
+    const res = { json: () => {} };
+
+    answerModuleApi(request, res);
+
+    // Should call answerNotifyApi with SHOW_ALERT notification
+    assert.equal(captured.called, true);
+    assert.equal(captured.action.notification, "SHOW_ALERT");
   });
 
   test("invalid action on custom module returns undefined (no action object)", () => {
