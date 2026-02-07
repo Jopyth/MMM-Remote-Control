@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.2.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.1...v4.2.2) (2026-02-07)
+
+### Fixed
+
+- handle undefined module actions with fallback for alert module ([b30be3e](https://github.com/jopyth/MMM-Remote-Control/commit/b30be3ea32b545f3d10d4cc4b63d00aaf7ba1716))
+
+### Chores
+
+- simplify ESLint config and handle linter issues ([056801d](https://github.com/jopyth/MMM-Remote-Control/commit/056801dd6fa187565a0c5f4a68b1d0aa0db0a8fc))
+
 ## [4.2.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.0...v4.2.1) (2026-02-06)
 
 ### Fixed
