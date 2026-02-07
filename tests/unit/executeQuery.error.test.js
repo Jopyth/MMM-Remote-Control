@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { describe, test } = require("node:test");
+const {describe, test} = require("node:test");
 const path = require("node:path");
 const ModuleLib = require("node:module");
 
@@ -10,20 +10,20 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
-function freshHelper(overrides = {}) {
+function freshHelper (overrides = {}) {
   const helper = Object.assign({}, helperFactory);
   helper.__sent = [];
   helper.__responses = [];
   helper.sendSocketNotification = function (what, payload) {
-    this.__sent.push({ what, payload });
+    this.__sent.push({what, payload});
   };
   helper.sendResponse = function (res, err, data) {
-    this.__responses.push({ res, err, data });
+    this.__responses.push({res, err, data});
     return !err;
   };
-  helper.thisConfig = { classes: {} };
+  helper.thisConfig = {classes: {}};
   helper.configOnHd = {};
-  helper.configData = { moduleData: [] };
+  helper.configData = {moduleData: []};
   helper.checkInitialized = () => true;
   helper.executeQuery = helperFactory.executeQuery.bind(helper);
   helper.handleNotification = helperFactory.handleNotification.bind(helper);
@@ -37,7 +37,7 @@ describe("executeQuery error handling", () => {
     const res = {};
 
     // Already tested in executeQuery.core.test.js but documenting error path here
-    const ok = h.executeQuery({ action: "NOTIFICATION", notification: "TEST", payload: "{" }, res);
+    const ok = h.executeQuery({action: "NOTIFICATION", notification: "TEST", payload: "{"}, res);
 
     assert.equal(ok, true, "should handle error gracefully");
     assert.equal(h.__sent.length, 0, "should not send notification on parse error");
@@ -51,12 +51,12 @@ describe("executeQuery error handling", () => {
     const res = {};
 
     // Missing required param - backend doesn't validate, sends undefined to frontend
-    h.executeQuery({ action: "NOTIFICATION", payload: { foo: "bar" } }, res);
+    h.executeQuery({action: "NOTIFICATION", payload: {foo: "bar"}}, res);
 
     assert.equal(h.__sent.length, 1);
     assert.equal(h.__sent[0].what, "NOTIFICATION");
     assert.equal(h.__sent[0].payload.notification, undefined);
-    assert.deepEqual(h.__sent[0].payload.payload, { foo: "bar" });
+    assert.deepEqual(h.__sent[0].payload.payload, {foo: "bar"});
   });
 
   test("SHOW/HIDE/TOGGLE with missing module parameter still sends notification", () => {
@@ -64,7 +64,7 @@ describe("executeQuery error handling", () => {
     const res = {};
 
     // Missing module - backend sends anyway, frontend filters out empty results
-    h.executeQuery({ action: "SHOW" }, res);
+    h.executeQuery({action: "SHOW"}, res);
 
     assert.equal(h.__sent.length, 1);
     assert.equal(h.__sent[0].what, "SHOW");
@@ -78,7 +78,7 @@ describe("executeQuery error handling", () => {
     const h = freshHelper();
     const res = {};
 
-    h.executeQuery({ action: "SHOW", module: "" }, res);
+    h.executeQuery({action: "SHOW", module: ""}, res);
 
     assert.equal(h.__sent.length, 1);
     assert.equal(h.__sent[0].payload.module, "");
@@ -93,7 +93,7 @@ describe("executeQuery error handling", () => {
     h.executeQuery({
       action: "NOTIFICATION",
       notification: "TEST",
-      payload: { param: "{invalid", other: "value" }
+      payload: {param: "{invalid", other: "value"}
     }, res);
 
     // Backend doesn't parse nested values, sends as-is

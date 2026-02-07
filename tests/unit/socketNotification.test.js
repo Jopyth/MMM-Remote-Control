@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { test, describe } = require("node:test");
+const {test, describe} = require("node:test");
 const path = require("node:path");
 
 // Add tests/shims to module resolution
@@ -10,20 +10,20 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
-function freshHelper() {
+function freshHelper () {
   const h = Object.create(helperFactory);
   h.__socketNotifications = [];
   h.sendSocketNotification = (action, payload) => {
-    h.__socketNotifications.push({ action, payload });
+    h.__socketNotifications.push({action, payload});
   };
   h.waiting = [];
   h.initialized = false;
-  h.configOnHd = { port: 8080 };
+  h.configOnHd = {port: 8080};
   h.loadDefaultSettings = () => {};
   h.getIpAddresses = helperFactory.getIpAddresses.bind(h);
   h.executeQuery = (query, res) => {
     h.__executeQueryCalls = h.__executeQueryCalls || [];
-    h.__executeQueryCalls.push({ query, res });
+    h.__executeQueryCalls.push({query, res});
   };
   return h;
 }
@@ -34,7 +34,7 @@ describe("socketNotificationReceived", () => {
     helper.socketNotificationReceived = helperFactory.socketNotificationReceived.bind(helper);
 
     const payload = {
-      remoteConfig: { apiKey: "test" },
+      remoteConfig: {apiKey: "test"},
       moduleData: []
     };
 
@@ -56,7 +56,7 @@ describe("socketNotificationReceived", () => {
       }
     });
 
-    helper.socketNotificationReceived("CURRENT_STATUS", { remoteConfig: {} });
+    helper.socketNotificationReceived("CURRENT_STATUS", {remoteConfig: {}});
 
     assert.ok(callbackRun);
     assert.equal(helper.waiting.length, 0);
@@ -67,7 +67,7 @@ describe("socketNotificationReceived", () => {
     helper.initialized = false;
     helper.socketNotificationReceived = helperFactory.socketNotificationReceived.bind(helper);
 
-    helper.socketNotificationReceived("CURRENT_STATUS", { remoteConfig: {} });
+    helper.socketNotificationReceived("CURRENT_STATUS", {remoteConfig: {}});
 
     assert.equal(helper.initialized, true);
   });
@@ -78,7 +78,7 @@ describe("socketNotificationReceived", () => {
 
     helper.socketNotificationReceived("REQUEST_DEFAULT_SETTINGS", {});
 
-    const ipNotification = helper.__socketNotifications.find(n => n.action === "IP_ADDRESSES");
+    const ipNotification = helper.__socketNotifications.find((n) => n.action === "IP_ADDRESSES");
     assert.ok(ipNotification);
     assert.ok(Array.isArray(ipNotification.payload));
   });
@@ -90,7 +90,7 @@ describe("socketNotificationReceived", () => {
 
     helper.socketNotificationReceived("REQUEST_DEFAULT_SETTINGS", {});
 
-    const portNotification = helper.__socketNotifications.find(n => n.action === "LOAD_PORT");
+    const portNotification = helper.__socketNotifications.find((n) => n.action === "LOAD_PORT");
     assert.ok(portNotification);
     assert.equal(portNotification.payload, 9090);
   });
@@ -99,7 +99,7 @@ describe("socketNotificationReceived", () => {
     const helper = freshHelper();
     helper.socketNotificationReceived = helperFactory.socketNotificationReceived.bind(helper);
 
-    const payload = { action: "REFRESH" };
+    const payload = {action: "REFRESH"};
     helper.socketNotificationReceived("REMOTE_ACTION", payload);
 
     assert.equal(helper.__executeQueryCalls.length, 1);

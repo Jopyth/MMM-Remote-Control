@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { describe, test, beforeEach, afterEach } = require("node:test");
+const {describe, test, beforeEach, afterEach} = require("node:test");
 const path = require("node:path");
 const fs = require("node:fs");
 
@@ -12,16 +12,16 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 // Setup global Module mock
 globalThis.Module = {
   configDefaults: {
-    clock: { timeFormat: 24, showPeriod: false },
-    calendar: { maximumEntries: 10 }
+    clock: {timeFormat: 24, showPeriod: false},
+    calendar: {maximumEntries: 10}
   }
 };
 
 const configManager = require("../../lib/configManager.js");
 
 // Helper functions for tests
-const translateCallback = data => data.replace("%%TRANSLATE:HELLO%%", "Hello");
-const identityTranslate = data => data;
+const translateCallback = (data) => data.replace("%%TRANSLATE:HELLO%%", "Hello");
+const identityTranslate = (data) => data;
 
 describe("configManager.getConfigPath", () => {
   test("returns default config path when globalThis.configuration_file undefined", () => {
@@ -57,11 +57,11 @@ describe("configManager.getConfig", () => {
   test("merges module defaults into config", () => {
     const configOnHd = {
       modules: [
-        { module: "clock", config: { timeFormat: 12 } },
-        { module: "calendar", config: {} }
+        {module: "clock", config: {timeFormat: 12}},
+        {module: "calendar", config: {}}
       ]
     };
-    const configData = { moduleData: [] };
+    const configData = {moduleData: []};
 
     const result = configManager.getConfig(configOnHd, configData);
 
@@ -75,10 +75,10 @@ describe("configManager.getConfig", () => {
 
   test("handles moduleDataFromBrowser for bundled modules", () => {
     const configOnHd = {
-      modules: [{ module: "custom-module", config: {} }]
+      modules: [{module: "custom-module", config: {}}]
     };
     const configData = {
-      moduleData: [{ name: "custom-module", config: { bundledOption: true } }]
+      moduleData: [{name: "custom-module", config: {bundledOption: true}}]
     };
 
     const result = configManager.getConfig(configOnHd, configData);
@@ -88,9 +88,9 @@ describe("configManager.getConfig", () => {
 
   test("creates config object when missing", () => {
     const configOnHd = {
-      modules: [{ module: "test-module" }]
+      modules: [{module: "test-module"}]
     };
-    const configData = { moduleData: [] };
+    const configData = {moduleData: []};
 
     const result = configManager.getConfig(configOnHd, configData);
 
@@ -121,7 +121,7 @@ describe("configManager.findBestBackupSlot", () => {
     fs.promises.stat = async (filePath) => {
       const match = (/backup(\d)/u).exec(filePath);
       if (match && mtimes[Number(match[1])]) {
-        return { mtime: mtimes[Number(match[1])] };
+        return {mtime: mtimes[Number(match[1])]};
       }
       const error = new Error("missing");
       error.code = "ENOENT";
@@ -150,7 +150,7 @@ describe("configManager.findBestBackupSlot", () => {
         throw error;
       }
 
-      return { mtime: new Date("2020-01-01T10:00:00Z") };
+      return {mtime: new Date("2020-01-01T10:00:00Z")};
     };
 
     const result = await configManager.findBestBackupSlot();
@@ -188,12 +188,12 @@ describe("configManager.loadTranslation", () => {
     fs.promises.readFile = async (filePath, encoding) => {
       assert.equal(encoding, "utf8");
       if (filePath.includes("de.json")) {
-        return JSON.stringify({ HELLO: "Hallo", WORLD: "Welt" });
+        return JSON.stringify({HELLO: "Hallo", WORLD: "Welt"});
       }
       throw new Error("File not found");
     };
 
-    const currentTranslation = { GREETING: "Hi" };
+    const currentTranslation = {GREETING: "Hi"};
     const result = await configManager.loadTranslation("/test/module", "de", currentTranslation);
 
     assert.equal(result.GREETING, "Hi");
@@ -208,14 +208,14 @@ describe("configManager.loadTranslation", () => {
       throw error;
     };
 
-    const currentTranslation = { GREETING: "Hi" };
+    const currentTranslation = {GREETING: "Hi"};
     const result = await configManager.loadTranslation("/test/module", "de", currentTranslation);
 
     assert.deepEqual(result, currentTranslation);
   });
 
   test("returns empty object when no current translation provided", async () => {
-    fs.promises.readFile = async () => JSON.stringify({ HELLO: "Hello" });
+    fs.promises.readFile = async () => JSON.stringify({HELLO: "Hello"});
 
     const result = await configManager.loadTranslation("/test/module", "en");
 
@@ -236,7 +236,7 @@ describe("configManager.loadDefaultSettings", () => {
 
   test("returns parsed settings when file exists", async () => {
     const settingsData = {
-      moduleData: [{ identifier: "test", hidden: false }],
+      moduleData: [{identifier: "test", hidden: false}],
       brightness: 100,
       temp: 20
     };
@@ -331,11 +331,11 @@ describe("configManager.loadCustomMenus", () => {
     fs.promises.readFile = async (filePath) => {
       assert.ok(filePath.includes("custom.json"));
       return JSON.stringify({
-        menu: { items: [{ text: "%%TRANSLATE:HELLO%%" }] }
+        menu: {items: [{text: "%%TRANSLATE:HELLO%%"}]}
       });
     };
 
-    const thisConfig = { customMenu: "custom.json" };
+    const thisConfig = {customMenu: "custom.json"};
 
     const result = await configManager.loadCustomMenus("/test/module", thisConfig, translateCallback);
 
@@ -358,7 +358,7 @@ describe("configManager.loadCustomMenus", () => {
       throw error;
     };
 
-    const thisConfig = { customMenu: "missing.json" };
+    const thisConfig = {customMenu: "missing.json"};
 
     const result = await configManager.loadCustomMenus("/test/module", thisConfig, identityTranslate);
 

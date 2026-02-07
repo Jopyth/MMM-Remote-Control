@@ -7,7 +7,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { v4: uuid } = require("uuid");
+const {v4: uuid} = require("uuid");
 
 const moduleDir = path.resolve(__dirname, "..");
 const modulesSourceFile = path.join(moduleDir, "modules.json.template");

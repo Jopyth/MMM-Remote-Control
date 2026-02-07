@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { describe, test } = require("node:test");
+const {describe, test} = require("node:test");
 const path = require("node:path");
 
 // Add tests/shims to module resolution
@@ -13,7 +13,7 @@ const helperFactory = require("../../node_helper.js");
 describe("getModuleDir", () => {
   test("returns foreignModulesDir when defined", () => {
     const helper = Object.create(helperFactory);
-    helper.configOnHd = { foreignModulesDir: "custom_modules" };
+    helper.configOnHd = {foreignModulesDir: "custom_modules"};
 
     const moduleDir = helper.getModuleDir();
 
@@ -22,7 +22,7 @@ describe("getModuleDir", () => {
 
   test("returns paths.modules when defined and foreignModulesDir missing", () => {
     const helper = Object.create(helperFactory);
-    helper.configOnHd = { paths: { modules: "alternative/modules" } };
+    helper.configOnHd = {paths: {modules: "alternative/modules"}};
 
     const moduleDir = helper.getModuleDir();
 
@@ -42,7 +42,7 @@ describe("getModuleDir", () => {
     const helper = Object.create(helperFactory);
     helper.configOnHd = {
       foreignModulesDir: "foreign_modules",
-      paths: { modules: "regular/modules" }
+      paths: {modules: "regular/modules"}
     };
 
     const moduleDir = helper.getModuleDir();

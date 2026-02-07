@@ -7,7 +7,7 @@
  * DO NOT remove the safety guard at the top of this file!
  */
 
-const { describe, it, beforeEach, afterEach } = require("node:test");
+const {describe, it, beforeEach, afterEach} = require("node:test");
 const assert = require("node:assert");
 const childProcess = require("node:child_process");
 
@@ -46,10 +46,10 @@ let handleElectronActions;
  * @param {Array<object>} execResults - Array to store exec calls for verification
  * @returns {function(string, object, function(Error, string, string): void): void} Mock exec function
  */
-function createMockExec(execResults) {
+function createMockExec (execResults) {
   return (command, options, callback) => {
     // SAFETY: Never execute real commands, only record them
-    execResults.push({ command, options });
+    execResults.push({command, options});
     setImmediate(() => {
       if (command.includes("display_power -1")) {
         callback(null, "display_power=1", "");
@@ -68,20 +68,20 @@ function createMockExec(execResults) {
  * Shared test helpers and mocks for monitorControl tests
  * @returns {object} Mock functions and result arrays
  */
-function setupMonitorControlMocks() {
+function setupMonitorControlMocks () {
   const execResults = [];
   const socketNotifications = [];
   const errorCheckResults = [];
 
   const mockCheckForExecError = (error, stdout, stderr, res, data) => {
-    errorCheckResults.push({ error, stdout, stderr, res, data });
+    errorCheckResults.push({error, stdout, stderr, res, data});
   };
 
   const mockSendSocketNotification = (notification, payload) => {
-    socketNotifications.push({ notification, payload });
+    socketNotifications.push({notification, payload});
   };
 
-  return { execResults, socketNotifications, errorCheckResults, mockCheckForExecError, mockSendSocketNotification };
+  return {execResults, socketNotifications, errorCheckResults, mockCheckForExecError, mockSendSocketNotification};
 }
 
 describe("systemControl", () => {
@@ -101,9 +101,9 @@ describe("systemControl", () => {
       });
 
       it("should execute MONITORON command with default command", (t, done) => {
-        const config = { customCommand: {} };
-        const options = { uid: 1000 };
-        const res = { test: "response" };
+        const config = {customCommand: {}};
+        const options = {uid: 1000};
+        const res = {test: "response"};
 
         monitorControl("MONITORON", config, options, res, mocks.mockCheckForExecError, mocks.mockSendSocketNotification);
 
@@ -118,9 +118,9 @@ describe("systemControl", () => {
       });
 
       it("should execute MONITOROFF command with default command", (t, done) => {
-        const config = { customCommand: {} };
-        const options = { uid: 1000 };
-        const res = { test: "response" };
+        const config = {customCommand: {}};
+        const options = {uid: 1000};
+        const res = {test: "response"};
 
         monitorControl("MONITOROFF", config, options, res, mocks.mockCheckForExecError, mocks.mockSendSocketNotification);
 
@@ -136,9 +136,9 @@ describe("systemControl", () => {
       });
 
       it("should execute MONITORSTATUS command", (t, done) => {
-        const config = { customCommand: {} };
-        const options = { uid: 1000 };
-        const res = { test: "response" };
+        const config = {customCommand: {}};
+        const options = {uid: 1000};
+        const res = {test: "response"};
 
         monitorControl("MONITORSTATUS", config, options, res, mocks.mockCheckForExecError, mocks.mockSendSocketNotification);
 
@@ -184,7 +184,7 @@ describe("systemControl", () => {
       });
 
       it("should handle MONITORTOGGLE by calling MONITOROFF when on", (t, done) => {
-        const config = { customCommand: {} };
+        const config = {customCommand: {}};
         const options = {};
         const res = {};
 
@@ -232,7 +232,7 @@ describe("systemControl", () => {
         getAllWindows: () => [
           {
             minimize: () => windowActions.push("minimize"),
-            setFullScreen: value => windowActions.push(`fullscreen:${value}`),
+            setFullScreen: (value) => windowActions.push(`fullscreen:${value}`),
             isFullScreen: () => false,
             webContents: {
               isDevToolsOpened: () => false,
@@ -245,7 +245,7 @@ describe("systemControl", () => {
     };
 
     const mockSendResponse = (res, error) => {
-      responses.push({ res, error });
+      responses.push({res, error});
     };
 
     beforeEach(() => {
@@ -271,8 +271,8 @@ describe("systemControl", () => {
     });
 
     it("should minimize window", () => {
-      const query = { action: "MINIMIZE" };
-      const res = { test: "response" };
+      const query = {action: "MINIMIZE"};
+      const res = {test: "response"};
 
       handleElectronActions(query, res, mockSendResponse);
 
@@ -283,8 +283,8 @@ describe("systemControl", () => {
     });
 
     it("should toggle fullscreen", () => {
-      const query = { action: "TOGGLEFULLSCREEN" };
-      const res = { test: "response" };
+      const query = {action: "TOGGLEFULLSCREEN"};
+      const res = {test: "response"};
 
       handleElectronActions(query, res, mockSendResponse);
 
@@ -294,8 +294,8 @@ describe("systemControl", () => {
     });
 
     it("should open devtools", () => {
-      const query = { action: "DEVTOOLS" };
-      const res = { test: "response" };
+      const query = {action: "DEVTOOLS"};
+      const res = {test: "response"};
 
       handleElectronActions(query, res, mockSendResponse);
 
@@ -305,8 +305,8 @@ describe("systemControl", () => {
     });
 
     it("should handle unknown action gracefully", () => {
-      const query = { action: "UNKNOWN" };
-      const res = { test: "response" };
+      const query = {action: "UNKNOWN"};
+      const res = {test: "response"};
 
       handleElectronActions(query, res, mockSendResponse);
 

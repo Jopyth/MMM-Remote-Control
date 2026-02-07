@@ -23,7 +23,7 @@
 
 const Log = require("logger");
 const NodeHelper = require("node_helper");
-const { exec } = require("node:child_process");
+const {exec} = require("node:child_process");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -38,8 +38,11 @@ try {
   defaultModules = require(defaultModulesPath);
 } catch {
   try {
-    // TODO: Remove this fallback to old path in 2027 (MM < 2.35.0)
-    // Fallback to old path (MM < 2.35.0)
+
+    /*
+     * TODO: Remove this fallback to old path in 2027 (MM < 2.35.0)
+     * Fallback to old path (MM < 2.35.0)
+     */
     defaultModulesPath = path.resolve(`${__dirname}/../../modules/default/defaultmodules.js`);
     defaultModules = require(defaultModulesPath);
   } catch {
@@ -48,7 +51,7 @@ try {
     defaultModules = require(defaultModulesPath);
   }
 }
-const { includes } = require("./lib/utils.js");
+const {includes} = require("./lib/utils.js");
 const configManager = require("./lib/configManager.js");
 const moduleManager = require("./lib/moduleManager.js");
 const systemControl = require("./lib/systemControl.js");
@@ -57,7 +60,7 @@ const systemControl = require("./lib/systemControl.js");
 Module = {
   configDefaults: {},
   notificationHandler: {},
-  register(name, moduleDefinition) {
+  register (name, moduleDefinition) {
     Module.configDefaults[name] = moduleDefinition.defaults;
 
     /* API EXTENSION - Added v2.0.0 */
@@ -69,7 +72,7 @@ Module = {
 
 module.exports = NodeHelper.create({
   // Subclass start method.
-  start() {
+  start () {
     this.initialized = false;
     Log.log(`Starting node helper for: ${this.name}`);
 
@@ -96,7 +99,7 @@ module.exports = NodeHelper.create({
       this.template = data.toString();
     });
 
-    const result = configManager.combineConfig(__dirname, language => this.loadTranslation(language));
+    const result = configManager.combineConfig(__dirname, (language) => this.loadTranslation(language));
     this.configOnHd = result.configOnHd;
     this.thisConfig = result.thisConfig;
     this.updateModuleList();
@@ -109,14 +112,14 @@ module.exports = NodeHelper.create({
     this.createApiRoutes();
   },
 
-  stop() {
+  stop () {
     // Clear all timeouts for clean shutdown
     for (const t of Object.keys(this.delayedQueryTimers)) {
       clearTimeout(this.delayedQueryTimers[t]);
     }
   },
 
-  onModulesLoaded() {
+  onModulesLoaded () {
 
     /* CALLED AFTER MODULES AND CONFIG DATA ARE LOADED */
     /* API EXTENSION - Added v2.0.0 */
@@ -129,7 +132,7 @@ module.exports = NodeHelper.create({
    * Set up periodic timers for module list updates
    * @returns {void}
    */
-  loadTimers() {
+  loadTimers () {
     const delay = 24 * 3600;
 
     clearTimeout(this.delayedQueryTimers.update);
@@ -139,7 +142,7 @@ module.exports = NodeHelper.create({
     }, delay * 1000);
   },
 
-  createRoutes() {
+  createRoutes () {
     this.expressApp.get("/remote.html", (request, res) => {
       if (this.template === "") {
         res.sendStatus(503);
@@ -152,24 +155,24 @@ module.exports = NodeHelper.create({
     });
 
     this.expressApp.get("/get", (request, res) => {
-      const { query } = url.parse(request.url, true);
+      const {query} = url.parse(request.url, true);
 
       this.answerGet(query, res);
     });
     this.expressApp.post("/post", (request, res) => {
-      const { query } = url.parse(request.url, true);
+      const {query} = url.parse(request.url, true);
 
       this.answerPost(query, request, res);
     });
 
     this.expressApp.get("/config-help.html", (request, res) => {
-      const { query } = url.parse(request.url, true);
+      const {query} = url.parse(request.url, true);
 
       this.answerConfigHelp(query, res);
     });
 
     this.expressApp.get("/remote", (request, res) => {
-      const { query } = url.parse(request.url, true);
+      const {query} = url.parse(request.url, true);
 
       if (query.action && !["COMMAND"].includes(query.action)) {
         const result = this.executeQuery(query, res);
@@ -177,7 +180,7 @@ module.exports = NodeHelper.create({
           return;
         }
       }
-      res.send({ "status": "error", "reason": "unknown_command", "info": `original input: ${JSON.stringify(query)}` });
+      res.send({"status": "error", "reason": "unknown_command", "info": `original input: ${JSON.stringify(query)}`});
     });
   },
 
@@ -186,7 +189,7 @@ module.exports = NodeHelper.create({
    * @param {boolean} force - Force re-download even if cache exists
    * @returns {void}
    */
-  updateModuleList(force) {
+  updateModuleList (force) {
     moduleManager.updateModuleList({
       force,
       callback: (result) => {
@@ -203,7 +206,7 @@ module.exports = NodeHelper.create({
    * Populates this.modulesAvailable with ModuleData[]
    * @returns {Promise<void>}
    */
-  async readModuleData() {
+  async readModuleData () {
     try {
       const result = await moduleManager.readModuleData(
         __dirname,
@@ -229,13 +232,13 @@ module.exports = NodeHelper.create({
    * Get the modules directory path from config or use default
    * @returns {string} Modules directory path (relative or absolute)
    */
-  getModuleDir() {
+  getModuleDir () {
     return this.configOnHd.foreignModulesDir || (this.configOnHd.paths
       ? this.configOnHd.paths.modules
       : "modules");
   },
 
-  async addModule(directoryName, lastOne) {
+  async addModule (directoryName, lastOne) {
     await moduleManager.addModule({
       directoryName,
       modulesDir: this.getModuleDir(),
@@ -262,7 +265,7 @@ module.exports = NodeHelper.create({
     });
   },
 
-  processUpdateCheckQueue() {
+  processUpdateCheckQueue () {
     while (this.activeUpdateChecks < this.maxParallelUpdateChecks && this.updateCheckQueue.length > 0) {
       const check = this.updateCheckQueue.shift();
       this.activeUpdateChecks++;
@@ -272,7 +275,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  async checkModuleUpdate(check) {
+  async checkModuleUpdate (check) {
     try {
       await moduleManager.checkModuleUpdate(check);
     } finally {
@@ -285,7 +288,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  async loadModuleDefaultConfig(module, modulePath, lastOne) {
+  async loadModuleDefaultConfig (module, modulePath, lastOne) {
     try {
       await moduleManager.loadModuleDefaultConfig(module, modulePath);
     } catch (error) {
@@ -303,7 +306,7 @@ module.exports = NodeHelper.create({
     if (lastOne) { this.onModulesLoaded(); }
   },
 
-  answerConfigHelp(query, res) {
+  answerConfigHelp (query, res) {
     if (defaultModules.includes(query.module)) {
       // default module
       const dir = path.resolve(`${__dirname}/..`);
@@ -312,12 +315,15 @@ module.exports = NodeHelper.create({
         if (error) {
           Log.error(error);
         }
-        // TODO: Remove old path support in 2027 (MM < 2.35.0)
-        // Use appropriate path based on MM version (new: defaultmodules, old: modules/default)
+
+        /*
+         * TODO: Remove old path support in 2027 (MM < 2.35.0)
+         * Use appropriate path based on MM version (new: defaultmodules, old: modules/default)
+         */
         const githubPath = defaultModulesPath.includes("defaultmodules/defaultmodules.js")
           ? "defaultmodules"
           : "modules/default";
-        res.writeHead(302, { "Location": `https://github.com/MagicMirrorOrg/MagicMirror/tree/${result.trim()}/${githubPath}/${query.module}` });
+        res.writeHead(302, {"Location": `https://github.com/MagicMirrorOrg/MagicMirror/tree/${result.trim()}/${githubPath}/${query.module}`});
         res.end();
       });
       return;
@@ -337,7 +343,7 @@ module.exports = NodeHelper.create({
         if (error) {
           Log.error(error);
         }
-        res.writeHead(302, { "Location": `${baseUrl}/tree/${result.trim()}` });
+        res.writeHead(302, {"Location": `${baseUrl}/tree/${result.trim()}`});
         res.end();
       });
     });
@@ -350,20 +356,20 @@ module.exports = NodeHelper.create({
    * @param {object} res - Express response object
    * @returns {void}
    */
-  async answerPost(query, request, res) {
+  async answerPost (query, request, res) {
     if (query.data === "config") {
       await this.saveConfigWithBackup(request.body, res, query);
     }
   },
 
-  async saveConfigWithBackup(configData, res, query) {
+  async saveConfigWithBackup (configData, res, query) {
     const configPath = configManager.getConfigPath(__dirname);
     const backupSlot = await configManager.findBestBackupSlot();
 
     if (!backupSlot) {
       const error = new Error("Backing up config failed, not saving!");
       Log.error(error.message);
-      this.sendResponse(res, error, { query });
+      this.sendResponse(res, error, {query});
       return;
     }
 
@@ -376,7 +382,7 @@ module.exports = NodeHelper.create({
 
       const header = "/*************** AUTO GENERATED BY REMOTE CONTROL MODULE ***************/\n\nlet config = \n";
       const footer = "\n\n/*************** DO NOT EDIT THE LINE BELOW ***************/\nif (typeof module !== 'undefined') {module.exports = config;}\n";
-      const { inspect } = require("node:util");
+      const {inspect} = require("node:util");
 
       const configContent = header + inspect(this.configOnHd, {
         showHidden: false,
@@ -411,9 +417,9 @@ module.exports = NodeHelper.create({
    * @param {object} res - Express response object
    * @returns {void}
    */
-  handleGetModuleAvailable(query, res) {
+  handleGetModuleAvailable (query, res) {
     this.modulesAvailable.sort((a, b) => a.name.localeCompare(b.name));
-    this.sendResponse(res, undefined, { query, data: this.modulesAvailable });
+    this.sendResponse(res, undefined, {query, data: this.modulesAvailable});
   },
 
   /**
@@ -422,7 +428,7 @@ module.exports = NodeHelper.create({
    * @param {object} res - Express response object
    * @returns {void}
    */
-  handleGetModuleInstalled(query, res) {
+  handleGetModuleInstalled (query, res) {
 
     // Wait for pending update checks to complete before sending response
     const startTime = Date.now();
@@ -430,7 +436,7 @@ module.exports = NodeHelper.create({
 
     const waitForUpdateChecks = () => {
       const elapsed = Date.now() - startTime;
-      const { pendingUpdateChecks, activeUpdateChecks, updateCheckQueue } = this;
+      const {pendingUpdateChecks, activeUpdateChecks, updateCheckQueue} = this;
 
       if (pendingUpdateChecks > 0 && elapsed < maxWaitTime) {
         if (elapsed % 1000 < 100) { // Log every ~1 second
@@ -443,35 +449,35 @@ module.exports = NodeHelper.create({
         } else {
           Log.info(`All update checks complete after ${elapsed}ms`);
         }
-        const installed = this.modulesAvailable.filter(value => value.installed && !value.isDefaultModule);
+        const installed = this.modulesAvailable.filter((value) => value.installed && !value.isDefaultModule);
         installed.sort((a, b) => a.name.localeCompare(b.name));
-        this.sendResponse(res, undefined, { query, data: installed });
+        this.sendResponse(res, undefined, {query, data: installed});
       }
     };
     waitForUpdateChecks();
   },
 
-  handleGetMmUpdateAvailable(query, res) {
+  handleGetMmUpdateAvailable (query, res) {
     const sg = simpleGit(`${__dirname}/..`);
     sg.fetch().status((error, data) => {
       if (!error && data.behind > 0) {
-        this.sendResponse(res, undefined, { query, result: true });
+        this.sendResponse(res, undefined, {query, result: true});
         return;
       }
-      this.sendResponse(res, undefined, { query, result: false });
+      this.sendResponse(res, undefined, {query, result: false});
     });
   },
 
-  handleGetClasses(query, res) {
+  handleGetClasses (query, res) {
     const config = configManager.getConfig(this.configOnHd, this.configData);
-    const thisConfig = config.modules.find(m => m.module === "MMM-Remote-Control")?.config || {};
+    const thisConfig = config.modules.find((m) => m.module === "MMM-Remote-Control")?.config || {};
     this.sendResponse(res, undefined, {
       query,
       data: thisConfig.classes || {}
     });
   },
 
-  async handleGetSaves(query, res) {
+  async handleGetSaves (query, res) {
     const backupHistorySize = 5;
     const times = [];
 
@@ -485,52 +491,52 @@ module.exports = NodeHelper.create({
         continue;
       }
     }
-    this.sendResponse(res, undefined, { query, data: times.toSorted((a, b) => b - a) });
+    this.sendResponse(res, undefined, {query, data: times.toSorted((a, b) => b - a)});
   },
 
-  handleGetDefaultConfig(query, res) {
+  handleGetDefaultConfig (query, res) {
     if (query.module in Module.configDefaults) {
-      this.sendResponse(res, undefined, { query, data: Module.configDefaults[query.module] });
+      this.sendResponse(res, undefined, {query, data: Module.configDefaults[query.module]});
     } else {
-      this.sendResponse(res, undefined, { query, data: {} });
+      this.sendResponse(res, undefined, {query, data: {}});
     }
   },
 
-  handleGetModules(query, res) {
+  handleGetModules (query, res) {
     if (!this.checkInitialized(res)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, { query, data: this.configData.moduleData });
+      this.sendResponse(res, undefined, {query, data: this.configData.moduleData});
     });
   },
 
-  handleGetBrightness(query, res) {
+  handleGetBrightness (query, res) {
     if (!this.checkInitialized(res)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, { query, result: this.configData.brightness });
+      this.sendResponse(res, undefined, {query, result: this.configData.brightness});
     });
   },
 
-  handleGetTemp(query, res) {
+  handleGetTemp (query, res) {
     if (!this.checkInitialized(res)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, { query, result: this.configData.temp });
+      this.sendResponse(res, undefined, {query, result: this.configData.temp});
     });
   },
 
-  getDataHandlers() {
+  getDataHandlers () {
     return {
       moduleAvailable: (q, r) => this.handleGetModuleAvailable(q, r),
       moduleInstalled: (q, r) => this.handleGetModuleInstalled(q, r),
-      translations: (q, r) => this.sendResponse(r, undefined, { query: q, data: this.translation }),
+      translations: (q, r) => this.sendResponse(r, undefined, {query: q, data: this.translation}),
       mmUpdateAvailable: (q, r) => this.handleGetMmUpdateAvailable(q, r),
-      config: (q, r) => this.sendResponse(r, undefined, { query: q, data: configManager.getConfig(this.configOnHd, this.configData) }),
+      config: (q, r) => this.sendResponse(r, undefined, {query: q, data: configManager.getConfig(this.configOnHd, this.configData)}),
       classes: (q, r) => this.handleGetClasses(q, r),
       saves: (q, r) => this.handleGetSaves(q, r),
       defaultConfig: (q, r) => this.handleGetDefaultConfig(q, r),
       modules: (q, r) => this.handleGetModules(q, r),
       brightness: (q, r) => this.handleGetBrightness(q, r),
       temp: (q, r) => this.handleGetTemp(q, r),
-      userPresence: (q, r) => this.sendResponse(r, undefined, { query: q, result: this.userPresence })
+      userPresence: (q, r) => this.sendResponse(r, undefined, {query: q, result: this.userPresence})
     };
   },
 
@@ -541,7 +547,7 @@ module.exports = NodeHelper.create({
    * @param {object} res - Express response object
    * @returns {void}
    */
-  answerGet(query, res) {
+  answerGet (query, res) {
     const handlers = this.getDataHandlers();
     const handler = handlers[query.data];
 
@@ -554,24 +560,24 @@ module.exports = NodeHelper.create({
     this.sendResponse(res, "Unknown or Bad Command.", query);
   },
 
-  async answerGetChangelog(query, res) {
+  async answerGetChangelog (query, res) {
     const moduleName = query.module;
     const modulePath = `${this.getModuleDir()}/${moduleName}`;
     const changelogPath = path.join(modulePath, "CHANGELOG.md");
 
     try {
       const changelog = await fs.promises.readFile(changelogPath, "utf8");
-      this.sendResponse(res, undefined, { action: "GET_CHANGELOG", changelog, module: moduleName });
+      this.sendResponse(res, undefined, {action: "GET_CHANGELOG", changelog, module: moduleName});
     } catch {
-      this.sendResponse(res, new Error("Changelog not found"), { action: "GET_CHANGELOG", query });
+      this.sendResponse(res, new Error("Changelog not found"), {action: "GET_CHANGELOG", query});
     }
   },
 
-  callAfterUpdate(callback, timeout = 3000) {
+  callAfterUpdate (callback, timeout = 3000) {
     const waitObject = {
       finished: false,
       callback,
-      run() {
+      run () {
         if (this.finished) {
           return;
         }
@@ -585,7 +591,7 @@ module.exports = NodeHelper.create({
     setTimeout(() => waitObject.run(), timeout);
   },
 
-  delayedQuery(query, res) {
+  delayedQuery (query, res) {
     if (query.did in this.delayedQueryTimers) {
       clearTimeout(this.delayedQueryTimers[query.did]);
       delete this.delayedQueryTimers[query.did];
@@ -601,18 +607,18 @@ module.exports = NodeHelper.create({
     this.sendResponse(res, undefined, query);
   },
 
-  sendResponse(res, error, data) {
-    let response = { success: true };
+  sendResponse (res, error, data) {
+    let response = {success: true};
     let status = 200;
     let result = true;
     if (error) {
       Log.error(error);
-      response = { success: false, status: "error", reason: "unknown", info: error };
+      response = {success: false, status: "error", reason: "unknown", info: error};
       status = 400;
       result = false;
     }
     if (data) {
-      response = { ...response, ...data };
+      response = {...response, ...data};
     }
     if (res) {
       if ("isSocket" in res && res.isSocket) {
@@ -624,7 +630,7 @@ module.exports = NodeHelper.create({
     return result;
   },
 
-  handleShowAlert(query, res) {
+  handleShowAlert (query, res) {
     this.sendResponse(res);
 
     const type = query.type || "alert";
@@ -649,7 +655,7 @@ module.exports = NodeHelper.create({
    * @param {object} res - Express response object
    * @returns {boolean} Always true (errors are handled internally)
    */
-  handleNotification(query, res) {
+  handleNotification (query, res) {
     try {
       let payload = {}; // Assume empty JSON-object if no payload is provided
       if (query.payload === undefined) {
@@ -659,7 +665,7 @@ module.exports = NodeHelper.create({
       } else if (typeof query.payload === "string") {
         payload = query.payload.startsWith("{") ? JSON.parse(query.payload) : query.payload;
       }
-      this.sendSocketNotification(query.action, { "notification": query.notification, payload });
+      this.sendSocketNotification(query.action, {"notification": query.notification, payload});
       this.sendResponse(res);
       return true;
     } catch (error) {
@@ -673,12 +679,12 @@ module.exports = NodeHelper.create({
       } else {
         Log.error(error);
       }
-      this.sendResponse(res, error, { reason: error.message });
+      this.sendResponse(res, error, {reason: error.message});
       return true;
     }
   },
 
-  handleManageClasses(query, res) {
+  handleManageClasses (query, res) {
     if (query.payload && query.payload.classes && this.thisConfig && this.thisConfig.classes) {
       const classes = [];
       switch (typeof query.payload.classes) {
@@ -695,10 +701,10 @@ module.exports = NodeHelper.create({
             "TOGGLE"
           ].includes(act.toUpperCase())) {
             if (typeof cl[act] === "string") {
-              this.sendSocketNotification(act.toUpperCase(), { module: cl[act] });
+              this.sendSocketNotification(act.toUpperCase(), {module: cl[act]});
             } else {
               for (const t of cl[act]) {
-                this.sendSocketNotification(act.toUpperCase(), { module: t });
+                this.sendSocketNotification(act.toUpperCase(), {module: t});
               }
             }
           }
@@ -708,17 +714,17 @@ module.exports = NodeHelper.create({
     this.sendResponse(res);
   },
 
-  handleRestart(query, res) {
+  handleRestart (query, res) {
     try {
-      const { app } = require("electron");
+      const {app} = require("electron");
       if (!app) { throw "Could not get Electron app instance."; }
-      this.sendResponse(res, undefined, { action: "RESTART", info: "Restarting Electron..." });
+      this.sendResponse(res, undefined, {action: "RESTART", info: "Restarting Electron..."});
       app.relaunch();
       app.quit();
     } catch (error) {
       // Electron not available (server mode) - exit cleanly and let process manager restart
       Log.log(`Electron not available (${error?.message || "server mode"}), exiting process for restart by process manager...`);
-      this.sendResponse(res, undefined, { action: "RESTART", info: "Exiting process for restart..." });
+      this.sendResponse(res, undefined, {action: "RESTART", info: "Exiting process for restart..."});
 
       // Wait for response to be sent before exiting
       if (res && res.on) {
@@ -734,9 +740,9 @@ module.exports = NodeHelper.create({
     }
   },
 
-  handleStop(query, res) {
+  handleStop (query, res) {
     Log.log("Stopping MagicMirror...");
-    this.sendResponse(res, undefined, { action: "STOP", info: "Stopping process..." });
+    this.sendResponse(res, undefined, {action: "STOP", info: "Stopping process..."});
 
     // Wait for response to be sent before exiting
     if (res && res.on) {
@@ -751,18 +757,18 @@ module.exports = NodeHelper.create({
     }
   },
 
-  handleCommand(query, res) {
-    const options = { timeout: 15_000 };
+  handleCommand (query, res) {
+    const options = {timeout: 15_000};
     if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
       exec(this.thisConfig.customCommand[query.command], options, (error, stdout, stderr) => {
-        this.checkForExecError(error, stdout, stderr, res, { stdout });
+        this.checkForExecError(error, stdout, stderr, res, {stdout});
       });
     } else {
       this.sendResponse(res, new Error("Command not found"), query);
     }
   },
 
-  handleUserPresence(query, res) {
+  handleUserPresence (query, res) {
     this.sendSocketNotification("USER_PRESENCE", query.value);
     this.userPresence = query.value;
     this.sendResponse(res, undefined, query);
@@ -774,33 +780,33 @@ module.exports = NodeHelper.create({
    * @param {object} query - Query object containing action and optional module identifier
    * @param {object} res - Express response object or socket placeholder
    */
-  handleSimpleSocketNotification(query, res) {
+  handleSimpleSocketNotification (query, res) {
     this.sendSocketNotification(query.action, query);
     this.sendResponse(res);
   },
 
-  handleSimpleValueNotification(query, res) {
+  handleSimpleValueNotification (query, res) {
     this.sendResponse(res);
     this.sendSocketNotification(query.action, query.value);
   },
 
-  handleSimpleNotification(query, res) {
+  handleSimpleNotification (query, res) {
     this.sendResponse(res);
     this.sendSocketNotification(query.action);
   },
 
-  handleSave(query, res) {
+  handleSave (query, res) {
     this.sendResponse(res);
     this.callAfterUpdate(() => { this.saveDefaultSettings(); });
   },
 
-  handleModuleData(query, res) {
+  handleModuleData (query, res) {
     this.callAfterUpdate(() => {
       this.sendResponse(res, undefined, this.configData);
     });
   },
 
-  handleDelayed(query, res) {
+  handleDelayed (query, res) {
 
     /*
      * Expects a nested query object
@@ -820,8 +826,8 @@ module.exports = NodeHelper.create({
     this.delayedQuery(query, res);
   },
 
-  getActionHandlers() {
-    const options = { timeout: 15_000 };
+  getActionHandlers () {
+    const options = {timeout: 15_000};
 
     const callMonitorControl = (action, res) => systemControl.monitorControl(
       action,
@@ -869,7 +875,7 @@ module.exports = NodeHelper.create({
     };
   },
 
-  executeQuery(query, res, skipResponse = false) {
+  executeQuery (query, res, skipResponse = false) {
     const handlers = this.getActionHandlers();
     const handler = handlers[query.action];
 
@@ -891,21 +897,21 @@ module.exports = NodeHelper.create({
    * @param {object} data - Additional installation data
    * @returns {void}
    */
-  async installModule(url, res, data) {
+  async installModule (url, res, data) {
     await moduleManager.installModule({
       url,
       baseDir: __dirname,
       onSuccess: async (result) => {
         await this.readModuleData();
-        this.sendResponse(res, undefined, { stdout: result.stdout, ...data });
+        this.sendResponse(res, undefined, {stdout: result.stdout, ...data});
       },
       onError: (error, result) => {
-        this.sendResponse(res, error, { stdout: result.stdout, stderr: result.stderr, ...data });
+        this.sendResponse(res, error, {stdout: result.stdout, stderr: result.stderr, ...data});
       }
     });
   },
 
-  async updateModule(module, res) {
+  async updateModule (module, res) {
     await moduleManager.updateModule({
       moduleName: module,
       baseDir: __dirname,
@@ -922,12 +928,12 @@ module.exports = NodeHelper.create({
     });
   },
 
-  checkForExecError(error, stdout, stderr, res, data) {
+  checkForExecError (error, stdout, stderr, res, data) {
     if (error) { Log.error(stderr); }
     this.sendResponse(res, error, data);
   },
 
-  translate(data) {
+  translate (data) {
     for (const t of Object.keys(this.translation)) {
       const pattern = `%%TRANSLATE:${t}%%`;
       const re = new RegExp(pattern, "g");
@@ -936,20 +942,20 @@ module.exports = NodeHelper.create({
     return data;
   },
 
-  async saveDefaultSettings() {
+  async saveDefaultSettings () {
     await configManager.saveDefaultSettings(__dirname, this.configData);
   },
 
-  in(pattern, string) { return includes(pattern, string); },
+  in (pattern, string) { return includes(pattern, string); },
 
-  async loadDefaultSettings() {
+  async loadDefaultSettings () {
     const settings = await configManager.loadDefaultSettings(__dirname);
     if (settings) {
       this.sendSocketNotification("DEFAULT_SETTINGS", settings);
     }
   },
 
-  fillTemplates(data) {
+  fillTemplates (data) {
     data = this.translate(data);
     // Replace config path placeholder
     const configPath = globalThis.configuration_file === undefined
@@ -959,19 +965,19 @@ module.exports = NodeHelper.create({
     return data;
   },
 
-  async loadTranslation(language) {
+  async loadTranslation (language) {
     this.translation = await configManager.loadTranslation(__dirname, language, this.translation);
   },
 
-  async loadCustomMenus() {
-    const customMenu = await configManager.loadCustomMenus(__dirname, this.thisConfig, data => this.translate(data));
+  async loadCustomMenus () {
+    const customMenu = await configManager.loadCustomMenus(__dirname, this.thisConfig, (data) => this.translate(data));
     if (customMenu) {
-      this.customMenu = { ...this.customMenu, ...customMenu };
+      this.customMenu = {...this.customMenu, ...customMenu};
       this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
     }
   },
 
-  getIpAddresses() {
+  getIpAddresses () {
     // module started, answer with current IP address
     const interfaces = os.networkInterfaces();
     const addresses = [];
@@ -992,7 +998,7 @@ module.exports = NodeHelper.create({
    * @param {object | ConfigData} payload - Notification payload (varies by type)
    * @returns {void}
    */
-  socketNotificationReceived(notification, payload) {
+  socketNotificationReceived (notification, payload) {
 
     if (notification === "CURRENT_STATUS") {
       this.configData = payload;
@@ -1017,9 +1023,9 @@ module.exports = NodeHelper.create({
     }
     if (notification === "REMOTE_ACTION") {
       if ("action" in payload) {
-        this.executeQuery(payload, { isSocket: true });
+        this.executeQuery(payload, {isSocket: true});
       } else if ("data" in payload) {
-        this.answerGet(payload, { isSocket: true });
+        this.answerGet(payload, {isSocket: true});
       }
     }
     if (notification === "UNDO_CONFIG") {
@@ -1040,16 +1046,16 @@ module.exports = NodeHelper.create({
         }
       }
       if (iteration < 0) {
-        this.answerGet({ data: "saves" }, { isSocket: true });
+        this.answerGet({data: "saves"}, {isSocket: true});
         return;
       }
       const backupPath = path.resolve(`config/config.js.backup${iteration}`);
       const request = require(backupPath);
 
-      this.answerPost({ data: "config" }, { body: request }, { isSocket: true });
+      this.answerPost({data: "config"}, {body: request}, {isSocket: true});
     }
     if (notification === "NEW_CONFIG") {
-      this.answerPost({ data: "config" }, { body: payload }, { isSocket: true });
+      this.answerPost({data: "config"}, {body: payload}, {isSocket: true});
     }
     if (notification === "REMOTE_CLIENT_CONNECTED") {
       this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
@@ -1081,7 +1087,7 @@ module.exports = NodeHelper.create({
    * Generate QR code as data URL
    * @param {object} payload - Object with url and size properties
    */
-  async generateQRCode(payload) {
+  async generateQRCode (payload) {
     try {
       const QRCode = require("qrcode");
       const dataUrl = await QRCode.toDataURL(payload.url, {

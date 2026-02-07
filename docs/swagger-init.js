@@ -65,7 +65,7 @@ const observeSwaggerUI = () => {
 
   const observer = new MutationObserver((mutations) => {
     // Check if mutations include added nodes that need enhancement
-    const hasRelevantChanges = mutations.some(mutation => mutation.addedNodes.length > 0 || mutation.type === "attributes");
+    const hasRelevantChanges = mutations.some((mutation) => mutation.addedNodes.length > 0 || mutation.type === "attributes");
 
     if (hasRelevantChanges) {
       enhanceUI();

@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { describe, test, before, after } = require("node:test");
+const {describe, test, before, after} = require("node:test");
 const express = require("express");
 const path = require("node:path");
 const ModuleLib = require("node:module");
@@ -27,7 +27,7 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
  * @param {Array} notifications - Notifications array to capture socket notifications
  * @returns {object} Mock context object
  */
-function createMockContext(app, notifications) {
+function createMockContext (app, notifications) {
   const apiModule = require("../../API/api.js");
   const helperModule = require("../../node_helper.js");
 
@@ -81,8 +81,8 @@ function createMockContext(app, notifications) {
     secureEndpoints: false,
 
     // Capture socket notifications
-    sendSocketNotification(what, payload) {
-      notifications.push({ what, payload });
+    sendSocketNotification (what, payload) {
+      notifications.push({what, payload});
     },
 
     // Bind helper methods
@@ -106,19 +106,19 @@ function createMockContext(app, notifications) {
     answerModuleApi: apiModule.answerModuleApi,
     mergeData: apiModule.mergeData,
 
-    getApiKey() {
+    getApiKey () {
       // No API key for test
     },
 
-    delayedQuery() {
+    delayedQuery () {
       // Stub - not tested
     },
 
-    getExternalApiByGuessing() {
+    getExternalApiByGuessing () {
       // Stub - module API guessing not needed for test
     },
 
-    updateModuleApiMenu() {
+    updateModuleApiMenu () {
       // Stub - menu update not needed for test
     }
   };
@@ -167,7 +167,7 @@ describe("API Multi-Instance Module Tests", () => {
     // Setup minimal Express app
     const app = express();
     app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.urlencoded({extended: true}));
 
     // Create mock context
     const apiModule = require("../../API/api.js");
@@ -208,7 +208,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should send notification for both instances
-    const showNotifications = notifications.filter(n => n.what === "SHOW");
+    const showNotifications = notifications.filter((n) => n.what === "SHOW");
     assert.equal(showNotifications.length, 2, "Should send SHOW notification for both instances");
     assert.equal(showNotifications[0].payload.module, "module_0_MMM-MotionEye");
     assert.equal(showNotifications[1].payload.module, "module_1_MMM-MotionEye");
@@ -227,7 +227,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should send notification for all three instances
-    const hideNotifications = notifications.filter(n => n.what === "HIDE");
+    const hideNotifications = notifications.filter((n) => n.what === "HIDE");
     assert.equal(hideNotifications.length, 3, "Should send HIDE notification for all three instances");
     assert.equal(hideNotifications[0].payload.module, "module_2_MMM-homeassistant-sensors");
     assert.equal(hideNotifications[1].payload.module, "module_3_MMM-homeassistant-sensors");
@@ -247,7 +247,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should send notification for both instances
-    const toggleNotifications = notifications.filter(n => n.what === "TOGGLE");
+    const toggleNotifications = notifications.filter((n) => n.what === "TOGGLE");
     assert.equal(toggleNotifications.length, 2, "Should send TOGGLE notification for both instances");
   });
 
@@ -264,7 +264,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should send SHOW notification with force flag for all three instances
-    const showNotifications = notifications.filter(n => n.what === "SHOW");
+    const showNotifications = notifications.filter((n) => n.what === "SHOW");
     assert.equal(showNotifications.length, 3, "Should send SHOW notification for all three instances");
     assert.equal(showNotifications[0].payload.force, true);
     assert.equal(showNotifications[1].payload.force, true);
@@ -295,7 +295,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should send notification for single instance
-    const showNotifications = notifications.filter(n => n.what === "SHOW");
+    const showNotifications = notifications.filter((n) => n.what === "SHOW");
     assert.ok(showNotifications.length > 0, "Should send SHOW notification for clock module");
 
     // Restore original moduleData
@@ -315,7 +315,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should only send notification for module_0_MMM-MotionEye, not module_1_MMM-MotionEye
-    const showNotifications = notifications.filter(n => n.what === "SHOW");
+    const showNotifications = notifications.filter((n) => n.what === "SHOW");
     assert.equal(showNotifications.length, 1, "Should send SHOW notification for only one instance");
     assert.equal(showNotifications[0].payload.module, "module_0_MMM-MotionEye");
   });
@@ -333,7 +333,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should only send notification for module_3, not module_2 or module_4
-    const hideNotifications = notifications.filter(n => n.what === "HIDE");
+    const hideNotifications = notifications.filter((n) => n.what === "HIDE");
     assert.equal(hideNotifications.length, 1, "Should send HIDE notification for only one instance");
     assert.equal(hideNotifications[0].payload.module, "module_3_MMM-homeassistant-sensors");
   });
@@ -351,7 +351,7 @@ describe("API Multi-Instance Module Tests", () => {
     assert.equal(data.success, true);
 
     // Should send notification for both MMM-MotionEye instances (backwards compatible behavior)
-    const showNotifications = notifications.filter(n => n.what === "SHOW");
+    const showNotifications = notifications.filter((n) => n.what === "SHOW");
     assert.equal(showNotifications.length, 2, "Should send SHOW notification for all instances when using module name");
   });
 });

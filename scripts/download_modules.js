@@ -21,17 +21,17 @@ const downloadModules = {
     sourceUrl: "https://modules.magicmirror.builders/data/modules.json", // Source url
     refreshRate: 24 * 3600, // Max Refresh of One Day
     force: false, // Force the update
-    callback(result) { console.log(result); } // Callback to run on success or failure
+    callback (result) { console.log(result); } // Callback to run on success or failure
   },
 
-  init(config) {
+  init (config) {
     if (!config) { config = {}; }
-    this.config = { ...this.defaults, ...config };
+    this.config = {...this.defaults, ...config};
 
     return this;
   },
 
-  parseList(content) {
+  parseList (content) {
     try {
       const data = JSON.parse(content);
 
@@ -46,7 +46,7 @@ const downloadModules = {
     }
   },
 
-  async getPackages() {
+  async getPackages () {
     try {
       const response = await fetch(this.config.sourceUrl);
       if (response.status === 200) {
@@ -75,7 +75,7 @@ const downloadModules = {
     }
   },
 
-  async checkLastModified() {
+  async checkLastModified () {
     try {
       const stats = await fs.promises.stat(this.config.modulesFile);
       const mtime = Math.round(stats.mtime.getTime() / 1000);
@@ -104,7 +104,7 @@ const downloadModules = {
  * Main entry point for downloading modules from modules.json.
  * @param {object} config - MagicMirror configuration object
  */
-function downloadModulesMain(config) {
+function downloadModulesMain (config) {
   downloadModules.init(config);
   downloadModules.checkLastModified();
 }

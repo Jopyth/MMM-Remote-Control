@@ -1,6 +1,6 @@
-const { test, describe, before, after } = require("node:test");
+const {test, describe, before, after} = require("node:test");
 const assert = require("node:assert/strict");
-const { Window } = require("happy-dom");
+const {Window} = require("happy-dom");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
@@ -21,25 +21,25 @@ describe("remote.js DOM smoke tests", () => {
 
     // Mock required globals that remote.js depends on
     window.MMSocket = class {
-      constructor(name) {
+      constructor (name) {
         this.name = name;
         this._callback = null;
       }
 
-      setNotificationCallback(callback) {
+      setNotificationCallback (callback) {
         this._callback = callback;
       }
 
-      sendNotification() {
+      sendNotification () {
         // Mock - do nothing
       }
     };
 
     window.marked = {
-      parse: text => `<p>${text}</p>` // Simple mock
+      parse: (text) => `<p>${text}</p>` // Simple mock
     };
 
-    window.location = { hash: "" };
+    window.location = {hash: ""};
     window.globalThis = window;
 
     // Load remote.js
@@ -131,10 +131,10 @@ describe("remote.js DOM smoke tests", () => {
       setNotificationCallback: () => {}
     };
 
-    Remote.sendSocketNotification("TEST_ACTION", { data: "test" });
+    Remote.sendSocketNotification("TEST_ACTION", {data: "test"});
 
     assert.equal(capturedNotification, "TEST_ACTION");
-    assert.deepEqual(capturedPayload, { data: "test" });
+    assert.deepEqual(capturedPayload, {data: "test"});
   });
 
   test("socketNotificationReceived handles REMOTE_ACTION_RESULT", () => {
@@ -142,7 +142,7 @@ describe("remote.js DOM smoke tests", () => {
     assert.doesNotThrow(() => {
       Remote.socketNotificationReceived("REMOTE_ACTION_RESULT", {
         action: "UNKNOWN",
-        query: { data: "test" },
+        query: {data: "test"},
         data: {}
       });
     });

@@ -3,7 +3,7 @@
  * @description Tests for translation file completeness and consistency
  */
 
-const { describe, it } = require("node:test");
+const {describe, it} = require("node:test");
 const assert = require("node:assert");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -15,7 +15,7 @@ const swaggerPath = path.join(__dirname, "../../docs/swagger.json");
  * Get all translation files
  * @returns {object} Map of language code to translation object
  */
-function getAllTranslations() {
+function getAllTranslations () {
   const files = fs.readdirSync(translationsDir);
   const translations = {};
 
@@ -35,7 +35,7 @@ function getAllTranslations() {
  * @param {object} translations - All translations
  * @returns {Set} Set of all unique keys
  */
-function getAllKeys(translations) {
+function getAllKeys (translations) {
   const allKeys = new Set();
 
   for (const lang in translations) {
@@ -51,7 +51,7 @@ function getAllKeys(translations) {
  * Extract all translation keys used in code files
  * @returns {Set} Set of translation keys used in code
  */
-function getUsedTranslationKeys() {
+function getUsedTranslationKeys () {
   const usedKeys = new Set();
   const searchDirs = [
     path.join(__dirname, "../../"),
@@ -61,8 +61,8 @@ function getUsedTranslationKeys() {
   const filesToSearch = [];
 
   // Collect JS, CSS, and HTML files (excluding node_modules, tests, coverage, docs)
-  function collectFiles(dir) {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
+  function collectFiles (dir) {
+    const entries = fs.readdirSync(dir, {withFileTypes: true});
 
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
@@ -128,18 +128,18 @@ function getUsedTranslationKeys() {
  * Check if swagger.json has translatable descriptions
  * @returns {Array} Array of issues found
  */
-function checkSwaggerTranslations() {
+function checkSwaggerTranslations () {
   const issues = [];
 
   if (!fs.existsSync(swaggerPath)) {
-    return [{ type: "missing", message: "swagger.json file not found" }];
+    return [{type: "missing", message: "swagger.json file not found"}];
   }
 
   const swagger = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
 
   // Check main description
   if (!swagger.info || !swagger.info.description) {
-    issues.push({ type: "missing", path: "info.description" });
+    issues.push({type: "missing", path: "info.description"});
   }
 
   // Check tags descriptions
@@ -244,7 +244,7 @@ describe("Translation Completeness", () => {
     }
 
     const counts = Object.values(keyCounts);
-    const allSame = counts.every(count => count === counts[0]);
+    const allSame = counts.every((count) => count === counts[0]);
 
     if (!allSame) {
       let errorMessage = "Translation files have different number of keys:\n";
@@ -387,7 +387,7 @@ describe("Translation Usage", () => {
 
     if (missingTranslations.length > 0) {
       // Filter out common false positives (notification names, constants, etc.)
-      const likelyRealMissing = missingTranslations.filter(key => ![
+      const likelyRealMissing = missingTranslations.filter((key) => ![
         "MANAGE_CLASSES",
         "COMMAND",
         "USER_PRESENCE",
