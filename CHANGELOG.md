@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.2.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.2...v4.2.3) (2026-02-21)
+
+### Chores
+
+- add "someaction" to cspell configuration ([b854832](https://github.com/jopyth/MMM-Remote-Control/commit/b854832ef44ed74b2e5af6723ab3aba9b9b2d958))
+- change variable declaration from let to const ([03626c5](https://github.com/jopyth/MMM-Remote-Control/commit/03626c5cd2398cb4ffa0c17adfc6db5f59e129f7))
+- refine automated tests workflow by specifying unit, integration, and DOM tests ([414f10a](https://github.com/jopyth/MMM-Remote-Control/commit/414f10a6a4ad6323adf6bb406e8fcc1c8ec86fd9))
+- update dependencies ([2093e9a](https://github.com/jopyth/MMM-Remote-Control/commit/2093e9aaa4ead2791b83934e189565c142b66c02))
+
+### Tests
+
+- expand unit coverage for core modules ([b36b36b](https://github.com/jopyth/MMM-Remote-Control/commit/b36b36bee2858079f627cd60bd20e01e384e760f))
+- update test script to streamline test execution ([648d6be](https://github.com/jopyth/MMM-Remote-Control/commit/648d6be5d1961a9c4e609bf9a806bb80557123b2))
+
 ## [4.2.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.1...v4.2.2) (2026-02-07)
 
 ### Fixed
