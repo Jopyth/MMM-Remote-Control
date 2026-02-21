@@ -718,9 +718,27 @@ module.exports = NodeHelper.create({
     try {
       const {app} = require("electron");
       if (!app) { throw "Could not get Electron app instance."; }
-      this.sendResponse(res, undefined, {action: "RESTART", info: "Restarting Electron..."});
-      app.relaunch();
-      app.quit();
+
+      /*
+       * When running under a process manager like pm2, skip app.relaunch()
+       * to avoid spawning a duplicate instance (pm2 will restart automatically).
+       */
+      const isManagedProcess = process.env.PM2_HOME || process.env.pm_id !== undefined;
+
+      if (isManagedProcess) {
+        Log.log("Running under pm2 (or similar process manager), exiting cleanly for managed restart...");
+        this.sendResponse(res, undefined, {action: "RESTART", info: "Exiting for process manager restart..."});
+
+        if (res && res.on) {
+          res.on("finish", () => app.quit());
+        } else {
+          setTimeout(() => app.quit(), 1000);
+        }
+      } else {
+        this.sendResponse(res, undefined, {action: "RESTART", info: "Restarting Electron..."});
+        app.relaunch();
+        app.quit();
+      }
     } catch (error) {
       // Electron not available (server mode) - exit cleanly and let process manager restart
       Log.log(`Electron not available (${error?.message || "server mode"}), exiting process for restart by process manager...`);
