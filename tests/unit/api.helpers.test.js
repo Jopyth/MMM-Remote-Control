@@ -80,5 +80,94 @@ describe("API helpers", () => {
       assert.equal(captured.payload.payload.beta, 2);
       assert.equal(captured.payload.payload.gamma, 3);
     });
+
+    test("treats p='delay' as delayed route marker", () => {
+      const captured = {};
+      const context = makeContext({
+        checkDelay: (query) => ({
+          action: "DELAYED",
+          query
+        }),
+        delayedQuery: (query) => {
+          captured.query = query;
+        }
+      });
+      const answerNotifyApi = apiModule.answerNotifyApi.bind(context);
+
+      const request = {
+        method: "GET",
+        params: {notification: "TEST_ACTION", p: "delay"},
+        query: {}
+      };
+      const res = {json: () => {}};
+
+      answerNotifyApi(request, res);
+
+      assert.equal(request.params.p, undefined);
+      assert.equal(request.params.delayed, "delay");
+      assert.equal(captured.query.action, "DELAYED");
+      assert.equal(captured.query.query.action, "NOTIFICATION");
+      assert.deepEqual(captured.query.query.payload, {});
+    });
+
+    test("uses raw param payload when query is empty", () => {
+      const captured = {};
+      const context = makeContext({
+        sendSocketNotification: (_what, payload) => {
+          captured.payload = payload;
+        }
+      });
+      const answerNotifyApi = apiModule.answerNotifyApi.bind(context);
+
+      const request = {
+        method: "GET",
+        params: {notification: "TEST_ACTION", p: "raw-value"},
+        query: {}
+      };
+      const res = {json: () => {}};
+
+      answerNotifyApi(request, res);
+
+      assert.equal(captured.payload.payload, "raw-value");
+    });
+
+    test("combines param and query payload when both are present", () => {
+      const captured = {};
+      const context = makeContext({
+        sendSocketNotification: (_what, payload) => {
+          captured.payload = payload;
+        }
+      });
+      const answerNotifyApi = apiModule.answerNotifyApi.bind(context);
+
+      const request = {
+        method: "GET",
+        params: {notification: "TEST_ACTION", p: "raw-value"},
+        query: {foo: "bar"}
+      };
+      const res = {json: () => {}};
+
+      answerNotifyApi(request, res);
+
+      assert.deepEqual(captured.payload.payload, {param: "raw-value", foo: "bar"});
+    });
+  });
+
+  describe("checkInitialized", () => {
+    test("returns false and sends response when helper is not initialized", () => {
+      let capturedError;
+      const context = makeContext({
+        initialized: false,
+        sendResponse: (_res, error) => {
+          capturedError = error;
+        }
+      });
+
+      const result = apiModule.checkInitialized.call(context, {status: () => ({json: () => {}})});
+
+      assert.equal(result, false);
+      assert.equal(typeof capturedError, "string");
+      assert.ok(capturedError.includes("Not initialized"));
+    });
   });
 });
