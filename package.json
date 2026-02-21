@@ -38,7 +38,7 @@
     "prepare": "simple-git-hooks || echo 'No problem. Skipping git hooks installation.'",
     "postinstall": "node scripts/postinstall.js",
     "release": "commit-and-tag-version -a --config ./changelog.config.js",
-    "test": "node --run lint && node --run test:spelling && node --run test:unit && node --run test:integration && node --run test:dom",
+    "test": "node --run lint && node --run test:spelling && node --test tests/**/*.test.js",
     "test:coverage": "c8 --all node --test tests/unit/**/*.test.js tests/integration/**/*.test.js",
     "test:dom": "node --test tests/dom/**/*.test.js",
     "test:integration": "node --test tests/integration/**/*.test.js",
