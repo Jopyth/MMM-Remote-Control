@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.2.4](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.3...v4.2.4) (2026-02-21)
+
+### Fixed
+
+- improve error message when API key is missing ([88214e4](https://github.com/jopyth/MMM-Remote-Control/commit/88214e4b69658d44e241f5192909143f6ad4f8d5))
+- skip app.relaunch() when running under pm2 to prevent EADDRINUSE loop ([e021bc2](https://github.com/jopyth/MMM-Remote-Control/commit/e021bc22314dc6e79b27f6b7d32f1dae7410e9bb))
+
 ## [4.2.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.2...v4.2.3) (2026-02-21)
 
 ### Chores
