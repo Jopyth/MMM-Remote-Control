@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "Det fungerte ikke. Sjekk MM-loggene for flere detaljer.",
   "MODULE_CONTROLS": "Modulkontroller",
-  "CUSTOM_MENU": "Min Tilpassede Meny"
+  "CUSTOM_MENU": "Min Tilpassede Meny",
+
+  "NOTIFICATION_MENU_NAME": "Varsling",
+  "SEND_NOTIFICATION": "Send",
+  "FORM_NOTIFICATION_NAME": "Varsling:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MIN_VARSLING",
+  "FORM_NOTIFICATION_NAME_MISSING": "Vennligst skriv inn et navn for varslingen.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, valgfritt):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Ugyldig JSON-payload."
 }

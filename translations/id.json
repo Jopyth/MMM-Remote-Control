@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "Tidak berhasil. Periksa log MM untuk detail lebih lanjut.",
   "MODULE_CONTROLS": "Kontrol Modul",
-  "CUSTOM_MENU": "Menu Kustom Saya"
+  "CUSTOM_MENU": "Menu Kustom Saya",
+
+  "NOTIFICATION_MENU_NAME": "Pemberitahuan",
+  "SEND_NOTIFICATION": "Kirim",
+  "FORM_NOTIFICATION_NAME": "Pemberitahuan:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "PEMBERITAHUAN_SAYA",
+  "FORM_NOTIFICATION_NAME_MISSING": "Silakan masukkan nama untuk pemberitahuan.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, opsional):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Payload JSON tidak valid."
 }

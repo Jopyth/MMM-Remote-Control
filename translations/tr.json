@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "Bu şu anda çalışmıyor, daha fazla bilgi için MM log kayıtlarına bakın",
   "MODULE_CONTROLS": "Modül Kontrolleri",
-  "CUSTOM_MENU": "Kişisel Menü"
+  "CUSTOM_MENU": "Kişisel Menü",
+
+  "NOTIFICATION_MENU_NAME": "Bildirim",
+  "SEND_NOTIFICATION": "Gönder",
+  "FORM_NOTIFICATION_NAME": "Bildirim:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "BENIM_BILDIRIMIM",
+  "FORM_NOTIFICATION_NAME_MISSING": "Lütfen bir bildirim adı girin.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, isteğe bağlı):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Geçersiz JSON payload."
 }

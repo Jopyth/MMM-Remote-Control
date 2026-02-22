@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "No ha funcionado. Comprueba los MM logs para más detalles",
   "MODULE_CONTROLS": "Controles de módulos",
-  "CUSTOM_MENU": "Mi Menú Personalizado"
+  "CUSTOM_MENU": "Mi Menú Personalizado",
+
+  "NOTIFICATION_MENU_NAME": "Notificación",
+  "SEND_NOTIFICATION": "Enviar",
+  "FORM_NOTIFICATION_NAME": "Notificación:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MI_NOTIFICACION",
+  "FORM_NOTIFICATION_NAME_MISSING": "Por favor, introduce un nombre para la notificación.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, opcional):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Payload JSON no válido."
 }

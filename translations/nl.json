@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "Dat heeft niet gewerkt. Bekijk de MM-logboeken voor meer details.",
   "MODULE_CONTROLS": "Modulebesturing",
-  "CUSTOM_MENU": "Mijn Aangepaste Menu"
+  "CUSTOM_MENU": "Mijn Aangepaste Menu",
+
+  "NOTIFICATION_MENU_NAME": "Notificatie",
+  "SEND_NOTIFICATION": "Verstuur",
+  "FORM_NOTIFICATION_NAME": "Notificatie:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MIJN_NOTIFICATIE",
+  "FORM_NOTIFICATION_NAME_MISSING": "Voer een naam in voor de notificatie.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, optioneel):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Ongeldige JSON-payload."
 }

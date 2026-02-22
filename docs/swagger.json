@@ -688,7 +688,15 @@
                     "FORM_SECONDS": "Seconds:",
                     "RESPONSE_ERROR": "Well that didn't work. Check the MM logs for more details.",
                     "MODULE_CONTROLS": "Module Controls",
-                    "CUSTOM_MENU": "My Custom Menu"
+                    "CUSTOM_MENU": "My Custom Menu",
+                    "NOTIFICATION_MENU_NAME": "Notification",
+                    "SEND_NOTIFICATION": "Send",
+                    "FORM_NOTIFICATION_NAME": "Notification:",
+                    "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MY_NOTIFICATION",
+                    "FORM_NOTIFICATION_NAME_MISSING": "Please enter a notification name.",
+                    "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, optional):",
+                    "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+                    "INVALID_JSON": "Invalid JSON payload."
                   }
                 }
               }

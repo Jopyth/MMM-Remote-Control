@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "Cela n'a pas fonctionné. Consultez les journaux MM pour plus de détails.",
   "MODULE_CONTROLS": "Contrôles de module",
-  "CUSTOM_MENU": "Mon menu personnalisé"
+  "CUSTOM_MENU": "Mon menu personnalisé",
+
+  "NOTIFICATION_MENU_NAME": "Notification",
+  "SEND_NOTIFICATION": "Envoyer",
+  "FORM_NOTIFICATION_NAME": "Notification:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MA_NOTIFICATION",
+  "FORM_NOTIFICATION_NAME_MISSING": "Veuillez entrer un nom pour la notification.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, optionnel):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Payload JSON non valide."
 }

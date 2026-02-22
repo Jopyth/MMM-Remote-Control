@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "Det fungerade inte. Kontrollera MM-loggarna för mer information.",
   "MODULE_CONTROLS": "Modulkontroller",
-  "CUSTOM_MENU": "Min Anpassade Meny"
+  "CUSTOM_MENU": "Mitt Anpassade Meny",
+
+  "NOTIFICATION_MENU_NAME": "Notifikation",
+  "SEND_NOTIFICATION": "Skicka",
+  "FORM_NOTIFICATION_NAME": "Notifikation:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MIN_NOTIFIKATION",
+  "FORM_NOTIFICATION_NAME_MISSING": "Vänligen ange ett namn för notifikationen.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, valfritt):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Ogiltig JSON-payload."
 }

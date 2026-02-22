@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "Nå, det virkede ikke. Kontroller MM-logfilerne for at få flere oplysninger",
   "MODULE_CONTROLS": "Modul kontrol",
-  "CUSTOM_MENU": "Min tilpassede menu"
+  "CUSTOM_MENU": "Min tilpassede menu",
+
+  "NOTIFICATION_MENU_NAME": "Notifikation",
+  "SEND_NOTIFICATION": "Send",
+  "FORM_NOTIFICATION_NAME": "Notifikation:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MIN_NOTIFIKATION",
+  "FORM_NOTIFICATION_NAME_MISSING": "Indtast venligst et navn til notifikationen.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, valgfri):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Ugyldig JSON payload."
 }

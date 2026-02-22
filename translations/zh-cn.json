@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "操作失败. 查看 MagicMirror² 日志获取更多信息",
   "MODULE_CONTROLS": "模块控制",
-  "CUSTOM_MENU": "自定义菜单"
+  "CUSTOM_MENU": "我的自定义菜单",
+
+  "NOTIFICATION_MENU_NAME": "通知",
+  "SEND_NOTIFICATION": "发送",
+  "FORM_NOTIFICATION_NAME": "通知:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "我的通知",
+  "FORM_NOTIFICATION_NAME_MISSING": "请输入通知名称。",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, 可选):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "无效的 JSON payload."
 }

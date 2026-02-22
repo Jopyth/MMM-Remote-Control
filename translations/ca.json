@@ -87,5 +87,14 @@
 
   "RESPONSE_ERROR": "No ha funcionat. Comprova els MM logs per més detalls",
   "MODULE_CONTROLS": "Controls de mòduls",
-  "CUSTOM_MENU": "El meu Menú Personalitzat"
+  "CUSTOM_MENU": "El meu Menú Personalitzat",
+
+  "NOTIFICATION_MENU_NAME": "Notificació",
+  "SEND_NOTIFICATION": "Envia",
+  "FORM_NOTIFICATION_NAME": "Notificació:",
+  "FORM_NOTIFICATION_NAME_PLACEHOLDER": "LA_MEVA_NOTIFICACIO",
+  "FORM_NOTIFICATION_NAME_MISSING": "Si us plau, introdueix un nom per a la notificació.",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, opcional):",
+  "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "INVALID_JSON": "Payload JSON no vàlid."
 }
