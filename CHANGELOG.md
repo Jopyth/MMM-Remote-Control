@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.3.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.4...v4.3.0) (2026-02-22)
+
+### Added
+
+- add notification sender to remote.html ([c364c55](https://github.com/jopyth/MMM-Remote-Control/commit/c364c55e164f53afc1a1db6f7b1dac12619098f3)), closes [#383](https://github.com/jopyth/MMM-Remote-Control/issues/383)
+
 ## [4.2.4](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.3...v4.2.4) (2026-02-21)
 
 ### Fixed
