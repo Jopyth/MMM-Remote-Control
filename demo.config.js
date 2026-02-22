@@ -4,6 +4,9 @@ const config = {
   logLevel: ["INFO", "LOG", "WARN", "ERROR", "DEBUG"],
   modules: [
     {
+      module: "alert"
+    },
+    {
       module: "clock",
       position: "top_left",
       config: {

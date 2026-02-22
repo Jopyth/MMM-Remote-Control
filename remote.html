@@ -40,7 +40,7 @@
         <header class="header">
           <div
             id="back-button"
-            class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu classes-menu alert-menu links-menu"
+            class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu classes-menu alert-menu notification-menu links-menu"
             role="button"
             aria-label="%%TRANSLATE:BACK%%"
             tabindex="0"
@@ -90,6 +90,16 @@
             <div id="alert-button" class="button" role="button" tabindex="0">
               <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
               <span class="text">%%TRANSLATE:ALERT_MENU_NAME%%</span>
+              <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+            </div>
+            <div
+              id="notification-button"
+              class="button"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-bell-o" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:NOTIFICATION_MENU_NAME%%</span>
               <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
             </div>
             <div id="links-button" class="button" role="button" tabindex="0">
@@ -218,6 +228,18 @@
               <span class="text">%%TRANSLATE:HIDEALERT%%</span>
             </div>
           </nav>
+          <!-- Notification menu navigation -->
+          <nav class="menu-nav menu-element hidden notification-menu">
+            <div
+              id="send-notification-button"
+              class="button"
+              role="button"
+              tabindex="0"
+            >
+              <span class="fa fa-fw fa-send-o" aria-hidden="true"></span>
+              <span class="text">%%TRANSLATE:SEND_NOTIFICATION%%</span>
+            </div>
+          </nav>
           <!-- Links menu navigation -->
           <nav class="menu-nav menu-element hidden links-menu">
             <div id="links-container-nav">
@@ -242,6 +264,37 @@
             </div>
           </nav>
           <section class="menu-content">
+            <!-- notification form -->
+            <form
+              id="notification-form"
+              action=""
+              method="GET"
+              class="menu-element hidden notification-menu"
+            >
+              <div class="xsmall">%%TRANSLATE:FORM_NOTIFICATION_NAME%%</div>
+              <input
+                id="notification-name"
+                type="text"
+                class="medium"
+                placeholder="%%TRANSLATE:FORM_NOTIFICATION_NAME_PLACEHOLDER%%"
+                autocomplete="off"
+                autocapitalize="characters"
+              />
+              <div class="xsmall">%%TRANSLATE:FORM_NOTIFICATION_PAYLOAD%%</div>
+              <div>
+                <textarea
+                  id="notification-payload"
+                  class="medium"
+                  placeholder="%%TRANSLATE:FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER%%"
+                >
+{
+
+
+
+}</textarea
+                >
+              </div>
+            </form>
             <!-- alert form -->
             <form
               id="alert"

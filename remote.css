@@ -633,9 +633,18 @@ input:focus.input-error {
   border-color: #f44;
 }
 
-#alert :is(input, textarea) {
+:is(#alert, #notification-form) :is(input, textarea) {
   box-sizing: border-box;
   width: 100%;
+}
+
+#notification-payload {
+  overflow: hidden;
+  resize: none;
+}
+
+nav.notification-menu {
+  flex: 0 0 auto;
 }
 
 .config-label {

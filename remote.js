@@ -2148,6 +2148,9 @@ const buttons = {
   "alert-button" () {
     globalThis.location.hash = "alert-menu";
   },
+  "notification-button" () {
+    globalThis.location.hash = "notification-menu";
+  },
   "links-button" () {
     globalThis.location.hash = "links-menu";
   },
@@ -2292,6 +2295,29 @@ const buttons = {
     Remote.setStatus("none");
   },
 
+  // notification menu
+  "send-notification-button" () {
+    const name = document.querySelector("#notification-name").value.trim().toUpperCase();
+    const rawPayload = document.querySelector("#notification-payload").value.trim();
+    if (!name) {
+      Remote.setStatus("error", Remote.translate("FORM_NOTIFICATION_NAME_MISSING"));
+      return;
+    }
+    let payload;
+    if (rawPayload) {
+      try {
+        payload = JSON.parse(rawPayload);
+      } catch {
+        Remote.setStatus("error", Remote.translate("INVALID_JSON"));
+        return;
+      }
+    }
+    Remote.sendSocketNotification("REMOTE_ACTION", {
+      action: "NOTIFICATION",
+      notification: name,
+      payload
+    });
+  },
   // alert menu
   "send-alert-button" () {
     const kvpairs = {};
@@ -2354,6 +2380,17 @@ Remote.init = function () {
   const loadError = document.querySelector("#load-error");
   if (loadError) {
     loadError.remove();
+  }
+
+  // Auto-resize notification payload textarea to fit content
+  const payloadTextarea = document.querySelector("#notification-payload");
+  if (payloadTextarea) {
+    const autoResize = () => {
+      payloadTextarea.style.height = "auto";
+      payloadTextarea.style.height = `${payloadTextarea.scrollHeight}px`;
+    };
+    payloadTextarea.addEventListener("input", autoResize);
+    autoResize(); // apply on load for the pre-filled "{}"
   }
 };
 
