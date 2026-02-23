@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.4.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.3.0...v4.4.0) (2026-02-23)
+
+### Added
+
+- restore localStorage for notification form and fix textarea height ([845d464](https://github.com/jopyth/MMM-Remote-Control/commit/845d464f68ffe48f950c0bfb73e8ee80991c37d5))
+
+### Fixed
+
+- fix getActions empty key and action.payload falsy check in api.js ([536987b](https://github.com/jopyth/MMM-Remote-Control/commit/536987bb8633679f5a4c762250621eaee748ef77))
+- pass numeric/boolean payloads through handleNotification ([eed2f1e](https://github.com/jopyth/MMM-Remote-Control/commit/eed2f1e8722fc2fd573642a0bf60a4c435e4cc9b))
+
+### Chores
+
+- add missing translations ([e056791](https://github.com/jopyth/MMM-Remote-Control/commit/e056791ff7ba05894f577f729cda95baf1e53dc1))
+- add MMM-pages to demo config ([e68e424](https://github.com/jopyth/MMM-Remote-Control/commit/e68e424213d8a681f85a0b7fde9314d8eeec0d51))
+- update dependencies ([aa0bf12](https://github.com/jopyth/MMM-Remote-Control/commit/aa0bf128fd7cdea221011e224238df3ef7edfac2))
+
 ## [4.3.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.2.4...v4.3.0) (2026-02-22)
 
 ### Added
