@@ -16,19 +16,17 @@ const express = require("express");
 const getActions = (content) => {
   const re = /notification ===? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
   const availableActions = [];
-  if (re.test(content)) {
-    for (const match of content.match(re)) {
-      const n = match.replaceAll(re, "$1");
-      if (![
-        "ALL_MODULES_STARTED",
-        "DOM_OBJECTS_CREATED",
-        "KEYPRESS",
-        "MODULE_DOM_CREATED",
-        "KEYPRESS_MODE_CHANGED",
-        "USER_PRESENCE"
-      ].includes(n)) {
-        availableActions.push(n);
-      }
+  for (const match of content.match(re) || []) {
+    const n = match.replaceAll(re, "$1");
+    if (n && ![
+      "ALL_MODULES_STARTED",
+      "DOM_OBJECTS_CREATED",
+      "KEYPRESS",
+      "MODULE_DOM_CREATED",
+      "KEYPRESS_MODE_CHANGED",
+      "USER_PRESENCE"
+    ].includes(n)) {
+      availableActions.push(n);
     }
   }
   return availableActions;
@@ -71,7 +69,10 @@ module.exports = {
           const actionsGuess = {};
 
           for (const a of moduleActions) {
-            actionsGuess[a.replaceAll(/[-_]/g, "").toLowerCase()] = {notification: a, guessed: true};
+            const key = a.replaceAll(/[-_]/g, "").toLowerCase();
+            if (key) {
+              actionsGuess[key] = {notification: a, guessed: true};
+            }
           }
 
           if (module_.module in this.externalApiRoutes) {
@@ -516,8 +517,10 @@ module.exports = {
     if (request.method === "POST" && request.body !== undefined) {
       payload = typeof payload === "object" ? {...payload, ...request.body} : {param: payload, ...request.body};
     }
-    if (action && action.payload) {
-      payload = typeof payload === "object" ? {...payload, ...action.payload} : {param: payload, ...action.payload};
+    if (action && "payload" in action) {
+      payload = typeof payload === "object" && typeof action.payload === "object"
+        ? {...payload, ...action.payload}
+        : action.payload;
     }
 
     if ("action" in query && query.action == "DELAYED") {
