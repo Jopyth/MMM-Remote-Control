@@ -6,6 +6,7 @@ const config = {
     {
       module: "alert"
     },
+    // always visible
     {
       module: "clock",
       position: "top_left",
@@ -15,8 +16,25 @@ const config = {
         showDate: true
       }
     },
+
+    /*
+     * MMM-pages: page 0 → weather, page 1 → calendar, page 2 → news + compliments
+     * Notifications to try: PAGE_SELECT (payload: 0/1/2), PAGE_INCREMENT, PAGE_DECREMENT
+     */
+    {
+      module: "MMM-pages",
+      config: {
+        modules: [
+          ["weather_current", "weather_forecast"],
+          ["calendar"],
+          ["newsfeed", "compliments"]
+        ],
+        fixed: ["clock", "MMM-Remote-Control"]
+      }
+    },
     {
       module: "weather",
+      classes: "weather_current",
       position: "top_right",
       config: {
         weatherProvider: "openmeteo",
@@ -29,6 +47,7 @@ const config = {
     },
     {
       module: "weather",
+      classes: "weather_forecast",
       position: "top_right",
       config: {
         weatherProvider: "openmeteo",
