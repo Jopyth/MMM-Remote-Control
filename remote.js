@@ -417,6 +417,14 @@ const Remote = {
       this.show(menu);
     }
 
+    if (newMenu === "notification-menu") {
+      const textarea = document.querySelector("#notification-payload");
+      if (textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
+    }
+
     this.setStatus("none");
 
     this.currentMenu = newMenu;
@@ -2312,11 +2320,25 @@ const buttons = {
         return;
       }
     }
+    localStorage.setItem("mmrc_notification_name", name);
+    localStorage.setItem("mmrc_notification_payload", rawPayload);
     Remote.sendSocketNotification("REMOTE_ACTION", {
       action: "NOTIFICATION",
       notification: name,
       payload
     });
+  },
+  "restore-notification-button" () {
+    const savedName = localStorage.getItem("mmrc_notification_name");
+    const savedPayload = localStorage.getItem("mmrc_notification_payload");
+    if (savedName) {
+      document.querySelector("#notification-name").value = savedName;
+    }
+    if (savedPayload !== null) {
+      const textarea = document.querySelector("#notification-payload");
+      textarea.value = savedPayload;
+      textarea.dispatchEvent(new Event("input"));
+    }
   },
   // alert menu
   "send-alert-button" () {
@@ -2390,7 +2412,17 @@ Remote.init = function () {
       payloadTextarea.style.height = `${payloadTextarea.scrollHeight}px`;
     };
     payloadTextarea.addEventListener("input", autoResize);
-    autoResize(); // apply on load for the pre-filled "{}"
+
+    // Restore last used notification from localStorage
+    const savedName = localStorage.getItem("mmrc_notification_name");
+    const savedPayload = localStorage.getItem("mmrc_notification_payload");
+    if (savedName) {
+      document.querySelector("#notification-name").value = savedName;
+    }
+    if (savedPayload !== null) {
+      payloadTextarea.value = savedPayload;
+    }
+    autoResize(); // apply after potential restore (height will be corrected by showMenu when visible)
   }
 };
 
