@@ -102,4 +102,30 @@ describe("executeQuery error handling", () => {
     assert.equal(h.__sent[0].payload.payload.param, "{invalid");
     assert.equal(h.__sent[0].payload.payload.other, "value");
   });
+
+  test("NOTIFICATION with numeric payload passes number through (regression: module API menu PAGE_SELECT)", () => {
+    const h = freshHelper();
+    const res = {};
+
+    /*
+     * Reproduces the bug where page0 action sent payload:0 but handleNotification
+     * dropped it, causing MMM-pages to receive {} instead of 0.
+     */
+    h.executeQuery({action: "NOTIFICATION", notification: "PAGE_SELECT", payload: 0}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "NOTIFICATION");
+    assert.equal(h.__sent[0].payload.notification, "PAGE_SELECT");
+    assert.strictEqual(h.__sent[0].payload.payload, 0);
+  });
+
+  test("NOTIFICATION with boolean payload passes boolean through", () => {
+    const h = freshHelper();
+    const res = {};
+
+    h.executeQuery({action: "NOTIFICATION", notification: "TEST_BOOL", payload: true}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.strictEqual(h.__sent[0].payload.payload, true);
+  });
 });

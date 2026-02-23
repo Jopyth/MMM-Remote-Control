@@ -664,6 +664,8 @@ module.exports = NodeHelper.create({
         payload = query.payload;
       } else if (typeof query.payload === "string") {
         payload = query.payload.startsWith("{") ? JSON.parse(query.payload) : query.payload;
+      } else {
+        payload = query.payload; // numbers, booleans, etc.
       }
       this.sendSocketNotification(query.action, {"notification": query.notification, payload});
       this.sendResponse(res);
