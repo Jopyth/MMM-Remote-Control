@@ -13,6 +13,7 @@ Module.register("MMM-Remote-Control", {
   // Default module config.
   defaults: {
     customCommand: {},
+    showModuleApiMenu: true,
     showQRCode: true,
     qrCodeSize: 150,
     qrCodePosition: "above" // "below", "above", or "replace"

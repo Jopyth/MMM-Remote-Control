@@ -27,7 +27,7 @@ Show the module control menu in the web interface.
 
 ```js
 config: {
-    showModuleApiMenu: true,
+    showModuleApiMenu: true,  // Default: true
 },
 ```
 

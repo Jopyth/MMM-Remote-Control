@@ -113,7 +113,6 @@ const config = {
       module: "MMM-Remote-Control",
       position: "bottom_right",
       config: {
-        showModuleApiMenu: true,
         secureEndpoints: false,
         customMenu: "custom_menu.example.json",
         classes: {
