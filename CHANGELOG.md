@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.5.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.4.0...v4.5.0) (2026-02-24)
+
+### Added
+
+- add showNotificationMenu config option ([28f3444](https://github.com/jopyth/MMM-Remote-Control/commit/28f3444fd001791609e4a426a89a3d3fcdd71559))
+- set default value for showModuleApiMenu to true ([c1e1a90](https://github.com/jopyth/MMM-Remote-Control/commit/c1e1a907ee50065e478af4bf834e4efd3fa5ff95))
+
 ## [4.4.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.3.0...v4.4.0) (2026-02-23)
 
 ### Added
