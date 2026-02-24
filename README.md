@@ -61,6 +61,7 @@ The module also includes a **RESTful API** for controlling all aspects of your m
            // apiKey: "", // Optional, See API/README.md for details
            // classes: {}, // Optional, See "Custom Classes" below
            // showModuleApiMenu: false, // Optional, disable the Module Controls menu
+           // showNotificationMenu: false, // Optional, disable the Notification menu
 
            // QR Code options (new!)
            // showQRCode: true, // Optional, display QR code for easy mobile access (default: true)

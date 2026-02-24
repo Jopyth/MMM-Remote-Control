@@ -31,6 +31,16 @@ config: {
 },
 ```
 
+### showNotificationMenu
+
+Show the notification menu in the web interface.
+
+```js
+config: {
+    showNotificationMenu: true,  // Default: true
+},
+```
+
 ### apiKey
 
 Protect your API with an authentication key. See [API Documentation](../../API/README.md) for details.

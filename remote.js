@@ -400,6 +400,8 @@ const Remote = {
         const moduleConfig = configData.modules.find((m) => m.module === "MMM-Remote-Control").config;
         const classesButton = document.querySelector("#classes-button");
         if ((!moduleConfig || !moduleConfig.classes) && classesButton) { classesButton.remove(); }
+        const notificationButton = document.querySelector("#notification-button");
+        if (moduleConfig && moduleConfig.showNotificationMenu === false && notificationButton) { notificationButton.remove(); }
       } catch (error) {
         console.error("Error loading config for main menu:", error);
       }
