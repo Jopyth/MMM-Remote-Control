@@ -1382,3 +1382,47 @@ pre {
   border-color: #9e9e9e;
   color: #9e9e9e;
 }
+
+.notification-url-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3em;
+}
+
+.notification-url-display {
+  flex: 1;
+  word-break: break-all;
+  padding: 0.4em 0.6em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  min-height: 1.8em;
+  line-height: 1.4;
+  font-family: monospace;
+  font-size: 0.85em;
+  color: inherit;
+  opacity: 0.85;
+  user-select: text;
+}
+
+.notification-url-method {
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  border: 1px solid;
+  min-width: 3em;
+  text-align: center;
+  color: #4caf50;
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.15);
+  flex-shrink: 0;
+  margin-top: 0.3em;
+}
+
+.notification-url-method.method-post {
+  color: #ff9800;
+  border-color: #ff9800;
+  background: rgba(255, 152, 0, 0.15);
+}

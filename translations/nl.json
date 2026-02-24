@@ -94,7 +94,8 @@
   "FORM_NOTIFICATION_NAME": "Notificatie:",
   "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MIJN_NOTIFICATIE",
   "FORM_NOTIFICATION_NAME_MISSING": "Voer een naam in voor de notificatie.",
-  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, optioneel):",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON of string, optioneel):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "FORM_NOTIFICATION_URL": "API URL:",
   "INVALID_JSON": "Ongeldige JSON-payload."
 }

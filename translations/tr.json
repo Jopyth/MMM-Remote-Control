@@ -94,7 +94,8 @@
   "FORM_NOTIFICATION_NAME": "Bildirim:",
   "FORM_NOTIFICATION_NAME_PLACEHOLDER": "BENIM_BILDIRIMIM",
   "FORM_NOTIFICATION_NAME_MISSING": "Lütfen bir bildirim adı girin.",
-  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, isteğe bağlı):",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON veya dize, isteğe bağlı):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "FORM_NOTIFICATION_URL": "API URL:",
   "INVALID_JSON": "Geçersiz JSON payload."
 }

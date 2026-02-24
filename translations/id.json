@@ -94,7 +94,8 @@
   "FORM_NOTIFICATION_NAME": "Pemberitahuan:",
   "FORM_NOTIFICATION_NAME_PLACEHOLDER": "PEMBERITAHUAN_SAYA",
   "FORM_NOTIFICATION_NAME_MISSING": "Silakan masukkan nama untuk pemberitahuan.",
-  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, opsional):",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON atau string, opsional):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "FORM_NOTIFICATION_URL": "API URL:",
   "INVALID_JSON": "Payload JSON tidak valid."
 }

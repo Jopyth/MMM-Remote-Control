@@ -94,7 +94,8 @@
   "FORM_NOTIFICATION_NAME": "Varsling:",
   "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MIN_VARSLING",
   "FORM_NOTIFICATION_NAME_MISSING": "Vennligst skriv inn et navn for varslingen.",
-  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, valgfritt):",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON eller streng, valgfritt):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "FORM_NOTIFICATION_URL": "API URL:",
   "INVALID_JSON": "Ugyldig JSON-payload."
 }

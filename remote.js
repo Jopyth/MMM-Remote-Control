@@ -425,6 +425,7 @@ const Remote = {
         textarea.style.height = "auto";
         textarea.style.height = `${textarea.scrollHeight}px`;
       }
+      Remote.updateNotificationUrl();
     }
 
     this.setStatus("none");
@@ -2341,6 +2342,11 @@ const buttons = {
       textarea.value = savedPayload;
       textarea.dispatchEvent(new Event("input"));
     }
+    Remote.updateNotificationUrl();
+  },
+  "notification-url-copy" () {
+    const url = document.querySelector("#notification-url")?.textContent;
+    if (url) { navigator.clipboard.writeText(url); }
   },
   // alert menu
   "send-alert-button" () {
@@ -2360,6 +2366,63 @@ const buttons = {
 if (globalThis.window !== undefined) {
   globalThis.Remote = Remote;
 }
+
+Remote.updateNotificationUrl = function () {
+  const nameEl = document.querySelector("#notification-name");
+  const urlEl = document.querySelector("#notification-url");
+  const methodEl = document.querySelector("#notification-url-method");
+  if (!nameEl || !urlEl) { return; }
+
+  const name = nameEl.value.trim().toUpperCase();
+  if (!name) {
+    urlEl.textContent = "";
+    if (methodEl) { methodEl.textContent = ""; }
+    return;
+  }
+
+  const origin = globalThis.location.origin;
+  const base = `${origin}/api/notification/${encodeURIComponent(name)}`;
+
+  const setMethod = (method) => {
+    if (!methodEl) { return; }
+    methodEl.textContent = method;
+    methodEl.classList.toggle("method-post", method === "POST");
+  };
+
+  const rawPayload = document.querySelector("#notification-payload")?.value.trim() ?? "";
+  if (!rawPayload) {
+    urlEl.textContent = base;
+    setMethod("GET");
+    return;
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(rawPayload);
+  } catch {
+    // Not valid JSON — treat as plain string path segment
+    urlEl.textContent = `${base}/${encodeURIComponent(rawPayload)}`;
+    setMethod("GET");
+    return;
+  }
+
+  if (typeof parsed === "object" && parsed !== null) {
+    const keys = Object.keys(parsed);
+    if (keys.length === 0) {
+      urlEl.textContent = base;
+      setMethod("GET");
+    } else if (Object.values(parsed).every((v) => typeof v !== "object" || v === null)) {
+      urlEl.textContent = `${base}?${new URLSearchParams(parsed).toString()}`;
+      setMethod("GET");
+    } else {
+      urlEl.textContent = base;
+      setMethod("POST");
+    }
+  } else {
+    urlEl.textContent = `${base}/${encodeURIComponent(String(parsed))}`;
+    setMethod("GET");
+  }
+};
 
 // Initialize the Remote UI when DOM is ready
 Remote.init = function () {
@@ -2414,6 +2477,12 @@ Remote.init = function () {
       payloadTextarea.style.height = `${payloadTextarea.scrollHeight}px`;
     };
     payloadTextarea.addEventListener("input", autoResize);
+    payloadTextarea.addEventListener("input", () => { Remote.updateNotificationUrl(); });
+
+    const nameInput = document.querySelector("#notification-name");
+    if (nameInput) {
+      nameInput.addEventListener("input", () => { Remote.updateNotificationUrl(); });
+    }
 
     // Restore last used notification from localStorage
     const savedName = localStorage.getItem("mmrc_notification_name");
@@ -2425,6 +2494,7 @@ Remote.init = function () {
       payloadTextarea.value = savedPayload;
     }
     autoResize(); // apply after potential restore (height will be corrected by showMenu when visible)
+    Remote.updateNotificationUrl();
   }
 };
 

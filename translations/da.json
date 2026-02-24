@@ -94,7 +94,8 @@
   "FORM_NOTIFICATION_NAME": "Notifikation:",
   "FORM_NOTIFICATION_NAME_PLACEHOLDER": "MIN_NOTIFIKATION",
   "FORM_NOTIFICATION_NAME_MISSING": "Indtast venligst et navn til notifikationen.",
-  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON, valgfri):",
+  "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON eller streng, valgfri):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
+  "FORM_NOTIFICATION_URL": "API URL:",
   "INVALID_JSON": "Ugyldig JSON payload."
 }
