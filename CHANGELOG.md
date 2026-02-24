@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.6.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.5.0...v4.6.0) (2026-02-24)
+
+### Added
+
+- add API URL preview to notification menu ([c067078](https://github.com/jopyth/MMM-Remote-Control/commit/c0670785c73022d65a63f9f57bc3e603d8081c76))
+
+### Chores
+
+- update devDependencies ([3afd74c](https://github.com/jopyth/MMM-Remote-Control/commit/3afd74c9007e67bafb88e01d8b9702bcb818f7e8))
+
 ## [4.5.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.4.0...v4.5.0) (2026-02-24)
 
 ### Added
