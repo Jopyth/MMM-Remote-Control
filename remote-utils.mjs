@@ -14,22 +14,13 @@ Object.assign(
 
     },
 
-    hasClass (element, name) {
-
-      return ` ${element.className} `.includes(` ${name} `);
-
-    },
-
     loadToggleButton (element, onToggle) {
 
       element.addEventListener(
         "click",
         (event) => {
 
-          if (this.hasClass(
-            event.currentTarget,
-            "toggled-off"
-          )) {
+          if (event.currentTarget.classList.contains("toggled-off")) {
 
             if (onToggle) {
 

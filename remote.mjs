@@ -138,10 +138,7 @@ const buttons = {
       buttons = [...parent.children];
     for (const button of buttons) {
 
-      if (Remote.hasClass(
-        button,
-        "external-locked"
-      )) {
+      if (button.classList.contains("external-locked")) {
 
         continue;
 

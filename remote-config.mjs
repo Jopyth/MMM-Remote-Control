@@ -691,10 +691,7 @@ Object.assign(
 
         }
         const name = splitPath.at(-1);
-        if (this.hasClass(
-          element,
-          "null"
-        )) {
+        if (element.classList.contains("null")) {
 
           this.setValue(
             parent,
@@ -704,10 +701,7 @@ Object.assign(
           continue;
 
         }
-        if (this.hasClass(
-          element,
-          "undefined"
-        )) {
+        if (element.classList.contains("undefined")) {
 
           this.setValue(
             parent,
@@ -717,10 +711,7 @@ Object.assign(
           continue;
 
         }
-        if (this.hasClass(
-          element,
-          "array"
-        )) {
+        if (element.classList.contains("array")) {
 
           this.setValue(
             parent,
@@ -730,10 +721,7 @@ Object.assign(
           continue;
 
         }
-        if (this.hasClass(
-          element,
-          "object"
-        )) {
+        if (element.classList.contains("object")) {
 
           this.setValue(
             parent,
@@ -832,10 +820,7 @@ Object.assign(
         () => {
 
           const saveButton = document.querySelector("#save-config");
-          if (!this.hasClass(
-            saveButton,
-            "highlight"
-          )) {
+          if (!saveButton.classList.contains("highlight")) {
 
             saveButton.classList.add("highlight");
 

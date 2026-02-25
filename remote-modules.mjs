@@ -347,15 +347,9 @@ Object.assign(
         "click",
         (event) => {
 
-          if (this.hasClass(
-            event.currentTarget,
-            "toggled-off"
-          )) {
+          if (event.currentTarget.classList.contains("toggled-off")) {
 
-            if (this.hasClass(
-              event.currentTarget,
-              "external-locked"
-            )) {
+            if (event.currentTarget.classList.contains("external-locked")) {
 
               const wrapper = document.createElement("div");
               wrapper.innerHTML = `<span>${this.translate("LOCKSTRING_WARNING").replace(
