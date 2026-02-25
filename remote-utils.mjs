@@ -20,18 +20,6 @@ Object.assign(
 
     },
 
-    hide (element) {
-
-      element?.classList.add("hidden");
-
-    },
-
-    show (element) {
-
-      element?.classList.remove("hidden");
-
-    },
-
     loadToggleButton (element, onToggle) {
 
       element.addEventListener(
@@ -273,8 +261,8 @@ Object.assign(
 
       if (status === "none") {
 
-        this.hide(document.querySelector("#result-overlay"));
-        this.hide(document.querySelector("#result"));
+        document.querySelector("#result-overlay")?.classList.add("hidden");
+        document.querySelector("#result")?.classList.add("hidden");
         return;
 
       }
@@ -282,8 +270,8 @@ Object.assign(
       if (customContent) {
 
         parent.append(customContent);
-        this.show(document.querySelector("#result-overlay"));
-        this.show(document.querySelector("#result"));
+        document.querySelector("#result-overlay")?.classList.remove("hidden");
+        document.querySelector("#result")?.classList.remove("hidden");
         return;
 
       }
@@ -382,8 +370,8 @@ Object.assign(
         onClick
       ));
 
-      this.show(document.querySelector("#result-overlay"));
-      this.show(document.querySelector("#result"));
+      document.querySelector("#result-overlay")?.classList.remove("hidden");
+      document.querySelector("#result")?.classList.remove("hidden");
 
     },
 

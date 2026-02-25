@@ -355,20 +355,16 @@ Object.assign(
         parent = document.getElementById(`${listname}-results`);
 
       parent?.replaceChildren();
-      this.show(loadingIndicator);
+      loadingIndicator?.classList.remove("hidden");
+
+      this._listResolvers ??= new Map();
 
       return new Promise((resolve, reject) => {
 
-        this.pendingResolver = (parent, data) => {
-
-          resolve({parent, data});
-
-        };
-        this.pendingRejecter = (error) => {
-
-          reject(error);
-
-        };
+        this._listResolvers.set(
+          listname,
+          {resolve, reject}
+        );
         this.sendSocketNotification(
           "REMOTE_ACTION",
           {"data": dataId, listname}
@@ -380,24 +376,19 @@ Object.assign(
 
     handleLoadList (result) {
 
-      const loadingIndicator = document.getElementById(`${result.query.listname}-loading`),
-        emptyIndicator = document.getElementById(`${result.query.listname}-empty`),
-        parent = document.getElementById(`${result.query.listname}-results`);
+      const listname = result.query.listname,
+        loadingIndicator = document.getElementById(`${listname}-loading`),
+        emptyIndicator = document.getElementById(`${listname}-empty`),
+        parent = document.getElementById(`${listname}-results`);
 
-      this.hide(loadingIndicator);
+      loadingIndicator?.classList.add("hidden");
       this.savedData[result.query.data] = false;
+
+      const resolver = this._listResolvers?.get(listname);
 
       try {
 
-        if (result.data.length === 0) {
-
-          this.show(emptyIndicator);
-
-        } else {
-
-          this.hide(emptyIndicator);
-
-        }
+        emptyIndicator?.classList.toggle("hidden", result.data.length > 0);
         this.savedData[result.query.data] = result.data;
 
         // Cache moduleInstalled data for repository buttons
@@ -408,13 +399,10 @@ Object.assign(
 
         }
 
-        if (this.pendingResolver) {
+        if (resolver) {
 
-          this.pendingResolver(
-            parent,
-            result.data
-          );
-          delete this.pendingResolver;
+          resolver.resolve({parent, "data": result.data});
+          this._listResolvers.delete(listname);
 
         }
 
@@ -424,7 +412,13 @@ Object.assign(
           "Error loading list:",
           error
         );
-        this.show(emptyIndicator);
+        emptyIndicator?.classList.remove("hidden");
+        if (resolver) {
+
+          resolver.reject(error);
+          this._listResolvers.delete(listname);
+
+        }
 
       }
 
