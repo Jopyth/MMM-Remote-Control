@@ -38,27 +38,20 @@ html {
 }
 
 body {
-  margin: 10px;
-  block-size: calc(100% - 20px);
-  inline-size: calc(100% - 20px);
+  --body-margin: clamp(4px, 1.5vw, 10px);
+  margin: var(--body-margin);
+  block-size: calc(100% - 2 * var(--body-margin));
+  inline-size: calc(100% - 2 * var(--body-margin));
   letter-spacing: var(--letter-spacing);
   margin-inline: auto;
 }
 
-@media (max-width: 360px) {
-  body {
-    margin: 4px;
-    block-size: calc(100% - 8px);
-    inline-size: calc(100% - 8px);
-  }
-}
-
 .header {
-  font-size: 1.7em;
+  font-size: clamp(1em, 3.5vw, 1.7em);
   font-weight: 300;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 1em 0;
+  padding: clamp(0.5em, 2vw, 1em) 0;
   margin-bottom: 0;
   background: linear-gradient(
     135deg,
@@ -75,11 +68,11 @@ body {
   margin-inline: auto;
   width: 90%;
   max-width: 85%;
-  min-height: 100px;
+  min-height: clamp(70px, 20vw, 100px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5em;
+  gap: clamp(0.3em, 1vw, 0.5em);
   padding-inline: var(--spacing-md);
   box-sizing: border-box;
 }
@@ -129,7 +122,7 @@ body {
 }
 
 .header-spacer {
-  width: var(--touch-target);
+  width: clamp(28px, 6vw, var(--touch-target));
   flex-shrink: 0;
 }
 
@@ -160,46 +153,6 @@ body {
   &.hidden {
     visibility: hidden;
     display: flex;
-  }
-}
-
-@media (max-width: 600px) {
-  .header {
-    max-width: 95%;
-    font-size: 1.3em;
-    padding: 0.8em 0;
-    min-height: 100px;
-    gap: 0.3em;
-  }
-
-  .header-spacer {
-    width: 36px;
-  }
-}
-
-@media (max-width: 360px) {
-  .header {
-    font-size: 1em;
-    min-height: 70px;
-    padding: 0.5em 0;
-  }
-
-  .header-spacer {
-    width: 28px;
-  }
-
-  .menu-nav .button,
-  .classes-menu .button {
-    font-size: 0.9em;
-  }
-
-  .edit-menu .one-line {
-    padding: 0.6em;
-    gap: 0.3em;
-  }
-
-  .config-label {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -349,8 +302,7 @@ a {
   display: flex;
   align-items: center;
   gap: 0.35em;
-  max-width: 1200px;
-  max-width: 85%;
+  max-width: min(1200px, 85%);
   margin-inline: auto;
 }
 
@@ -1221,6 +1173,10 @@ pre {
 
 /* Stack buttons vertically on narrow screens */
 @media (max-width: 600px) {
+  .header {
+    max-width: 95%;
+  }
+
   .action-buttons-row {
     flex-direction: column;
     width: 90%;
@@ -1279,9 +1235,7 @@ pre {
 
   /* Adjust slider rows for narrow screens */
   .edit-menu .one-line {
-    padding: 0.8em 0.8em;
     width: 95%;
-    gap: 0.5em;
   }
 
   .edit-menu .one-line .fa {
@@ -1324,12 +1278,13 @@ pre {
   backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--glass-border);
   border-radius: calc(var(--border-radius) * 1.5);
-  padding: 1em 1.5em;
+  padding: clamp(0.6em, 2vw, 1em) clamp(0.8em, 3vw, 1.5em);
   margin: var(--spacing-sm) auto;
   box-shadow: var(--shadow-subtle);
   transition: all var(--transition-fast);
   width: 100%;
   flex: 0 0 auto;
+  gap: clamp(0.3em, 1vw, 0.5em);
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
