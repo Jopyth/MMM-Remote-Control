@@ -109,78 +109,51 @@ Object.assign(
               break;
 
 
-            case "brightness": {
-
-              const slider = document.querySelector("#brightness-slider");
-              slider.value = payload.result;
-              this.updateSliderThumbColor(
-                slider,
-                "brightness"
-              );
-
-              break;
-
-            }
-            case "temp": {
-
-              const slider = document.querySelector("#temp-slider");
-              slider.value = payload.result;
-              this.updateSliderThumbColor(
-                slider,
-                "temp"
-              );
-
-              break;
-
-            }
-            case "zoom": {
-
-              const slider = document.querySelector("#zoom-slider");
-              slider.value = payload.result;
-              this.updateSliderThumbColor(
-                slider,
-                "zoom"
-              );
-
-              break;
-
-            }
-            case "backgroundColor": {
-
-              const picker = document.querySelector("#background-color-picker");
-              if (payload.result) {
-
-                picker.value = payload.result;
-
-              }
-
-              break;
-
-            }
-            case "fontColor": {
-
-              const picker = document.querySelector("#font-color-picker");
-              if (payload.result) {
-
-                picker.value = payload.result;
-
-              }
-
-              break;
-
-            }
             case "translations":
 
               this.translations = payload.data;
               this.onTranslationsLoaded();
-
               break;
 
 
-            default:
+            default: {
 
-              this.handleLoadList(payload);
+              const sliderMap = {
+                "brightness": {"selector": "#brightness-slider", "type": "brightness"},
+                "temp": {"selector": "#temp-slider", "type": "temp"},
+                "zoom": {"selector": "#zoom-slider", "type": "zoom"}
+              };
+              const pickerMap = {
+                "backgroundColor": "#background-color-picker",
+                "fontColor": "#font-color-picker"
+              };
+              const dataKey = payload.query.data;
+              if (sliderMap[dataKey]) {
 
+                const {selector, type} = sliderMap[dataKey],
+                  slider = document.querySelector(selector);
+                slider.value = payload.result;
+                this.updateSliderThumbColor(
+                  slider,
+                  type
+                );
+
+              } else if (pickerMap[dataKey]) {
+
+                const picker = document.querySelector(pickerMap[dataKey]);
+                if (payload.result) {
+
+                  picker.value = payload.result;
+
+                }
+
+              } else {
+
+                this.handleLoadList(payload);
+
+              }
+
+            }
 
           }
           return;
@@ -223,42 +196,27 @@ Object.assign(
       switch (notification) {
 
         case "REFRESH":
+        case "RESTART": {
 
+          const delay = notification === "RESTART" ? 62_000 : 2000;
           setTimeout(
-            () => {
-
-              document.location.reload();
-
-            },
-            2000
+            () => { document.location.reload(); },
+            delay
           );
           return;
 
-
-        case "RESTART":
-
-          setTimeout(
-            () => {
-
-              document.location.reload();
-
-            },
-            62_000
-          );
-          return;
+        }
 
 
         case "REMOTE_CLIENT_CUSTOM_MENU":
+        case "REMOTE_CLIENT_MODULEAPI_MENU": {
 
-          this.customMenu = payload;
-          this.createDynamicMenu(this.customMenu);
+          const menuKey = notification === "REMOTE_CLIENT_CUSTOM_MENU" ? "customMenu" : "moduleApiMenu";
+          this[menuKey] = payload;
+          this.createDynamicMenu(payload);
           return;
 
-
-        case "REMOTE_CLIENT_MODULEAPI_MENU":
-
-          this.moduleApiMenu = payload;
-          this.createDynamicMenu(this.moduleApiMenu);
+        }
 
 
       }
@@ -322,9 +280,6 @@ Object.assign(
           url,
           {
             "method": "GET",
-            "headers": {
-              "Content-type": "application/x-www-form-urlencoded"
-            },
             signal
           }
         );
