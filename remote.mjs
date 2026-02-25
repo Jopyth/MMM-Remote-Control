@@ -65,72 +65,6 @@ const buttons = {
 
   },
 
-  // Settings menu buttons
-  "brightness-reset" () {
-
-    const element = document.querySelector("#brightness-slider");
-    element.value = 100;
-    Remote.updateSliderThumbColor(
-      element,
-      "brightness"
-    );
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "BRIGHTNESS", "value": element.value}
-    );
-
-  },
-
-  "temp-reset" () {
-
-    const element = document.querySelector("#temp-slider");
-    element.value = 327;
-    Remote.updateSliderThumbColor(
-      element,
-      "temp"
-    );
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "TEMP", "value": element.value}
-    );
-
-  },
-
-  "zoom-reset" () {
-
-    const element = document.querySelector("#zoom-slider");
-    element.value = 100;
-    Remote.updateSliderThumbColor(
-      element,
-      "zoom"
-    );
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "ZOOM", "value": element.value}
-    );
-
-  },
-
-  "background-color-reset" () {
-
-    document.querySelector("#background-color-picker").value = "#000000";
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "BACKGROUND_COLOR", "value": ""}
-    );
-
-  },
-
-  "font-color-reset" () {
-
-    document.querySelector("#font-color-picker").value = "#ffffff";
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "FONT_COLOR", "value": ""}
-    );
-
-  },
-
   // Edit menu buttons
   "show-all-button" () {
 
@@ -164,167 +98,6 @@ const buttons = {
 
   },
 
-  // Power menu buttons
-  "shut-down-button" () {
-
-    const self = Remote,
-      wrapper = document.createElement("div");
-    wrapper.innerHTML = `<span>${self.translate("CONFIRM_SHUTDOWN")}</span>`;
-    const ok = self.createSymbolText(
-      "fa fa-power-off",
-      self.translate("SHUTDOWN"),
-      () => {
-
-        Remote.sendSocketNotification(
-          "REMOTE_ACTION",
-          {"action": "SHUTDOWN"}
-        );
-
-      }
-    );
-    wrapper.append(ok);
-
-    const cancel = self.createSymbolText(
-      "fa fa-times",
-      self.translate("CANCEL"),
-      () => {
-
-        self.setStatus("none");
-
-      }
-    );
-    wrapper.append(cancel);
-
-    self.setStatus(
-      false,
-      false,
-      wrapper
-    );
-
-  },
-  "restart-button" () {
-
-    const self = Remote,
-      wrapper = document.createElement("div");
-    wrapper.innerHTML = `<span>${self.translate("CONFIRM_REBOOT")}</span>`;
-    const ok = self.createSymbolText(
-      "fa fa-refresh",
-      self.translate("REBOOT"),
-      () => {
-
-        Remote.sendSocketNotification(
-          "REMOTE_ACTION",
-          {"action": "REBOOT"}
-        );
-
-      }
-    );
-    wrapper.append(ok);
-
-    const cancel = self.createSymbolText(
-      "fa fa-times",
-      self.translate("CANCEL"),
-      () => {
-
-        self.setStatus("none");
-
-      }
-    );
-    wrapper.append(cancel);
-
-    self.setStatus(
-      false,
-      false,
-      wrapper
-    );
-
-  },
-  "restart-mm-button" () {
-
-    const self = Remote,
-      wrapper = document.createElement("div");
-    wrapper.innerHTML = `<span>${self.translate("CONFIRM_RESTARTMM")}</span>`;
-    const ok = self.createSymbolText(
-      "fa fa-recycle",
-      self.translate("RESTARTMM"),
-      () => {
-
-        Remote.sendSocketNotification(
-          "REMOTE_ACTION",
-          {"action": "RESTART"}
-        );
-
-      }
-    );
-    wrapper.append(ok);
-
-    const cancel = self.createSymbolText(
-      "fa fa-times",
-      self.translate("CANCEL"),
-      () => {
-
-        self.setStatus("none");
-
-      }
-    );
-    wrapper.append(cancel);
-
-    self.setStatus(
-      false,
-      false,
-      wrapper
-    );
-
-  },
-  "monitor-on-button" () {
-
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "MONITORON"}
-    );
-
-  },
-  "monitor-off-button" () {
-
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "MONITOROFF"}
-    );
-
-  },
-  "refresh-mm-button" () {
-
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "REFRESH"}
-    );
-
-  },
-  "fullscreen-button" () {
-
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "TOGGLEFULLSCREEN"}
-    );
-
-  },
-  "minimize-button" () {
-
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "MINIMIZE"}
-    );
-
-  },
-  "devtools-button" () {
-
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "DEVTOOLS"}
-    );
-
-  },
-
   // Config menu buttons
   "save-config" () {
 
@@ -338,14 +111,6 @@ const buttons = {
 
   },
   // Main menu
-  "save-button" () {
-
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "SAVE"}
-    );
-
-  },
   "close-popup" () {
 
     Remote.closePopup();
@@ -394,10 +159,9 @@ const buttons = {
       "mmrc_notification_payload",
       rawPayload
     );
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
+    Remote.action(
+      "NOTIFICATION",
       {
-        "action": "NOTIFICATION",
         "notification": name,
         payload
       }
@@ -451,16 +215,111 @@ const buttons = {
   },
   "hide-alert-button" () {
 
-    Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      {"action": "HIDE_ALERT"}
-    );
+    Remote.action("HIDE_ALERT");
 
   }
 };
 
 // Make buttons accessible to methods in topic files via this.buttons
 Remote.buttons = buttons;
+
+/**
+ * Shows a confirmation dialog for destructive actions.
+ * @param {string} confirmKey - Translation key for the confirmation message.
+ * @param {string} icon - FA icon class for the confirm button.
+ * @param {string} labelKey - Translation key for the confirm button label.
+ * @param {string} action - REMOTE_ACTION name to send on confirm.
+ */
+function showConfirmation (confirmKey, icon, labelKey, action) {
+
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = `<span>${Remote.translate(confirmKey)}</span>`;
+  wrapper.append(Remote.createSymbolText(
+    icon,
+    Remote.translate(labelKey),
+    () => { Remote.action(action); }
+  ));
+  wrapper.append(Remote.createSymbolText(
+    "fa fa-times",
+    Remote.translate("CANCEL"),
+    () => { Remote.setStatus("none"); }
+  ));
+  Remote.setStatus(
+    false,
+    false,
+    wrapper
+  );
+
+}
+
+for (const [id, {selector, defaultValue, type, action}] of Object.entries({
+  "brightness-reset": {"selector": "#brightness-slider", "defaultValue": 100, "type": "brightness", "action": "BRIGHTNESS"},
+  "temp-reset": {"selector": "#temp-slider", "defaultValue": 327, "type": "temp", "action": "TEMP"},
+  "zoom-reset": {"selector": "#zoom-slider", "defaultValue": 100, "type": "zoom", "action": "ZOOM"}
+})) {
+
+  buttons[id] = () => {
+
+    const element = document.querySelector(selector);
+    element.value = defaultValue;
+    Remote.updateSliderThumbColor(
+      element,
+      type
+    );
+    Remote.action(
+      action,
+      {"value": element.value}
+    );
+
+  };
+
+}
+
+for (const [id, {selector, defaultValue, action}] of Object.entries({
+  "background-color-reset": {"selector": "#background-color-picker", "defaultValue": "#000000", "action": "BACKGROUND_COLOR"},
+  "font-color-reset": {"selector": "#font-color-picker", "defaultValue": "#ffffff", "action": "FONT_COLOR"}
+})) {
+
+  buttons[id] = () => {
+
+    document.querySelector(selector).value = defaultValue;
+    Remote.action(
+      action,
+      {"value": ""}
+    );
+
+  };
+
+}
+
+for (const [id, {confirmKey, icon, labelKey, action}] of Object.entries({
+  "shut-down-button": {"confirmKey": "CONFIRM_SHUTDOWN", "icon": "fa fa-power-off", "labelKey": "SHUTDOWN", "action": "SHUTDOWN"},
+  "restart-button": {"confirmKey": "CONFIRM_REBOOT", "icon": "fa fa-refresh", "labelKey": "REBOOT", "action": "REBOOT"},
+  "restart-mm-button": {"confirmKey": "CONFIRM_RESTARTMM", "icon": "fa fa-recycle", "labelKey": "RESTARTMM", "action": "RESTART"}
+})) {
+
+  buttons[id] = () => showConfirmation(
+    confirmKey,
+    icon,
+    labelKey,
+    action
+  );
+
+}
+
+for (const [id, action] of Object.entries({
+  "monitor-on-button": "MONITORON",
+  "monitor-off-button": "MONITOROFF",
+  "refresh-mm-button": "REFRESH",
+  "fullscreen-button": "TOGGLEFULLSCREEN",
+  "minimize-button": "MINIMIZE",
+  "devtools-button": "DEVTOOLS",
+  "save-button": "SAVE"
+})) {
+
+  buttons[id] = () => Remote.action(action);
+
+}
 
 Remote.updateNotificationUrl = function () {
 
@@ -561,10 +420,7 @@ Remote.init = function () {
 
   // Initialize socket connection
   Remote.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
-  Remote.sendSocketNotification(
-    "REMOTE_ACTION",
-    {"data": "translations"}
-  );
+  Remote.getData("translations");
   // Menu rendering + setup deferred to onTranslationsLoaded()
 
   globalThis.addEventListener(
