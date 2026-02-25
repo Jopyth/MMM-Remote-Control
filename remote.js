@@ -2106,17 +2106,19 @@ const Remote = {
 
   createDynamicMenu (content) {
     if (content) {
-      const buttonElement = document.getElementById(`${content.id}-button`);
-      if (buttonElement) {
-        buttonElement.remove();
-      }
+      const cleanup = (node) => {
+        if (!node?.id) { return; }
+        document.getElementById(`${node.id}-button`)?.remove();
+        for (const element of document.querySelectorAll(`.${node.id}-menu`)) { element.remove(); }
+        if (globalThis.location.hash === `#${node.id}-menu`) { globalThis.location.hash = "main-menu"; }
+        document.querySelector("#back-button")?.classList.remove(`${node.id}-menu`);
+        document.querySelector(".menu-content")?.classList.remove(`${node.id}-menu`);
+        for (const item of node.items ?? []) { if (item?.type === "menu") { cleanup(item); } }
+      };
 
-      const menuElements = document.querySelectorAll(`.${content.id}-menu`);
-      for (const menuElement of menuElements) menuElement.remove();
-
-      if (globalThis.location.hash === `#${content.id}-menu`) {
-        globalThis.location.hash = "main-menu";
-      }
+      cleanup(this.dynamicMenus?.[content.id]);
+      cleanup(content);
+      this.dynamicMenus = {...this.dynamicMenus, [content.id]: content};
     }
 
     // Create button in main menu

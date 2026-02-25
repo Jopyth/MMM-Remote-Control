@@ -148,6 +148,52 @@ describe("remote.js DOM smoke tests", () => {
     });
   });
 
+  test("createDynamicMenu replaces old nested menu entries", () => {
+    window.document.body.innerHTML = `
+      <div id="back-button"></div>
+      <section class="menu-content"></section>
+      <div id="alert-button"></div>
+    `;
+
+    const guessedMenu = {
+      id: "module-control",
+      type: "menu",
+      text: "Module Controls",
+      icon: "window-restore",
+      items: [
+        {
+          id: "mc-pages",
+          type: "menu",
+          text: "MMM-pages",
+          icon: "bars",
+          items: [{id: "mc-pages-pagechanged", type: "item", action: "NOTIFICATION", content: {notification: "PAGE_CHANGED"}}]
+        }
+      ]
+    };
+
+    const explicitMenu = {
+      id: "module-control",
+      type: "menu",
+      text: "Module Controls",
+      icon: "window-restore",
+      items: [
+        {
+          id: "mc-pages",
+          type: "menu",
+          text: "MMM-pages",
+          icon: "bars",
+          items: [{id: "mc-pages-next", type: "item", action: "NOTIFICATION", content: {notification: "PAGE_INCREMENT"}}]
+        }
+      ]
+    };
+
+    Remote.createDynamicMenu(guessedMenu);
+    Remote.createDynamicMenu(explicitMenu);
+
+    assert.equal(window.document.querySelectorAll("#mc-pages-pagechanged-button").length, 0);
+    assert.equal(window.document.querySelectorAll("#mc-pages-next-button").length, 1);
+  });
+
   test("data structures are initialized correctly", () => {
     assert.ok(typeof Remote.savedData === "object");
     assert.ok(typeof Remote.translations === "object");

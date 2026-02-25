@@ -13,11 +13,16 @@ const url = require("node:url");
 const {v4: uuid} = require("uuid");
 const express = require("express");
 
-const getActions = (content) => {
+const getActions = (handler) => {
+  const content = typeof handler === "function"
+    ? Function.prototype.toString.call(handler)
+    : (typeof handler === "string"
+      ? handler
+      : "");
   const re = /notification ===? (?:"|')([A-Z_-]+?)(?:"|')|case (?:"|')([A-Z_-]+)(?:"|')/g;
-  const availableActions = [];
-  for (const match of content.match(re) || []) {
-    const n = match.replaceAll(re, "$1");
+  const availableActions = new Set();
+  for (const match of content.matchAll(re)) {
+    const n = match[1] ?? match[2];
     if (n && ![
       "ALL_MODULES_STARTED",
       "DOM_OBJECTS_CREATED",
@@ -26,10 +31,10 @@ const getActions = (content) => {
       "KEYPRESS_MODE_CHANGED",
       "USER_PRESENCE"
     ].includes(n)) {
-      availableActions.push(n);
+      availableActions.add(n);
     }
   }
-  return availableActions;
+  return [...availableActions];
 };
 
 module.exports = {
@@ -61,11 +66,12 @@ module.exports = {
     const skippedModules = new Set(["clock", "compliments", "MMM-Remote-Control"]);
 
     for (const module_ of this.configOnHd.modules.filter((module__) => !skippedModules.has(module__.module))) {
+      if (module_.module in this.externalApiRoutes) { continue; }
+
       try {
-        const moduleActions = getActions(Module.notificationHandler[module_.module]);
+        const moduleActions = getActions(Module.notificationHandler?.[module_.module]);
 
         if (moduleActions.length > 0) {
-          // Generate formatted actions object
           const actionsGuess = {};
 
           for (const a of moduleActions) {
@@ -75,15 +81,11 @@ module.exports = {
             }
           }
 
-          if (module_.module in this.externalApiRoutes) {
-            this.externalApiRoutes[module_.module].actions = {...actionsGuess, ...this.externalApiRoutes[module_.module].actions};
-          } else {
-            this.externalApiRoutes[module_.module] = {
-              module: module_.module,
-              path: module_.module.replaceAll("MMM-", "").replaceAll("-", "").toLowerCase(),
-              actions: actionsGuess
-            };
-          }
+          this.externalApiRoutes[module_.module] = {
+            module: module_.module,
+            path: module_.module.replaceAll("MMM-", "").replaceAll("-", "").toLowerCase(),
+            actions: actionsGuess
+          };
         }
       } catch (error) {
         console.warn(`getExternalApiByGuessing failed for ${module_.module}: ${error.message}`);
