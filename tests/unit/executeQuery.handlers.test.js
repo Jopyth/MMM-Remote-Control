@@ -34,7 +34,7 @@ describe("callAfterUpdate", () => {
 
     // Should add to waiting array
     assert.equal(helper.waiting.length, 1);
-    assert.equal(helper.waiting[0].finished, false);
+    assert.equal(typeof helper.waiting[0].run, "function");
 
     // Should send UPDATE notification
     assert.equal(helper.__socketNotifications.length, 1);
@@ -61,7 +61,6 @@ describe("callAfterUpdate", () => {
 
     const waitObject = helper.waiting[0];
     waitObject.run();
-    assert.equal(waitObject.finished, true);
     assert.equal(callCount, 1);
 
     // Second run should not execute callback
@@ -75,9 +74,9 @@ describe("callAfterUpdate", () => {
 
     helper.callAfterUpdate(() => {});
 
-    // Just verify it doesn't throw and creates wait object
+    // Just verify it doesn't throw and creates wait object with a run method
     assert.equal(helper.waiting.length, 1);
-    assert.ok(helper.waiting[0].callback);
+    assert.equal(typeof helper.waiting[0].run, "function");
   });
 });
 
