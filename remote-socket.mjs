@@ -354,7 +354,7 @@ Object.assign(
       const loadingIndicator = document.getElementById(`${listname}-loading`),
         parent = document.getElementById(`${listname}-results`);
 
-      parent.replaceChildren();
+      parent?.replaceChildren();
       this.show(loadingIndicator);
 
       return new Promise((resolve, reject) => {

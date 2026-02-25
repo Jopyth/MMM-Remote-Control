@@ -42,15 +42,14 @@ function stackBtn (id, outerIcon, innerIcon, text, hasArrow = false) {
  * Renders a "result list" container used by edit/classes/settings/update/add menus.
  * Each container has a loading, empty, and results div.
  * @param {string} id - ID prefix (e.g. "visible-modules" → "#visible-modules-container")
- * @param {string} menuClass - CSS class controlling visibility (e.g. "edit-menu")
  * @param {string} loadingText - Translated "loading" label
  * @param {string} emptyText - Translated "no modules" label
  * @param {string} [dataParent] - Optional data-parent attribute value
  * @returns {string} HTML string for the result list container
  */
-function resultList (id, menuClass, loadingText, emptyText, dataParent = "") {
+function resultList (id, loadingText, emptyText, dataParent = "") {
   const dataAttr = dataParent ? ` data-parent="${dataParent}"` : "";
-  return `<div id="${id}-container" class="result-list menu-element hidden ${menuClass}"${dataAttr}>
+  return `<div id="${id}-container" class="result-list"${dataAttr}>
         <div id="${id}-loading">
           <span class="fa fa-fw fa-spinner fa-pulse"></span>
           <span class="text">${loadingText}</span>
@@ -72,43 +71,41 @@ function resultList (id, menuClass, loadingText, emptyText, dataParent = "") {
  * @returns {string} HTML string for the reset button
  */
 function resetBtn (id, label) {
-  return `<span id="${id}-reset" class="inline-menu-element hidden button edit-menu" role="button" aria-label="${label}" tabindex="0"><span class="fa fa-fw fa-undo" aria-hidden="true"></span></span>`;
+  return `<span id="${id}-reset" class="inline-menu-element hidden button" role="button" aria-label="${label}" tabindex="0"><span class="fa fa-fw fa-undo" aria-hidden="true"></span></span>`;
 }
 
 Object.assign(Remote, {
 
   /**
-   * Renders all menu navigation elements and menu content section into the DOM.
-   * Must be called after translations are available (from onTranslationsLoaded).
-   * Updates header title and back-button aria-label as well.
+   * Returns HTML for only the requested menu.
+   * Used by showMenu() to lazy-render the active menu into <main>.
+   * @param {string} menuName - The menu identifier (e.g. "main-menu")
+   * @returns {string} HTML string for the menu
    */
-  renderMenus () {
-    const main = document.querySelector(".main-content");
-    if (!main) {
-      return;
-    }
-
-    main.innerHTML = `${this.renderNavMenus()}<section class="menu-content">${this.renderMenuContent()}</section>`;
-
-    const headerTitle = document.querySelector(".header-title");
-    if (headerTitle) {
-      headerTitle.textContent = this.translate("TITLE");
-    }
-
-    const backBtn = document.querySelector("#back-button");
-    if (backBtn) {
-      backBtn.setAttribute("aria-label", this.translate("BACK"));
-    }
+  renderMenu (menuName) {
+    const renderers = {
+      "main-menu": () => this.renderMainMenu(),
+      "power-menu": () => this.renderPowerMenu(),
+      "edit-menu": () => this.renderEditMenu(),
+      "settings-menu": () => this.renderSettingsMenu(),
+      "classes-menu": () => this.renderClassesMenu(),
+      "update-menu": () => this.renderUpdateMenu(),
+      "alert-menu": () => this.renderAlertMenu(),
+      "notification-menu": () => this.renderNotificationMenu(),
+      "links-menu": () => this.renderLinksMenu(),
+      "add-module-menu": () => this.renderAddModuleMenu()
+    };
+    const renderer = renderers[menuName];
+    return renderer ? renderer() : "";
   },
 
   /**
-   * Returns HTML for all navigation menu `<nav>` elements.
-   * @returns {string} Combined HTML string for all nav menus
+   * Returns HTML for the main menu (navigation buttons only).
+   * @returns {string} HTML string for the main menu nav
    */
-  renderNavMenus () {
+  renderMainMenu () {
     const t = (key) => this.translate(key);
-    return `
-      <nav class="menu-nav menu-element hidden main-menu">
+    return `<nav class="menu-nav">
         ${navBtn("power-button", "fa-power-off", t("SHUTDOWN_MENU_NAME"), true)}
         ${stackBtn("edit-button", "fa-television", "fa-pencil", t("EDIT_MENU_NAME"), true)}
         ${navBtn("settings-button", "fa-wrench", t("CONFIGURE_MENU_NAME"), true)}
@@ -118,8 +115,16 @@ Object.assign(Remote, {
         ${navBtn("notification-button", "fa-bell-o", t("NOTIFICATION_MENU_NAME"), true)}
         ${navBtn("links-button", "fa-link", t("LINKS"), true)}
         ${navBtn("mirror-link-button", "fa-external-link", t("VIEW_MIRROR"))}
-      </nav>
-      <nav class="menu-nav menu-element hidden power-menu">
+      </nav>`;
+  },
+
+  /**
+   * Returns HTML for the power menu (navigation buttons only).
+   * @returns {string} HTML string for the power menu nav
+   */
+  renderPowerMenu () {
+    const t = (key) => this.translate(key);
+    return `<nav class="menu-nav">
         ${navBtn("shut-down-button", "fa-power-off", t("SHUTDOWN"))}
         ${navBtn("restart-button", "fa-refresh", t("REBOOT"))}
         ${navBtn("restart-mm-button", "fa-recycle", t("RESTARTMM"))}
@@ -129,21 +134,104 @@ Object.assign(Remote, {
         ${navBtn("fullscreen-button", "fa-arrows-alt", t("FULLSCREEN"))}
         ${navBtn("minimize-button", "fa-window-minimize", t("MINIMIZE"))}
         ${navBtn("devtools-button", "fa-terminal", t("DEVTOOLS"))}
-      </nav>
-      <nav class="menu-nav menu-element hidden alert-menu">
+      </nav>`;
+  },
+
+  /**
+   * Returns HTML for the edit menu (sliders, color pickers, action buttons, module list).
+   * @returns {string} HTML string for the edit menu section
+   */
+  renderEditMenu () {
+    const t = (key) => this.translate(key);
+    return `<section class="menu-content edit-menu">
+        ${this.renderEditMenuContent()}
+        ${resultList("visible-modules", t("LOADING"), t("NO_MODULES_LOADED"))}
+      </section>`;
+  },
+
+  /**
+   * Returns HTML for the settings menu (warning, buttons, config module list).
+   * @returns {string} HTML string for the settings menu section
+   */
+  renderSettingsMenu () {
+    const t = (key) => this.translate(key);
+    return `<section class="menu-content">
+        ${this.renderSettingsMenuContent()}
+        ${resultList("config-modules", t("LOADING"), t("NO_MODULES_LOADED"))}
+      </section>`;
+  },
+
+  /**
+   * Returns HTML for the classes menu (classes result list only).
+   * @returns {string} HTML string for the classes menu section
+   */
+  renderClassesMenu () {
+    const t = (key) => this.translate(key);
+    return `<section class="menu-content">
+        ${resultList("classes", t("LOADING"), t("NO_MODULES_LOADED"))}
+      </section>`;
+  },
+
+  /**
+   * Returns HTML for the update menu (update-module result list only).
+   * @returns {string} HTML string for the update menu section
+   */
+  renderUpdateMenu () {
+    const t = (key) => this.translate(key);
+    return `<section class="menu-content">
+        ${resultList("update-module", t("LOADING"), t("NO_MODULES_LOADED"))}
+      </section>`;
+  },
+
+  /**
+   * Returns HTML for the alert menu (nav buttons + alert form).
+   * @returns {string} HTML string for the alert menu
+   */
+  renderAlertMenu () {
+    const t = (key) => this.translate(key);
+    return `<nav class="menu-nav">
         ${navBtn("send-alert-button", "fa-send-o", t("SENDALERT"))}
         ${navBtn("hide-alert-button", "fa-eye-slash", t("HIDEALERT"))}
       </nav>
-      <nav class="menu-nav menu-element hidden notification-menu">
+      <section class="menu-content">
+        ${this.renderAlertForm()}
+      </section>`;
+  },
+
+  /**
+   * Returns HTML for the notification menu (nav buttons + notification form).
+   * @returns {string} HTML string for the notification menu
+   */
+  renderNotificationMenu () {
+    const t = (key) => this.translate(key);
+    return `<nav class="menu-nav">
         ${navBtn("send-notification-button", "fa-send-o", t("SEND_NOTIFICATION"))}
         ${navBtn("restore-notification-button", "fa-history", t("RESTORE"))}
       </nav>
-      <nav class="menu-nav menu-element hidden links-menu">
+      <section class="menu-content">
+        ${this.renderNotificationForm()}
+      </section>`;
+  },
+
+  /**
+   * Returns HTML for the links menu (nav with links container only).
+   * @returns {string} HTML string for the links menu nav
+   */
+  renderLinksMenu () {
+    return `<nav class="menu-nav">
         <div id="links-container-nav">
           <!-- Links will be dynamically inserted here -->
         </div>
-      </nav>
-      <nav class="menu-nav menu-element hidden add-module-menu">
+      </nav>`;
+  },
+
+  /**
+   * Returns HTML for the add-module menu (search nav + result list).
+   * @returns {string} HTML string for the add-module menu
+   */
+  renderAddModuleMenu () {
+    const t = (key) => this.translate(key);
+    return `<nav class="menu-nav">
         <div id="search-container" class="search-container">
           <span class="fa fa-fw fa-search" aria-hidden="true"></span>
           <input
@@ -155,25 +243,10 @@ Object.assign(Remote, {
           />
           <span id="delete-search-input" class="fa fa-times-circle delete-button hidden"></span>
         </div>
-      </nav>`;
-  },
-
-  /**
-   * Returns HTML for the `<section class="menu-content">` inner content.
-   * Covers notification form, alert form, edit controls, and all result-list containers.
-   * @returns {string} Combined HTML string for all menu content blocks
-   */
-  renderMenuContent () {
-    return `
-      ${this.renderNotificationForm()}
-      ${this.renderAlertForm()}
-      ${this.renderEditMenuContent()}
-      ${resultList("visible-modules", "edit-menu", this.translate("LOADING"), this.translate("NO_MODULES_LOADED"))}
-      ${resultList("classes", "classes-menu", this.translate("LOADING"), this.translate("NO_MODULES_LOADED"))}
-      ${this.renderSettingsMenuContent()}
-      ${resultList("config-modules", "settings-menu", this.translate("LOADING"), this.translate("NO_MODULES_LOADED"))}
-      ${resultList("add-module", "add-module-menu", this.translate("LOADING"), this.translate("NO_MODULES_LOADED"), "settings")}
-      ${resultList("update-module", "update-menu", this.translate("LOADING"), this.translate("NO_MODULES_LOADED"))}`;
+      </nav>
+      <section class="menu-content">
+        ${resultList("add-module", t("LOADING"), t("NO_MODULES_LOADED"), "settings")}
+      </section>`;
   },
 
   /**
@@ -182,7 +255,7 @@ Object.assign(Remote, {
    */
   renderNotificationForm () {
     const t = (key) => this.translate(key);
-    return `<form id="notification-form" action="" method="GET" class="menu-element hidden notification-menu">
+    return `<form id="notification-form" action="" method="GET">
         <div class="xsmall">${t("FORM_NOTIFICATION_NAME")}</div>
         <input
           id="notification-name"
@@ -217,7 +290,7 @@ Object.assign(Remote, {
    */
   renderAlertForm () {
     const t = (key) => this.translate(key);
-    return `<form id="alert" action="" method="GET" class="menu-element hidden alert-menu">
+    return `<form id="alert" action="" method="GET">
         <input type="hidden" name="action" value="SHOW_ALERT" />
         <div class="xsmall">${t("FORM_TYPE")}</div>
         <select name="type">
@@ -241,54 +314,53 @@ Object.assign(Remote, {
    */
   renderEditMenuContent () {
     const t = (key) => this.translate(key);
-    const me = "menu-element hidden edit-menu";
 
-    return `<div class="menu-element-container ${me}">
+    return `<div class="menu-element-container">
         <div class="action-buttons-row">
-          <div id="save-button" class="${me} button" role="button" aria-label="${t("SAVE")}" tabindex="0">
+          <div id="save-button" class="button" role="button" aria-label="${t("SAVE")}" tabindex="0">
             <span class="fa fa-fw fa-save" aria-hidden="true"></span>
             <span class="text">${t("SAVE")}</span>
           </div>
-          <div id="show-all-button" class="${me} button" role="button" aria-label="${t("SHOWALL")}" tabindex="0">
+          <div id="show-all-button" class="button" role="button" aria-label="${t("SHOWALL")}" tabindex="0">
             <span class="fa fa-fw fa-toggle-on" aria-hidden="true"></span>
             <span class="text">${t("SHOWALL")}</span>
           </div>
-          <div id="hide-all-button" class="${me} button" role="button" aria-label="${t("HIDEALL")}" tabindex="0">
+          <div id="hide-all-button" class="button" role="button" aria-label="${t("HIDEALL")}" tabindex="0">
             <span class="fa fa-fw fa-toggle-off" aria-hidden="true"></span>
             <span class="text">${t("HIDEALL")}</span>
           </div>
         </div>
-        <div class="${me} one-line">
+        <div class="one-line">
           <span class="fa fa-fw fa-sun-o" aria-hidden="true"></span>
-          <div id="brightness-container" class="slider-container ${me}" data-label="Brightness">
+          <div id="brightness-container" class="slider-container" data-label="Brightness">
             <input id="brightness-slider" type="range" min="0" max="100" step="5" value="100" class="slider" aria-label="${t("BRIGHTNESS")}" />
           </div>
           ${resetBtn("brightness", "Reset brightness")}
         </div>
-        <div class="${me} one-line">
+        <div class="one-line">
           <span class="fa fa-fw fa-thermometer-three-quarters" aria-hidden="true"></span>
-          <div id="temp-container" class="slider-container ${me}" data-label="Color Temperature">
+          <div id="temp-container" class="slider-container" data-label="Color Temperature">
             <input id="temp-slider" type="range" min="140" max="500" step="20" value="325" class="slider" aria-label="Color temperature" />
           </div>
           ${resetBtn("temp", "Reset color temperature")}
         </div>
-        <div class="${me} one-line">
+        <div class="one-line">
           <span class="fa fa-fw fa-search-plus" aria-hidden="true"></span>
-          <div id="zoom-container" class="slider-container ${me}" data-label="Zoom">
+          <div id="zoom-container" class="slider-container" data-label="Zoom">
             <input id="zoom-slider" type="range" min="0" max="200" step="5" value="100" class="slider" aria-label="${t("ZOOM")}" />
           </div>
           ${resetBtn("zoom", "Reset zoom")}
         </div>
-        <div class="${me} one-line">
+        <div class="one-line">
           <span class="fa fa-fw fa-adjust" aria-hidden="true"></span>
           <label for="background-color-picker" class="color-label">${t("BACKGROUND_COLOR")}</label>
-          <input id="background-color-picker" type="color" value="#000000" class="color-picker ${me}" aria-label="${t("BACKGROUND_COLOR")}" />
+          <input id="background-color-picker" type="color" value="#000000" class="color-picker" aria-label="${t("BACKGROUND_COLOR")}" />
           ${resetBtn("background-color", "Reset background color")}
         </div>
-        <div class="${me} one-line">
+        <div class="one-line">
           <span class="fa fa-fw fa-font" aria-hidden="true"></span>
           <label for="font-color-picker" class="color-label">${t("FONT_COLOR")}</label>
-          <input id="font-color-picker" type="color" value="#ffffff" class="color-picker ${me}" aria-label="${t("FONT_COLOR")}" />
+          <input id="font-color-picker" type="color" value="#ffffff" class="color-picker" aria-label="${t("FONT_COLOR")}" />
           ${resetBtn("font-color", "Reset font color")}
         </div>
       </div>`;
@@ -300,21 +372,20 @@ Object.assign(Remote, {
    */
   renderSettingsMenuContent () {
     const t = (key) => this.translate(key);
-    const me = "menu-element hidden settings-menu";
-    return `<div id="settings-warning" class="${me} settings-warning">
+    return `<div id="settings-warning" class="settings-warning">
         <span class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></span>
         <span>${t("EXPERIMENTAL")}</span>
       </div>
-      <div class="action-buttons-row ${me}">
-        <div id="save-config" class="${me} button">
+      <div class="action-buttons-row">
+        <div id="save-config" class="button">
           <span class="fa fa-fw fa-save" aria-hidden="true"></span>
           <span class="text">${t("SAVE")}</span>
         </div>
-        <div id="restore-config" class="${me} button" aria-label="${t("RESTORE")}">
+        <div id="restore-config" class="button" aria-label="${t("RESTORE")}">
           <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
           <span class="text">${t("RESTORE")}</span>
         </div>
-        <div id="add-module" class="${me} button">
+        <div id="add-module" class="button">
           <span class="fa fa-fw fa-plus" aria-hidden="true"></span>
           <span class="text">${t("ADD_MODULE")}</span>
         </div>

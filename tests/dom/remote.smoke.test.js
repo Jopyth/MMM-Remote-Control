@@ -180,8 +180,14 @@ describe("remote.js DOM smoke tests", () => {
     Remote.createDynamicMenu(guessedMenu);
     Remote.createDynamicMenu(explicitMenu);
 
+    // Top-level menu button is present in DOM
+    assert.equal(window.document.querySelectorAll("#module-control-button").length, 1);
+    // Nested items are NOT pre-rendered (lazy rendering: loaded on navigation)
+    assert.equal(window.document.querySelectorAll("#mc-pages-button").length, 0);
     assert.equal(window.document.querySelectorAll("#mc-pages-pagechanged-button").length, 0);
-    assert.equal(window.document.querySelectorAll("#mc-pages-next-button").length, 1);
+    assert.equal(window.document.querySelectorAll("#mc-pages-next-button").length, 0);
+    // Data structure holds the latest (explicit) menu content
+    assert.equal(Remote.dynamicMenus["module-control"].items[0].items[0].id, "mc-pages-next");
   });
 
   test("data structures are initialized correctly", () => {

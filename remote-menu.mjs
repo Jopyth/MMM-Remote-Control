@@ -17,7 +17,7 @@ Object.assign(
 
       for (const key of Object.keys(buttons)) {
 
-        document.getElementById(key).addEventListener(
+        document.getElementById(key)?.addEventListener(
           "click",
           buttons[key],
           false
@@ -27,7 +27,11 @@ Object.assign(
 
     },
 
-    loadOtherElements () {
+    /**
+     * Attaches event listeners for the edit menu sliders and color pickers.
+     * Called by showMenu() when the edit menu is rendered.
+     */
+    attachEditMenuListeners () {
 
       const slider = document.querySelector("#brightness-slider");
       slider.addEventListener(
@@ -58,7 +62,6 @@ Object.assign(
         slider,
         "brightness"
       );
-      this.loadBrightness();
 
       const slider2 = document.querySelector("#temp-slider");
       slider2.addEventListener(
@@ -89,7 +92,6 @@ Object.assign(
         slider2,
         "temp"
       );
-      this.loadTemp();
 
       const zoomSlider = document.querySelector("#zoom-slider");
       zoomSlider.addEventListener(
@@ -120,7 +122,6 @@ Object.assign(
         zoomSlider,
         "zoom"
       );
-      this.loadZoom();
 
       const bgColorPicker = document.querySelector("#background-color-picker");
       bgColorPicker.addEventListener(
@@ -135,7 +136,6 @@ Object.assign(
         },
         false
       );
-      this.loadBackgroundColor();
 
       const fontColorPicker = document.querySelector("#font-color-picker");
       fontColorPicker.addEventListener(
@@ -150,7 +150,14 @@ Object.assign(
         },
         false
       );
-      this.loadFontColor();
+
+    },
+
+    /**
+     * Attaches event listeners for the add-module search input.
+     * Called by showMenu() when the add-module menu is rendered.
+     */
+    attachSearchListeners () {
 
       const input = document.querySelector("#add-module-search"),
         deleteButton = document.querySelector("#delete-search-input");
@@ -233,52 +240,57 @@ Object.assign(
 
       }
 
-      switch (newMenu) {
+      // Save any open form data before clearing the DOM
+      this.saveFormState();
 
-        case "add-module-menu":
+      const main = document.querySelector(".main-content");
+      if (!main) {
 
-          this.loadModulesToAdd();
-          break;
-
-
-        case "edit-menu":
-
-          this.loadVisibleModules();
-          this.loadBrightness();
-          this.loadTemp();
-          this.loadZoom();
-          this.loadBackgroundColor();
-          this.loadFontColor();
-          break;
-
-
-        case "settings-menu":
-
-          this.loadConfigModules();
-          break;
-
-
-        case "classes-menu":
-
-          this.loadClasses();
-          break;
-
-
-        case "update-menu":
-
-          this.loadModulesToUpdate();
-          break;
-
-
-        case "links-menu":
-
-          this.loadLinks();
-          break;
-
+        return;
 
       }
 
+      // Lazy render: only the active menu
+      const html = this.renderMenu(newMenu);
+      main.innerHTML = html;
+
+      // For dynamic menus not in the standard renderMenu() map
+      if (!html) {
+
+        const dynamicContent = this.findDynamicMenuData(newMenu);
+        if (dynamicContent) {
+
+          const nav = document.createElement("nav");
+          nav.className = "menu-nav";
+          main.append(nav);
+          for (const item of dynamicContent.items ?? []) {
+
+            this.createMenuElement(
+              item,
+              dynamicContent.id,
+              nav,
+              true
+            );
+
+          }
+
+        }
+
+      }
+
+      // Show back button for all sub-menus, hide on root
+      document.querySelector("#back-button")?.classList.toggle(
+        "hidden",
+        newMenu === "main-menu"
+      );
+
+      // Attach click handlers for buttons now in DOM
+      this.loadButtons(this.buttons);
+
+      // Menu-specific setup and data loading
       if (newMenu === "main-menu") {
+
+        this.injectDynamicMenuButtons();
 
         try {
 
@@ -316,34 +328,67 @@ Object.assign(
 
         }
 
-      }
+      } else {
 
-      const allMenus = [...document.querySelectorAll(".menu-element")];
+        switch (newMenu) {
 
-      for (const menu of allMenus) {
+          case "edit-menu":
 
-        this.hide(menu);
+            this.attachEditMenuListeners();
+            this.loadVisibleModules();
+            this.loadBrightness();
+            this.loadTemp();
+            this.loadZoom();
+            this.loadBackgroundColor();
+            this.loadFontColor();
+            break;
 
-      }
 
-      const currentMenu = [...document.getElementsByClassName(newMenu)];
+          case "settings-menu":
 
-      for (const menu of currentMenu) {
+            this.loadConfigModules();
+            break;
 
-        this.show(menu);
 
-      }
+          case "classes-menu":
 
-      if (newMenu === "notification-menu") {
+            this.loadClasses();
+            break;
 
-        const textarea = document.querySelector("#notification-payload");
-        if (textarea) {
 
-          textarea.style.height = "auto";
-          textarea.style.height = `${textarea.scrollHeight}px`;
+          case "update-menu":
+
+            this.loadModulesToUpdate();
+            break;
+
+
+          case "links-menu":
+
+            this.loadLinks();
+            break;
+
+
+          case "add-module-menu":
+
+            this.attachSearchListeners();
+            this.loadModulesToAdd();
+            break;
+
+
+          case "notification-menu":
+
+            this.setupNotificationForm();
+            this.restoreFormState("notification-menu");
+            break;
+
+
+          case "alert-menu":
+
+            this.restoreFormState("alert-menu");
+            break;
+
 
         }
-        Remote.updateNotificationUrl();
 
       }
 
@@ -352,6 +397,195 @@ Object.assign(
       this.currentMenu = newMenu;
       // Update header title based on the active menu
       this.updateHeaderTitle(newMenu);
+
+    },
+
+    /**
+     * Saves the current form values to Remote.formState before the DOM is cleared.
+     * Called by showMenu() on every menu transition.
+     */
+    saveFormState () {
+
+      const notificationNameEl = document.querySelector("#notification-name"),
+        notificationPayloadEl = document.querySelector("#notification-payload");
+      if (notificationNameEl || notificationPayloadEl) {
+
+        Remote.formState = Remote.formState ?? {};
+        Remote.formState.notificationName = notificationNameEl?.value ?? "";
+        Remote.formState.notificationPayload = notificationPayloadEl?.value ?? "";
+
+      }
+
+      const alertForm = document.querySelector("#alert");
+      if (alertForm) {
+
+        Remote.formState = Remote.formState ?? {};
+        Remote.formState.alertType = alertForm.querySelector("[name='type']")?.value;
+        Remote.formState.alertTitle = alertForm.querySelector("[name='title']")?.value;
+        Remote.formState.alertMessage = alertForm.querySelector("[name='message']")?.value;
+        Remote.formState.alertTimer = alertForm.querySelector("[name='timer']")?.value;
+
+      }
+
+    },
+
+    /**
+     * Restores form values from Remote.formState after a menu is rendered.
+     * Overrides any values set by setupNotificationForm() (localStorage restore).
+     * @param {string} menuName - The currently active menu name
+     */
+    restoreFormState (menuName) {
+
+      if (!Remote.formState) {
+
+        return;
+
+      }
+
+      if (menuName === "notification-menu") {
+
+        const nameInput = document.querySelector("#notification-name"),
+          payload = document.querySelector("#notification-payload");
+        if (nameInput && Remote.formState.notificationName !== undefined) {
+
+          nameInput.value = Remote.formState.notificationName;
+
+        }
+        if (payload && Remote.formState.notificationPayload !== undefined) {
+
+          payload.value = Remote.formState.notificationPayload;
+          payload.style.height = "auto";
+          payload.style.height = `${payload.scrollHeight}px`;
+
+        }
+        Remote.updateNotificationUrl();
+
+      } else if (menuName === "alert-menu") {
+
+        const form = document.querySelector("#alert");
+        if (form) {
+
+          if (Remote.formState.alertType) {
+
+            form.querySelector("[name='type']").value = Remote.formState.alertType;
+
+          }
+          if (Remote.formState.alertTitle !== undefined) {
+
+            form.querySelector("[name='title']").value = Remote.formState.alertTitle;
+
+          }
+          if (Remote.formState.alertMessage !== undefined) {
+
+            form.querySelector("[name='message']").value = Remote.formState.alertMessage;
+
+          }
+          if (Remote.formState.alertTimer !== undefined) {
+
+            form.querySelector("[name='timer']").value = Remote.formState.alertTimer;
+
+          }
+
+        }
+
+      }
+
+    },
+
+    /**
+     * Re-creates buttons for all registered dynamic menus in the freshly rendered main menu.
+     * Also drains any pending dynamic menus received before main-menu was first shown.
+     * Called by showMenu() when the main-menu is rendered.
+     */
+    injectDynamicMenuButtons () {
+
+      const alertBtn = document.querySelector("#alert-button");
+      if (!alertBtn) {
+
+        return;
+
+      }
+
+      // Re-create buttons for already-registered dynamic menus
+      for (const menu of Object.values(this.dynamicMenus ?? {})) {
+
+        this.createMenuElement(
+          menu,
+          "main",
+          alertBtn,
+          true
+        );
+
+      }
+
+      // Drain pending menus received before main menu was ever shown
+      for (const pending of (this.pendingDynamicMenus ?? [])) {
+
+        this.dynamicMenus = {...this.dynamicMenus, [pending.id]: pending};
+        this.createMenuElement(
+          pending,
+          "main",
+          alertBtn,
+          true
+        );
+
+      }
+      this.pendingDynamicMenus = [];
+
+    },
+
+    /**
+     * Searches dynamicMenus for the menu data matching a given menu name.
+     * Traverses nested items to support multi-level dynamic menus.
+     * @param {string} menuName - Menu identifier including "-menu" suffix
+     * @returns {object|null} The matching menu content or null
+     */
+    findDynamicMenuData (menuName) {
+
+      const menuId = menuName.replace(/-menu$/u, "");
+      if (this.dynamicMenus?.[menuId]) {
+
+        return this.dynamicMenus[menuId];
+
+      }
+
+      const searchItems = (items) => {
+
+        if (!items) {
+
+          return null;
+
+        }
+        for (const item of items) {
+
+          if (item.id === menuId) {
+
+            return item;
+
+          }
+          const found = searchItems(item.items);
+          if (found) {
+
+            return found;
+
+          }
+
+        }
+        return null;
+
+      };
+
+      for (const menu of Object.values(this.dynamicMenus ?? {})) {
+
+        const found = searchItems(menu.items);
+        if (found) {
+
+          return found;
+
+        }
+
+      }
+      return null;
 
     },
 
@@ -485,22 +719,19 @@ Object.assign(
 
     onTranslationsLoaded () {
 
-      // Render all menu HTML now that translations are available
-      this.renderMenus();
-      this.loadButtons(this.buttons);
-      this.loadOtherElements();
-      this.setStatus("none");
-      this.setupNotificationForm();
-      this.showMenu(globalThis.location.hash ? globalThis.location.hash.slice(1) : "main-menu");
-      this.createDynamicMenu();
-      // Ensure header reflects the current menu once translations are available
-      this.updateHeaderTitle(this.currentMenu);
-      // If currently on links page, rebuild with translated labels
-      if (this.currentMenu === "links-menu") {
+      // Set back-button aria-label from translations (button is always in header)
+      const backBtn = document.querySelector("#back-button");
+      if (backBtn) {
 
-        this.loadLinks();
+        backBtn.setAttribute(
+          "aria-label",
+          this.translate("BACK")
+        );
 
       }
+
+      // Lazy render: showMenu handles HTML, listeners, data loading, and header title
+      this.showMenu(globalThis.location.hash ? globalThis.location.hash.slice(1) : "main-menu");
 
     },
 
@@ -564,13 +795,6 @@ Object.assign(
       item.append(mcmArrow);
       item.dataset.parent = menu;
       item.dataset.type = "menu";
-      document.querySelector("#back-button")?.classList.add(`${content.id}-menu`);
-      const menuContent = document.querySelector(".menu-content");
-      if (menuContent) {
-
-        menuContent.classList.add(`${content.id}-menu`);
-
-      }
       item.addEventListener(
         "click",
         () => {
@@ -580,7 +804,7 @@ Object.assign(
         }
       );
 
-      return menuContent;
+      return null;
 
     },
 
@@ -629,7 +853,7 @@ Object.assign(
 
       const input = document.createElement("input");
       input.id = `${content.id}-input`;
-      input.className = `menu-element ${menu}-menu medium`;
+      input.className = `${menu}-menu medium`;
       input.type = "text";
       input.placeholder = content.text;
 
@@ -694,7 +918,7 @@ Object.assign(
 
     },
 
-    createMenuElement (content, menu, insertAfter) {
+    createMenuElement (content, menu, insertAfter, visible = true) {
 
       if (!content) {
 
@@ -703,7 +927,7 @@ Object.assign(
       }
       const item = document.createElement("div");
       item.id = `${content.id}-button`;
-      item.className = `menu-element button ${menu}-menu`;
+      item.className = `button ${menu}-menu`;
 
       if (content.icon) {
 
@@ -781,7 +1005,7 @@ Object.assign(
 
       }
 
-      if (!globalThis.location.hash && menu !== "main" || globalThis.location.hash && globalThis.location.hash.slice(1) !== `${menu}-menu`) {
+      if (!visible) {
 
         item.classList.add("hidden");
 
@@ -804,14 +1028,19 @@ Object.assign(
 
       }
 
-      if ("items" in content) {
+      /*
+       * Only render child items inline when this is NOT a sub-menu type.
+       * Sub-menu items are loaded lazily via findDynamicMenuData when the menu is navigated to.
+       */
+      if ("items" in content && content.type !== "menu") {
 
         for (const index of content.items) {
 
           this.createMenuElement(
             index,
             content.id,
-            nestedNav || item
+            nestedNav || item,
+            visible
           );
 
         }
@@ -822,74 +1051,77 @@ Object.assign(
 
     },
 
+    /**
+     * Recursively removes DOM buttons created by createMenuElement for a dynamic menu node.
+     * @param {object} node - The menu content node
+     */
+    removeDynamicMenuButtons (node) {
+
+      if (!node?.id) {
+
+        return;
+
+      }
+      document.getElementById(`${node.id}-button`)?.remove();
+      for (const item of node.items ?? []) {
+
+        this.removeDynamicMenuButtons(item);
+
+      }
+
+    },
+
     createDynamicMenu (content) {
 
-      // DOM not ready yet (renderMenus hasn't run) → stash for later
-      if (content && !document.querySelector("#alert-button")) {
-
-        this.pendingDynamicMenus = [...(this.pendingDynamicMenus ?? []), content];
-        return;
-
-      }
-
-      // No-arg call: drain the pending queue first
       if (!content) {
 
-        for (const pending of this.pendingDynamicMenus ?? []) {
-
-          this.createDynamicMenu(pending);
-
-        }
-        this.pendingDynamicMenus = [];
+        // Legacy no-arg call — no-op, pending draining now handled by injectDynamicMenuButtons
         return;
 
       }
 
-      if (content) {
+      /*
+       * If not currently on main-menu, the button can't be injected now.
+       * Store for when main-menu is next rendered via showMenu → injectDynamicMenuButtons.
+       */
+      if (this.currentMenu !== "main-menu" || !document.querySelector("#alert-button")) {
 
-        const cleanup = (node) => {
+        this.pendingDynamicMenus = [...(this.pendingDynamicMenus ?? []), content];
 
-          if (!node?.id) {
+        /*
+         * NOT added to dynamicMenus yet — injectDynamicMenuButtons will do that on next main-menu render.
+         * If user is back on main-menu before the socket packet arrived: redirect away from stale hash.
+         */
+        if (globalThis.location.hash === `#${content.id}-menu`) {
 
-            return;
+          globalThis.location.hash = "main-menu";
 
-          }
-          document.getElementById(`${node.id}-button`)?.remove();
-          for (const element of document.querySelectorAll(`.${node.id}-menu`)) {
-
-            element.remove();
-
-          }
-          if (globalThis.location.hash === `#${node.id}-menu`) {
-
-            globalThis.location.hash = "main-menu";
-
-          }
-          document.querySelector("#back-button")?.classList.remove(`${node.id}-menu`);
-          document.querySelector(".menu-content")?.classList.remove(`${node.id}-menu`);
-          for (const item of node.items ?? []) {
-
-            if (item?.type === "menu") {
-
-              cleanup(item);
-
-            }
-
-          }
-
-        };
-
-        cleanup(this.dynamicMenus?.[content.id]);
-        cleanup(content);
-        this.dynamicMenus = {...this.dynamicMenus, [content.id]: content};
+        }
+        return;
 
       }
 
-      // Create button in main menu
+      /*
+       * Remove any previously injected DOM button for the same menu id (and nested children)
+       * Must remove both the old registration and the new one's structure via the previously stored menu
+       */
+      const previousMenu = this.dynamicMenus?.[content.id];
+      if (previousMenu) {
+
+        this.removeDynamicMenuButtons(previousMenu);
+
+      }
+      this.removeDynamicMenuButtons(content);
+
+      // Register and inject into the currently rendered main menu
+      this.dynamicMenus = {...this.dynamicMenus, [content.id]: content};
+
+      const alertBtn = document.querySelector("#alert-button");
       this.createMenuElement(
         content,
         "main",
-        document.querySelector("#alert-button")
+        alertBtn,
+        true
       );
 
     }
