@@ -9,7 +9,6 @@
  */
 
 const path = require("node:path");
-const url = require("node:url");
 const {v4: uuid} = require("uuid");
 const express = require("express");
 
@@ -170,7 +169,7 @@ module.exports = {
       if (this.apiKey !== undefined) {
         if (!("authorization" in request.headers) || request.headers.authorization.search(/(apikey|bearer)/gi) === -1) {
           // API Key was not provided as a header. Check the URL.
-          const {query} = url.parse(request.url, true);
+          const {query} = request;
           if ("apiKey" in query) {
             if (query.apiKey !== this.apiKey) {
               return res.status(401).json({success: false, message: "Unauthorized: Wrong API Key Provided!"});

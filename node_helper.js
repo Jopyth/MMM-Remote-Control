@@ -27,7 +27,6 @@ const {exec} = require("node:child_process");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const url = require("node:url");
 const simpleGit = require("simple-git");
 
 let defaultModules;
@@ -155,24 +154,24 @@ module.exports = NodeHelper.create({
     });
 
     this.expressApp.get("/get", (request, res) => {
-      const {query} = url.parse(request.url, true);
+      const {query} = request;
 
       this.answerGet(query, res);
     });
     this.expressApp.post("/post", (request, res) => {
-      const {query} = url.parse(request.url, true);
+      const {query} = request;
 
       this.answerPost(query, request, res);
     });
 
     this.expressApp.get("/config-help.html", (request, res) => {
-      const {query} = url.parse(request.url, true);
+      const {query} = request;
 
       this.answerConfigHelp(query, res);
     });
 
     this.expressApp.get("/remote", (request, res) => {
-      const {query} = url.parse(request.url, true);
+      const {query} = request;
 
       if (query.action && !["COMMAND"].includes(query.action)) {
         const result = this.executeQuery(query, res);
