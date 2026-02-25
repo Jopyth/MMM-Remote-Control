@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.7.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.6.0...v4.7.0) (2026-02-25)
+
+### Added
+
+- add zoom, background color and font color controls ([93b4b81](https://github.com/jopyth/MMM-Remote-Control/commit/93b4b81b3968015b971da2bc0f1710183a12f211)), closes [#238](https://github.com/jopyth/MMM-Remote-Control/issues/238)
+
+### Fixed
+
+- accept plain strings as notification payload ([b49fbcf](https://github.com/jopyth/MMM-Remote-Control/commit/b49fbcf34c9fd02a7af89c159191270a4594eca6)), closes [#383](https://github.com/jopyth/MMM-Remote-Control/issues/383)
+- prevent crash when sending notification without payload ([cafa299](https://github.com/jopyth/MMM-Remote-Control/commit/cafa299c38ee0857a2e886e10f75950783d42edd))
+- prevent crashes and duplicate entries in getExternalApiByGuessing ([e351b10](https://github.com/jopyth/MMM-Remote-Control/commit/e351b1064a8ba0339e223645d16002d31ca5ab8b))
+
+### Chores
+
+- disable max-lines-per-function for test files ([bcf80f0](https://github.com/jopyth/MMM-Remote-Control/commit/bcf80f06e830280d329fa406d693ffd752d8a2bb))
+- extend cspell words ([291f983](https://github.com/jopyth/MMM-Remote-Control/commit/291f9830c454d12932990d8e1d9f0bfbbc8df737))
+- update devDependencies ([38328ab](https://github.com/jopyth/MMM-Remote-Control/commit/38328ab86782282e249861292c88bda1610a3063))
+
+### Tests
+
+- improve coverage for systemControl and moduleManager ([0c4f4c9](https://github.com/jopyth/MMM-Remote-Control/commit/0c4f4c9253b6626c944c74fa3e6eb85177249da2))
+
+### Continuous Integration
+
+- add test coverage check to automated tests workflow ([7c0086a](https://github.com/jopyth/MMM-Remote-Control/commit/7c0086a83833c758eeebeccff4221ddb83ce9faa))
+
 ## [4.6.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.5.0...v4.6.0) (2026-02-24)
 
 ### Added
