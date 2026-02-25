@@ -223,13 +223,11 @@ a {
 
 .menu-content {
   flex: 1 1 auto;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   padding-block-start: 7px;
-  min-height: min-content;
 }
 
 .menu-container {
@@ -248,8 +246,7 @@ a {
   justify-content: flex-start;
   align-items: center;
   gap: var(--spacing-sm);
-  flex: 1 1 auto;
-  overflow-y: auto;
+  flex: 0 0 auto;
   width: 100%;
   padding: var(--spacing-sm);
   margin-top: var(--spacing-lg);
@@ -270,10 +267,9 @@ a {
   width: 95%;
   max-width: 900px;
   margin-inline: auto;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  min-height: 0;
 }
 
 .results:last-child {
@@ -309,11 +305,10 @@ a {
 .menu-element-container {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   width: 100%;
   max-width: 1400px;
   margin-inline: auto;
-  overflow-y: auto;
 }
 
 .one-line {
