@@ -15,6 +15,9 @@
   "BACK": "Indietro",
 
   "BRIGHTNESS": "Luminosità",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Colore di sfondo",
+  "FONT_COLOR": "Colore del testo",
 
   "REFRESHMM": "Aggiorna browser",
   "MONITOROFF": "Spegni il monitor",

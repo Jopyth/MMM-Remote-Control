@@ -298,6 +298,9 @@ describe("configManager.saveDefaultSettings", () => {
       ],
       brightness: 75,
       temp: 22,
+      zoom: 90,
+      backgroundColor: "#111111",
+      fontColor: "#eeeeee",
       settingsVersion: "1.0"
     };
 
@@ -307,6 +310,9 @@ describe("configManager.saveDefaultSettings", () => {
     const parsed = JSON.parse(savedContent);
     assert.equal(parsed.brightness, 75);
     assert.equal(parsed.temp, 22);
+    assert.equal(parsed.zoom, 90);
+    assert.equal(parsed.backgroundColor, "#111111");
+    assert.equal(parsed.fontColor, "#eeeeee");
     assert.equal(parsed.settingsVersion, "1.0");
     assert.equal(parsed.moduleData.length, 1);
     assert.equal(parsed.moduleData[0].identifier, "module_1_clock");

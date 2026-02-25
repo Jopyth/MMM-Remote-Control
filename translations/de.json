@@ -15,6 +15,9 @@
   "BACK": "Zurück",
 
   "BRIGHTNESS": "Helligkeit",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Hintergrundfarbe",
+  "FONT_COLOR": "Schriftfarbe",
 
   "REFRESHMM": "Browser neu laden",
   "MONITOROFF": "Bildschirm ausschalten",

@@ -111,6 +111,25 @@ const Remote = {
 
             break;
           }
+          case "zoom": {
+            const slider = document.querySelector("#zoom-slider");
+            slider.value = payload.result;
+            this.updateSliderThumbColor(slider, "zoom");
+
+            break;
+          }
+          case "backgroundColor": {
+            const picker = document.querySelector("#background-color-picker");
+            if (payload.result) { picker.value = payload.result; }
+
+            break;
+          }
+          case "fontColor": {
+            const picker = document.querySelector("#font-color-picker");
+            if (payload.result) { picker.value = payload.result; }
+
+            break;
+          }
           case "translations":
             this.translations = payload.data;
             this.onTranslationsLoaded();
@@ -241,31 +260,51 @@ const Remote = {
     const percent = (value - min) / (max - min);
 
     let thumbColor, trackGradient;
-    if (type === "brightness") {
-      // Brightness: dark gray to bright white (neutral, no color)
-      const brightness = Math.round(50 + percent * 205);
-      thumbColor = `rgb(${brightness}, ${brightness}, ${brightness})`;
-      // Track gradient: dark gray (left) to bright white (right)
-      trackGradient = "linear-gradient(to right, rgb(50, 50, 50), rgb(255, 255, 255))";
-    } else if (type === "temp") {
+    switch (type) {
+      case "brightness": {
+        // Brightness: dark gray to bright white (neutral, no color)
+        const brightness = Math.round(50 + percent * 205);
+        thumbColor = `rgb(${brightness}, ${brightness}, ${brightness})`;
+        // Track gradient: dark gray (left) to bright white (right)
+        trackGradient = "linear-gradient(to right, rgb(50, 50, 50), rgb(255, 255, 255))";
+        break;
+      }
+      case "temp": {
 
-      /*
-       * Color temperature: warm (orange) to cool (blue)
-       * Low values (140) = warm, High values (500) = cool
-       * Invert: start with cool (low slider %), end with warm (high slider %)
-       */
-      const warmR = 255,
-        warmG = 147,
-        warmB = 41; // warm orange
-      const coolR = 100,
-        coolG = 181,
-        coolB = 246; // cool blue
-      const r = Math.round(coolR + (warmR - coolR) * percent);
-      const g = Math.round(coolG + (warmG - coolG) * percent);
-      const b = Math.round(coolB + (warmB - coolB) * percent);
-      thumbColor = `rgb(${r}, ${g}, ${b})`;
-      // Track gradient: cool blue (left) to warm orange (right)
-      trackGradient = `linear-gradient(to right, rgb(${coolR}, ${coolG}, ${coolB}), rgb(${warmR}, ${warmG}, ${warmB}))`;
+        /*
+         * Color temperature: warm (orange) to cool (blue)
+         * Low values (140) = warm, High values (500) = cool
+         * Invert: start with cool (low slider %), end with warm (high slider %)
+         */
+        const warmR = 255,
+          warmG = 147,
+          warmB = 41; // warm orange
+        const coolR = 100,
+          coolG = 181,
+          coolB = 246; // cool blue
+        const r = Math.round(coolR + (warmR - coolR) * percent);
+        const g = Math.round(coolG + (warmG - coolG) * percent);
+        const b = Math.round(coolB + (warmB - coolB) * percent);
+        thumbColor = `rgb(${r}, ${g}, ${b})`;
+        // Track gradient: cool blue (left) to warm orange (right)
+        trackGradient = `linear-gradient(to right, rgb(${coolR}, ${coolG}, ${coolB}), rgb(${warmR}, ${warmG}, ${warmB}))`;
+        break;
+      }
+      case "zoom": {
+        // Zoom: small (dim blue) to large (bright blue)
+        const smallR = 100,
+          smallG = 120,
+          smallB = 180;
+        const largeR = 180,
+          largeG = 220,
+          largeB = 255;
+        const r = Math.round(smallR + (largeR - smallR) * percent);
+        const g = Math.round(smallG + (largeG - smallG) * percent);
+        const b = Math.round(smallB + (largeB - smallB) * percent);
+        thumbColor = `rgb(${r}, ${g}, ${b})`;
+        trackGradient = `linear-gradient(to right, rgb(${smallR}, ${smallG}, ${smallB}), rgb(${largeR}, ${largeG}, ${largeB}))`;
+        break;
+      }
     }
 
     if (thumbColor) {
@@ -315,6 +354,28 @@ const Remote = {
     }, false);
     this.updateSliderThumbColor(slider2, "temp");
     this.loadTemp();
+
+    const zoomSlider = document.querySelector("#zoom-slider");
+    zoomSlider.addEventListener("change", () => {
+      this.sendSocketNotification("REMOTE_ACTION", {action: "ZOOM", value: zoomSlider.value});
+    }, false);
+    zoomSlider.addEventListener("input", () => {
+      this.updateSliderThumbColor(zoomSlider, "zoom");
+    }, false);
+    this.updateSliderThumbColor(zoomSlider, "zoom");
+    this.loadZoom();
+
+    const bgColorPicker = document.querySelector("#background-color-picker");
+    bgColorPicker.addEventListener("change", () => {
+      this.sendSocketNotification("REMOTE_ACTION", {action: "BACKGROUND_COLOR", value: bgColorPicker.value});
+    }, false);
+    this.loadBackgroundColor();
+
+    const fontColorPicker = document.querySelector("#font-color-picker");
+    fontColorPicker.addEventListener("change", () => {
+      this.sendSocketNotification("REMOTE_ACTION", {action: "FONT_COLOR", value: fontColorPicker.value});
+    }, false);
+    this.loadFontColor();
 
     const input = document.querySelector("#add-module-search");
     const deleteButton = document.querySelector("#delete-search-input");
@@ -371,6 +432,9 @@ const Remote = {
         this.loadVisibleModules();
         this.loadBrightness();
         this.loadTemp();
+        this.loadZoom();
+        this.loadBackgroundColor();
+        this.loadFontColor();
         break;
 
       case "settings-menu":
@@ -903,6 +967,18 @@ const Remote = {
 
   loadTemp () {
     this.sendSocketNotification("REMOTE_ACTION", {data: "temp"});
+  },
+
+  loadZoom () {
+    this.sendSocketNotification("REMOTE_ACTION", {data: "zoom"});
+  },
+
+  loadBackgroundColor () {
+    this.sendSocketNotification("REMOTE_ACTION", {data: "backgroundColor"});
+  },
+
+  loadFontColor () {
+    this.sendSocketNotification("REMOTE_ACTION", {data: "fontColor"});
   },
 
   makeToggleButton (moduleBox, visibilityStatus) {
@@ -2181,6 +2257,23 @@ const buttons = {
     element.value = 327;
     Remote.updateSliderThumbColor(element, "temp");
     Remote.sendSocketNotification("REMOTE_ACTION", {action: "TEMP", value: element.value});
+  },
+
+  "zoom-reset" () {
+    const element = document.querySelector("#zoom-slider");
+    element.value = 100;
+    Remote.updateSliderThumbColor(element, "zoom");
+    Remote.sendSocketNotification("REMOTE_ACTION", {action: "ZOOM", value: element.value});
+  },
+
+  "background-color-reset" () {
+    document.querySelector("#background-color-picker").value = "#000000";
+    Remote.sendSocketNotification("REMOTE_ACTION", {action: "BACKGROUND_COLOR", value: ""});
+  },
+
+  "font-color-reset" () {
+    document.querySelector("#font-color-picker").value = "#ffffff";
+    Remote.sendSocketNotification("REMOTE_ACTION", {action: "FONT_COLOR", value: ""});
   },
 
   // edit menu buttons

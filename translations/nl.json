@@ -15,6 +15,9 @@
   "BACK": "Terug",
 
   "BRIGHTNESS": "Helderheid",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Achtergrondkleur",
+  "FONT_COLOR": "Letterkleur",
 
   "REFRESHMM": "Browser verversen",
   "MONITOROFF": "Schakel monitor UIT",

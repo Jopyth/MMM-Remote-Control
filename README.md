@@ -177,14 +177,17 @@ See the [Examples Guide](docs/guide/examples.md) for more integration examples w
 
 #### MagicMirror² Control
 
-|   Action   | Description                                                                                                                                                     |
-| :--------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  RESTART   | Restart MagicMirror² (Electron relaunch or clean process exit for process managers like systemd/PM2/Docker)                                                     |
-|    STOP    | Stop MagicMirror² without restarting (exits with error code, process managers won't auto-restart)                                                               |
-|  REFRESH   | Refresh mirror page                                                                                                                                             |
-|   UPDATE   | Update MagicMirror² and any of it's modules                                                                                                                     |
-|    SAVE    | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts                                       |
-| BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default (full brightness), possible range is between `0` (black) and `100`. |
+|      Action      | Description                                                                                                                                                       |
+| :--------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     RESTART      | Restart MagicMirror² (Electron relaunch or clean process exit for process managers like systemd/PM2/Docker)                                                       |
+|       STOP       | Stop MagicMirror² without restarting (exits with error code, process managers won't auto-restart)                                                                 |
+|     REFRESH      | Refresh mirror page                                                                                                                                               |
+|      UPDATE      | Update MagicMirror² and any of it's modules                                                                                                                       |
+|       SAVE       | Save the current configuration (show and hide status of modules, brightness, zoom, and colors), will be applied after the mirror starts                           |
+|    BRIGHTNESS    | Change mirror brightness, with the new value specified by `value`. `100` equals the default (full brightness), possible range is between `0` (black) and `100`.   |
+|       ZOOM       | Change the page zoom level, with the new value specified by `value`. `100` equals the default (100%), possible range is between `30` and `200`.                   |
+| BACKGROUND_COLOR | Set the background color of the mirror, with the color specified by `value` as a CSS color string (e.g. `#ff0000`). Send an empty string to reset to the default. |
+|    FONT_COLOR    | Set the font color of all elements, with the color specified by `value` as a CSS color string (e.g. `#ffffff`). Send an empty string to reset to the default.     |
 
 #### MagicMirror² Electron Browser Window Control
 
@@ -236,6 +239,9 @@ The response will be in the JSON format, here is an example:
     }
   ],
   "brightness": 40,
+  "zoom": 100,
+  "backgroundColor": "",
+  "fontColor": "",
   "settingsVersion": 1
 }
 ```

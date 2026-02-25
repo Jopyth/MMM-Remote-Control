@@ -452,6 +452,78 @@
                   <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
                 </span>
               </div>
+              <div class="menu-element hidden edit-menu one-line">
+                <span class="fa fa-fw fa-search-plus" aria-hidden="true"></span>
+                <div
+                  id="zoom-container"
+                  class="slider-container menu-element hidden edit-menu"
+                  data-label="Zoom"
+                >
+                  <input
+                    id="zoom-slider"
+                    type="range"
+                    min="0"
+                    max="200"
+                    step="5"
+                    value="100"
+                    class="slider"
+                    aria-label="%%TRANSLATE:ZOOM%%"
+                  />
+                </div>
+                <span
+                  id="zoom-reset"
+                  class="inline-menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="Reset zoom"
+                  tabindex="0"
+                >
+                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                </span>
+              </div>
+              <div class="menu-element hidden edit-menu one-line">
+                <span class="fa fa-fw fa-adjust" aria-hidden="true"></span>
+                <label for="background-color-picker" class="color-label"
+                  >%%TRANSLATE:BACKGROUND_COLOR%%</label
+                >
+                <input
+                  id="background-color-picker"
+                  type="color"
+                  value="#000000"
+                  class="color-picker menu-element hidden edit-menu"
+                  aria-label="%%TRANSLATE:BACKGROUND_COLOR%%"
+                />
+                <span
+                  id="background-color-reset"
+                  class="inline-menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="Reset background color"
+                  tabindex="0"
+                >
+                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                </span>
+              </div>
+              <div class="menu-element hidden edit-menu one-line">
+                <span class="fa fa-fw fa-font" aria-hidden="true"></span>
+                <label for="font-color-picker" class="color-label"
+                  >%%TRANSLATE:FONT_COLOR%%</label
+                >
+                <input
+                  id="font-color-picker"
+                  type="color"
+                  value="#ffffff"
+                  class="color-picker menu-element hidden edit-menu"
+                  aria-label="%%TRANSLATE:FONT_COLOR%%"
+                />
+                <span
+                  id="font-color-reset"
+                  class="inline-menu-element hidden button edit-menu"
+                  role="button"
+                  aria-label="Reset font color"
+                  tabindex="0"
+                >
+                  <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
+                </span>
+              </div>
             </div>
             <div
               id="visible-modules-container"

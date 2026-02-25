@@ -15,6 +15,9 @@
   "BACK": "Atrás",
 
   "BRIGHTNESS": "Brillo",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Color de fondo",
+  "FONT_COLOR": "Color de fuente",
 
   "REFRESHMM": "Recargar Navegador",
   "MONITOROFF": "Apagar monitor",

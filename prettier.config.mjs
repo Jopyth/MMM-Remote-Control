@@ -1,5 +1,6 @@
 const config = {
-  "trailingComma": "none"
+  "trailingComma": "none",
+  "embeddedLanguageFormatting": "off"
 };
 
 export default config;

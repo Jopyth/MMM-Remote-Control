@@ -192,6 +192,42 @@ describe("answerGet contract coverage", () => {
     assert.equal(payload.result, 6500);
   });
 
+  test("zoom returns current zoom value", () => {
+    const helper = freshHelper();
+    helper.configData = {zoom: 80};
+    helper.handleGetZoom = helperFactory.handleGetZoom.bind(helper);
+
+    helper.answerGet({data: "zoom"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "zoom"});
+    assert.equal(payload.result, 80);
+  });
+
+  test("backgroundColor returns current background color value", () => {
+    const helper = freshHelper();
+    helper.configData = {backgroundColor: "#123456"};
+    helper.handleGetBackgroundColor = helperFactory.handleGetBackgroundColor.bind(helper);
+
+    helper.answerGet({data: "backgroundColor"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "backgroundColor"});
+    assert.equal(payload.result, "#123456");
+  });
+
+  test("fontColor returns current font color value", () => {
+    const helper = freshHelper();
+    helper.configData = {fontColor: "#abcdef"};
+    helper.handleGetFontColor = helperFactory.handleGetFontColor.bind(helper);
+
+    helper.answerGet({data: "fontColor"});
+
+    const {payload} = helper.__responses[0];
+    assert.deepEqual(payload.query, {data: "fontColor"});
+    assert.equal(payload.result, "#abcdef");
+  });
+
   test("defaultConfig returns module config defaults when module exists", () => {
     const helper = freshHelper();
     helper.handleGetDefaultConfig = helperFactory.handleGetDefaultConfig.bind(helper);

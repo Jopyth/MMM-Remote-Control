@@ -15,6 +15,9 @@
   "BACK": "Back",
 
   "BRIGHTNESS": "Brightness",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Background color",
+  "FONT_COLOR": "Font color",
 
   "REFRESHMM": "Refresh Browser",
   "MONITOROFF": "Turn monitor OFF",

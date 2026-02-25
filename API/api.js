@@ -37,6 +37,47 @@ const getActions = (handler) => {
   return [...availableActions];
 };
 
+/**
+ * Registers color-related API routes (zoom, background color, font color).
+ * Extracted to keep createApiRoutes within line limits.
+ * @param {object} router - Express router
+ * @param {object} ctx - API context (for executeQuery)
+ */
+function registerColorRoutes (router, ctx) {
+  router.route(["/zoom/:setting"]).
+    get((request, res) => {
+    // Only allow numeric settings, otherwise return 400
+      if (!(/^\d+$/).test(request.params.setting)) {
+        return res.status(400).json({success: false, message: "Invalid zoom setting, must be a number (30-200)"});
+      }
+      ctx.executeQuery({action: "ZOOM", value: request.params.setting}, res);
+    });
+
+  router.route(["/backgroundcolor/:color"]).
+    get((request, res) => {
+      const {color} = request.params;
+      if (color === "reset") {
+        return ctx.executeQuery({action: "BACKGROUND_COLOR", value: ""}, res);
+      }
+      if (!(/^[\da-f]{6}$/i).test(color)) {
+        return res.status(400).json({success: false, message: "Invalid color, use rrggbb hex format or 'reset'"});
+      }
+      ctx.executeQuery({action: "BACKGROUND_COLOR", value: `#${color}`}, res);
+    });
+
+  router.route(["/fontcolor/:color"]).
+    get((request, res) => {
+      const {color} = request.params;
+      if (color === "reset") {
+        return ctx.executeQuery({action: "FONT_COLOR", value: ""}, res);
+      }
+      if (!(/^[\da-f]{6}$/i).test(color)) {
+        return res.status(400).json({success: false, message: "Invalid color, use rrggbb hex format or 'reset'"});
+      }
+      ctx.executeQuery({action: "FONT_COLOR", value: `#${color}`}, res);
+    });
+}
+
 module.exports = {
 
   /*
@@ -335,6 +376,8 @@ module.exports = {
         }
         this.executeQuery({action: "BRIGHTNESS", value: request.params.setting}, res);
       });
+
+    registerColorRoutes(this.expressRouter, this);
 
     this.expressRouter.route("/timers").get((request, res) => { this.sendResponse(res, undefined, this.delayedQueryTimers); });
 

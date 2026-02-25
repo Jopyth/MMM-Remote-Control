@@ -31,6 +31,9 @@ Module.register("MMM-Remote-Control", {
 
     this.brightness = 100;
     this.temp = 327;
+    this.zoom = 100;
+    this.backgroundColor = "";
+    this.fontColor = "";
 
     this.qrCodeDataUrl = null;
   },
@@ -118,6 +121,18 @@ Module.register("MMM-Remote-Control", {
         this.setTemp(Number.parseInt(payload));
         break;
 
+      case "ZOOM":
+        this.setZoom(Number.parseInt(payload));
+        break;
+
+      case "BACKGROUND_COLOR":
+        this.setBackgroundColor(payload);
+        break;
+
+      case "FONT_COLOR":
+        this.setFontColor(payload);
+        break;
+
       case "REFRESH":
         document.location.reload();
         break;
@@ -177,6 +192,36 @@ Module.register("MMM-Remote-Control", {
     this.temp = temperature;
   },
 
+  setZoom (zoom) {
+    zoom = Math.max(30, Math.min(200, Number.isNaN(zoom) ? 100 : zoom));
+    document.body.style.zoom = `${zoom}%`;
+    this.zoom = zoom;
+  },
+
+  setBackgroundColor (color) {
+    let styleEl = document.getElementById("remote-control-background-color-override");
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.id = "remote-control-background-color-override";
+      document.head.append(styleEl);
+    }
+    styleEl.textContent = color
+      ? `html, body { background-color: ${color} !important; }`
+      : "";
+    this.backgroundColor = color;
+  },
+
+  setFontColor (color) {
+    let styleEl = document.getElementById("remote-control-font-color-override");
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.id = "remote-control-font-color-override";
+      document.head.append(styleEl);
+    }
+    styleEl.textContent = color ? `body * { color: ${color} !important; }` : "";
+    this.fontColor = color;
+  },
+
   /**
    * Handle DEFAULT_SETTINGS notification - manage module visibility
    * @param {object} payload - Settings data
@@ -215,6 +260,9 @@ Module.register("MMM-Remote-Control", {
 
     this.setBrightness(payload.brightness);
     this.setTemp(payload.temp);
+    this.setZoom(payload.zoom ?? 100);
+    this.setBackgroundColor(payload.backgroundColor ?? "");
+    this.setFontColor(payload.fontColor ?? "");
   },
 
   /**
@@ -323,6 +371,9 @@ Module.register("MMM-Remote-Control", {
       moduleData: currentModuleData,
       brightness: this.brightness,
       temp: this.temp,
+      zoom: this.zoom,
+      backgroundColor: this.backgroundColor,
+      fontColor: this.fontColor,
       settingsVersion: this.settingsVersion,
       remoteConfig: this.config
     };

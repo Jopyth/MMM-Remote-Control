@@ -225,6 +225,9 @@ describe("executeQuery state and value actions", () => {
       moduleData: [{identifier: "module_1_clock", hidden: false}],
       brightness: 100,
       temp: 20,
+      zoom: 100,
+      backgroundColor: "",
+      fontColor: "",
       settingsVersion: 2
     };
     const res = {};

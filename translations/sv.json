@@ -15,6 +15,9 @@
   "BACK": "Tillbaka",
 
   "BRIGHTNESS": "Ljusstyrka",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Bakgrundsfärg",
+  "FONT_COLOR": "Teckenfärg",
 
   "REFRESHMM": "Uppdatea Webläsaren",
   "MONITOROFF": "Sätt skärmen i vila",

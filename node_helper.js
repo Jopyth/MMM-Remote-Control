@@ -523,6 +523,27 @@ module.exports = NodeHelper.create({
     });
   },
 
+  handleGetZoom (query, res) {
+    if (!this.checkInitialized(res)) { return; }
+    this.callAfterUpdate(() => {
+      this.sendResponse(res, undefined, {query, result: this.configData.zoom});
+    });
+  },
+
+  handleGetBackgroundColor (query, res) {
+    if (!this.checkInitialized(res)) { return; }
+    this.callAfterUpdate(() => {
+      this.sendResponse(res, undefined, {query, result: this.configData.backgroundColor});
+    });
+  },
+
+  handleGetFontColor (query, res) {
+    if (!this.checkInitialized(res)) { return; }
+    this.callAfterUpdate(() => {
+      this.sendResponse(res, undefined, {query, result: this.configData.fontColor});
+    });
+  },
+
   getDataHandlers () {
     return {
       moduleAvailable: (q, r) => this.handleGetModuleAvailable(q, r),
@@ -536,6 +557,9 @@ module.exports = NodeHelper.create({
       modules: (q, r) => this.handleGetModules(q, r),
       brightness: (q, r) => this.handleGetBrightness(q, r),
       temp: (q, r) => this.handleGetTemp(q, r),
+      zoom: (q, r) => this.handleGetZoom(q, r),
+      backgroundColor: (q, r) => this.handleGetBackgroundColor(q, r),
+      fontColor: (q, r) => this.handleGetFontColor(q, r),
       userPresence: (q, r) => this.sendResponse(r, undefined, {query: q, result: this.userPresence})
     };
   },
@@ -879,6 +903,9 @@ module.exports = NodeHelper.create({
       TOGGLE: (q, r) => this.handleSimpleSocketNotification(q, r),
       BRIGHTNESS: (q, r) => this.handleSimpleValueNotification(q, r),
       TEMP: (q, r) => this.handleSimpleValueNotification(q, r),
+      ZOOM: (q, r) => this.handleSimpleValueNotification(q, r),
+      BACKGROUND_COLOR: (q, r) => this.handleSimpleValueNotification(q, r),
+      FONT_COLOR: (q, r) => this.handleSimpleValueNotification(q, r),
       SAVE: (q, r) => this.handleSave(q, r),
       MODULE_DATA: (q, r) => this.handleModuleData(q, r),
       INSTALL: (q, r) => this.installModule(q.url, r, q),

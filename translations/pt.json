@@ -15,6 +15,9 @@
   "BACK": "Voltar",
 
   "BRIGHTNESS": "Luminosidade",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Cor de fundo",
+  "FONT_COLOR": "Cor da fonte",
 
   "REFRESHMM": "Atualizar página",
   "MONITOROFF": "Desligar o monitor",

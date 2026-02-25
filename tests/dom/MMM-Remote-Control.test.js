@@ -64,7 +64,10 @@ describe("MMM-Remote-Control.js module", () => {
         {identifier: "module_3", name: "weather", lockStrings: undefined}
       ],
       brightness: 100,
-      temp: 327
+      temp: 327,
+      zoom: 100,
+      backgroundColor: "",
+      fontColor: ""
     };
 
     assert.doesNotThrow(() => {
@@ -72,7 +75,10 @@ describe("MMM-Remote-Control.js module", () => {
         identifier: "MMM-Remote-Control",
         settingsVersion: 1,
         setBrightness: () => {},
-        setTemp: () => {}
+        setTemp: () => {},
+        setZoom: () => {},
+        setBackgroundColor: () => {},
+        setFontColor: () => {}
       }, payload);
     });
   });
@@ -82,7 +88,10 @@ describe("MMM-Remote-Control.js module", () => {
       settingsVersion: 1,
       moduleData: [{identifier: "module_1", name: "clock", lockStrings: "not-an-array"}],
       brightness: 100,
-      temp: 327
+      temp: 327,
+      zoom: 100,
+      backgroundColor: "",
+      fontColor: ""
     };
 
     assert.doesNotThrow(() => {
@@ -90,7 +99,10 @@ describe("MMM-Remote-Control.js module", () => {
         identifier: "MMM-Remote-Control",
         settingsVersion: 1,
         setBrightness: () => {},
-        setTemp: () => {}
+        setTemp: () => {},
+        setZoom: () => {},
+        setBackgroundColor: () => {},
+        setFontColor: () => {}
       }, payload);
     });
   });

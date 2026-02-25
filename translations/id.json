@@ -15,6 +15,9 @@
   "BACK": "Kembali",
 
   "BRIGHTNESS": "Kecerahan",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Warna latar",
+  "FONT_COLOR": "Warna teks",
 
   "REFRESHMM": "Refresh Browser",
   "MONITOROFF": "Matikan monitor",

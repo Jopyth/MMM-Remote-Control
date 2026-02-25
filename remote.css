@@ -325,6 +325,24 @@ a {
   margin-inline: auto;
 }
 
+.color-picker {
+  width: var(--touch-target);
+  height: var(--touch-target);
+  padding: 2px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.color-label {
+  color: var(--text-color-medium);
+  font-size: 0.85em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .flex-like-button {
   flex: 0 1 auto;
   display: flex;

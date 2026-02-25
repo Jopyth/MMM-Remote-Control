@@ -15,6 +15,9 @@
   "BACK": "Endarrera",
 
   "BRIGHTNESS": "Brillantor",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Color de fons",
+  "FONT_COLOR": "Color de lletra",
 
   "REFRESHMM": "Recarregar Navegador",
   "MONITOROFF": "Apagar monitor",

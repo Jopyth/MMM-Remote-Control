@@ -628,6 +628,9 @@
                     "REPOSITORY": "Repository",
                     "BACK": "Back",
                     "BRIGHTNESS": "Brightness",
+                    "ZOOM": "Zoom",
+                    "BACKGROUND_COLOR": "Background color",
+                    "FONT_COLOR": "Font color",
                     "REFRESHMM": "Refresh Browser",
                     "MONITOROFF": "Turn monitor OFF",
                     "MONITORON": "Turn monitor ON",
@@ -792,6 +795,120 @@
                     "data": "brightness"
                   },
                   "result": 100
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/zoom/{:setting}": {
+      "get": {
+        "tags": ["Mirror Control", "API"],
+        "summary": "Get or set the zoom level of the Mirror by passing a numerical value (30~200)",
+        "parameters": [
+          {
+            "name": ":setting",
+            "in": "path",
+            "required": true,
+            "description": "The zoom level in percent (30-200) or empty to get current zoom",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved or set zoom level",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "query": {
+                    "data": "zoom"
+                  },
+                  "result": 100
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/backgroundcolor/{:color}": {
+      "get": {
+        "tags": ["Mirror Control", "API"],
+        "summary": "Set the background color of the Mirror by passing a hex color value (rrggbb), or 'reset' to clear",
+        "parameters": [
+          {
+            "name": ":color",
+            "in": "path",
+            "required": true,
+            "description": "The background color in rrggbb hex format (e.g. ff0000) or 'reset' to clear",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully set background color",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "query": {
+                    "data": "backgroundColor"
+                  },
+                  "result": "#ff0000"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fontcolor/{:color}": {
+      "get": {
+        "tags": ["Mirror Control", "API"],
+        "summary": "Set the font color of the Mirror by passing a hex color value (rrggbb), or 'reset' to clear",
+        "parameters": [
+          {
+            "name": ":color",
+            "in": "path",
+            "required": true,
+            "description": "The font color in rrggbb hex format (e.g. ffffff) or 'reset' to clear",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully set font color",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "query": {
+                    "data": "fontColor"
+                  },
+                  "result": "#ffffff"
                 }
               }
             }

@@ -15,6 +15,9 @@
   "BACK": "Tilbake",
 
   "BRIGHTNESS": "Lysstyrke",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Bakgrunnsfarge",
+  "FONT_COLOR": "Skriftfarge",
 
   "REFRESHMM": "Oppdater nettleseren",
   "MONITOROFF": "Slå av skjermen",

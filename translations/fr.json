@@ -15,6 +15,9 @@
   "BACK": "Retour",
 
   "BRIGHTNESS": "Luminosité",
+  "ZOOM": "Zoom",
+  "BACKGROUND_COLOR": "Couleur d'arrière-plan",
+  "FONT_COLOR": "Couleur de police",
 
   "REFRESHMM": "Recharger l'affichage",
   "MONITOROFF": "Éteindre le miroir",
