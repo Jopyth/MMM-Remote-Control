@@ -2,6 +2,7 @@ import "./remote-utils.mjs";
 import "./remote-socket.mjs";
 import "./remote-modules.mjs";
 import "./remote-config.mjs";
+import "./remote-render.mjs";
 import {Remote} from "./remote.mjs";
 
 /**
@@ -484,6 +485,13 @@ Object.assign(
 
     onTranslationsLoaded () {
 
+      // Render all menu HTML now that translations are available
+      this.renderMenus();
+      this.loadButtons(this.buttons);
+      this.loadOtherElements();
+      this.setStatus("none");
+      this.setupNotificationForm();
+      this.showMenu(globalThis.location.hash ? globalThis.location.hash.slice(1) : "main-menu");
       this.createDynamicMenu();
       // Ensure header reflects the current menu once translations are available
       this.updateHeaderTitle(this.currentMenu);
@@ -493,6 +501,55 @@ Object.assign(
         this.loadLinks();
 
       }
+
+    },
+
+    /**
+     * Sets up the notification form textarea auto-resize and restores saved values.
+     * Called after renderMenus() ensures the form exists in the DOM.
+     */
+    setupNotificationForm () {
+
+      const payloadTextarea = document.querySelector("#notification-payload");
+      if (!payloadTextarea) {
+
+        return;
+
+      }
+
+      const autoResize = () => {
+
+        payloadTextarea.style.height = "auto";
+        payloadTextarea.style.height = `${payloadTextarea.scrollHeight}px`;
+
+      };
+
+      payloadTextarea.addEventListener("input", autoResize);
+      payloadTextarea.addEventListener("input", () => { this.updateNotificationUrl(); });
+
+      const nameInput = document.querySelector("#notification-name");
+      if (nameInput) {
+
+        nameInput.addEventListener("input", () => { this.updateNotificationUrl(); });
+
+      }
+
+      // Restore last used notification from localStorage
+      const savedName = localStorage.getItem("mmrc_notification_name"),
+        savedPayload = localStorage.getItem("mmrc_notification_payload");
+      if (savedName) {
+
+        document.querySelector("#notification-name").value = savedName;
+
+      }
+      if (savedPayload !== null) {
+
+        payloadTextarea.value = savedPayload;
+
+      }
+
+      autoResize();
+      this.updateNotificationUrl();
 
     },
 
@@ -766,6 +823,27 @@ Object.assign(
     },
 
     createDynamicMenu (content) {
+
+      // DOM not ready yet (renderMenus hasn't run) → stash for later
+      if (content && !document.querySelector("#alert-button")) {
+
+        this.pendingDynamicMenus = [...(this.pendingDynamicMenus ?? []), content];
+        return;
+
+      }
+
+      // No-arg call: drain the pending queue first
+      if (!content) {
+
+        for (const pending of this.pendingDynamicMenus ?? []) {
+
+          this.createDynamicMenu(pending);
+
+        }
+        this.pendingDynamicMenus = [];
+        return;
+
+      }
 
       if (content) {
 

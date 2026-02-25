@@ -614,20 +614,7 @@ Remote.init = function () {
     "REMOTE_ACTION",
     {"data": "translations"}
   );
-  Remote.loadButtons(buttons);
-  Remote.loadOtherElements();
-
-  Remote.setStatus("none");
-
-  if (globalThis.location.hash) {
-
-    Remote.showMenu(globalThis.location.hash.slice(1));
-
-  } else {
-
-    Remote.showMenu("main-menu");
-
-  }
+  // Menu rendering + setup deferred to onTranslationsLoaded()
 
   globalThis.addEventListener(
     "hashchange",
@@ -639,15 +626,7 @@ Remote.init = function () {
         return;
 
       }
-      if (globalThis.location.hash) {
-
-        Remote.showMenu(globalThis.location.hash.slice(1));
-
-      } else {
-
-        Remote.showMenu("main-menu");
-
-      }
+      Remote.showMenu(globalThis.location.hash ? globalThis.location.hash.slice(1) : "main-menu");
 
     }
   );
@@ -675,67 +654,7 @@ Remote.init = function () {
 
   }
 
-  // Loading successful, remove error message
-  const loadError = document.querySelector("#load-error");
-  if (loadError) {
-
-    loadError.remove();
-
-  }
-
-  // Auto-resize notification payload textarea to fit content
-  const payloadTextarea = document.querySelector("#notification-payload");
-  if (payloadTextarea) {
-
-    const autoResize = () => {
-
-      payloadTextarea.style.height = "auto";
-      payloadTextarea.style.height = `${payloadTextarea.scrollHeight}px`;
-
-    };
-    payloadTextarea.addEventListener(
-      "input",
-      autoResize
-    );
-    payloadTextarea.addEventListener(
-      "input",
-      () => {
-
-        Remote.updateNotificationUrl();
-
-      }
-    );
-
-    const nameInput = document.querySelector("#notification-name");
-    if (nameInput) {
-
-      nameInput.addEventListener(
-        "input",
-        () => {
-
-          Remote.updateNotificationUrl();
-
-        }
-      );
-
-    }
-
-    // Restore last used notification from localStorage
-    const savedName = localStorage.getItem("mmrc_notification_name"),
-      savedPayload = localStorage.getItem("mmrc_notification_payload");
-    if (savedName) {
-
-      document.querySelector("#notification-name").value = savedName;
-
-    }
-    if (savedPayload !== null) {
-
-      payloadTextarea.value = savedPayload;
-
-    }
-    autoResize(); // Apply after potential restore (height will be corrected by showMenu when visible)
-    Remote.updateNotificationUrl();
-
-  }
+  // Loading successful, remove error element
+  document.querySelector("#load-error")?.remove();
 
 };
