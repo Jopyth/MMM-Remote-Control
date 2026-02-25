@@ -1136,6 +1136,16 @@ const Remote = {
   },
 
   createConfigElement (type) {
+    const makeDisabledInput = (typeName) => (key, name, value, type, forcedType) => {
+      const label = this.createConfigLabel(key, name, type, forcedType);
+      const input = this.createConfigInput(key, value);
+      input.type = "text";
+      input.disabled = "disabled";
+      input.classList.add("disabled", typeName);
+      input.placeholder = typeName;
+      label.append(input);
+      return label;
+    };
     return {
       string: (key, name, value, type, forcedType) => {
         const label = this.createConfigLabel(key, name, type, forcedType);
@@ -1171,26 +1181,8 @@ const Remote = {
         this.createVisualCheckbox(key, label, input, "fa-square-o", true);
         return label;
       },
-      undefined: (key, name, value, type, forcedType) => {
-        const label = this.createConfigLabel(key, name, type, forcedType);
-        const input = this.createConfigInput(key, value);
-        input.type = "text";
-        input.disabled = "disabled";
-        input.classList.add("disabled", "undefined");
-        input.placeholder = "undefined";
-        label.append(input);
-        return label;
-      },
-      null: (key, name, value, type, forcedType) => {
-        const label = this.createConfigLabel(key, name, type, forcedType);
-        const input = this.createConfigInput(key, value);
-        input.type = "text";
-        input.disabled = "disabled";
-        input.classList.add("disabled", "null");
-        input.placeholder = "null";
-        label.append(input);
-        return label;
-      },
+      undefined: makeDisabledInput("undefined"),
+      null: makeDisabledInput("null"),
       position: (key, name, value, type, forcedType) => {
         const label = this.createConfigLabel(key, name, type, forcedType);
         const select = this.createConfigInput(key, value, false, "select");
@@ -1244,9 +1236,10 @@ const Remote = {
 
     const type = this.getTypeAsString(dataToEdit, path);
     const forcedType = this.hasForcedType(path);
-    if (this.createConfigElement(type)) {
+    const leafElement = this.createConfigElement(type);
+    if (leafElement) {
       // recursion stop
-      return this.createConfigElement(type)(path, name, dataToEdit, type, forcedType);
+      return leafElement(path, name, dataToEdit, type, forcedType);
     }
 
     // object and array
