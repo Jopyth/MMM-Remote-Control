@@ -42,13 +42,13 @@ Module.register("MMM-Remote-Control", {
     if (!document.getElementById("remote-control-overlay-brightness")) {
       const brightnessOverlay = document.createElement("div");
       brightnessOverlay.id = "remote-control-overlay-brightness";
-      document.body.insertBefore(brightnessOverlay, document.body.firstChild);
+      document.documentElement.append(brightnessOverlay);
     }
 
     if (!document.getElementById("remote-control-overlay-temp")) {
       const tempOverlay = document.createElement("div");
       tempOverlay.id = "remote-control-overlay-temp";
-      document.body.insertBefore(tempOverlay, document.body.firstChild);
+      document.documentElement.append(tempOverlay);
     }
   },
 
