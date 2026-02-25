@@ -197,29 +197,186 @@ describe("systemControl", () => {
           done();
         }, 100);
       });
+
+      it("should handle MONITORTOGGLE by calling MONITORON when off", (t, done) => {
+        // Override exec to report monitor as off
+        const execResults2 = [];
+        childProcess.exec = (command, options, callback) => {
+          execResults2.push({command});
+          setImmediate(() => callback(null, "display_power=0", ""));
+        };
+        delete require.cache[require.resolve("../../lib/systemControl.js")];
+        const sc2 = require("../../lib/systemControl.js");
+        const monitorControl2 = sc2.monitorControl;
+
+        const config = {customCommand: {}};
+        const res = {};
+        const notifications2 = [];
+
+        monitorControl2("MONITORTOGGLE", config, {}, res, () => {}, (notification, payload) => {
+          notifications2.push({notification, payload});
+        });
+
+        setTimeout(() => {
+          assert.ok(execResults2.length >= 2, "Should call status then MONITORON");
+          assert.ok(execResults2[0].command.includes("display_power -1"));
+          assert.ok(execResults2[1].command.includes("display_power 1"));
+          assert.strictEqual(notifications2[0]?.notification, "USER_PRESENCE");
+          assert.strictEqual(notifications2[0]?.payload, true);
+          done();
+        }, 100);
+      });
     });
   });
 
   describe("shutdownControl", () => {
+    let shutdownControl;
+    let execResults;
 
-    /*
-     * TODO: These tests need proper mocking strategy
-     * Currently skipped due to module reloading + logger mock issues
-     */
-    it.skip("should execute SHUTDOWN command with default command", (t, done) => {
-      done();
+    beforeEach(() => {
+      execResults = [];
+      childProcess.exec = (command, options, callback) => {
+        execResults.push({command, options});
+        setImmediate(() => callback(null, "", ""));
+      };
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
+      const sc = require("../../lib/systemControl.js");
+      shutdownControl = sc.shutdownControl;
     });
 
-    it.skip("should execute REBOOT command with default command", (t, done) => {
-      done();
+    afterEach(() => {
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
     });
 
-    it.skip("should use custom shutdown command from config", (t, done) => {
-      done();
+    it("should execute SHUTDOWN command with default command", (t, done) => {
+      const responses = [];
+      shutdownControl("SHUTDOWN", {customCommand: {}}, {}, {}, (res, err, data) => {
+        responses.push({res, err, data});
+      });
+
+      setTimeout(() => {
+        assert.strictEqual(responses.length, 1);
+        assert.strictEqual(responses[0].data.action, "SHUTDOWN");
+        assert.strictEqual(execResults.length, 1);
+        assert.ok(execResults[0].command.includes("shutdown"));
+        done();
+      }, 50);
     });
 
-    it.skip("should use custom reboot command from config", (t, done) => {
-      done();
+    it("should execute REBOOT command with default command", (t, done) => {
+      const responses = [];
+      shutdownControl("REBOOT", {customCommand: {}}, {}, {}, (res, err, data) => {
+        responses.push({res, err, data});
+      });
+
+      setTimeout(() => {
+        assert.strictEqual(responses.length, 1);
+        assert.strictEqual(responses[0].data.action, "REBOOT");
+        assert.strictEqual(execResults.length, 1);
+        assert.ok(execResults[0].command.includes("shutdown"));
+        done();
+      }, 50);
+    });
+
+    it("should use custom shutdown command from config", (t, done) => {
+      const config = {customCommand: {shutdownCommand: "custom-shutdown-now"}};
+      shutdownControl("SHUTDOWN", config, {}, {}, () => {});
+
+      setTimeout(() => {
+        assert.strictEqual(execResults.length, 1);
+        assert.strictEqual(execResults[0].command, "custom-shutdown-now");
+        done();
+      }, 50);
+    });
+
+    it("should use custom reboot command from config", (t, done) => {
+      const config = {customCommand: {rebootCommand: "custom-reboot-now"}};
+      shutdownControl("REBOOT", config, {}, {}, () => {});
+
+      setTimeout(() => {
+        assert.strictEqual(execResults.length, 1);
+        assert.strictEqual(execResults[0].command, "custom-reboot-now");
+        done();
+      }, 50);
+    });
+
+    it("should log SIGTERM error for SHUTDOWN when sudo password required", (t, done) => {
+      const sigtermError = Object.assign(new Error("SIGTERM"), {killed: true, signal: "SIGTERM"});
+      childProcess.exec = (command, options, callback) => {
+        execResults.push({command});
+        setImmediate(() => callback(sigtermError, "", ""));
+      };
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
+      const sc = require("../../lib/systemControl.js");
+      shutdownControl = sc.shutdownControl;
+
+      // Should not throw even when exec returns a SIGTERM error
+      assert.doesNotThrow(() => {
+        shutdownControl("SHUTDOWN", {customCommand: {}}, {}, {}, () => {});
+      });
+
+      setTimeout(() => {
+        assert.strictEqual(execResults.length, 1);
+        done();
+      }, 50);
+    });
+
+    it("should log general error for SHUTDOWN on exec failure", (t, done) => {
+      childProcess.exec = (command, options, callback) => {
+        execResults.push({command});
+        setImmediate(() => callback(new Error("permission denied"), "", "stderr output"));
+      };
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
+      const sc = require("../../lib/systemControl.js");
+      shutdownControl = sc.shutdownControl;
+
+      assert.doesNotThrow(() => {
+        shutdownControl("SHUTDOWN", {customCommand: {}}, {}, {}, () => {});
+      });
+
+      setTimeout(() => {
+        assert.strictEqual(execResults.length, 1);
+        done();
+      }, 50);
+    });
+
+    it("should log SIGTERM error for REBOOT when sudo password required", (t, done) => {
+      const sigtermError = Object.assign(new Error("SIGTERM"), {killed: true, signal: "SIGTERM"});
+      childProcess.exec = (command, options, callback) => {
+        execResults.push({command});
+        setImmediate(() => callback(sigtermError, "", ""));
+      };
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
+      const sc = require("../../lib/systemControl.js");
+      shutdownControl = sc.shutdownControl;
+
+      assert.doesNotThrow(() => {
+        shutdownControl("REBOOT", {customCommand: {}}, {}, {}, () => {});
+      });
+
+      setTimeout(() => {
+        assert.strictEqual(execResults.length, 1);
+        done();
+      }, 50);
+    });
+
+    it("should log general error for REBOOT on exec failure", (t, done) => {
+      childProcess.exec = (command, options, callback) => {
+        execResults.push({command});
+        setImmediate(() => callback(new Error("permission denied"), "", "stderr output"));
+      };
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
+      const sc = require("../../lib/systemControl.js");
+      shutdownControl = sc.shutdownControl;
+
+      assert.doesNotThrow(() => {
+        shutdownControl("REBOOT", {customCommand: {}}, {}, {}, () => {});
+      });
+
+      setTimeout(() => {
+        assert.strictEqual(execResults.length, 1);
+        done();
+      }, 50);
     });
   });
 
@@ -313,6 +470,21 @@ describe("systemControl", () => {
       assert.strictEqual(windowActions.length, 0);
       assert.strictEqual(responses.length, 1);
       assert.strictEqual(responses[0].error, undefined);
+    });
+
+    it("should handle missing electron module gracefully", () => {
+      currentElectronMock = null;
+      delete require.cache[require.resolve("../../lib/systemControl.js")];
+      const sc = require("../../lib/systemControl.js");
+      const localHandleElectronActions = sc.handleElectronActions;
+
+      const errorResponses = [];
+      localHandleElectronActions({action: "MINIMIZE"}, {}, (res, error) => {
+        errorResponses.push({res, error});
+      });
+
+      assert.strictEqual(errorResponses.length, 1);
+      assert.ok(errorResponses[0].error instanceof Error);
     });
   });
 });

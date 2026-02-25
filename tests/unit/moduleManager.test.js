@@ -284,4 +284,61 @@ describe("lib/moduleManager additional coverage", () => {
     assert.equal(responses[0].code, "up-to-date");
     assert.equal(responses[0].info, `${moduleName} already up to date.`);
   });
+
+  it("updateModule should perform update when commits are available", async () => {
+    const remoteParent = path.join(tempRoot, "git-update");
+    const sourcePath = path.join(tempRoot, "source-update");
+    const modulesParent = path.join(tempRoot, "modules-update");
+    const baseDir = path.join(modulesParent, "server");
+    const moduleName = "MMM-HasUpdate";
+    const remoteName = "origin.git";
+
+    await fs.mkdir(remoteParent, {recursive: true});
+    await fs.mkdir(sourcePath, {recursive: true});
+    await fs.mkdir(modulesParent, {recursive: true});
+    await fs.mkdir(baseDir, {recursive: true});
+
+    // Create initial commit in source
+    const sourceGit = simpleGit(sourcePath);
+    await sourceGit.init();
+    await sourceGit.addConfig("user.name", "Test User");
+    await sourceGit.addConfig("user.email", "test@example.com");
+    await fs.writeFile(path.join(sourcePath, "README.md"), "initial", "utf8");
+    await sourceGit.add("README.md");
+    await sourceGit.commit("initial commit");
+
+    // Create bare remote and push initial commit
+    await simpleGit(remoteParent).raw(["init", "--bare", remoteName]);
+    await sourceGit.addRemote("origin", path.join(remoteParent, remoteName));
+    await sourceGit.raw(["push", "-u", "origin", "HEAD"]);
+
+    // Clone the repo (will be at initial commit)
+    await simpleGit(modulesParent).clone(path.join(remoteParent, remoteName), moduleName);
+    const cloneGit = simpleGit(path.join(modulesParent, moduleName));
+    await cloneGit.addConfig("user.name", "Test User");
+    await cloneGit.addConfig("user.email", "test@example.com");
+
+    // Add a new commit to the remote (not in the clone)
+    await fs.writeFile(path.join(sourcePath, "README.md"), "updated", "utf8");
+    await sourceGit.add("README.md");
+    await sourceGit.commit("update commit");
+    await sourceGit.raw(["push", "origin", "HEAD"]);
+
+    // No package.json in module path → should skip npm install
+    const responses = [];
+    const errors = [];
+
+    await moduleManager.updateModule({
+      moduleName,
+      baseDir,
+      modulesAvailable: [{name: moduleName}],
+      onSuccess: (response) => { responses.push(response); },
+      onError: (error, data) => { errors.push({error, data}); }
+    });
+
+    assert.equal(errors.length, 0, `onError called: ${errors.map((e) => e.error?.message).join(", ")}`);
+    assert.equal(responses.length, 1);
+    assert.equal(responses[0].code, "restart");
+    assert.ok(responses[0].info.includes(moduleName));
+  });
 });
