@@ -253,6 +253,7 @@ Object.assign(
       // Lazy render: only the active menu
       const html = this.renderMenu(newMenu);
       main.innerHTML = html;
+      main.scrollTop = 0;
 
       // For dynamic menus not in the standard renderMenu() map
       if (!html) {
@@ -397,6 +398,9 @@ Object.assign(
       this.currentMenu = newMenu;
       // Update header title based on the active menu
       this.updateHeaderTitle(newMenu);
+
+      // Restore keyboard focus to first interactive element in the new menu
+      main.querySelector(".button")?.focus({preventScroll: true});
 
     },
 
