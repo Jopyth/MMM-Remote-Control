@@ -33,108 +33,40 @@ Object.assign(
      */
     attachEditMenuListeners () {
 
-      const slider = document.querySelector("#brightness-slider");
-      slider.addEventListener(
-        "change",
-        () => {
+      for (const {selector, type, action} of [
+        {"selector": "#brightness-slider", "type": "brightness", "action": "BRIGHTNESS"},
+        {"selector": "#temp-slider", "type": "temp", "action": "TEMP"},
+        {"selector": "#zoom-slider", "type": "zoom", "action": "ZOOM"}
+      ]) {
 
-          this.action("BRIGHTNESS", {"value": slider.value});
+        const slider = document.querySelector(selector);
+        slider.addEventListener(
+          "change",
+          () => { this.action(action, {"value": slider.value}); },
+          false
+        );
+        slider.addEventListener(
+          "input",
+          () => { this.updateSliderThumbColor(slider, type); },
+          false
+        );
+        this.updateSliderThumbColor(slider, type);
 
-        },
-        false
-      );
-      slider.addEventListener(
-        "input",
-        () => {
+      }
 
-          this.updateSliderThumbColor(
-            slider,
-            "brightness"
-          );
+      for (const {selector, action} of [
+        {"selector": "#background-color-picker", "action": "BACKGROUND_COLOR"},
+        {"selector": "#font-color-picker", "action": "FONT_COLOR"}
+      ]) {
 
-        },
-        false
-      );
-      this.updateSliderThumbColor(
-        slider,
-        "brightness"
-      );
+        const picker = document.querySelector(selector);
+        picker.addEventListener(
+          "change",
+          () => { this.action(action, {"value": picker.value}); },
+          false
+        );
 
-      const slider2 = document.querySelector("#temp-slider");
-      slider2.addEventListener(
-        "change",
-        () => {
-
-          this.action("TEMP", {"value": slider2.value});
-
-        },
-        false
-      );
-      slider2.addEventListener(
-        "input",
-        () => {
-
-          this.updateSliderThumbColor(
-            slider2,
-            "temp"
-          );
-
-        },
-        false
-      );
-      this.updateSliderThumbColor(
-        slider2,
-        "temp"
-      );
-
-      const zoomSlider = document.querySelector("#zoom-slider");
-      zoomSlider.addEventListener(
-        "change",
-        () => {
-
-          this.action("ZOOM", {"value": zoomSlider.value});
-
-        },
-        false
-      );
-      zoomSlider.addEventListener(
-        "input",
-        () => {
-
-          this.updateSliderThumbColor(
-            zoomSlider,
-            "zoom"
-          );
-
-        },
-        false
-      );
-      this.updateSliderThumbColor(
-        zoomSlider,
-        "zoom"
-      );
-
-      const bgColorPicker = document.querySelector("#background-color-picker");
-      bgColorPicker.addEventListener(
-        "change",
-        () => {
-
-          this.action("BACKGROUND_COLOR", {"value": bgColorPicker.value});
-
-        },
-        false
-      );
-
-      const fontColorPicker = document.querySelector("#font-color-picker");
-      fontColorPicker.addEventListener(
-        "change",
-        () => {
-
-          this.action("FONT_COLOR", {"value": fontColorPicker.value});
-
-        },
-        false
-      );
+      }
 
     },
 
