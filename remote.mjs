@@ -35,33 +35,12 @@ export const Remote = {
 };
 
 const buttons = {
-  // Navigation buttons
-  "power-button" () {
-
-    globalThis.location.hash = "power-menu";
-
-  },
-  "edit-button" () {
-
-    globalThis.location.hash = "edit-menu";
-
-  },
-  "settings-button" () {
-
-    globalThis.location.hash = "settings-menu";
-
-  },
   "mirror-link-button" () {
 
     window.open(
       "/",
       "_blank"
     );
-
-  },
-  "classes-button" () {
-
-    globalThis.location.hash = "classes-menu";
 
   },
   "back-button" () {
@@ -83,26 +62,6 @@ const buttons = {
 
     }
     globalThis.location.hash = "main-menu";
-
-  },
-  "update-button" () {
-
-    globalThis.location.hash = "update-menu";
-
-  },
-  "alert-button" () {
-
-    globalThis.location.hash = "alert-menu";
-
-  },
-  "notification-button" () {
-
-    globalThis.location.hash = "notification-menu";
-
-  },
-  "links-button" () {
-
-    globalThis.location.hash = "links-menu";
 
   },
 
@@ -370,11 +329,6 @@ const buttons = {
   },
 
   // Config menu buttons
-  "add-module" () {
-
-    globalThis.location.hash = "add-module-menu";
-
-  },
   "save-config" () {
 
     Remote.saveConfig();

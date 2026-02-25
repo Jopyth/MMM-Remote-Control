@@ -734,6 +734,37 @@ Object.assign(
 
       }
 
+      /*
+       * One-time delegated handler for data-hash navigation buttons.
+       * Survives main.innerHTML replacements since it lives on the persistent container.
+       */
+      const mainContent = document.querySelector(".main-content");
+      mainContent?.addEventListener("click", (e) => {
+
+        const hash = e.target.closest("[data-hash]")?.dataset.hash;
+        if (hash) {
+
+          globalThis.location.hash = hash;
+
+        }
+
+      });
+      mainContent?.addEventListener("keydown", (e) => {
+
+        if (e.key === "Enter" || e.key === " ") {
+
+          const hash = e.target.closest("[data-hash]")?.dataset.hash;
+          if (hash) {
+
+            e.preventDefault();
+            globalThis.location.hash = hash;
+
+          }
+
+        }
+
+      });
+
       // Lazy render: showMenu handles HTML, listeners, data loading, and header title
       this.showMenu(globalThis.location.hash ? globalThis.location.hash.slice(1) : "main-menu");
 

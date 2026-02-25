@@ -6,11 +6,13 @@ import {Remote} from "./remote.mjs";
  * @param {string} icon - Font Awesome icon class (e.g. "fa-power-off")
  * @param {string} text - Visible button text
  * @param {boolean} [hasArrow] - Whether to append a right-arrow chevron
+ * @param {string} [hash] - Optional URL hash to set on click via data-hash attribute
  * @returns {string} HTML string for the button
  */
-function navBtn (id, icon, text, hasArrow = false) {
+function navBtn (id, icon, text, hasArrow = false, hash = "") {
   const arrow = hasArrow ? "<span class=\"fa fa-fw fa-angle-right\" aria-hidden=\"true\"></span>" : "";
-  return `<div id="${id}" class="button" role="button" tabindex="0">
+  const hashAttr = hash ? ` data-hash="${hash}"` : "";
+  return `<div id="${id}" class="button"${hashAttr} role="button" tabindex="0">
       <span class="fa fa-fw ${icon}" aria-hidden="true"></span>
       <span class="text">${text}</span>
       ${arrow}
@@ -24,11 +26,13 @@ function navBtn (id, icon, text, hasArrow = false) {
  * @param {string} innerIcon - Font Awesome class for the inner/foreground icon
  * @param {string} text - Visible button text
  * @param {boolean} [hasArrow] - Whether to append a right-arrow chevron
+ * @param {string} [hash] - Optional URL hash to set on click via data-hash attribute
  * @returns {string} HTML string for the stacked button
  */
-function stackBtn (id, outerIcon, innerIcon, text, hasArrow = false) {
+function stackBtn (id, outerIcon, innerIcon, text, hasArrow = false, hash = "") {
   const arrow = hasArrow ? "<span class=\"fa fa-fw fa-angle-right\" aria-hidden=\"true\"></span>" : "";
-  return `<div id="${id}" class="button" role="button" tabindex="0">
+  const hashAttr = hash ? ` data-hash="${hash}"` : "";
+  return `<div id="${id}" class="button"${hashAttr} role="button" tabindex="0">
       <span class="stack fa-fw">
         <span class="fa fa-fw ${outerIcon} outer-label fa-stack-1x" aria-hidden="true"></span>
         <span class="fa fa-fw ${innerIcon} inner-monitor-label fa-stack-1x" aria-hidden="true"></span>
@@ -106,14 +110,14 @@ Object.assign(Remote, {
   renderMainMenu () {
     const t = (key) => this.translate(key);
     return `<nav class="menu-nav">
-        ${navBtn("power-button", "fa-power-off", t("SHUTDOWN_MENU_NAME"), true)}
-        ${stackBtn("edit-button", "fa-television", "fa-pencil", t("EDIT_MENU_NAME"), true)}
-        ${navBtn("settings-button", "fa-wrench", t("CONFIGURE_MENU_NAME"), true)}
-        ${navBtn("classes-button", "fa-object-group", t("CLASSES_MENU_NAME"), true)}
-        ${navBtn("update-button", "fa-download", t("UPDATE_MENU_NAME"), true)}
-        ${navBtn("alert-button", "fa-envelope-o", t("ALERT_MENU_NAME"), true)}
-        ${navBtn("notification-button", "fa-bell-o", t("NOTIFICATION_MENU_NAME"), true)}
-        ${navBtn("links-button", "fa-link", t("LINKS"), true)}
+        ${navBtn("power-button", "fa-power-off", t("SHUTDOWN_MENU_NAME"), true, "power-menu")}
+        ${stackBtn("edit-button", "fa-television", "fa-pencil", t("EDIT_MENU_NAME"), true, "edit-menu")}
+        ${navBtn("settings-button", "fa-wrench", t("CONFIGURE_MENU_NAME"), true, "settings-menu")}
+        ${navBtn("classes-button", "fa-object-group", t("CLASSES_MENU_NAME"), true, "classes-menu")}
+        ${navBtn("update-button", "fa-download", t("UPDATE_MENU_NAME"), true, "update-menu")}
+        ${navBtn("alert-button", "fa-envelope-o", t("ALERT_MENU_NAME"), true, "alert-menu")}
+        ${navBtn("notification-button", "fa-bell-o", t("NOTIFICATION_MENU_NAME"), true, "notification-menu")}
+        ${navBtn("links-button", "fa-link", t("LINKS"), true, "links-menu")}
         ${navBtn("mirror-link-button", "fa-external-link", t("VIEW_MIRROR"))}
       </nav>`;
   },
@@ -385,7 +389,7 @@ Object.assign(Remote, {
           <span class="fa fa-fw fa-undo" aria-hidden="true"></span>
           <span class="text">${t("RESTORE")}</span>
         </div>
-        <div id="add-module" class="button">
+        <div id="add-module" class="button" data-hash="add-module-menu">
           <span class="fa fa-fw fa-plus" aria-hidden="true"></span>
           <span class="text">${t("ADD_MODULE")}</span>
         </div>
