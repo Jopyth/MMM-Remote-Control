@@ -1,15 +1,12 @@
 const {test, describe, before, after} = require("node:test");
 const assert = require("node:assert/strict");
 const {Window} = require("happy-dom");
-const fs = require("node:fs");
-const path = require("node:path");
-const vm = require("node:vm");
 
 describe("remote.js DOM smoke tests", () => {
   let window, Remote;
 
-  before(() => {
-    // Create browser-like environment
+  before(async () => {
+    // Create browser-like environment for DOM operations
     window = new Window({
       url: "http://localhost:8080",
       settings: {
@@ -19,8 +16,8 @@ describe("remote.js DOM smoke tests", () => {
       }
     });
 
-    // Mock required globals that remote.js depends on
-    window.MMSocket = class {
+    // Expose browser globals so ESM modules find them at runtime
+    globalThis.MMSocket = class {
       constructor (name) {
         this.name = name;
         this._callback = null;
@@ -35,32 +32,18 @@ describe("remote.js DOM smoke tests", () => {
       }
     };
 
-    window.marked = {
-      parse: (text) => `<p>${text}</p>` // Simple mock
-    };
+    globalThis.document = window.document;
+    globalThis.window = window;
+    globalThis.location = {hash: ""};
+    globalThis.localStorage = {getItem: () => null, setItem: () => {}};
 
-    window.location = {hash: ""};
-    window.globalThis = window;
-
-    // Load remote.js
-    const remoteJsPath = path.join(__dirname, "../../remote.js");
-    const remoteJsCode = fs.readFileSync(remoteJsPath, "utf8");
-
-    // Create context with window as global
-    const context = vm.createContext(window);
-
-    // Execute remote.js in the window context
-    vm.runInContext(remoteJsCode, context);
-
-    // Load topic files that extend Remote via Object.assign
-    for (const topicFile of ["remote-utils.js", "remote-socket.js", "remote-modules.js", "remote-config.js", "remote-menu.js"]) {
-      const topicPath = path.join(__dirname, "../../", topicFile);
-      const topicCode = fs.readFileSync(topicPath, "utf8");
-      vm.runInContext(topicCode, context);
-    }
-
-    // Remote is now available via window.Remote (exported by remote.js)
-    Remote = window.Remote;
+    // Import ESM modules — each extends Remote via Object.assign as a side effect
+    ({Remote} = await import("../../remote.mjs"));
+    await import("../../remote-utils.mjs");
+    await import("../../remote-socket.mjs");
+    await import("../../remote-modules.mjs");
+    await import("../../remote-config.mjs");
+    await import("../../remote-menu.mjs");
   });
 
   after(() => {
