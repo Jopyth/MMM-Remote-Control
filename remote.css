@@ -882,7 +882,6 @@ nav.notification-menu {
   border-radius: var(--border-radius);
   font-size: 20px;
   line-height: 1.5em;
-  display: none;
 }
 
 .popup-contents {

@@ -232,7 +232,6 @@ module.exports = {
       get((request, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         const r = request.path.split("/")[1].toUpperCase();
-        console.log(request.path);
         this.executeQuery(this.checkDelay({action: r}, request), res);
       });
 
