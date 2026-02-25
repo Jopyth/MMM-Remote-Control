@@ -144,7 +144,7 @@ Module.register("MMM-Remote-Control", {
         break;
 
       case "NOTIFICATION":
-        this.sendNotification(payload.notification, payload.payload);
+        this.sendNotification(payload.notification, payload.payload ?? {});
         break;
 
     }
