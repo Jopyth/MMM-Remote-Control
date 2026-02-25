@@ -2321,8 +2321,8 @@ const buttons = {
       try {
         payload = JSON.parse(rawPayload);
       } catch {
-        Remote.setStatus("error", Remote.translate("INVALID_JSON"));
-        return;
+        // Not valid JSON — treat as plain string
+        payload = rawPayload;
       }
     }
     localStorage.setItem("mmrc_notification_name", name);
