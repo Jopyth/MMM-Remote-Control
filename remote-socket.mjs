@@ -388,7 +388,8 @@ Object.assign(
 
       try {
 
-        emptyIndicator?.classList.toggle("hidden", result.data.length > 0);
+        const dataSize = Array.isArray(result.data) ? result.data.length : Object.keys(result.data ?? {}).length;
+        emptyIndicator?.classList.toggle("hidden", dataSize > 0);
         this.savedData[result.query.data] = result.data;
 
         // Cache moduleInstalled data for repository buttons
