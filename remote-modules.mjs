@@ -11,15 +11,7 @@ Object.assign(
 
     showModule (id, force) {
 
-      if (force) {
-
-        this.action("SHOW", {"force": true, "module": id});
-
-      } else {
-
-        this.action("SHOW", {"module": id});
-
-      }
+      this.action("SHOW", force ? {"force": true, "module": id} : {"module": id});
 
     },
 
@@ -122,69 +114,15 @@ Object.assign(
         totalCount = 0,
         visibleCount = 0;
 
-      // Check show modules
-      if (classData.show) {
+      for (const key of ["show", "hide", "toggle"]) {
 
-        const showModules = Array.isArray(classData.show)
-          ? classData.show
-          : [classData.show];
-        for (const moduleName of showModules) {
+        if (!classData[key]) {
 
-          const module = moduleMap[moduleName];
-          if (module) {
-
-            totalCount++;
-            if (module.hidden) {
-
-              hiddenCount++;
-
-            } else {
-
-              visibleCount++;
-
-            }
-
-          }
+          continue;
 
         }
-
-      }
-
-      // Check hide modules
-      if (classData.hide) {
-
-        const hideModules = Array.isArray(classData.hide)
-          ? classData.hide
-          : [classData.hide];
-        for (const moduleName of hideModules) {
-
-          const module = moduleMap[moduleName];
-          if (module) {
-
-            totalCount++;
-            if (module.hidden) {
-
-              hiddenCount++;
-
-            } else {
-
-              visibleCount++;
-
-            }
-
-          }
-
-        }
-
-      }
-
-      // Check toggle modules (we just show if they're visible/hidden)
-      if (classData.toggle) {
-
-        const toggleModules = Array.isArray(classData.toggle)
-          ? classData.toggle
-          : [classData.toggle];
-        for (const moduleName of toggleModules) {
+        const modules = Array.isArray(classData[key]) ? classData[key] : [classData[key]];
+        for (const moduleName of modules) {
 
           const module = moduleMap[moduleName];
           if (module) {
@@ -284,33 +222,13 @@ Object.assign(
 
     },
 
-    loadBrightness () {
+    loadSettings () {
 
-      this.getData("brightness");
+      for (const name of ["brightness", "temp", "zoom", "backgroundColor", "fontColor"]) {
 
-    },
+        this.getData(name);
 
-    loadTemp () {
-
-      this.getData("temp");
-
-    },
-
-    loadZoom () {
-
-      this.getData("zoom");
-
-    },
-
-    loadBackgroundColor () {
-
-      this.getData("backgroundColor");
-
-    },
-
-    loadFontColor () {
-
-      this.getData("fontColor");
+      }
 
     },
 
@@ -456,7 +374,7 @@ Object.assign(
           "classes"
         );
 
-        for (const index in classes) {
+        for (const [index] of Object.entries(classes)) {
 
           const node = document.createElement("div");
           node.id = "classes-before-result";
@@ -685,24 +603,14 @@ Object.assign(
 
     offerRestart (message) {
 
-      const wrapper = document.createElement("div");
-      wrapper.innerHTML = `<span>${message}</span>`;
-      const restart = this.createSymbolText(
-        "fa fa-fw fa-recycle",
-        this.translate("RESTARTMM"),
-        this.buttons["restart-mm-button"]
-      );
-      restart.children[1].classList.add("text");
-      wrapper.append(restart);
-      this.setStatus(
-        "success",
-        false,
-        wrapper
+      this.offerReload(
+        message,
+        false
       );
 
     },
 
-    offerReload (message) {
+    offerReload (message, includeReload = true) {
 
       const wrapper = document.createElement("div");
       wrapper.innerHTML = `<span>${message}</span>`;
@@ -713,13 +621,17 @@ Object.assign(
       );
       restart.children[1].classList.add("text");
       wrapper.append(restart);
-      const reload = this.createSymbolText(
-        "fa fa-fw fa-globe",
-        this.translate("REFRESHMM"),
-        this.buttons["refresh-mm-button"]
-      );
-      reload.children[1].classList.add("text");
-      wrapper.append(reload);
+      if (includeReload) {
+
+        const reload = this.createSymbolText(
+          "fa fa-fw fa-globe",
+          this.translate("REFRESHMM"),
+          this.buttons["refresh-mm-button"]
+        );
+        reload.children[1].classList.add("text");
+        wrapper.append(reload);
+
+      }
       this.setStatus(
         "success",
         false,
@@ -759,7 +671,7 @@ Object.assign(
 
     handleMmUpdate (result) {
 
-      if (globalThis.location.hash.slice(1) == "update-menu") {
+      if (globalThis.location.hash.slice(1) === "update-menu") {
 
         const updateButton = document.querySelector("#update-mm-button");
         if (result) {

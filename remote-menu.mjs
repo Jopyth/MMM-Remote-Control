@@ -254,11 +254,7 @@ Object.assign(
 
             this.attachEditMenuListeners();
             this.loadVisibleModules();
-            this.loadBrightness();
-            this.loadTemp();
-            this.loadZoom();
-            this.loadBackgroundColor();
-            this.loadFontColor();
+            this.loadSettings();
             break;
 
 
