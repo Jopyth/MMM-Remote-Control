@@ -52,6 +52,13 @@ describe("remote.js DOM smoke tests", () => {
     // Execute remote.js in the window context
     vm.runInContext(remoteJsCode, context);
 
+    // Load topic files that extend Remote via Object.assign
+    for (const topicFile of ["remote-utils.js", "remote-socket.js", "remote-modules.js", "remote-config.js", "remote-menu.js"]) {
+      const topicPath = path.join(__dirname, "../../", topicFile);
+      const topicCode = fs.readFileSync(topicPath, "utf8");
+      vm.runInContext(topicCode, context);
+    }
+
     // Remote is now available via window.Remote (exported by remote.js)
     Remote = window.Remote;
   });

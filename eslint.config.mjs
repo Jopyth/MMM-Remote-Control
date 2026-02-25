@@ -20,7 +20,10 @@ export default defineConfig([
         ...globals.browser,
         ...globals.node,
         "$item": "writable",
-        "$node": "writable"
+        "$node": "writable",
+        "MMSocket": "readonly",
+        "Remote": "readonly",
+        "marked": "readonly"
       }
     },
     "plugins": {js, "jsdoc": pluginJsdoc},

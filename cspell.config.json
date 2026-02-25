@@ -102,6 +102,7 @@
   ],
   "ignorePaths": [
     "coverage/**",
+    "docs/simplification.md",
     "modules.json",
     "modules.json.template",
     "node_modules/**",
