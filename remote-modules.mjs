@@ -13,17 +13,11 @@ Object.assign(
 
       if (force) {
 
-        this.sendSocketNotification(
-          "REMOTE_ACTION",
-          {"action": "SHOW", "force": true, "module": id}
-        );
+        this.action("SHOW", {"force": true, "module": id});
 
       } else {
 
-        this.sendSocketNotification(
-          "REMOTE_ACTION",
-          {"action": "SHOW", "module": id}
-        );
+        this.action("SHOW", {"module": id});
 
       }
 
@@ -31,10 +25,7 @@ Object.assign(
 
     hideModule (id) {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"action": "HIDE", "module": id}
-      );
+      this.action("HIDE", {"module": id});
 
     },
 
@@ -60,10 +51,7 @@ Object.assign(
 
       }
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"action": "INSTALL", url, index}
-      );
+      this.action("INSTALL", {url, index});
 
     },
 
@@ -298,46 +286,31 @@ Object.assign(
 
     loadBrightness () {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"data": "brightness"}
-      );
+      this.getData("brightness");
 
     },
 
     loadTemp () {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"data": "temp"}
-      );
+      this.getData("temp");
 
     },
 
     loadZoom () {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"data": "zoom"}
-      );
+      this.getData("zoom");
 
     },
 
     loadBackgroundColor () {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"data": "backgroundColor"}
-      );
+      this.getData("backgroundColor");
 
     },
 
     loadFontColor () {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"data": "fontColor"}
-      );
+      this.getData("fontColor");
 
     },
 
@@ -436,10 +409,7 @@ Object.assign(
 
         // Temporarily store the resolver
         this.installedModulesCacheResolver = handleResponse;
-        this.sendSocketNotification(
-          "REMOTE_ACTION",
-          {"data": "moduleInstalled"}
-        );
+        this.getData("moduleInstalled");
 
       });
 
@@ -783,10 +753,7 @@ Object.assign(
 
     updateModule (module) {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"action": "UPDATE", module}
-      );
+      this.action("UPDATE", {module});
 
     },
 
@@ -813,10 +780,7 @@ Object.assign(
 
     async loadModulesToUpdate () {
 
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"data": "mmUpdateAvailable"}
-      );
+      this.getData("mmUpdateAvailable");
 
       try {
 
@@ -934,10 +898,7 @@ Object.assign(
     showChangelog (moduleName) {
 
       this.setStatus("loading");
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"action": "GET_CHANGELOG", "module": moduleName}
-      );
+      this.action("GET_CHANGELOG", {"module": moduleName});
 
     },
 

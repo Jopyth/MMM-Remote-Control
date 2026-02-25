@@ -981,10 +981,7 @@ Object.assign(
       const restoreButton = document.querySelector("#restore-config");
       restoreButton.classList.remove("highlight");
       this.setStatus("loading");
-      this.sendSocketNotification(
-        "REMOTE_ACTION",
-        {"data": "saves"}
-      );
+      this.getData("saves");
 
     },
 

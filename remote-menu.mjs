@@ -38,10 +38,7 @@ Object.assign(
         "change",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {"action": "BRIGHTNESS", "value": slider.value}
-          );
+          this.action("BRIGHTNESS", {"value": slider.value});
 
         },
         false
@@ -68,10 +65,7 @@ Object.assign(
         "change",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {"action": "TEMP", "value": slider2.value}
-          );
+          this.action("TEMP", {"value": slider2.value});
 
         },
         false
@@ -98,10 +92,7 @@ Object.assign(
         "change",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {"action": "ZOOM", "value": zoomSlider.value}
-          );
+          this.action("ZOOM", {"value": zoomSlider.value});
 
         },
         false
@@ -128,10 +119,7 @@ Object.assign(
         "change",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {"action": "BACKGROUND_COLOR", "value": bgColorPicker.value}
-          );
+          this.action("BACKGROUND_COLOR", {"value": bgColorPicker.value});
 
         },
         false
@@ -142,10 +130,7 @@ Object.assign(
         "change",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {"action": "FONT_COLOR", "value": fontColorPicker.value}
-          );
+          this.action("FONT_COLOR", {"value": fontColorPicker.value});
 
         },
         false
@@ -844,20 +829,16 @@ Object.assign(
         "change",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {
-              "action": content.action.toUpperCase(),
-              ...content.content,
-              "payload": {
-                ...content.content === undefined
-                  ? {}
-                  : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
-                "value": slide.value
-              },
+          this.action(content.action.toUpperCase(), {
+            ...content.content,
+            "payload": {
+              ...content.content === undefined
+                ? {}
+                : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
               "value": slide.value
-            }
-          );
+            },
+            "value": slide.value
+          });
 
         }
       );
@@ -879,20 +860,16 @@ Object.assign(
         "focusout",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {
-              "action": content.action.toUpperCase(),
-              ...content.content,
-              "payload": {
-                ...content.content === undefined
-                  ? {}
-                  : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
-                "value": input.value
-              },
+          this.action(content.action.toUpperCase(), {
+            ...content.content,
+            "payload": {
+              ...content.content === undefined
+                ? {}
+                : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
               "value": input.value
-            }
-          );
+            },
+            "value": input.value
+          });
 
         }
       );
@@ -908,14 +885,10 @@ Object.assign(
         "click",
         () => {
 
-          this.sendSocketNotification(
-            "REMOTE_ACTION",
-            {
-              "action": content.action.toUpperCase(),
-              "payload": {},
-              ...content.content
-            }
-          );
+          this.action(content.action.toUpperCase(), {
+            "payload": {},
+            ...content.content
+          });
 
           // Reload classes menu after executing class action to update status badges
           if (content.action === "MANAGE_CLASSES" && menu === "classes") {

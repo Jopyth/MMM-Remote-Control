@@ -51,6 +51,18 @@ Object.assign(
 
     },
 
+    action (name, extra = {}) {
+
+      this.sendSocketNotification("REMOTE_ACTION", {"action": name, ...extra});
+
+    },
+
+    getData (name, extra = {}) {
+
+      this.sendSocketNotification("REMOTE_ACTION", {"data": name, ...extra});
+
+    },
+
     /*
      * SocketNotificationReceived(notification, payload)
      * This method is called when a socket notification arrives.
@@ -365,10 +377,7 @@ Object.assign(
           listname,
           {resolve, reject}
         );
-        this.sendSocketNotification(
-          "REMOTE_ACTION",
-          {"data": dataId, listname}
-        );
+        this.getData(dataId, {listname});
 
       });
 
