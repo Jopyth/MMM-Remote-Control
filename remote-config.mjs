@@ -32,10 +32,7 @@ Object.assign(
           name,
           initialValue
         );
-      oldGUI.parentNode.replaceChild(
-        newGUI,
-        oldGUI
-      );
+      oldGUI.replaceWith(newGUI);
 
     },
 
@@ -50,7 +47,7 @@ Object.assign(
         option.value = typeOption;
         if (typeOption === type) {
 
-          option.selected = "selected";
+          option.selected = true;
 
         }
         select.append(option);
@@ -336,7 +333,7 @@ Object.assign(
               : this.translate("NO_POSITION");
             if (position === value) {
 
-              option.selected = "selected";
+              option.selected = true;
 
             }
             select.append(option);
@@ -525,10 +522,7 @@ Object.assign(
               key,
               dataToEdit[key]
             );
-            wrapper.insertBefore(
-              newElement,
-              addElement.nextSibling
-            );
+            addElement.after(newElement);
             input.value = "";
 
           },

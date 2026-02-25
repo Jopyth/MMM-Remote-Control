@@ -14,45 +14,13 @@ Object.assign(
 
     },
 
-    loadToggleButton (element, onToggle) {
-
-      element.addEventListener(
-        "click",
-        (event) => {
-
-          if (event.currentTarget.classList.contains("toggled-off")) {
-
-            if (onToggle) {
-
-              onToggle(
-                true,
-                event
-              );
-
-            }
-
-          } else if (onToggle) {
-
-            onToggle(
-              false,
-              event
-            );
-
-          }
-
-        },
-        false
-      );
-
-    },
-
     filter (pattern) {
 
       let filterInstalled = false;
       if ("installed".includes(pattern)) {
 
         filterInstalled = true;
-        pattern = pattern.replace("installed");
+        pattern = pattern.replace("installed", "");
 
       }
       pattern = pattern.trim();
@@ -244,11 +212,7 @@ Object.assign(
       }
 
       const parent = document.querySelector("#result-contents");
-      while (parent.firstChild) {
-
-        parent.firstChild.remove();
-
-      }
+      parent.replaceChildren();
 
       if (status === "none") {
 
@@ -395,11 +359,7 @@ Object.assign(
         return;
 
       }
-      while (parent.firstChild) {
-
-        parent.firstChild.remove();
-
-      }
+      parent.replaceChildren();
 
       const items = [
         {"icon": "fa-book", "text": this.translate("API_DOCS"), "url": `${globalThis.location.origin}/api/docs/`},

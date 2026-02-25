@@ -611,23 +611,6 @@ Object.assign(
 
     },
 
-    getMenuIcon (menuName) {
-
-      const menuIconMap = {
-        "main-menu": null,
-        "power-menu": "fa-power-off",
-        "edit-menu": "fa-television",
-        "settings-menu": "fa-wrench",
-        "add-module-menu": "fa-plus",
-        "update-menu": "fa-toggle-up",
-        "alert-menu": "fa-envelope-o",
-        "links-menu": "fa-link",
-        "classes-menu": "fa-object-group"
-      };
-      return menuIconMap[menuName];
-
-    },
-
     updateHeaderTitle (menuName) {
 
       try {
