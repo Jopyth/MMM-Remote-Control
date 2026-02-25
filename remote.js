@@ -398,9 +398,7 @@ const Remote = {
       const changes = this.deletedModules.length + this.changedModules.length;
       if (changes > 0) {
         const wrapper = document.createElement("div");
-        const text = document.createElement("span");
-        text.textContent = this.translate("UNSAVED_CHANGES");
-        wrapper.append(text);
+        wrapper.innerHTML = `<span>${this.translate("UNSAVED_CHANGES")}</span>`;
 
         const ok = this.createSymbolText("fa fa-check-circle", this.translate("OK"), () => {
           this.setStatus("none");
@@ -771,10 +769,7 @@ const Remote = {
     } catch (error) {
       if (error.name === "AbortError") {
         console.error("Request was aborted.");
-        const errorMessage = document.createElement("div");
-        errorMessage.className = "error-message";
-        errorMessage.textContent = "The request was aborted. Please try again.";
-        document.body.append(errorMessage);
+        document.body.insertAdjacentHTML("beforeend", "<div class=\"error-message\">The request was aborted. Please try again.</div>");
       } else {
         console.error("Fetch error:", error);
       }
@@ -942,23 +937,32 @@ const Remote = {
     };
   },
 
-  addToggleElements (parent) {
-    const outerSpan = document.createElement("span");
-    outerSpan.className = "stack fa-fw";
-
-    const spanClasses = [
-      "fa fa-fw fa-toggle-on outer-label fa-stack-1x",
-      "fa fa-fw fa-toggle-off outer-label fa-stack-1x",
-      "fa fa-fw fa-lock inner-small-label fa-stack-1x"
-    ];
-
-    for (const className of spanClasses) {
-      const innerSpan = document.createElement("span");
-      innerSpan.className = className;
-      outerSpan.append(innerSpan);
+  async loadVisibleModules () {
+    try {
+      const {data: moduleData} = await this.loadList("visible-modules", "modules");
+      const parent = document.querySelector("#visible-modules-results");
+      for (const module of moduleData) {
+        if (!module.position) {
+          // skip invisible modules
+          continue;
+        }
+        const visibilityStatus = this.getVisibilityStatus(module);
+        const label = "header" in module ? ` ${module.name} (${module.header})` : ` ${module.name}`;
+        parent.insertAdjacentHTML("beforeend", `
+          <div class="button module-line ${visibilityStatus.status}" id="${module.identifier}">
+            <span class="stack fa-fw">
+              <span class="fa fa-fw fa-toggle-on outer-label fa-stack-1x"></span>
+              <span class="fa fa-fw fa-toggle-off outer-label fa-stack-1x"></span>
+              <span class="fa fa-fw fa-lock inner-small-label fa-stack-1x"></span>
+            </span>
+            <span class="text">${label}</span>
+          </div>
+        `);
+        this.makeToggleButton(parent.lastElementChild, visibilityStatus);
+      }
+    } catch (error) {
+      console.error("Error loading visible modules:", error);
     }
-
-    parent.append(outerSpan);
   },
 
   loadBrightness () {
@@ -986,9 +990,7 @@ const Remote = {
       if (this.hasClass(event.currentTarget, "toggled-off")) {
         if (this.hasClass(event.currentTarget, "external-locked")) {
           const wrapper = document.createElement("div");
-          const warning = document.createElement("span");
-          warning.innerHTML = this.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules);
-          wrapper.append(warning);
+          wrapper.innerHTML = `<span>${this.translate("LOCKSTRING_WARNING").replace("LIST_OF_MODULES", visibilityStatus.modules)}</span>`;
 
           const ok = this.createSymbolText("fa fa-check-circle", this.translate("OK"), () => {
             this.setStatus("none");
@@ -1017,40 +1019,6 @@ const Remote = {
     });
   },
 
-  async loadVisibleModules () {
-    try {
-      const {data: moduleData} = await this.loadList("visible-modules", "modules");
-      const parent = document.querySelector("#visible-modules-results");
-      for (const module of moduleData) {
-        if (!module.position) {
-          // skip invisible modules
-          continue;
-        }
-        const visibilityStatus = this.getVisibilityStatus(module);
-
-        const moduleBox = document.createElement("div");
-        moduleBox.className = `button module-line ${visibilityStatus.status}`;
-        moduleBox.id = module.identifier;
-
-        this.addToggleElements(moduleBox);
-
-        const text = document.createElement("span");
-        text.className = "text";
-        text.innerHTML = ` ${module.name}`;
-        if ("header" in module) {
-          text.innerHTML += ` (${module.header})`;
-        }
-        moduleBox.append(text);
-
-        parent.append(moduleBox);
-
-        this.makeToggleButton(moduleBox, visibilityStatus);
-      }
-    } catch (error) {
-      console.error("Error loading visible modules:", error);
-    }
-  },
-
   createSymbolText (symbol, text, eventListener, element) {
     if (element === undefined) {
       element = "div";
@@ -1058,17 +1026,9 @@ const Remote = {
     const wrapper = document.createElement(element);
     if (eventListener) {
       wrapper.className = "button";
-    }
-    const symbolElement = document.createElement("span");
-    symbolElement.className = symbol;
-    wrapper.append(symbolElement);
-    const textElement = document.createElement("span");
-    textElement.innerHTML = text;
-    textElement.className = "symbol-text-padding";
-    wrapper.append(textElement);
-    if (eventListener) {
       wrapper.addEventListener("click", eventListener, false);
     }
+    wrapper.innerHTML = `<span class="${symbol}"></span><span class="symbol-text-padding">${text}</span>`;
     return wrapper;
   },
 
@@ -1481,15 +1441,10 @@ const Remote = {
 
     const wrapper = this.getPopupContent();
 
-    const name = document.createElement("div");
-    name.innerHTML = data.module;
-    name.className = "bright title medium";
-    wrapper.append(name);
-
-    const n = document.createElement("div");
-    n.innerHTML = `${data.module} (#${index + 1})`;
-    n.className = "subtitle xsmall dimmed";
-    wrapper.append(n);
+    wrapper.insertAdjacentHTML("beforeend", `
+      <div class="bright title medium">${data.module}</div>
+      <div class="subtitle xsmall dimmed">${data.module} (#${index + 1})</div>
+    `);
 
     this.appendConfigMenu(index, wrapper);
 
@@ -1516,20 +1471,14 @@ const Remote = {
 
   appendModuleEditElements (wrapper, moduleData) {
     for (const [index, data] of moduleData.entries()) {
-      const innerWrapper = document.createElement("div");
-      innerWrapper.className = "module-line";
+      wrapper.insertAdjacentHTML("beforeend", `
+        <div class="module-line" data-module-index="${index}">
+          <div class="module-name">${data.module}</div>
+          <div class="module-buttons"></div>
+        </div>
+      `);
+      const buttonsContainer = wrapper.lastElementChild.querySelector(".module-buttons");
 
-      // Module name (left side)
-      const moduleName = document.createElement("div");
-      moduleName.className = "module-name";
-      moduleName.textContent = data.module;
-      innerWrapper.append(moduleName);
-
-      // Buttons container (right side)
-      const buttonsContainer = document.createElement("div");
-      buttonsContainer.className = "module-buttons";
-
-      // Add repository button if URL is available (first button)
       this.getModuleUrl(data.module).then((url) => {
         if (url) {
           const repoButton = this.createSymbolText("fa fa-fw fa-github", this.translate("REPOSITORY"), () => {
@@ -1540,28 +1489,24 @@ const Remote = {
         }
       });
 
-      const moduleBox = this.createSymbolText("fa fa-fw fa-pencil", this.translate("EDIT"), (event) => {
-        const index_ = event.currentTarget.id.replace("edit-module-", "");
-        this.createConfigPopup(index_);
+      const editButton = this.createSymbolText("fa fa-fw fa-pencil", this.translate("EDIT"), (event) => {
+        const idx = event.currentTarget.closest(".module-line").dataset.moduleIndex;
+        this.createConfigPopup(idx);
       }, "span");
-      moduleBox.id = `edit-module-${index}`;
-      buttonsContainer.append(moduleBox);
+      editButton.id = `edit-module-${index}`;
+      buttonsContainer.append(editButton);
 
       if (this.changedModules.includes(index)) {
         buttonsContainer.append(this.createChangedWarning());
       }
 
       const remove = Remote.createSymbolText("fa fa-fw fa-times-circle", this.translate("REMOVE"), (event) => {
-        const index = event.currentTarget.parentNode.parentNode.firstChild.nextSibling.firstChild.id.replace("edit-module-", "");
-        this.deletedModules.push(Number.parseInt(index));
-        const thisElement = event.currentTarget.parentNode.parentNode;
-        thisElement.remove();
+        const line = event.currentTarget.closest(".module-line");
+        this.deletedModules.push(Number.parseInt(line.dataset.moduleIndex));
+        line.remove();
       }, "span");
       remove.classList.add("module-remove");
       buttonsContainer.append(remove);
-
-      innerWrapper.append(buttonsContainer);
-      wrapper.append(innerWrapper);
     }
   },
 
@@ -1674,20 +1619,11 @@ const Remote = {
     const data = this.savedData.moduleAvailable[index];
     const wrapper = this.getPopupContent();
 
-    const name = document.createElement("div");
-    name.innerHTML = data.name;
-    name.className = "bright title";
-    wrapper.append(name);
-
-    const author = document.createElement("div");
-    author.innerHTML = `${this.translate("BY")} ${data.maintainer}`;
-    author.className = "subtitle small";
-    wrapper.append(author);
-
-    const desc = document.createElement("div");
-    desc.innerHTML = data.description;
-    desc.className = "small flex-fill";
-    wrapper.append(desc);
+    wrapper.insertAdjacentHTML("beforeend", `
+      <div class="bright title">${data.name}</div>
+      <div class="subtitle small">${this.translate("BY")} ${data.maintainer}</div>
+      <div class="small flex-fill">${data.description}</div>
+    `);
 
     const footer = document.createElement("div");
     footer.className = "fixed-size sub-menu";
@@ -1702,23 +1638,20 @@ const Remote = {
     }
 
     if (data.installed) {
-      const statusElement = this.createSymbolText("fa fa-fw fa-check-circle", this.translate("INSTALLED"));
-      footer.append(statusElement);
+      footer.append(this.createSymbolText("fa fa-fw fa-check-circle", this.translate("INSTALLED")));
     } else {
-      const statusElement = this.createSymbolText("fa fa-fw fa-download", this.translate("DOWNLOAD"), () => {
+      const download = this.createSymbolText("fa fa-fw fa-download", this.translate("DOWNLOAD"), () => {
         this.install(data.url, index);
       });
-      statusElement.id = "download-button";
-      footer.append(statusElement);
+      download.id = "download-button";
+      footer.append(download);
     }
 
     const githubElement = this.createSymbolText("fa fa-fw fa-github", this.translate("CODE_LINK"), () => {
       window.open(data.url, "_blank");
     });
     footer.append(githubElement);
-
     wrapper.append(footer);
-
     this.showPopup();
   },
 
@@ -1727,32 +1660,17 @@ const Remote = {
       const {data: modules} = await this.loadList("add-module", "moduleAvailable");
       const parent = document.querySelector("#add-module-results");
       for (const [index, module] of modules.entries()) {
-        const moduleWrapper = document.createElement("div");
-        moduleWrapper.className = "module-line";
+        parent.insertAdjacentHTML("beforeend", `
+          <div class="module-line">
+            <div class="module-info">
+              <div class="module-name">${module.name}</div>
+              ${module.description ? `<div class="module-description">${module.description}</div>` : ""}
+            </div>
+            <div class="module-buttons"></div>
+          </div>
+        `);
+        const buttonsContainer = parent.lastElementChild.querySelector(".module-buttons");
 
-        // Left side: Module name and description
-        const moduleInfo = document.createElement("div");
-        moduleInfo.className = "module-info";
-
-        const moduleName = document.createElement("div");
-        moduleName.className = "module-name";
-        moduleName.textContent = module.name;
-        moduleInfo.append(moduleName);
-
-        if (module.description) {
-          const moduleDesc = document.createElement("div");
-          moduleDesc.className = "module-description";
-          moduleDesc.innerHTML = module.description;
-          moduleInfo.append(moduleDesc);
-        }
-
-        moduleWrapper.append(moduleInfo);
-
-        // Right side: Buttons
-        const buttonsContainer = document.createElement("div");
-        buttonsContainer.className = "module-buttons";
-
-        // Repository button
         if (module.url) {
           const repoButton = this.createSymbolText("fa fa-fw fa-github", "Repository", () => {
             window.open(module.url, "_blank");
@@ -1761,26 +1679,15 @@ const Remote = {
           buttonsContainer.append(repoButton);
         }
 
-        // Install/Installed button
-        let symbol = "fa fa-fw fa-cloud";
-        let buttonText = "Install";
-        let buttonClass = "button";
-        if (module.installed) {
-          symbol = "fa fa-fw fa-check-circle";
-          buttonText = "Installed";
-          buttonClass = "button";
-        }
-
+        const symbol = module.installed ? "fa fa-fw fa-check-circle" : "fa fa-fw fa-cloud";
+        const buttonText = module.installed ? "Installed" : "Install";
         const installButton = this.createSymbolText(symbol, buttonText, (event) => {
-          const index = event.currentTarget.id.replace("install-module-", "");
-          this.createAddingPopup(index);
+          const idx = event.currentTarget.id.replace("install-module-", "");
+          this.createAddingPopup(idx);
         }, "span");
-        installButton.className = buttonClass;
+        installButton.className = "button";
         installButton.id = `install-module-${index}`;
         buttonsContainer.append(installButton);
-
-        moduleWrapper.append(buttonsContainer);
-        parent.append(moduleWrapper);
       }
     } catch (error) {
       console.error("Error loading modules to add:", error);
@@ -1789,11 +1696,7 @@ const Remote = {
 
   offerRestart (message) {
     const wrapper = document.createElement("div");
-
-    const info = document.createElement("span");
-    info.innerHTML = message;
-    wrapper.append(info);
-
+    wrapper.innerHTML = `<span>${message}</span>`;
     const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
     restart.children[1].classList.add("text");
     wrapper.append(restart);
@@ -1802,34 +1705,24 @@ const Remote = {
 
   offerReload (message) {
     const wrapper = document.createElement("div");
-
-    const info = document.createElement("span");
-    info.innerHTML = message;
-    wrapper.append(info);
-
+    wrapper.innerHTML = `<span>${message}</span>`;
     const restart = this.createSymbolText("fa fa-fw fa-recycle", this.translate("RESTARTMM"), buttons["restart-mm-button"]);
     restart.children[1].classList.add("text");
     wrapper.append(restart);
-
     const reload = this.createSymbolText("fa fa-fw fa-globe", this.translate("REFRESHMM"), buttons["refresh-mm-button"]);
     reload.children[1].classList.add("text");
     wrapper.append(reload);
-
     this.setStatus("success", false, wrapper);
   },
 
   offerOptions (message, data) {
     const wrapper = document.createElement("div");
-    const info = document.createElement("span");
-    info.innerHTML = message;
-    wrapper.append(info);
-
+    wrapper.innerHTML = `<span>${message}</span>`;
     for (const b in data) {
-      const restart = this.createSymbolText("fa fa-fw fa-recycle", b, data[b]);
-      restart.children[1].classList.add("text");
-      wrapper.append(restart);
+      const button = this.createSymbolText("fa fa-fw fa-recycle", b, data[b]);
+      button.children[1].classList.add("text");
+      wrapper.append(button);
     }
-
     this.setStatus("success", false, wrapper);
   },
 
@@ -1851,27 +1744,21 @@ const Remote = {
   },
 
   async loadModulesToUpdate () {
-    // also update mm info notification
     this.sendSocketNotification("REMOTE_ACTION", {data: "mmUpdateAvailable"});
 
     try {
       const {data: modules} = await this.loadList("update-module", "moduleInstalled");
       const parent = document.querySelector("#update-module-results");
 
-      // Create MagicMirror² update line first
-      const mmWrapper = document.createElement("div");
-      mmWrapper.id = "mm-update-container";
-      mmWrapper.className = "module-line mm-update-line";
+      // MagicMirror² row
+      parent.insertAdjacentHTML("beforeend", `
+        <div class="module-line mm-update-line" id="mm-update-container">
+          <div class="module-name">MagicMirror²</div>
+          <div class="module-buttons"></div>
+        </div>
+      `);
+      const mmButtons = parent.lastElementChild.querySelector(".module-buttons");
 
-      const mmName = document.createElement("div");
-      mmName.className = "module-name";
-      mmName.textContent = "MagicMirror²";
-      mmWrapper.append(mmName);
-
-      const mmButtons = document.createElement("div");
-      mmButtons.className = "module-buttons";
-
-      // MM Update button (initially hidden, shown by handleMmUpdate)
       const mmUpdateButton = this.createSymbolText("fa fa-fw fa-toggle-up", "Update", () => {
         this.updateModule();
       });
@@ -1879,43 +1766,32 @@ const Remote = {
       mmUpdateButton.className = "button hidden";
       mmButtons.append(mmUpdateButton);
 
-      // MM Changelog button (always visible) - opens GitHub releases
       const mmChangelogButton = this.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", () => {
         window.open("https://github.com/MagicMirrorOrg/MagicMirror/releases", "_blank");
       });
       mmChangelogButton.className = "button";
       mmButtons.append(mmChangelogButton);
 
-      mmWrapper.append(mmButtons);
-      parent.append(mmWrapper);
-
-      // Now load module updates
+      // Module rows
       for (const module of modules) {
-        const innerWrapper = document.createElement("div");
-        innerWrapper.className = "module-line";
+        parent.insertAdjacentHTML("beforeend", `
+          <div class="module-line">
+            <div class="module-name">${module.name}</div>
+            <div class="module-buttons"></div>
+          </div>
+        `);
+        const buttonsContainer = parent.lastElementChild.querySelector(".module-buttons");
 
-        // Module name (non-clickable)
-        const moduleName = document.createElement("div");
-        moduleName.className = "module-name";
-        moduleName.textContent = module.name;
-        innerWrapper.append(moduleName);
-
-        // Buttons container
-        const buttonsContainer = document.createElement("div");
-        buttonsContainer.className = "module-buttons";
-
-        // Update button - only if update available
         if (module.updateAvailable) {
           const updateButton = this.createSymbolText("fa fa-fw fa-toggle-up", "Update", (event) => {
-            const module = event.currentTarget.id.replace("update-module-", "");
-            this.updateModule(module);
+            const moduleName = event.currentTarget.id.replace("update-module-", "");
+            this.updateModule(moduleName);
           });
           updateButton.className = "button bright";
           updateButton.id = `update-module-${module.name}`;
           buttonsContainer.append(updateButton);
         }
 
-        // Add changelog button if module has changelog
         if (module.hasChangelog) {
           const changelogButton = this.createSymbolText("fa fa-fw fa-file-text-o", "Changelog", (event) => {
             event.stopPropagation();
@@ -1924,9 +1800,6 @@ const Remote = {
           changelogButton.className = "button";
           buttonsContainer.append(changelogButton);
         }
-
-        innerWrapper.append(buttonsContainer);
-        parent.append(innerWrapper);
       }
     } catch (error) {
       console.error("Error loading modules to update:", error);
@@ -2302,12 +2175,8 @@ const buttons = {
   // power menu buttons
   "shut-down-button" () {
     const self = Remote;
-
     const wrapper = document.createElement("div");
-    const text = document.createElement("span");
-    text.innerHTML = self.translate("CONFIRM_SHUTDOWN");
-    wrapper.append(text);
-
+    wrapper.innerHTML = `<span>${self.translate("CONFIRM_SHUTDOWN")}</span>`;
     const ok = self.createSymbolText("fa fa-power-off", self.translate("SHUTDOWN"), () => {
       Remote.sendSocketNotification("REMOTE_ACTION", {action: "SHUTDOWN"});
     });
@@ -2322,12 +2191,8 @@ const buttons = {
   },
   "restart-button" () {
     const self = Remote;
-
     const wrapper = document.createElement("div");
-    const text = document.createElement("span");
-    text.innerHTML = self.translate("CONFIRM_REBOOT");
-    wrapper.append(text);
-
+    wrapper.innerHTML = `<span>${self.translate("CONFIRM_REBOOT")}</span>`;
     const ok = self.createSymbolText("fa fa-refresh", self.translate("REBOOT"), () => {
       Remote.sendSocketNotification("REMOTE_ACTION", {action: "REBOOT"});
     });
@@ -2342,12 +2207,8 @@ const buttons = {
   },
   "restart-mm-button" () {
     const self = Remote;
-
     const wrapper = document.createElement("div");
-    const text = document.createElement("span");
-    text.innerHTML = self.translate("CONFIRM_RESTARTMM");
-    wrapper.append(text);
-
+    wrapper.innerHTML = `<span>${self.translate("CONFIRM_RESTARTMM")}</span>`;
     const ok = self.createSymbolText("fa fa-recycle", self.translate("RESTARTMM"), () => {
       Remote.sendSocketNotification("REMOTE_ACTION", {action: "RESTART"});
     });
