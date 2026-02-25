@@ -901,16 +901,42 @@ nav.notification-menu {
 }
 
 .success-popup {
-  width: 30%;
-  min-width: 100px;
-  background-color: var(--bg-color-base);
-  position: absolute;
-  bottom: 0;
-  padding: 6px;
-  border: 2px solid var(--border-color);
-  border-radius: var(--border-radius);
-  font-size: 20px;
-  line-height: 1.5em;
+  position: fixed;
+  bottom: 1.5em;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1.4em;
+  background: rgba(30, 80, 30, 0.95);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid #4caf50;
+  border-radius: 2em;
+  color: #fff;
+  font-size: 1em;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    0 0 12px rgba(76, 175, 80, 0.4);
+  white-space: nowrap;
+  animation: toast-in 0.2s ease;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(1em);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .popup-contents {
