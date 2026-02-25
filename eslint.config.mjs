@@ -72,7 +72,8 @@ export default defineConfig([
   {
     "files": ["**/*.test.js"],
     "rules": {
-      "jsdoc/require-jsdoc": "off"
+      "jsdoc/require-jsdoc": "off",
+      "max-lines-per-function": "off"
     }
   },
   {
