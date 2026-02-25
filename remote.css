@@ -45,6 +45,14 @@ body {
   margin-inline: auto;
 }
 
+@media (max-width: 360px) {
+  body {
+    margin: 4px;
+    block-size: calc(100% - 8px);
+    inline-size: calc(100% - 8px);
+  }
+}
+
 .header {
   font-size: 1.7em;
   font-weight: 300;
@@ -166,6 +174,32 @@ body {
 
   .header-spacer {
     width: 36px;
+  }
+}
+
+@media (max-width: 360px) {
+  .header {
+    font-size: 1em;
+    min-height: 70px;
+    padding: 0.5em 0;
+  }
+
+  .header-spacer {
+    width: 28px;
+  }
+
+  .menu-nav .button,
+  .classes-menu .button {
+    font-size: 0.9em;
+  }
+
+  .edit-menu .one-line {
+    padding: 0.6em;
+    gap: 0.3em;
+  }
+
+  .config-label {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -424,7 +458,7 @@ a {
 
 .menu-nav .button {
   width: min(100%, 400px);
-  min-width: 260px;
+  min-width: min(260px, 100%);
 }
 
 .text {
@@ -527,7 +561,7 @@ a {
   align-items: center;
 
   & > .button {
-    min-width: 200px;
+    min-width: min(200px, 40vw);
     margin: 0;
   }
 }
@@ -602,7 +636,7 @@ a {
   flex-wrap: wrap;
 
   & > .button {
-    min-width: 120px;
+    min-width: min(120px, 30vw);
   }
 }
 
@@ -1344,7 +1378,7 @@ pre {
   padding: 0.8em 1em;
   margin: var(--spacing-sm) auto;
   max-width: 85%;
-  min-width: 300px;
+  min-width: min(300px, 80vw);
   display: flex;
   align-items: center;
   gap: 1em;
