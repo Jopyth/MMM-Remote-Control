@@ -30,7 +30,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "demo": "cd ../../ && MM_CONFIG_FILE=modules/MMM-Remote-Control/demo.config.js node --run start:wayland:dev",
+    "demo": "cd ../../ && MM_CONFIG_FILE=modules/MMM-Remote-Control/demo.config.js node --run start:dev",
     "download_modules": "node ./scripts/download_modules_manually.mjs",
     "generate-apikey": "node -p 'require(\"uuid\").v4()'",
     "lint": "eslint && prettier . --check",
