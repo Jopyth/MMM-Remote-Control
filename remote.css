@@ -614,17 +614,18 @@ nav.notification-menu {
   text-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
 }
 
-.highlight {
+.highlight,
+.config-label:focus-within {
   color: var(--text-color-bright);
   background-color: var(--bg-color-highlight);
-}
 
-.highlight .module-remove {
-  color: var(--text-color-medium);
-}
+  .module-remove {
+    color: var(--text-color-medium);
+  }
 
-.highlight .button {
-  border: 1px solid var(--border-color-light);
+  .button {
+    border: 1px solid var(--border-color-light);
+  }
 }
 
 .bottom-spacing {

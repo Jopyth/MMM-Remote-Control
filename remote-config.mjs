@@ -164,27 +164,6 @@ Object.assign(
 
       }
       input.id = key;
-      input.addEventListener(
-        "focus",
-        (event) => {
-
-          const label = event.currentTarget.parentNode;
-          label.classList.add("highlight");
-
-        },
-        false
-      );
-      input.addEventListener(
-        "blur",
-        (event) => {
-
-          const label = event.currentTarget.parentNode;
-          label.classList.remove("highlight");
-
-        },
-        false
-      );
-
       return input;
 
     },
