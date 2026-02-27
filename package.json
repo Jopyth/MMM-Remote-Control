@@ -48,8 +48,8 @@
   "dependencies": {
     "marked": "^17.0.3",
     "qrcode": "^1.5.4",
-    "simple-git": "^3.32.2",
-    "swagger-ui-dist": "^5.31.2",
+    "simple-git": "^3.32.3",
+    "swagger-ui-dist": "^5.32.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
