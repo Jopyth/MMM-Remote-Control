@@ -251,7 +251,7 @@ The response will be in the JSON format, here is an example:
 You can delay an action by sending the notification nested inside of a `"DELAYED"` notification. Below is an example of turning off the monitor in 60s.
 
 ```js
-this.sendSocketNotification("REMOTE_ACTION", {
+this.sendNotification("REMOTE_ACTION", {
   action: "DELAYED",
   did: "SOME_UNIQUE_ID", // Optional; Some string, in case you want to cancel later.
   timeout: 60, // Optional; Default 10s
