@@ -15,7 +15,7 @@
   --spacing-lg: 0.5em;
   --dialog-width: min(90vw, 1200px);
   --dialog-height: 90vh;
-  --track-color: #999;
+  --track-color: var(--text-color-medium);
   --transition-fast: 0.2s ease;
   --transition-smooth: 0.3s ease;
   --focus-outline: 2px solid var(--text-color-bright);
@@ -75,10 +75,6 @@ body {
   gap: clamp(0.3em, 1vw, 0.5em);
   padding-inline: var(--spacing-md);
   box-sizing: border-box;
-}
-
-.header-icon {
-  display: none;
 }
 
 .header-title {
@@ -174,18 +170,8 @@ a {
   }
 }
 
-.menu-element {
-  flex: 0 0 auto;
-}
-
 .symbol-text-padding {
   padding-inline: var(--spacing-md) var(--spacing-lg);
-}
-
-.fill {
-  block-size: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 #module_1_MMM-Remote-Control {
@@ -217,13 +203,6 @@ a {
   padding-block-start: 7px;
 }
 
-.menu-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 0 1 auto;
-}
-
 .menu,
 .menu-nav,
 .results {
@@ -241,13 +220,6 @@ a {
 
 .results {
   margin-top: 0;
-}
-
-.sub-menu {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
 }
 
 .result-list {
@@ -322,14 +294,6 @@ a {
   font-size: 0.85em;
   white-space: nowrap;
   flex-shrink: 0;
-}
-
-.flex-like-button {
-  flex: 0 1 auto;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
 }
 
 .button {
@@ -427,12 +391,6 @@ a {
   text-align: end;
 }
 
-.status-indicator {
-  display: none;
-  margin: var(--spacing-sm);
-  padding: var(--spacing-sm);
-}
-
 .overlay {
   position: absolute;
   width: 100%;
@@ -518,24 +476,7 @@ a {
   }
 }
 
-#update-module-results .mm-update-line {
-  border-color: var(--accent-color);
-  background: linear-gradient(
-    135deg,
-    rgba(74, 158, 255, 0.12) 0%,
-    var(--glass-bg) 100%
-  );
-  box-shadow:
-    var(--shadow-elevated),
-    0 0 12px rgba(74, 158, 255, 0.25);
-
-  & .module-name {
-    font-weight: 600;
-    color: var(--accent-color);
-    text-shadow: 0 0 8px rgba(74, 158, 255, 0.3);
-  }
-}
-
+#update-module-results .mm-update-line,
 #mm-update-container.mm-update-line {
   border-color: var(--accent-color);
   background: linear-gradient(
@@ -578,6 +519,7 @@ a {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
 }
@@ -757,12 +699,6 @@ nav.notification-menu {
   display: none;
 }
 
-/* Use data attributes for toggle state - more semantic */
-[data-toggle="on"] .fa-toggle-off,
-[data-toggle="off"] .fa-toggle-on {
-  display: none;
-}
-
 /* edit button specific stuff */
 .module-line > * > .fa-lock {
   display: none;
@@ -932,10 +868,6 @@ nav.notification-menu {
   border: 2px solid var(--bg-color-alt);
 }
 
-.align-right {
-  text-align: right;
-}
-
 .flex-fill {
   flex: 1 1 auto;
   overflow: auto;
@@ -948,14 +880,6 @@ nav.notification-menu {
 /* Flex utilities to replace inline styles */
 .flex-1 {
   flex: 1;
-}
-
-.flex-auto {
-  flex: 1 1 auto;
-}
-
-.flex-none {
-  flex: none;
 }
 
 .add-input-wrapper {
@@ -1009,30 +933,6 @@ nav.notification-menu {
   display: none;
 }
 
-/* State-based visibility */
-[data-visible="false"] {
-  display: none;
-}
-
-[data-visible="true"] {
-  display: block;
-}
-
-/* Loading states */
-[data-loading="true"] {
-  pointer-events: none;
-  opacity: 0.6;
-}
-
-/* Empty states */
-[data-empty="true"]::after {
-  content: attr(data-empty-message);
-  display: block;
-  text-align: center;
-  padding: 2em;
-  color: var(--text-color-dim);
-}
-
 /* checkbox shenanigans */
 .visual-checkbox {
   text-align: center;
@@ -1056,10 +956,6 @@ input[type="checkbox"]:checked ~ .fa-square-o {
 
 input[type="checkbox"]:checked ~ .fa-check-square-o {
   display: block;
-}
-
-:root {
-  --track-color: var(--text-color-medium);
 }
 
 input[type="range"] {

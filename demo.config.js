@@ -79,6 +79,10 @@ const config = {
           {
             title: "New York Times",
             url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
+          },
+          {
+            title: "NPR News",
+            url: "https://feeds.npr.org/1001/rss.xml"
           }
         ],
         showSourceTitle: true,
