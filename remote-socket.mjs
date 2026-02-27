@@ -316,7 +316,7 @@ Object.assign(
 
     },
 
-    loadList (listname, dataId) {
+    loadList (listname, dataId, timeoutMs = 30_000) {
 
       const loadingIndicator = document.getElementById(`${listname}-loading`),
         parent = document.getElementById(`${listname}-results`);
@@ -326,15 +326,25 @@ Object.assign(
 
       this._listResolvers ??= new Map();
 
-      return new Promise((resolve, reject) => {
+      // Supersede any previous pending request for the same list
+      this._listResolvers.get(listname)?.abort.abort("superseded");
 
-        this._listResolvers.set(
-          listname,
-          {resolve, reject}
-        );
-        this.getData(dataId, {listname});
+      const {promise, resolve, reject} = Promise.withResolvers(),
+        abort = AbortSignal.timeout(timeoutMs);
+
+      abort.addEventListener("timeout", () => {
+
+        this._listResolvers.delete(listname);
+        loadingIndicator?.classList.add("hidden");
+        document.getElementById(`${listname}-empty`)?.classList.remove("hidden");
+        reject(new Error(`loadList: timeout after ${timeoutMs}ms for "${listname}"`));
 
       });
+
+      this._listResolvers.set(listname, {resolve, reject, abort});
+      this.getData(dataId, {listname});
+
+      return promise;
 
     },
 
@@ -349,6 +359,13 @@ Object.assign(
       this.savedData[result.query.data] = false;
 
       const resolver = this._listResolvers?.get(listname);
+
+      if (resolver) {
+
+        resolver.abort.abort("resolved");
+        this._listResolvers.delete(listname);
+
+      }
 
       try {
 
@@ -367,7 +384,6 @@ Object.assign(
         if (resolver) {
 
           resolver.resolve({parent, "data": result.data});
-          this._listResolvers.delete(listname);
 
         }
 
@@ -381,7 +397,6 @@ Object.assign(
         if (resolver) {
 
           resolver.reject(error);
-          this._listResolvers.delete(listname);
 
         }
 
