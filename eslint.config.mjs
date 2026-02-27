@@ -161,5 +161,6 @@ export default defineConfig([
     }
   },
   {"files": ["**/*.json"], "ignores": ["package-lock.json"], "plugins": {json}, "extends": ["json/recommended"], "language": "json/json"},
+  {"files": ["tests/**/*.mjs"], "rules": {"class-methods-use-this": "off", "func-style": "off", "init-declarations": "off", "jsdoc/require-jsdoc": "off", "max-lines-per-function": "off", "max-statements": "off", "no-empty-function": "off", "one-var": "off", "require-atomic-updates": "off"}},
   {"files": ["**/*.md"], "plugins": {markdown}, "extends": ["markdown/recommended"], "language": "markdown/gfm"}
 ]);

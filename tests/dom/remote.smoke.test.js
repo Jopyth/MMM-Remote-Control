@@ -1,53 +1,12 @@
-const {test, describe, before, after} = require("node:test");
+const {test, describe, before} = require("node:test");
 const assert = require("node:assert/strict");
-const {Window} = require("happy-dom");
 
 describe("remote.js DOM smoke tests", () => {
-  let window, Remote;
+  let Remote;
 
   before(async () => {
-    // Create browser-like environment for DOM operations
-    window = new Window({
-      url: "http://localhost:8080",
-      settings: {
-        disableJavaScriptFileLoading: true,
-        disableJavaScriptEvaluation: false,
-        disableCSSFileLoading: true
-      }
-    });
-
-    // Expose browser globals so ESM modules find them at runtime
-    globalThis.MMSocket = class {
-      constructor (name) {
-        this.name = name;
-        this._callback = null;
-      }
-
-      setNotificationCallback (callback) {
-        this._callback = callback;
-      }
-
-      sendNotification () {
-        // Mock - do nothing
-      }
-    };
-
-    globalThis.document = window.document;
-    globalThis.window = window;
-    globalThis.location = {hash: ""};
-    globalThis.localStorage = {getItem: () => null, setItem: () => {}};
-
-    // Import ESM modules — each extends Remote via Object.assign as a side effect
-    ({Remote} = await import("../../remote.mjs"));
-    await import("../../remote-utils.mjs");
-    await import("../../remote-socket.mjs");
-    await import("../../remote-modules.mjs");
-    await import("../../remote-config.mjs");
-    await import("../../remote-menu.mjs");
-  });
-
-  after(() => {
-    window.close();
+    const {setupRemote} = await import("./setup.mjs");
+    Remote = await setupRemote();
   });
 
   test("Remote object is defined with expected structure", () => {
@@ -139,7 +98,7 @@ describe("remote.js DOM smoke tests", () => {
   });
 
   test("createDynamicMenu replaces old nested menu entries", () => {
-    window.document.body.innerHTML = `
+    globalThis.document.body.innerHTML = `
       <div id="back-button"></div>
       <section class="menu-content"></section>
       <div id="alert-button"></div>
@@ -181,11 +140,11 @@ describe("remote.js DOM smoke tests", () => {
     Remote.createDynamicMenu(explicitMenu);
 
     // Top-level menu button is present in DOM
-    assert.equal(window.document.querySelectorAll("#module-control-button").length, 1);
+    assert.equal(globalThis.document.querySelectorAll("#module-control-button").length, 1);
     // Nested items are NOT pre-rendered (lazy rendering: loaded on navigation)
-    assert.equal(window.document.querySelectorAll("#mc-pages-button").length, 0);
-    assert.equal(window.document.querySelectorAll("#mc-pages-pagechanged-button").length, 0);
-    assert.equal(window.document.querySelectorAll("#mc-pages-next-button").length, 0);
+    assert.equal(globalThis.document.querySelectorAll("#mc-pages-button").length, 0);
+    assert.equal(globalThis.document.querySelectorAll("#mc-pages-pagechanged-button").length, 0);
+    assert.equal(globalThis.document.querySelectorAll("#mc-pages-next-button").length, 0);
     // Data structure holds the latest (explicit) menu content
     assert.equal(Remote.dynamicMenus["module-control"].items[0].items[0].id, "mc-pages-next");
   });

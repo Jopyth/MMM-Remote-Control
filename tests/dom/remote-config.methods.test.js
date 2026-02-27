@@ -1,29 +1,11 @@
 const {test, describe, before} = require("node:test");
 const assert = require("node:assert/strict");
-const {Window} = require("happy-dom");
 
 let Remote;
 
 before(async () => {
-  const window = new Window({url: "http://localhost:8080"});
-  globalThis.MMSocket = class {
-
-    setNotificationCallback () {}
-
-    sendNotification () {}
-
-  };
-  globalThis.document = window.document;
-  globalThis.window = window;
-  globalThis.location = {hash: ""};
-  globalThis.localStorage = {getItem: () => null, setItem: () => {}};
-
-  ({Remote} = await import("../../remote.mjs"));
-  await import("../../remote-utils.mjs");
-  await import("../../remote-socket.mjs");
-  await import("../../remote-modules.mjs");
-  await import("../../remote-config.mjs");
-  await import("../../remote-menu.mjs");
+  const {setupRemote} = await import("./setup.mjs");
+  Remote = await setupRemote();
 });
 
 function makeSlider (value, min, max) {
