@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.8.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.7.0...v4.8.0) (2026-02-27)
+
+### Fixed
+
+- add timeout and supersede handling to loadList via AbortSignal ([2edc9c0](https://github.com/jopyth/MMM-Remote-Control/commit/2edc9c0097b93ea42d248f225e62f2ae79d79ccf))
+- correct lazy-render regressions ([7beeb6c](https://github.com/jopyth/MMM-Remote-Control/commit/7beeb6cd968faa22bc9704a4310921848b50cbdf))
+- handle object data in handleLoadList empty indicator ([43f6a5b](https://github.com/jopyth/MMM-Remote-Control/commit/43f6a5b382109eda83db1a55d109d70b293c41f3))
+- insert overlays before body instead of after it ([eddebb4](https://github.com/jopyth/MMM-Remote-Control/commit/eddebb4da6c7271f17f23f466f17d120b1723bfc))
+- move brightness/temp overlays outside zoomed body ([7157ede](https://github.com/jopyth/MMM-Remote-Control/commit/7157edefcf6a50510e003a3e068ee907780f141f))
+- remove nested scroll containers in edit menu ([0d79bfe](https://github.com/jopyth/MMM-Remote-Control/commit/0d79bfe398e8fad4dce89814163b5cebc99cd2c4))
+- reset scroll position and keyboard focus on menu navigation ([d30342c](https://github.com/jopyth/MMM-Remote-Control/commit/d30342cfbfd1024428067bc00754db2f2566d47d))
+
+### Documentation
+
+- fix sendSocketNotification -> sendNotification in DELAYED actions example ([85fcb94](https://github.com/jopyth/MMM-Remote-Control/commit/85fcb946358439215d0adc93e501b9e871a498da))
+
+### Chores
+
+- simplify demo script command ([c2e70f5](https://github.com/jopyth/MMM-Remote-Control/commit/c2e70f527f93f11292531a8f0c70928a6dc79e91))
+- update dependencies ([f3d113a](https://github.com/jopyth/MMM-Remote-Control/commit/f3d113a7fe836745f8934cea48e6030b3e263965))
+
+### Code Refactoring
+
+- convert remote scripts to ESM with import map (Schritt 8) ([0ddc7cd](https://github.com/jopyth/MMM-Remote-Control/commit/0ddc7cd7c5bc574c3f354c6bf849130e780ac117))
+- CSS cleanup — remove unused rules, merge duplicates ([8e1b8f3](https://github.com/jopyth/MMM-Remote-Control/commit/8e1b8f3a5b82ca85ad93a96a7affb65f52611861))
+- CSS nesting — header-title icons, range/checkbox inputs, badge colors ([de01f34](https://github.com/jopyth/MMM-Remote-Control/commit/de01f34312ddaf67bb93b741281e5fe80fffd045))
+- deduplicate slider/picker listeners in attachEditMenuListeners ([e6bd86d](https://github.com/jopyth/MMM-Remote-Control/commit/e6bd86d9b2beb2a5618126f608f1849bedc5b69c))
+- deduplicate switch cases in remote-socket.mjs ([3c5f0a5](https://github.com/jopyth/MMM-Remote-Control/commit/3c5f0a580c2a58c4261548938643d7fe9cd0036e))
+- extract shared DOM test fixture into tests/dom/setup.mjs ([a24d2f6](https://github.com/jopyth/MMM-Remote-Control/commit/a24d2f6c46bc780ad6f2c87f890e395786106f34))
+- introduce action()/getData() helpers for REMOTE_ACTION ([31cba19](https://github.com/jopyth/MMM-Remote-Control/commit/31cba190f0cf42de936154b347c7066bb0e57aca))
+- make buttons in remote.mjs data-driven ([03d009b](https://github.com/jopyth/MMM-Remote-Control/commit/03d009be8335f8ec9f8e95b3b63d4f07b5b63cf2))
+- remove dead code, fix bugs, modernize DOM APIs ([80cacab](https://github.com/jopyth/MMM-Remote-Control/commit/80cacabe85be6ed0a6becfb5906ca045f215126f))
+- remove hasClass() wrapper, use classList.contains() directly ([15df598](https://github.com/jopyth/MMM-Remote-Control/commit/15df598f7e714b27e0aed268e6c133d47aac7087))
+- render menu HTML dynamically from JS ([7872341](https://github.com/jopyth/MMM-Remote-Control/commit/78723413ade261b6b59da49bd8569dc7a01a9ef4))
+- replace 9 hash-nav button handlers with data-hash delegation ([fbd39a7](https://github.com/jopyth/MMM-Remote-Control/commit/fbd39a738d6ddb6ef1de40095ed3b18850a47e0c))
+- replace createElement chains with template literals in remote.js ([9ff33cb](https://github.com/jopyth/MMM-Remote-Control/commit/9ff33cbbe6e103dbd0241d834740ff8c4abd247e))
+- replace deprecated url.parse with request.query ([4e6b8a8](https://github.com/jopyth/MMM-Remote-Control/commit/4e6b8a8fbab302bc52e39093fd8dd037352d1819))
+- replace focus/blur JS listeners with CSS :focus-within ([7ca8399](https://github.com/jopyth/MMM-Remote-Control/commit/7ca839916110c099f49d1b732a0b0cb70520234c))
+- replace hard media queries with fluid clamp() scaling ([46e2149](https://github.com/jopyth/MMM-Remote-Control/commit/46e2149b710efdc531c345bf0e726e6a88fe1c8a))
+- replace pendingResolver with Map and inline hide/show ([0b78812](https://github.com/jopyth/MMM-Remote-Control/commit/0b78812d037acbaf5d8beab60e60f7d174734ef1))
+- simplify callAfterUpdate using closure instead of waitObject ([f02b2e2](https://github.com/jopyth/MMM-Remote-Control/commit/f02b2e2e3c11f35f24fe9b579a6db45699bd3d67))
+- simplify code and fix success-popup visibility ([09b1d37](https://github.com/jopyth/MMM-Remote-Control/commit/09b1d37c3b2180c968facc08faa5154ccd5a6846))
+- simplify config editor helpers in remote.js ([0405aa1](https://github.com/jopyth/MMM-Remote-Control/commit/0405aa1df80d6bc24ef68f97f870374328864920))
+- split remote.js into topic-focused files (Schritt 7) ([86b39be](https://github.com/jopyth/MMM-Remote-Control/commit/86b39be667e048a69fec1f83bb95b810301f8758))
+- streamline remote-modules.mjs ([c5f6831](https://github.com/jopyth/MMM-Remote-Control/commit/c5f6831ac1ee410a3f4f37c982142f9cbb2ee11c))
+
+### Tests
+
+- add unit tests for hasForcedType, getTypeAsString, createConfigInput, updateSliderThumbColor ([9e7d4ff](https://github.com/jopyth/MMM-Remote-Control/commit/9e7d4ff61f4a86c8646f6fe3ee054eb5f2025240))
+
 ## [4.7.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.6.0...v4.7.0) (2026-02-25)
 
 ### Added
