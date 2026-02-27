@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file. See [commit
 
 ### Code Refactoring
 
-- convert remote scripts to ESM with import map (Schritt 8) ([0ddc7cd](https://github.com/jopyth/MMM-Remote-Control/commit/0ddc7cd7c5bc574c3f354c6bf849130e780ac117))
+- convert remote scripts to ESM with import map ([0ddc7cd](https://github.com/jopyth/MMM-Remote-Control/commit/0ddc7cd7c5bc574c3f354c6bf849130e780ac117))
 - CSS cleanup — remove unused rules, merge duplicates ([8e1b8f3](https://github.com/jopyth/MMM-Remote-Control/commit/8e1b8f3a5b82ca85ad93a96a7affb65f52611861))
 - CSS nesting — header-title icons, range/checkbox inputs, badge colors ([de01f34](https://github.com/jopyth/MMM-Remote-Control/commit/de01f34312ddaf67bb93b741281e5fe80fffd045))
 - deduplicate slider/picker listeners in attachEditMenuListeners ([e6bd86d](https://github.com/jopyth/MMM-Remote-Control/commit/e6bd86d9b2beb2a5618126f608f1849bedc5b69c))
@@ -45,7 +45,7 @@ All notable changes to this project will be documented in this file. See [commit
 - simplify callAfterUpdate using closure instead of waitObject ([f02b2e2](https://github.com/jopyth/MMM-Remote-Control/commit/f02b2e2e3c11f35f24fe9b579a6db45699bd3d67))
 - simplify code and fix success-popup visibility ([09b1d37](https://github.com/jopyth/MMM-Remote-Control/commit/09b1d37c3b2180c968facc08faa5154ccd5a6846))
 - simplify config editor helpers in remote.js ([0405aa1](https://github.com/jopyth/MMM-Remote-Control/commit/0405aa1df80d6bc24ef68f97f870374328864920))
-- split remote.js into topic-focused files (Schritt 7) ([86b39be](https://github.com/jopyth/MMM-Remote-Control/commit/86b39be667e048a69fec1f83bb95b810301f8758))
+- split remote.js into topic-focused files ([86b39be](https://github.com/jopyth/MMM-Remote-Control/commit/86b39be667e048a69fec1f83bb95b810301f8758))
 - streamline remote-modules.mjs ([c5f6831](https://github.com/jopyth/MMM-Remote-Control/commit/c5f6831ac1ee410a3f4f37c982142f9cbb2ee11c))
 
 ### Tests
