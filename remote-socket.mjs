@@ -328,21 +328,27 @@ Object.assign(
       this._listResolvers ??= new Map();
 
       // Supersede any previous pending request for the same list
-      this._listResolvers.get(listname)?.abort.abort("superseded");
+      const existing = this._listResolvers.get(listname);
+      if (existing) {
+
+        clearTimeout(existing.timeoutId);
+        existing.abort.abort("superseded");
+
+      }
 
       const {promise, resolve, reject} = Promise.withResolvers(),
-        abort = AbortSignal.timeout(timeoutMs);
+        abort = new AbortController();
 
-      abort.addEventListener("timeout", () => {
+      const timeoutId = setTimeout(() => {
 
         this._listResolvers.delete(listname);
         loadingIndicator?.classList.add("hidden");
         document.getElementById(`${listname}-empty`)?.classList.remove("hidden");
         reject(new Error(`loadList: timeout after ${timeoutMs}ms for "${listname}"`));
 
-      });
+      }, timeoutMs);
 
-      this._listResolvers.set(listname, {resolve, reject, abort});
+      this._listResolvers.set(listname, {resolve, reject, abort, timeoutId});
       this.getData(dataId, {listname});
 
       return promise;
@@ -363,6 +369,7 @@ Object.assign(
 
       if (resolver) {
 
+        clearTimeout(resolver.timeoutId);
         resolver.abort.abort("resolved");
         this._listResolvers.delete(listname);
 
