@@ -86,8 +86,7 @@ export default defineConfig([
         ...globals.browser,
         ...globals.node,
         "$item": "writable",
-        "$node": "writable",
-        "MMSocket": "readonly"
+        "$node": "writable"
       }
     },
     "plugins": {js, "jsdoc": pluginJsdoc},

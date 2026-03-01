@@ -1,3 +1,4 @@
+/* global MMSocket */
 import {Remote} from "./remote.mjs";
 import {marked} from "marked";
 
