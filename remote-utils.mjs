@@ -17,7 +17,7 @@ Object.assign(
     filter (pattern) {
 
       let filterInstalled = false;
-      if ("installed".includes(pattern)) {
+      if (pattern.includes("installed")) {
 
         filterInstalled = true;
         pattern = pattern.replace("installed", "");
@@ -32,10 +32,20 @@ Object.assign(
         searchIn = ["maintainer", "description", "name"],
 
         data = this.savedData.moduleAvailable;
+      if (!Array.isArray(data)) {
+
+        return;
+
+      }
       for (const [index, currentData] of data.entries()) {
 
         const id = `install-module-${index}`,
-          element = document.getElementById(id);
+          element = document.getElementById(id)?.closest(".module-line");
+        if (!element) {
+
+          continue;
+
+        }
         if (!pattern) {
 
           // Cleared search input, show all

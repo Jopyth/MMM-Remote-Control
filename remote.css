@@ -462,6 +462,10 @@ a {
     border-color: var(--accent-color);
     box-shadow: var(--shadow-elevated), var(--accent-glow);
   }
+
+  &.hidden {
+    display: none;
+  }
 }
 
 #update-module-results .module-line {
