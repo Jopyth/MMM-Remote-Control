@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.8.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.0...v4.8.1) (2026-03-01)
+
+### Fixed
+
+- add-module search filter not working ([7c79287](https://github.com/jopyth/MMM-Remote-Control/commit/7c7928769fb3329c5d370bac28d12760851e3f22))
+- replace AbortSignal.timeout with AbortController in loadList ([4388d2f](https://github.com/jopyth/MMM-Remote-Control/commit/4388d2f0ffd6c5295867bb759074eeb3e1c92704))
+- replace querySelector with getElementById for id containing special chars ([8a12e89](https://github.com/jopyth/MMM-Remote-Control/commit/8a12e89ddb30d1862c45a4daa6f98a9b7506959c))
+
+### Chores
+
+- handel cspell issues ([2c53dfe](https://github.com/jopyth/MMM-Remote-Control/commit/2c53dfee75b05ef30dd2e8c07cd0c4a4e55c7274))
+- move global declaration for MMSocket to file ([1883e01](https://github.com/jopyth/MMM-Remote-Control/commit/1883e01097f70a0aa5f32c92da00c56d51c5c8ad))
+- update devDependencies ([e505af7](https://github.com/jopyth/MMM-Remote-Control/commit/e505af718b971f71a67d2b617190b3f20b5457eb))
+- update icon paths in manifest.json ([5791073](https://github.com/jopyth/MMM-Remote-Control/commit/579107344eb89161d8419808634cd5ec764fbb9c))
+
+### Code Refactoring
+
+- improve error logging for modules using browser globals in Node.js context ([1a0dc7f](https://github.com/jopyth/MMM-Remote-Control/commit/1a0dc7f4a0f88328cb941a0917ee2bff6c361950))
+
 ## [4.8.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.7.0...v4.8.0) (2026-02-27)
 
 ### Fixed
