@@ -777,7 +777,7 @@ Object.assign(
       ));
 
       // Disable input for module name
-      const moduleInput = document.querySelector("#<root>/module");
+      const moduleInput = document.getElementById("<root>/module");
       moduleInput.disabled = true;
       moduleInput.classList.add("disabled");
 
