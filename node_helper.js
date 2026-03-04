@@ -674,17 +674,24 @@ module.exports = NodeHelper.create({
    */
   handleNotification (query, res) {
     try {
-      let payload = {}; // Assume empty JSON-object if no payload is provided
-      if (query.payload === undefined) {
-        payload = query.payload;
-      } else if (typeof query.payload === "object") {
-        payload = query.payload;
-      } else if (typeof query.payload === "string") {
-        payload = query.payload.startsWith("{") ? JSON.parse(query.payload) : query.payload;
-      } else {
-        payload = query.payload; // numbers, booleans, etc.
+      let payload = query.payload;
+
+      if (typeof payload === "string") {
+
+        /*
+         * Try to parse as JSON to convert numbers ("2"), booleans ("true"), objects, arrays.
+         * For plain strings that don't look like JSON, keep the raw value.
+         * Propagate parse errors only for object/array payloads (malformed input).
+         */
+        try {
+          payload = JSON.parse(payload);
+        } catch (error) {
+          const looksLikeJson = payload.startsWith("{") || payload.startsWith("[");
+          if (looksLikeJson) throw error;
+        }
       }
-      this.sendSocketNotification(query.action, {"notification": query.notification, payload});
+
+      this.sendSocketNotification(query.action, {notification: query.notification, payload});
       this.sendResponse(res);
       return true;
     } catch (error) {

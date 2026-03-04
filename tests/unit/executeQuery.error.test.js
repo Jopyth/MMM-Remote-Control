@@ -103,6 +103,22 @@ describe("executeQuery error handling", () => {
     assert.equal(h.__sent[0].payload.payload.other, "value");
   });
 
+  test("NOTIFICATION with numeric string payload converts to number (regression: PAGE_INCREMENT from remote.html)", () => {
+    const h = freshHelper();
+    const res = {};
+
+    /*
+     * Reproduces the bug where remote.html sent payload:"2" as a string,
+     * causing MMM-pages to ignore it and fall back to increment by 1.
+     */
+    h.executeQuery({action: "NOTIFICATION", notification: "PAGE_INCREMENT", payload: "2"}, res);
+
+    assert.equal(h.__sent.length, 1);
+    assert.equal(h.__sent[0].what, "NOTIFICATION");
+    assert.equal(h.__sent[0].payload.notification, "PAGE_INCREMENT");
+    assert.strictEqual(h.__sent[0].payload.payload, 2);
+  });
+
   test("NOTIFICATION with numeric payload passes number through (regression: module API menu PAGE_SELECT)", () => {
     const h = freshHelper();
     const res = {};
