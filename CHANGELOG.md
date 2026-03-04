@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.8.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.1...v4.8.2) (2026-03-04)
+
+### Fixed
+
+- parse numeric string payloads in handleNotification ([b020521](https://github.com/jopyth/MMM-Remote-Control/commit/b020521a34ae2384ca170ad688539292e6641ae1)), closes [edward-shen/MMM-pages#109](https://github.com/edward-shen/MMM-pages/issues/109)
+
+### Chores
+
+- update dependencies ([af9b0b5](https://github.com/jopyth/MMM-Remote-Control/commit/af9b0b5adeeb8c40650fb450eb46aa825c553bc4))
+
 ## [4.8.1](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.0...v4.8.1) (2026-03-01)
 
 ### Fixed
