@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.8.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.2...v4.8.3) (2026-03-15)
+
+### Fixed
+
+- fix remote UI loading behind a reverse proxy ([b040d08](https://github.com/jopyth/MMM-Remote-Control/commit/b040d0866bbe4d784e835f72f170a85c4e2a76af)), closes [#388](https://github.com/jopyth/MMM-Remote-Control/issues/388)
+
+### Chores
+
+- handle cspell issue ([431e2d6](https://github.com/jopyth/MMM-Remote-Control/commit/431e2d6c13103591038e11ee26013fdde80ec1e2))
+- update dependencies ([f6df08e](https://github.com/jopyth/MMM-Remote-Control/commit/f6df08e2fe68a166e454a5534cce48bd0ecee416))
+
 ## [4.8.2](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.1...v4.8.2) (2026-03-04)
 
 ### Fixed
