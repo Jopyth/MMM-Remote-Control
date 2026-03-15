@@ -427,7 +427,7 @@ module.exports = {
       return;
     }
 
-    let moduleData = [];
+    let moduleData;
     if (request.params.moduleName === "all") {
       moduleData = dataMerged;
     } else {
@@ -549,7 +549,7 @@ module.exports = {
       }
     }
 
-    let payload = {};
+    let payload;
     if (Object.keys(request.query).length === 0 && request.params.p !== undefined) {
       payload = request.params.p;
     } else if (Object.keys(request.query).length > 0 && request.params.p !== undefined) {

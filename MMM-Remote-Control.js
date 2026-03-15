@@ -296,7 +296,7 @@ Module.register("MMM-Remote-Control", {
 
   getDom () {
     const wrapper = document.createElement("div");
-    let portToShow = "";
+    let portToShow;
     if (this.addresses.length === 0) {
       this.addresses = ["ip-of-your-mirror"];
     }
