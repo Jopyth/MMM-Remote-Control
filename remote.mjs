@@ -441,7 +441,10 @@ Remote.init = function () {
   // Register service worker for PWA support
   if ("serviceWorker" in navigator) {
 
-    navigator.serviceWorker.register("modules/MMM-Remote-Control/service-worker.js").
+    navigator.serviceWorker.register(
+      "./remote-service-worker.js",
+      {"scope": "./"}
+    ).
       then((registration) => {
 
         console.log(

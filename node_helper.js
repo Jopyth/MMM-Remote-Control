@@ -142,6 +142,12 @@ module.exports = NodeHelper.create({
   },
 
   createRoutes () {
+    this.expressApp.get("/remote-service-worker.js", (request, res) => {
+      res.set("Cache-Control", "no-cache");
+      res.contentType("application/javascript");
+      res.sendFile(path.resolve(`${__dirname}/service-worker.js`));
+    });
+
     this.expressApp.get("/remote.html", (request, res) => {
       if (this.template === "") {
         res.sendStatus(503);
