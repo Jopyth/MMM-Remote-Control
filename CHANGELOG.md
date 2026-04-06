@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.8.4](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.3...v4.8.4) (2026-04-06)
+
+### Documentation
+
+- improve monitor control guide for Wayland systems ([6ffbf86](https://github.com/jopyth/MMM-Remote-Control/commit/6ffbf8609eeeb8c297968b68011f5a5da62304d3))
+
+### Chores
+
+- add 'socketclient' to cspell configuration ([be5ba42](https://github.com/jopyth/MMM-Remote-Control/commit/be5ba4256375b8eda68c396136766a498fd7bc32))
+- fix bugs URL in package.json ([ad223b5](https://github.com/jopyth/MMM-Remote-Control/commit/ad223b5b1b3481edf61a9ea29c02ed782c00af70))
+- update dependencies ([484f3ca](https://github.com/jopyth/MMM-Remote-Control/commit/484f3cabce50283c04ec4be844f0995fbe606452))
+
+### Code Refactoring
+
+- remove useless variable initializations (no-useless-assignment) ([d3b9149](https://github.com/jopyth/MMM-Remote-Control/commit/d3b9149b7bc3ed7bf8b2908f027e41c03524d3d1))
+
 ## [4.8.3](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.2...v4.8.3) (2026-03-15)
 
 ### Fixed
