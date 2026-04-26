@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.8.5](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.4...v4.8.5) (2026-04-26)
+
+### Chores
+
+- update dependencies ([31fc182](https://github.com/jopyth/MMM-Remote-Control/commit/31fc1824427cc09b9756bbfa063a614bdb27a56d))
+- update modules.json.template ([9d6c020](https://github.com/jopyth/MMM-Remote-Control/commit/9d6c020dfe1ca5c9c72346011be8e5106476117c))
+
 ## [4.8.4](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.3...v4.8.4) (2026-04-06)
 
 ### Documentation
