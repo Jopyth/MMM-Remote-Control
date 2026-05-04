@@ -46,14 +46,14 @@
     "test:unit": "node --test tests/unit/**/*.test.js"
   },
   "dependencies": {
-    "marked": "^18.0.2",
+    "marked": "^18.0.3",
     "qrcode": "^1.5.4",
     "simple-git": "^3.36.0",
-    "swagger-ui-dist": "^5.32.4",
+    "swagger-ui-dist": "^5.32.5",
     "uuid": "^14.0.0"
   },
   "devDependencies": {
-    "@eslint/css": "^1.1.0",
+    "@eslint/css": "^1.2.0",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^1.2.0",
     "@eslint/markdown": "^8.0.1",
@@ -61,12 +61,12 @@
     "c8": "^11.0.0",
     "commit-and-tag-version": "^12.7.1",
     "cspell": "^10.0.0",
-    "eslint": "^10.2.1",
+    "eslint": "^10.3.0",
     "eslint-plugin-import-x": "^4.16.2",
     "eslint-plugin-jsdoc": "^62.9.0",
     "eslint-plugin-unicorn": "^64.0.0",
     "express": "^5.2.1",
-    "globals": "^17.5.0",
+    "globals": "^17.6.0",
     "happy-dom": "^20.9.0",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.3",
