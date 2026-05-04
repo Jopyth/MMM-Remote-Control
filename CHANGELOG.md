@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.8.6](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.5...v4.8.6) (2026-05-04)
+
+### Fixed
+
+- convert numeric string payloads to numbers in REST API ([2f05264](https://github.com/jopyth/MMM-Remote-Control/commit/2f0526423c1448c28a09b60d9333018bed44b1f2))
+
+### Chores
+
+- update dependencies ([5265d08](https://github.com/jopyth/MMM-Remote-Control/commit/5265d081c2d06faea589d4a629f7c0f57a95ce8e))
+
 ## [4.8.5](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.4...v4.8.5) (2026-04-26)
 
 ### Chores
