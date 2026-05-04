@@ -205,6 +205,42 @@ describe("API HTTP-Layer Smoke Tests", () => {
     assert.equal(notifications[0].payload.notification, "TEST_NOTIFICATION");
   });
 
+  test("GET /api/notification/:notification/:p converts numeric strings to numbers", async () => {
+    notifications.length = 0; // Clear previous
+
+    const response = await fetch(`${baseUrl}/api/notification/PAGE_SELECT/1`);
+    const data = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(data.success, true);
+    assert.equal(data.notification, "PAGE_SELECT");
+    // The payload should be a number, not a string
+    assert.strictEqual(data.payload, 1);
+    assert.equal(typeof data.payload, "number");
+
+    // Verify socket notification received the numeric payload
+    assert.equal(notifications.length, 1);
+    assert.equal(notifications[0].payload.notification, "PAGE_SELECT");
+    assert.strictEqual(notifications[0].payload.payload, 1);
+  });
+
+  test("GET /api/notification/:notification/:p converts negative numeric strings to numbers", async () => {
+    notifications.length = 0; // Clear previous
+
+    const response = await fetch(`${baseUrl}/api/notification/PAGE_SELECT/-1`);
+    const data = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(data.success, true);
+    // The payload should be a number, not a string
+    assert.strictEqual(data.payload, -1);
+    assert.equal(typeof data.payload, "number");
+
+    // Verify socket notification received the numeric payload
+    assert.equal(notifications.length, 1);
+    assert.strictEqual(notifications[0].payload.payload, -1);
+  });
+
   test("GET /api/config returns config structure", async () => {
     const response = await fetch(`${baseUrl}/api/config`);
     const data = await response.json();

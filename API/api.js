@@ -566,6 +566,15 @@ module.exports = {
         : action.payload;
     }
 
+    /*
+     * Convert numeric strings to numbers for cleaner module APIs
+     * e.g., /api/notification/PAGE_SELECT/1 should send payload: 1 (not "1")
+     * Also supports negative numbers: /api/notification/PAGE_SELECT/-1
+     */
+    if (typeof payload === "string" && (/^-?\d+$/).test(payload)) {
+      payload = Number.parseInt(payload, 10);
+    }
+
     if ("action" in query && query.action == "DELAYED") {
       query.query.payload = payload;
       query.query.action = "NOTIFICATION";
