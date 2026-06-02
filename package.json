@@ -55,7 +55,7 @@
   "devDependencies": {
     "@eslint/css": "^1.2.0",
     "@eslint/js": "^10.0.1",
-    "@eslint/json": "^1.2.0",
+    "@eslint/json": "^2.0.0",
     "@eslint/markdown": "^8.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "c8": "^11.0.0",
