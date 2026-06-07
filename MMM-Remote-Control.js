@@ -10,6 +10,9 @@
 
 Module.register("MMM-Remote-Control", {
 
+  // Minimum required MagicMirror² version (v2.32.0 introduced Express 5).
+  requiresVersion: "2.32.0",
+
   // Default module config.
   defaults: {
     customCommand: {},

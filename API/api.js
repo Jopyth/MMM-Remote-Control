@@ -145,14 +145,6 @@ module.exports = {
 
     this.expressRouter = express.Router();
 
-    /*
-     * MagicMirror² switches to Express 5 with v2.32.0 - to keep compatibility with older versions we need
-     * to check for the Express version. Since Express 5 dropt the .del method, we can use that to check.
-     * If the method is not available, we are using Express 4.x and need to use the old syntax.
-     * This is a temporary solution and will be removed in the future.
-     */
-    const expressVersionLessThan5 = express.application.del ? true : false;
-
     // Route for testing the api at http://mirror:8080/api/test
     this.expressRouter.route(["/test", "/"]). // Test without apiKey
       get((request, res) => {
@@ -206,27 +198,16 @@ module.exports = {
       this.answerGet({data: r}, res);
     });
 
-    let route = expressVersionLessThan5
-      ? [
-        "/refresh/:delayed?",
-        "/shutdown/:delayed?",
-        "/reboot/:delayed?",
-        "/restart/:delayed?",
-        "/save",
-        "/minimize",
-        "/togglefullscreen",
-        "/devtools"
-      ]
-      : [
-        "/refresh{/:delayed}",
-        "/shutdown{/:delayed}",
-        "/reboot{/:delayed}",
-        "/restart{/:delayed}",
-        "/save",
-        "/minimize",
-        "/togglefullscreen",
-        "/devtools"
-      ];
+    let route = [
+      "/refresh{/:delayed}",
+      "/shutdown{/:delayed}",
+      "/reboot{/:delayed}",
+      "/restart{/:delayed}",
+      "/save",
+      "/minimize",
+      "/togglefullscreen",
+      "/devtools"
+    ];
 
     this.expressRouter.route(route).
       get((request, res) => {
@@ -252,9 +233,7 @@ module.exports = {
         this.executeQuery({action: "COMMAND", command: request.params.value}, res);
       });
 
-    route = expressVersionLessThan5
-      ? "/userpresence/:value?"
-      : "/userpresence{/:value}";
+    route = "/userpresence{/:value}";
     this.expressRouter.route(route).
       get((request, res) => {
         if (request.params.value) {
@@ -268,9 +247,7 @@ module.exports = {
         }
       });
 
-    route = expressVersionLessThan5
-      ? "/update/:moduleName?"
-      : "/update{/:moduleName}";
+    route = "/update{/:moduleName}";
     this.expressRouter.route(route).
       get((request, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
@@ -313,9 +290,7 @@ module.exports = {
       });
     // edit config
 
-    route = expressVersionLessThan5
-      ? "/notification/:notification/:p?/:delayed?"
-      : "/notification/:notification{/:p}{/:delayed}";
+    route = "/notification/:notification{/:p}{/:delayed}";
     this.expressRouter.route(route).
       get((request, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
@@ -330,9 +305,7 @@ module.exports = {
         this.answerNotifyApi(request, res);
       });
 
-    route = expressVersionLessThan5
-      ? "/module/:moduleName?/:action?/:delayed?"
-      : "/module{/:moduleName}{/:action}{/:delayed}";
+    route = "/module{/:moduleName}{/:action}{/:delayed}";
     this.expressRouter.route(route).
       get((request, res) => {
         this.answerModuleApi(request, res);
@@ -345,9 +318,7 @@ module.exports = {
         this.answerModuleApi(request, res);
       });
 
-    route = expressVersionLessThan5
-      ? "/monitor/:action?/:delayed?"
-      : "/monitor{/:action}{/:delayed}";
+    route = "/monitor{/:action}{/:delayed}";
     this.expressRouter.route(route).
       get((request, res) => {
         if (!request.params.action) { request.params.action = "STATUS"; }
