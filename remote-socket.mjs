@@ -1,4 +1,3 @@
-/* global MMSocket */
 import {Remote} from "./remote.mjs";
 import {marked} from "marked";
 
@@ -19,7 +18,14 @@ Object.assign(
 
       if (this._socket === undefined) {
 
-        this._socket = new MMSocket(this.name);
+        const SocketConstructor = globalThis.MMSocket;
+        if (!SocketConstructor) {
+
+          throw new Error("MMSocket is not available. socketclient.js failed to load.");
+
+        }
+
+        this._socket = new SocketConstructor(this.name);
 
       }
 

@@ -88,13 +88,37 @@
     </div>
     <script src="%%CONFIG_PATH%%"></script>
     <script src="socket.io/socket.io.js"></script>
-    <script src="js/socketclient.js"></script>
     <script type="importmap">
       {"imports": {"marked": "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js"}}
     </script>
-    <script
-      type="module"
-      src="modules/MMM-Remote-Control/remote-menu.mjs"
-    ></script>
+    <script type="module">
+      // TODO: Backward-compatibility shim for pre-ESM MagicMirror socketclient.js.
+      // Remove in 2027 when old core versions are no longer supported.
+      const loadLegacySocketClient = async () => {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "js/socketclient.js";
+          script.async = false;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.append(script);
+        });
+
+        if (!globalThis.MMSocket && typeof MMSocket !== "undefined") {
+          globalThis.MMSocket = MMSocket;
+        }
+      };
+
+      try {
+        const socketClientModule = await import("./js/socketclient.js");
+        if (socketClientModule?.MMSocket) {
+          globalThis.MMSocket = socketClientModule.MMSocket;
+        }
+      } catch {
+        await loadLegacySocketClient();
+      }
+
+      await import("./modules/MMM-Remote-Control/remote-menu.mjs");
+    </script>
   </body>
 </html>
