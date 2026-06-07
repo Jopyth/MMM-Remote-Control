@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.6...v5.0.0) (2026-06-07)
+
+### ⚠ BREAKING CHANGES
+
+- Requires Express 5 (MagicMirror 2.32.0+). The dual
+  Express 4/5 route syntax has been removed.
+- Default monitor control commands now use wlopm
+  instead of vcgencmd to support Raspberry Pi OS Bookworm and newer.
+
+Users on older systems can restore previous behavior by configuring
+customCommand in their config. See docs/guide/monitor-control.md.
+
+Docs updated to reflect Wayland as new default.
+
+### Added
+
+- change default monitor commands to Wayland (wlopm) ([0325f3b](https://github.com/jopyth/MMM-Remote-Control/commit/0325f3b3abf002c35d04508b8c1061659b8f1459)), closes [#288](https://github.com/jopyth/MMM-Remote-Control/issues/288)
+- drop Express 4 compatibility layer ([5316abb](https://github.com/jopyth/MMM-Remote-Control/commit/5316abbc4ea3fe6470574b1d5d94fcae21687db5))
+
+### Fixed
+
+- **remote:** make socketclient loading backward-compatible ([7604e67](https://github.com/jopyth/MMM-Remote-Control/commit/7604e678a13f6d157daf312d64b778b24803d34e))
+
+### Chores
+
+- update dependencies ([98bb563](https://github.com/jopyth/MMM-Remote-Control/commit/98bb5635237feb38963d2ac1aae3d7ff659d11a3))
+- update modules template ([89a94bf](https://github.com/jopyth/MMM-Remote-Control/commit/89a94bff61d0f8b37a2ce006d23f2d2c88f24fbb))
+
 ## [4.8.6](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.5...v4.8.6) (2026-05-04)
 
 ### Fixed
