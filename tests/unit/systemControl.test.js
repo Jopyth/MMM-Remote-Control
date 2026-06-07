@@ -51,14 +51,13 @@ function createMockExec (execResults) {
     // SAFETY: Never execute real commands, only record them
     execResults.push({command, options});
     setImmediate(() => {
-      if (command.includes("display_power -1")) {
-        callback(null, "display_power=1", "");
-      } else if (command.includes("display_power 0")) {
+      if (command.includes("--off")) {
         callback(null, "", "");
-      } else if (command.includes("display_power 1")) {
+      } else if (command.includes("--on")) {
         callback(null, "", "");
       } else {
-        callback(null, "on", "");
+        // Status command: report monitor as on
+        callback(null, "true", "");
       }
     });
   };
@@ -109,7 +108,7 @@ describe("systemControl", () => {
 
         setTimeout(() => {
           assert.strictEqual(mocks.execResults.length, 1);
-          assert.ok(mocks.execResults[0].command.includes("vcgencmd display_power 1"));
+          assert.ok(mocks.execResults[0].command.includes("wlopm --on"));
           assert.strictEqual(mocks.socketNotifications.length, 1);
           assert.strictEqual(mocks.socketNotifications[0].notification, "USER_PRESENCE");
           assert.strictEqual(mocks.socketNotifications[0].payload, true);
@@ -126,7 +125,7 @@ describe("systemControl", () => {
 
         setTimeout(() => {
           assert.strictEqual(mocks.execResults.length, 1, "Should execute one command");
-          assert.ok(mocks.execResults[0].command.includes("vcgencmd display_power 0"), "Should execute monitor off command");
+          assert.ok(mocks.execResults[0].command.includes("wlopm --off"), "Should execute monitor off command");
           assert.strictEqual(mocks.errorCheckResults.length, 1, "Should call error check callback");
           assert.strictEqual(mocks.socketNotifications.length, 1, "Should send one socket notification");
           assert.strictEqual(mocks.socketNotifications[0].notification, "USER_PRESENCE");
@@ -144,7 +143,7 @@ describe("systemControl", () => {
 
         setTimeout(() => {
           assert.strictEqual(mocks.execResults.length, 1);
-          assert.ok(mocks.execResults[0].command.includes("vcgencmd display_power -1"));
+          assert.ok(mocks.execResults[0].command.includes("wlopm | grep"));
           assert.strictEqual(mocks.errorCheckResults.length, 1);
           assert.strictEqual(mocks.errorCheckResults[0].data.monitor, "on");
           done();
@@ -193,7 +192,7 @@ describe("systemControl", () => {
         setTimeout(() => {
           // First call is status check, second is the toggle action
           assert.ok(mocks.execResults.length > 0);
-          assert.ok(mocks.execResults[0].command.includes("display_power -1"));
+          assert.ok(mocks.execResults[0].command.includes("wlopm | grep"));
           done();
         }, 100);
       });
@@ -203,7 +202,7 @@ describe("systemControl", () => {
         const execResults2 = [];
         childProcess.exec = (command, options, callback) => {
           execResults2.push({command});
-          setImmediate(() => callback(null, "display_power=0", ""));
+          setImmediate(() => callback(null, "false", ""));
         };
         delete require.cache[require.resolve("../../lib/systemControl.js")];
         const sc2 = require("../../lib/systemControl.js");
@@ -219,8 +218,8 @@ describe("systemControl", () => {
 
         setTimeout(() => {
           assert.ok(execResults2.length >= 2, "Should call status then MONITORON");
-          assert.ok(execResults2[0].command.includes("display_power -1"));
-          assert.ok(execResults2[1].command.includes("display_power 1"));
+          assert.ok(execResults2[0].command.includes("wlopm | grep"));
+          assert.ok(execResults2[1].command.includes("wlopm --on"));
           assert.strictEqual(notifications2[0]?.notification, "USER_PRESENCE");
           assert.strictEqual(notifications2[0]?.payload, true);
           done();

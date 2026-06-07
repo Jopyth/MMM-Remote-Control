@@ -4,9 +4,9 @@ Configure monitor on/off commands for different display systems.
 
 ## Overview
 
-The default monitor commands use `vcgencmd`, which only works on older Raspberry Pi OS versions (Buster, Bullseye). **Raspberry Pi OS Bookworm (2023) and newer use Wayland by default**, where `vcgencmd display_power` no longer works.
+**Since version 5.0.0**, the default monitor commands use `wlopm` for Wayland, which is the default display server on Raspberry Pi OS Bookworm (2023) and newer. The defaults target all outputs (`'*'`), so they work without configuration on most setups.
 
-Choose the right setup for your system below.
+If you're using an older system with X11, or a different setup, configure the appropriate commands below.
 
 Check your display server:
 
@@ -16,23 +16,7 @@ echo $XDG_SESSION_TYPE  # Shows 'wayland' or 'x11'
 
 ## Commands by Display System
 
-### vcgencmd (Default - Raspberry Pi OS Buster/Bullseye)
-
-The built-in default. Works on Raspberry Pi OS Buster and Bullseye where `vcgencmd` is pre-installed:
-
-```js
-customCommand: {
-    monitorOnCommand: 'vcgencmd display_power 1',
-    monitorOffCommand: 'vcgencmd display_power 0',
-    monitorStatusCommand: 'vcgencmd display_power -1'
-}
-```
-
-> **Note:** `vcgencmd display_power` does **not** work on Raspberry Pi OS Bookworm and newer. Use one of the Wayland options below instead.
-
----
-
-### Wayland (Raspberry Pi OS Bookworm+)
+### Wayland (Default - Raspberry Pi OS Bookworm+)
 
 For systems using Wayland (default since Raspberry Pi OS Bookworm). Two tools are available — `wlopm` is recommended:
 
@@ -46,11 +30,19 @@ Install `wlopm`:
 sudo apt install wlopm
 ```
 
-Find your output name:
+The default commands use `'*'` as the output name, which targets **all** discovered outputs. This works out of the box for single- and multi-display setups without needing to know the output name:
 
-```bash
-wlopm
+```js
+customCommand: {
+    monitorOnCommand: "wlopm --on '*'",
+    monitorOffCommand: "wlopm --off '*'",
+    monitorStatusCommand: "command -v wlopm > /dev/null 2>&1 || exit 1; wlopm | grep -q ' on$' && echo 'true' || echo 'false'"
+}
 ```
+
+The status command starts with `command -v wlopm || exit 1` so that a missing `wlopm` reports an error in the log instead of silently returning `false` (which would falsely indicate the monitor is off).
+
+If you want to control a specific output instead, find its name by running `wlopm` and use it in place of `'*'`:
 
 ```js
 customCommand: {
@@ -95,6 +87,22 @@ customCommand: {
     monitorStatusCommand: 'WAYLAND_DISPLAY="wayland-1" wlr-randr | grep -q "Enabled: yes" && echo "true" || echo "false"'
 }
 ```
+
+---
+
+### Legacy vcgencmd (Raspberry Pi OS Buster/Bullseye)
+
+For older Raspberry Pi OS versions (Buster, Bullseye) where `vcgencmd` is available:
+
+```js
+customCommand: {
+    monitorOnCommand: 'vcgencmd display_power 1',
+    monitorOffCommand: 'vcgencmd display_power 0',
+    monitorStatusCommand: 'vcgencmd display_power -1'
+}
+```
+
+> **Note:** `vcgencmd display_power` does **not** work on Raspberry Pi OS Bookworm and newer. Use one of the Wayland options above instead.
 
 ---
 

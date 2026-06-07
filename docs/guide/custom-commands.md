@@ -13,9 +13,9 @@ config: {
     customCommand: {
         shutdownCommand: 'sudo shutdown -h now',
         rebootCommand: 'sudo reboot',
-        monitorOnCommand: 'vcgencmd display_power 1',
-        monitorOffCommand: 'vcgencmd display_power 0',
-        monitorStatusCommand: 'vcgencmd display_power -1',
+        monitorOnCommand: "wlopm --on '*'",
+        monitorOffCommand: "wlopm --off '*'",
+        monitorStatusCommand: "command -v wlopm > /dev/null 2>&1 || exit 1; wlopm | grep -q ' on$' && echo 'true' || echo 'false'",
     },
 },
 ```
