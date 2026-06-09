@@ -23,19 +23,19 @@ childProcess.exec = (command) => {
 
 // Mock logger as console (has .log, .error, .warn methods)
 const Module = require("node:module");
-const originalRequire = Module.prototype.require;
+const originalLoad = Module._load;
 
 // Global electron mock for handleElectronActions tests
 let currentElectronMock = null;
 
-Module.prototype.require = function (id, ...args) {
-  if (id === "logger") {
+Module._load = function (request, parent, isMain) {
+  if (request === "logger") {
     return console;
   }
-  if (id === "electron" && currentElectronMock) {
+  if (request === "electron" && currentElectronMock) {
     return currentElectronMock;
   }
-  return Reflect.apply(originalRequire, this, [id, ...args]);
+  return originalLoad(request, parent, isMain);
 };
 
 // Import systemControl functions - will be reloaded in each test suite with mocked exec

@@ -14,11 +14,11 @@ function freshHelper (overrides = {}) {
   const helper = Object.assign({}, helperFactory);
   helper.__sent = [];
   helper.__responses = [];
-  helper.sendSocketNotification = function (what, payload) {
-    this.__sent.push({what, payload});
+  helper.sendSocketNotification = (what, payload) => {
+    helper.__sent.push({what, payload});
   };
-  helper.sendResponse = function (res, err, data) {
-    this.__responses.push({res, err, data});
+  helper.sendResponse = (res, err, data) => {
+    helper.__responses.push({res, err, data});
     return !err;
   };
   helper.thisConfig = {classes: {}};

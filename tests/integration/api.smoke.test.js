@@ -109,8 +109,8 @@ describe("API HTTP-Layer Smoke Tests", () => {
       },
 
       checkInitialized (res) {
-        if (!this.initialized) {
-          this.sendResponse(res, new Error("System not initialized"));
+        if (!mockContext.initialized) {
+          mockContext.sendResponse(res, new Error("System not initialized"));
           return false;
         }
         return true;

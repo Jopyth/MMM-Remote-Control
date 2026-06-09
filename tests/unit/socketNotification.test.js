@@ -243,18 +243,18 @@ describe("socketNotificationReceived", () => {
     const helper = freshHelper();
     helper.generateQRCode = helperFactory.generateQRCode.bind(helper);
 
-    const originalRequire = ModuleLib.prototype.require;
-    ModuleLib.prototype.require = function (id, ...args) {
-      if (id === "qrcode") {
+    const originalLoad = ModuleLib._load;
+    ModuleLib._load = function (request, parent, isMain) {
+      if (request === "qrcode") {
         throw new Error("forced qrcode failure");
       }
-      return Reflect.apply(originalRequire, this, [id, ...args]);
+      return originalLoad(request, parent, isMain);
     };
 
     try {
       await helper.generateQRCode({url: "https://example.com", size: 128});
     } finally {
-      ModuleLib.prototype.require = originalRequire;
+      ModuleLib._load = originalLoad;
     }
 
     const errorNotification = helper.__socketNotifications.find((n) => n.action === "QR_CODE_ERROR");

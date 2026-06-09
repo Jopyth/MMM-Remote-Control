@@ -26,8 +26,8 @@ function setModuleError (filePath, error) {
 function freshHelper () {
   const helper = Object.assign({}, helperFactory);
   helper.__responses = [];
-  helper.sendResponse = function (_res, error, payload) {
-    this.__responses.push({error, payload});
+  helper.sendResponse = (_res, error, payload) => {
+    helper.__responses.push({error, payload});
     return !error;
   };
   helper.thisConfig = {};
@@ -55,7 +55,7 @@ describe("answerPost config persistence", () => {
     ModuleLib._load = function (request, parent, isMain) {
       const resolved = path.isAbsolute(request)
         ? path.resolve(request)
-        : originalResolveFilename.call(this, request, parent, isMain);
+        : originalResolveFilename(request, parent, isMain);
       const normalized = path.resolve(resolved);
       if (moduleOverrides.has(normalized)) {
         const entry = moduleOverrides.get(normalized);
@@ -64,7 +64,7 @@ describe("answerPost config persistence", () => {
         }
         return entry.value;
       }
-      return originalLoad.call(this, request, parent, isMain);
+      return originalLoad(request, parent, isMain);
     };
     moduleOverrides.clear();
   });
@@ -123,8 +123,8 @@ describe("answerPost config persistence", () => {
     const payload = {modules: [], foo: "bar"};
 
     const responsePromise = new Promise((resolve) => {
-      helper.sendResponse = function (_res, error, data) {
-        this.__responses.push({error, data});
+      helper.sendResponse = (_res, error, data) => {
+        helper.__responses.push({error, data});
         resolve({error, data});
         return !error;
       };

@@ -26,9 +26,9 @@ const downloadModules = {
 
   init (config) {
     if (!config) { config = {}; }
-    this.config = {...this.defaults, ...config};
+    downloadModules.config = {...downloadModules.defaults, ...config};
 
-    return this;
+    return downloadModules;
   },
 
   parseList (content) {
@@ -48,52 +48,52 @@ const downloadModules = {
 
   async getPackages () {
     try {
-      const response = await fetch(this.config.sourceUrl);
+      const response = await fetch(downloadModules.config.sourceUrl);
       if (response.status === 200) {
         const body = await response.text();
-        const modules = this.parseList(body);
+        const modules = downloadModules.parseList(body);
         const json = `${JSON.stringify(modules, null, 2)}\n`;
-        const jsonPath = this.config.modulesFile;
+        const jsonPath = downloadModules.config.modulesFile;
         fs.writeFile(jsonPath, json, "utf8", (error) => {
           if (error) {
             console.error(`MODULE LIST ERROR: modules.json updating fail:${error.message}`);
-            this.config.callback("ERROR_UPDATING");
+            downloadModules.config.callback("ERROR_UPDATING");
           } else {
-            this.config.callback("UPDATED");
+            downloadModules.config.callback("UPDATED");
           }
         });
       } else if (response.status === 401) {
         console.error("MODULE LIST ERROR: Could not load module data from JSON API. 401 Error");
-        this.config.callback("ERROR_401");
+        downloadModules.config.callback("ERROR_401");
       } else {
         console.error("MODULE LIST ERROR: Could not load data.", response.statusText);
-        this.config.callback("ERROR_LOADING_DATA");
+        downloadModules.config.callback("ERROR_LOADING_DATA");
       }
     } catch (error) {
       console.error("MODULE LIST ERROR: Could not load data.", error);
-      this.config.callback("ERROR_LOADING_DATA");
+      downloadModules.config.callback("ERROR_LOADING_DATA");
     }
   },
 
   async checkLastModified () {
     try {
-      const stats = await fs.promises.stat(this.config.modulesFile);
+      const stats = await fs.promises.stat(downloadModules.config.modulesFile);
       const mtime = Math.round(stats.mtime.getTime() / 1000);
-      const updatedAfter = Date.now() - this.config.refreshRate * 1000;
+      const updatedAfter = Date.now() - downloadModules.config.refreshRate * 1000;
       const needsUpdate = mtime <= updatedAfter;
-      if (needsUpdate || this.config.force) {
-        this.getPackages();
+      if (needsUpdate || downloadModules.config.force) {
+        downloadModules.getPackages();
       } else {
-        this.config.callback("NO_UPDATE_REQUIRED");
+        downloadModules.config.callback("NO_UPDATE_REQUIRED");
       }
     } catch (error) {
       // If file doesn't exist or can't be read, download it
       if (error.code === "ENOENT") {
         console.log("MODULE LIST INFO: modules.json not found, downloading...");
-        this.getPackages();
+        downloadModules.getPackages();
       } else {
         console.error("MODULE LIST ERROR: Could not check last modified time.", error);
-        this.config.callback("ERROR_CHECKING_LAST_MODIFIED");
+        downloadModules.config.callback("ERROR_CHECKING_LAST_MODIFIED");
       }
     }
 

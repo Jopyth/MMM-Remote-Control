@@ -11,14 +11,14 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 const helperFactory = require("../../node_helper.js");
 
 // Mock electron via require hook
-const originalRequire = ModuleLib.prototype.require;
+const originalLoad = ModuleLib._load;
 let currentElectronMock = null;
 
-ModuleLib.prototype.require = function (id, ...args) {
-  if (id === "electron" && currentElectronMock !== null) {
+ModuleLib._load = function (request, parent, isMain) {
+  if (request === "electron" && currentElectronMock !== null) {
     return currentElectronMock;
   }
-  return Reflect.apply(originalRequire, this, [id, ...args]);
+  return originalLoad(request, parent, isMain);
 };
 
 function freshHelper () {

@@ -13,8 +13,8 @@ const helperFactory = require("../../node_helper.js");
 function freshHelper (overrides = {}) {
   const helper = Object.assign({}, helperFactory);
   helper.__responses = [];
-  helper.sendResponse = function (_res, error, payload) {
-    this.__responses.push({error, payload});
+  helper.sendResponse = (_res, error, payload) => {
+    helper.__responses.push({error, payload});
     return !error;
   };
   helper.modulesAvailable = [];

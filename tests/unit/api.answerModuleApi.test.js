@@ -4,13 +4,13 @@ const {test, describe} = require("node:test");
 const apiModule = require("../../API/api.js");
 
 function makeContext (overrides = {}) {
-  return {
+  const context = {
     configOnHd: {modules: [{module: "MMM-Remote-Control", config: {}}]},
     externalApiRoutes: {},
     moduleApiMenu: {},
     translation: {},
     configData: {moduleData: []},
-    mergeData: function () { return {success: true, data: this.configData.moduleData}; },
+    mergeData: () => ({success: true, data: context.configData.moduleData}),
     sendSocketNotification: () => {},
     sendResponse: () => {},
     checkInitialized: () => true,
@@ -18,6 +18,8 @@ function makeContext (overrides = {}) {
     thisConfig: {},
     ...overrides
   };
+
+  return context;
 }
 
 describe("Module API", () => {
@@ -62,8 +64,7 @@ describe("Module API", () => {
   test("module not found returns 400 with error message", () => {
     const captured = {};
     const context = makeContext({
-      configData: {moduleData: [{identifier: "module_1_clock", name: "clock", urlPath: "clock"}]},
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+      configData: {moduleData: [{identifier: "module_1_clock", name: "clock", urlPath: "clock"}]}
     });
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
@@ -85,8 +86,7 @@ describe("Module API", () => {
   test("module without actions property returns 400", () => {
     const captured = {};
     const context = makeContext({
-      configData: {moduleData: [{identifier: "module_1_custommod", name: "custommod"}]},
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+      configData: {moduleData: [{identifier: "module_1_custommod", name: "custommod"}]}
     });
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
@@ -111,7 +111,6 @@ describe("Module API", () => {
     const captured = {};
     const context = makeContext({
       configData: {moduleData: [{identifier: "module_0_alert", name: "alert"}]},
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; },
       answerNotifyApi: (request, res, action) => {
         captured.action = action;
         captured.called = true;
@@ -132,8 +131,7 @@ describe("Module API", () => {
   test("invalid action on custom module returns undefined (no action object)", () => {
     const captured = {};
     const context = makeContext({
-      configData: {moduleData: [{identifier: "module_1_custom", name: "CustomModule", urlPath: "custom", actions: {}}]},
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+      configData: {moduleData: [{identifier: "module_1_custom", name: "CustomModule", urlPath: "custom", actions: {}}]}
     });
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
@@ -167,7 +165,6 @@ describe("Module API", () => {
           }
         ]
       },
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; },
       answerNotifyApi: (request, res, action) => {
         captured.action = action;
         captured.called = true;
@@ -195,8 +192,7 @@ describe("Module API", () => {
             actions: {postOnly: {notification: "TEST", method: "POST"}}
           }
         ]
-      },
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+      }
     });
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
@@ -217,8 +213,7 @@ describe("Module API", () => {
   test("no moduleName returns all merged data", () => {
     const captured = {};
     const context = makeContext({
-      configData: {moduleData: [{identifier: "module_1_test", name: "test"}]},
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+      configData: {moduleData: [{identifier: "module_1_test", name: "test"}]}
     });
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
@@ -234,8 +229,7 @@ describe("Module API", () => {
   test("no action returns filtered moduleData", () => {
     const captured = {};
     const context = makeContext({
-      configData: {moduleData: [{identifier: "module_1_clock", name: "clock", urlPath: "clock"}]},
-      mergeData: function () { return {success: true, data: this.configData.moduleData}; }
+      configData: {moduleData: [{identifier: "module_1_clock", name: "clock", urlPath: "clock"}]}
     });
     const answerModuleApi = apiModule.answerModuleApi.bind(context);
 
