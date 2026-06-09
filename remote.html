@@ -118,6 +118,10 @@
         await loadLegacySocketClient();
       }
 
+      if (!globalThis.MMSocket) {
+        await loadLegacySocketClient();
+      }
+
       await import("./modules/MMM-Remote-Control/remote-menu.mjs");
     </script>
   </body>
