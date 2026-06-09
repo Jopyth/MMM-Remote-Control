@@ -169,7 +169,7 @@ module.exports = {
           } else {
             return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided! Pass it as header (Authorization: apiKey YOUR_KEY)."});
           }
-        } else if (request.headers.authorization.split(" ")[1] !== this.apiKey) {
+        } else if (request.headers.authorization.split(" ", 2)[1] !== this.apiKey) {
           return res.status(401).json({success: false, message: "Unauthorized: Wrong API Key Provided!"});
         }
       }
@@ -212,7 +212,7 @@ module.exports = {
     this.expressRouter.route(route).
       get((request, res) => {
         if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
-        const r = request.path.split("/")[1].toUpperCase();
+        const r = request.path.split("/", 2)[1].toUpperCase();
         this.executeQuery(this.checkDelay({action: r}, request), res);
       });
 
