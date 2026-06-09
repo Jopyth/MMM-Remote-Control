@@ -38,7 +38,7 @@ Object.assign(
 
     createTypeEditSelection (key, parent, type, oldElement) {
 
-      const previousType = oldElement.children[1].innerHTML.slice(1).toLowerCase(),
+      const previousType = type.toLowerCase(),
         select = document.createElement("select");
       for (const typeOption of this.types) {
 
@@ -603,11 +603,13 @@ Object.assign(
           this.savedData.config.modules[index] = this.getModuleConfigFromUI();
           this.changedModules.push(index);
           const parent = document.getElementById(`edit-module-${index}`).parentNode;
-          if (parent.children.length === 2) {
+          if (parent.childElementCount === 2) {
+
+            const secondChild = parent.firstElementChild?.nextElementSibling;
 
             parent.insertBefore(
               this.createChangedWarning(),
-              parent.children[1]
+              secondChild
             );
 
           }

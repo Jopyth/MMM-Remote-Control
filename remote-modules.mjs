@@ -238,9 +238,11 @@ Object.assign(
         "click",
         (event) => {
 
-          if (event.currentTarget.classList.contains("toggled-off")) {
+          const currentTarget = event.currentTarget;
 
-            if (event.currentTarget.classList.contains("external-locked")) {
+          if (currentTarget.classList.contains("toggled-off")) {
+
+            if (currentTarget.classList.contains("external-locked")) {
 
               const wrapper = document.createElement("div");
               wrapper.innerHTML = `<span>${this.translate("LOCKSTRING_WARNING").replace(
@@ -264,13 +266,13 @@ Object.assign(
                 this.translate("FORCE_SHOW"),
                 () => {
 
-                  event.currentTarget.classList.remove(
+                  currentTarget.classList.remove(
                     "external-locked",
                     "toggled-off"
                   );
-                  event.currentTarget.classList.add("toggled-on");
+                  currentTarget.classList.add("toggled-on");
                   this.showModule(
-                    event.currentTarget.id,
+                    currentTarget.id,
                     true
                   );
                   this.setStatus("none");
@@ -287,17 +289,17 @@ Object.assign(
 
             } else {
 
-              event.currentTarget.classList.remove("toggled-off");
-              event.currentTarget.classList.add("toggled-on");
-              this.showModule(event.currentTarget.id);
+              currentTarget.classList.remove("toggled-off");
+              currentTarget.classList.add("toggled-on");
+              this.showModule(currentTarget.id);
 
             }
 
           } else {
 
-            event.currentTarget.classList.remove("toggled-on");
-            event.currentTarget.classList.add("toggled-off");
-            this.hideModule(event.currentTarget.id);
+            currentTarget.classList.remove("toggled-on");
+            currentTarget.classList.add("toggled-off");
+            this.hideModule(currentTarget.id);
 
           }
 
@@ -619,7 +621,7 @@ Object.assign(
         this.translate("RESTARTMM"),
         this.buttons["restart-mm-button"]
       );
-      restart.children[1].classList.add("text");
+      restart.querySelector(".text")?.classList.add("text");
       wrapper.append(restart);
       if (includeReload) {
 
@@ -628,7 +630,7 @@ Object.assign(
           this.translate("REFRESHMM"),
           this.buttons["refresh-mm-button"]
         );
-        reload.children[1].classList.add("text");
+        reload.querySelector(".text")?.classList.add("text");
         wrapper.append(reload);
 
       }
@@ -651,7 +653,7 @@ Object.assign(
           b,
           data[b]
         );
-        button.children[1].classList.add("text");
+        button.querySelector(".text")?.classList.add("text");
         wrapper.append(button);
 
       }

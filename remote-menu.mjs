@@ -83,7 +83,7 @@ Object.assign(
         "input",
         () => {
 
-          this.filter(input.value);
+          this.filterModules(input.value);
           deleteButton.classList.toggle(
             "hidden",
             input.value === ""
@@ -98,7 +98,7 @@ Object.assign(
         () => {
 
           input.value = "";
-          this.filter(input.value);
+          this.filterModules(input.value);
           deleteButton.classList.add("hidden");
 
         },

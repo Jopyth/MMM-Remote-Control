@@ -14,7 +14,7 @@ Object.assign(
 
     },
 
-    filter (pattern) {
+    filterModules (pattern) {
 
       let filterInstalled = false;
       if (pattern.includes("installed")) {
