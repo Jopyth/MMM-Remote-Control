@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.1](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.0...v5.0.1) (2026-06-09)
+
+### Fixed
+
+- **remote:** fallback when MMSocket export missing ([b73ee20](https://github.com/jopyth/MMM-Remote-Control/commit/b73ee20a0873f2dbda5268ef6d4a9b089994adba)), closes [#405](https://github.com/jopyth/MMM-Remote-Control/issues/405)
+
+### Chores
+
+- **eslint:** scope no-this rule to adapters ([7927148](https://github.com/jopyth/MMM-Remote-Control/commit/7927148d24e59991bc49f66711a512a448ec6913))
+- update devDependencies ([12f16d3](https://github.com/jopyth/MMM-Remote-Control/commit/12f16d33702aca710c13545482903c4ca785ae90))
+
+### Code Refactoring
+
+- fix unicorn DOM lint findings ([a567171](https://github.com/jopyth/MMM-Remote-Control/commit/a56717182e2ca6b759b6fd01a04761d6e929734e))
+- **lint:** deduplicate eslint shared js config ([8f49eb0](https://github.com/jopyth/MMM-Remote-Control/commit/8f49eb09e222e09ba10f9ed0c9344cc669f596c0))
+- remove non-adapter this usage ([7710d7a](https://github.com/jopyth/MMM-Remote-Control/commit/7710d7a92b3a71384fc31052981a5e79b9043b3d))
+
+### Tests
+
+- use querySelector in smoke assertions ([2e36885](https://github.com/jopyth/MMM-Remote-Control/commit/2e36885f1258f804cc492ce69cfc226554d0a8a7))
+
 ## [5.0.0](https://github.com/jopyth/MMM-Remote-Control/compare/v4.8.6...v5.0.0) (2026-06-07)
 
 ### ⚠ BREAKING CHANGES
