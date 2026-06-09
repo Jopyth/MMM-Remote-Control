@@ -159,6 +159,12 @@ export default defineConfig([
       "unicorn/filename-case": "off"
     }
   },
+  {
+    "files": ["MMM-Remote-Control.js", "node_helper.js", "API/api.js", "remote*.mjs", "remote-*.mjs"],
+    "rules": {
+      "unicorn/no-this-outside-of-class": "off"
+    }
+  },
   {"files": ["**/*.json"], "ignores": ["package-lock.json"], "plugins": {json}, "extends": ["json/recommended"], "language": "json/json"},
   {"files": ["tests/**/*.mjs"], "rules": {"class-methods-use-this": "off", "func-style": "off", "init-declarations": "off", "jsdoc/require-jsdoc": "off", "max-lines-per-function": "off", "max-statements": "off", "no-empty-function": "off", "one-var": "off", "require-atomic-updates": "off"}},
   {"files": ["**/*.md"], "plugins": {markdown}, "extends": ["markdown/recommended"], "language": "markdown/gfm"}
