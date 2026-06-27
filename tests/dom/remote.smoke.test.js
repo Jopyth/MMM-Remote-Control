@@ -199,6 +199,187 @@ describe("remote.js DOM smoke tests", () => {
     }
   });
 
+  test("showMenu renders loading state for unresolved dynamic route", async () => {
+    document.body.innerHTML = `
+      <header class="header"><span class="header-title"></span></header>
+      <div id="back-button" class="hidden"></div>
+      <main class="main-content"></main>
+    `;
+
+    const originalDynamicMenus = Remote.dynamicMenus,
+      originalPendingMenus = Remote.pendingDynamicMenus,
+      originalTranslations = Remote.translations,
+      originalCurrentMenu = Remote.currentMenu;
+
+    Remote.dynamicMenus = {};
+    Remote.pendingDynamicMenus = [];
+    Remote.translations = {"LOADING": "Loading"};
+    Remote.currentMenu = "main-menu";
+
+    try {
+      await Remote.showMenu("mc-pages-menu");
+
+      assert.equal(Remote.currentRoute.status, "loading-dynamic");
+      assert.equal(Remote.currentRoute.targetMenu, "mc-pages-menu");
+      assert.equal(Remote.currentMenu, "mc-pages-menu");
+      assert.ok(document.querySelector(".main-content .route-state"));
+      assert.equal(document.querySelector("#back-button").classList.contains("hidden"), false);
+    } finally {
+      Remote.dynamicMenus = originalDynamicMenus;
+      Remote.pendingDynamicMenus = originalPendingMenus;
+      Remote.translations = originalTranslations;
+      Remote.currentMenu = originalCurrentMenu;
+    }
+  });
+
+  test("showMenu renders not-found state for invalid route", async () => {
+    document.body.innerHTML = `
+      <header class="header"><span class="header-title"></span></header>
+      <div id="back-button" class="hidden"></div>
+      <main class="main-content"></main>
+    `;
+
+    const originalTranslations = Remote.translations;
+    Remote.translations = {"LOAD_ERROR": "Load error"};
+
+    try {
+      await Remote.showMenu("invalid-route");
+
+      assert.equal(Remote.currentRoute.status, "not-found");
+      assert.ok(document.querySelector(".main-content .route-state"));
+    } finally {
+      Remote.translations = originalTranslations;
+    }
+  });
+
+  test("navigateToMenu renders immediately when target hash is already active", async () => {
+    const originalShowMenu = Remote.showMenu,
+      originalHash = location.hash;
+
+    let renderedMenu;
+    Remote.showMenu = async (menuName) => {
+      renderedMenu = menuName;
+    };
+    location.hash = "#main-menu";
+
+    try {
+      await Remote.navigateToMenu("main-menu");
+
+      assert.equal(renderedMenu, "main-menu");
+      assert.equal(location.hash, "#main-menu");
+    } finally {
+      Remote.showMenu = originalShowMenu;
+      location.hash = originalHash;
+    }
+  });
+
+  test("navigateToMenu can suppress hashchange handling", () => {
+    const originalSkipHashChange = Remote.skipHashChange,
+      originalHash = location.hash;
+
+    Remote.skipHashChange = false;
+
+    try {
+      Remote.navigateToMenu(
+        "power-menu",
+        {"suppressHashChangeHandler": true}
+      );
+
+      assert.equal(Remote.skipHashChange, true);
+      assert.equal(Remote.getCurrentHashMenu(), "power-menu");
+    } finally {
+      Remote.skipHashChange = originalSkipHashChange;
+      location.hash = originalHash;
+    }
+  });
+
+  test("handleHashChange ignores one suppressed hashchange event", () => {
+    const originalSkipHashChange = Remote.skipHashChange,
+      originalShowMenu = Remote.showMenu;
+
+    let isShowMenuCalled = false;
+    Remote.skipHashChange = true;
+    Remote.showMenu = () => {
+      isShowMenuCalled = true;
+    };
+
+    try {
+      Remote.handleHashChange();
+
+      assert.equal(isShowMenuCalled, false);
+      assert.equal(Remote.skipHashChange, false);
+    } finally {
+      Remote.skipHashChange = originalSkipHashChange;
+      Remote.showMenu = originalShowMenu;
+    }
+  });
+
+  test("handleHashChange routes to current hash menu", () => {
+    const originalShowMenu = Remote.showMenu,
+      originalHash = location.hash,
+      originalSkipHashChange = Remote.skipHashChange;
+
+    let routedMenu;
+    Remote.skipHashChange = false;
+    Remote.showMenu = (menuName) => {
+      routedMenu = menuName;
+    };
+    location.hash = "#update-menu";
+
+    try {
+      Remote.handleHashChange();
+
+      assert.equal(routedMenu, "update-menu");
+    } finally {
+      Remote.showMenu = originalShowMenu;
+      location.hash = originalHash;
+      Remote.skipHashChange = originalSkipHashChange;
+    }
+  });
+
+  test("onTranslationsLoaded binds delegated navigation handlers only once", () => {
+    document.body.innerHTML = `
+      <div id="back-button"></div>
+      <main class="main-content">
+        <div id="dynamic-button" data-hash="power-menu"><span>Open</span></div>
+      </main>
+    `;
+
+    const originalNavigateToMenu = Remote.navigateToMenu,
+      originalShowMenu = Remote.showMenu,
+      originalBoundFlag = Remote.areNavigationEventHandlersBound,
+      originalTranslations = Remote.translations;
+
+    let navigateCalls = 0;
+    Remote.translations = {"BACK": "Back"};
+    Remote.areNavigationEventHandlersBound = false;
+    Remote.navigateToMenu = () => {
+      navigateCalls += 1;
+    };
+    Remote.showMenu = () => {};
+
+    try {
+      Remote.onTranslationsLoaded();
+      Remote.onTranslationsLoaded();
+
+      const clickEvent = document.createEvent("Event");
+      clickEvent.initEvent(
+        "click",
+        true,
+        true
+      );
+      document.querySelector("#dynamic-button").dispatchEvent(clickEvent);
+
+      assert.equal(navigateCalls, 1);
+      assert.equal(Remote.areNavigationEventHandlersBound, true);
+    } finally {
+      Remote.navigateToMenu = originalNavigateToMenu;
+      Remote.showMenu = originalShowMenu;
+      Remote.areNavigationEventHandlersBound = originalBoundFlag;
+      Remote.translations = originalTranslations;
+    }
+  });
+
   test("data structures are initialized correctly", () => {
     assert.ok(typeof Remote.savedData === "object");
     assert.ok(typeof Remote.translations === "object");

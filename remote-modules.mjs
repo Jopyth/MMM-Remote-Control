@@ -469,7 +469,7 @@ Object.assign(
 
             this.closePopup();
             this.addModule = data.name;
-            location.hash = "settings-menu";
+            this.navigateToMenu("settings-menu");
 
           }
         );
@@ -675,7 +675,8 @@ Object.assign(
 
     handleMmUpdate (result) {
 
-      if (location.hash.slice(1) !== "update-menu") {
+      const activeMenu = this.getCurrentHashMenu();
+      if (activeMenu !== "update-menu") {
         return;
       }
 

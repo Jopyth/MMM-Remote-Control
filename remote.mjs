@@ -45,23 +45,25 @@ const buttons = {
   },
   "back-button" () {
 
-    if (location.hash === "#add-module-menu") {
+    const activeMenu = Remote.getCurrentHashMenu();
 
-      location.hash = "settings-menu";
+    if (activeMenu === "add-module-menu") {
+
+      Remote.navigateToMenu("settings-menu");
       return;
 
     }
-    const currentButton = document.querySelector(location.hash.replace(
+    const currentButton = document.querySelector(`#${activeMenu}`.replace(
       "-menu",
       "-button"
     ));
     if (currentButton && currentButton.dataset.parent) {
 
-      location.hash = `${currentButton.dataset.parent}-menu`;
+      Remote.navigateToMenu(`${currentButton.dataset.parent}-menu`);
       return;
 
     }
-    location.hash = "main-menu";
+    Remote.navigateToMenu("main-menu");
 
   },
 
@@ -431,13 +433,7 @@ Remote.init = async function () {
     "hashchange",
     () => {
 
-      if (Remote.skipHashChange) {
-
-        Remote.skipHashChange = false;
-        return;
-
-      }
-      Remote.showMenu(location.hash ? location.hash.slice(1) : "main-menu");
+      Remote.handleHashChange();
 
     }
   );

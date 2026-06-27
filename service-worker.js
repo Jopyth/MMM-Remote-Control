@@ -12,6 +12,8 @@ const urlsToCache = [
   "./modules/MMM-Remote-Control/img/icon-192.png",
   "./modules/MMM-Remote-Control/img/icon-512.png",
   "./modules/MMM-Remote-Control/remote.mjs",
+  "./modules/MMM-Remote-Control/remote-menu-routing.mjs",
+  "./modules/MMM-Remote-Control/remote-menu-ui.mjs",
   "./modules/MMM-Remote-Control/remote-menu.mjs",
   "./modules/MMM-Remote-Control/remote-utils.mjs",
   "./modules/MMM-Remote-Control/remote-socket.mjs",
