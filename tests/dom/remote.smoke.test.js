@@ -149,6 +149,56 @@ describe("remote.js DOM smoke tests", () => {
     assert.equal(Remote.dynamicMenus["module-control"].items[0].items[0].id, "mc-pages-next");
   });
 
+  test("createDynamicMenu re-renders active dynamic submenu hash", () => {
+    document.body.replaceChildren();
+
+    const originalCurrentMenu = Remote.currentMenu,
+      originalPendingMenus = Remote.pendingDynamicMenus,
+      originalDynamicMenus = Remote.dynamicMenus,
+      originalShowMenu = Remote.showMenu,
+      originalHash = location.hash;
+
+    let renderedMenu;
+    Remote.currentMenu = "mc-pages-menu";
+    Remote.pendingDynamicMenus = [];
+    Remote.dynamicMenus = {};
+    Remote.showMenu = (menuName) => {
+      renderedMenu = menuName;
+    };
+    location.hash = "#mc-pages-menu";
+
+    const moduleControlMenu = {
+      id: "module-control",
+      type: "menu",
+      text: "Module Controls",
+      icon: "window-restore",
+      items: [
+        {
+          id: "mc-pages",
+          type: "menu",
+          text: "MMM-pages",
+          icon: "bars",
+          items: [{id: "mc-pages-next", type: "item", action: "NOTIFICATION", content: {notification: "PAGE_INCREMENT"}}]
+        }
+      ]
+    };
+
+    try {
+      Remote.createDynamicMenu(moduleControlMenu);
+
+      assert.equal(renderedMenu, "mc-pages-menu");
+      assert.equal(Remote.dynamicMenus["module-control"].id, "module-control");
+      assert.equal(Remote.pendingDynamicMenus.length, 1);
+      assert.equal(location.hash, "#mc-pages-menu");
+    } finally {
+      Remote.currentMenu = originalCurrentMenu;
+      Remote.pendingDynamicMenus = originalPendingMenus;
+      Remote.dynamicMenus = originalDynamicMenus;
+      Remote.showMenu = originalShowMenu;
+      location.hash = originalHash;
+    }
+  });
+
   test("data structures are initialized correctly", () => {
     assert.ok(typeof Remote.savedData === "object");
     assert.ok(typeof Remote.translations === "object");

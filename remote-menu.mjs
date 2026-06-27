@@ -1008,15 +1008,15 @@ Object.assign(
        */
       if (this.currentMenu !== "main-menu" || !document.querySelector("#alert-button")) {
 
-        this.pendingDynamicMenus = [...(this.pendingDynamicMenus ?? []), content];
+        const pendingMenus = this.pendingDynamicMenus ?? [],
+          pendingMenusWithoutCurrent = pendingMenus.filter((menu) => menu.id !== content.id);
+        this.pendingDynamicMenus = [...pendingMenusWithoutCurrent, content];
+        this.dynamicMenus = {...this.dynamicMenus, [content.id]: content};
 
-        /*
-         * NOT added to dynamicMenus yet — injectDynamicMenuButtons will do that on next main-menu render.
-         * If user is back on main-menu before the socket packet arrived: redirect away from stale hash.
-         */
-        if (location.hash === `#${content.id}-menu`) {
+        const activeMenu = location.hash ? location.hash.slice(1) : "main-menu";
+        if (activeMenu !== "main-menu" && this.findDynamicMenuData(activeMenu)) {
 
-          location.hash = "main-menu";
+          this.showMenu(activeMenu);
 
         }
         return;
