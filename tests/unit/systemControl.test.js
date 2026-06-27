@@ -249,8 +249,8 @@ describe("systemControl", () => {
 
     it("should execute SHUTDOWN command with default command", (t, done) => {
       const responses = [];
-      shutdownControl("SHUTDOWN", {customCommand: {}}, {}, {}, (res, err, data) => {
-        responses.push({res, err, data});
+      shutdownControl("SHUTDOWN", {customCommand: {}}, {}, {}, (res, error, data) => {
+        responses.push({res, err: error, data});
       });
 
       setTimeout(() => {
@@ -264,8 +264,8 @@ describe("systemControl", () => {
 
     it("should execute REBOOT command with default command", (t, done) => {
       const responses = [];
-      shutdownControl("REBOOT", {customCommand: {}}, {}, {}, (res, err, data) => {
-        responses.push({res, err, data});
+      shutdownControl("REBOOT", {customCommand: {}}, {}, {}, (res, error, data) => {
+        responses.push({res, err: error, data});
       });
 
       setTimeout(() => {

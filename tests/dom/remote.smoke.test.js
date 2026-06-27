@@ -98,7 +98,7 @@ describe("remote.js DOM smoke tests", () => {
   });
 
   test("createDynamicMenu replaces old nested menu entries", () => {
-    globalThis.document.body.innerHTML = `
+    document.body.innerHTML = `
       <div id="back-button"></div>
       <section class="menu-content"></section>
       <div id="alert-button"></div>
@@ -140,11 +140,11 @@ describe("remote.js DOM smoke tests", () => {
     Remote.createDynamicMenu(explicitMenu);
 
     // Top-level menu button is present in DOM
-    assert.ok(globalThis.document.querySelector("#module-control-button"));
+    assert.ok(document.querySelector("#module-control-button"));
     // Nested items are NOT pre-rendered (lazy rendering: loaded on navigation)
-    assert.equal(globalThis.document.querySelector("#mc-pages-button"), null);
-    assert.equal(globalThis.document.querySelector("#mc-pages-pagechanged-button"), null);
-    assert.equal(globalThis.document.querySelector("#mc-pages-next-button"), null);
+    assert.equal(document.querySelector("#mc-pages-button"), null);
+    assert.equal(document.querySelector("#mc-pages-pagechanged-button"), null);
+    assert.equal(document.querySelector("#mc-pages-next-button"), null);
     // Data structure holds the latest (explicit) menu content
     assert.equal(Remote.dynamicMenus["module-control"].items[0].items[0].id, "mc-pages-next");
   });

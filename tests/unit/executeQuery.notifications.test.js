@@ -62,9 +62,9 @@ describe("executeQuery - Simple notification wrappers", () => {
 
   test("handleDelayed calls delayedQuery with query and res", () => {
     const helper = freshHelper();
-    let delayedQueryCalled = false;
+    let isDelayedQueryCalled = false;
     helper.delayedQuery = (query, res) => {
-      delayedQueryCalled = true;
+      isDelayedQueryCalled = true;
       assert.deepEqual(query, {action: "DELAYED", did: "test123"});
       assert.equal(res, "mock-res");
     };
@@ -72,7 +72,7 @@ describe("executeQuery - Simple notification wrappers", () => {
 
     helper.handleDelayed({action: "DELAYED", did: "test123"}, "mock-res");
 
-    assert.ok(delayedQueryCalled, "Should call delayedQuery");
+    assert.ok(isDelayedQueryCalled, "Should call delayedQuery");
   });
 
   test("executeQuery returns false and sends error for invalid action", () => {

@@ -49,14 +49,16 @@ Object.assign(
 
     handleInstall (result) {
 
-      if (result.success) {
-
-        const bgElement = document.getElementById(`install-module-${result.index}`);
-        bgElement.firstChild.className = "fa fa-fw fa-check-circle";
-        this.savedData.moduleAvailable[result.index].installed = true;
-        this.createAddingPopup(result.index);
-
+      if (!result.success) {
+        return;
       }
+
+
+      const bgElement = document.getElementById(`install-module-${result.index}`);
+      bgElement.firstChild.className = "fa fa-fw fa-check-circle";
+      this.savedData.moduleAvailable[result.index].installed = true;
+      this.createAddingPopup(result.index);
+
 
     },
 
@@ -376,7 +378,7 @@ Object.assign(
           "classes"
         );
 
-        for (const [index] of Object.entries(classes)) {
+        for (const index of Object.keys(classes)) {
 
           const node = document.createElement("div");
           node.id = "classes-before-result";
@@ -467,7 +469,7 @@ Object.assign(
 
             this.closePopup();
             this.addModule = data.name;
-            globalThis.location.hash = "settings-menu";
+            location.hash = "settings-menu";
 
           }
         );
@@ -673,22 +675,24 @@ Object.assign(
 
     handleMmUpdate (result) {
 
-      if (globalThis.location.hash.slice(1) === "update-menu") {
+      if (location.hash.slice(1) !== "update-menu") {
+        return;
+      }
 
-        const updateButton = document.querySelector("#update-mm-button");
-        if (result) {
 
-          updateButton?.classList.remove("hidden");
-          updateButton?.classList.add("bright");
+      const updateButton = document.querySelector("#update-mm-button");
+      if (result) {
 
-        } else {
+        updateButton?.classList.remove("hidden");
+        updateButton?.classList.add("bright");
 
-          updateButton?.classList.add("hidden");
-          updateButton?.classList.remove("bright");
+      } else {
 
-        }
+        updateButton?.classList.add("hidden");
+        updateButton?.classList.remove("bright");
 
       }
+
 
     },
 

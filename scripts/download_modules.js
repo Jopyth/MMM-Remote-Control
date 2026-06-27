@@ -80,8 +80,8 @@ const downloadModules = {
       const stats = await fs.promises.stat(downloadModules.config.modulesFile);
       const mtime = Math.round(stats.mtime.getTime() / 1000);
       const updatedAfter = Date.now() - downloadModules.config.refreshRate * 1000;
-      const needsUpdate = mtime <= updatedAfter;
-      if (needsUpdate || downloadModules.config.force) {
+      const isNeedsUpdate = mtime <= updatedAfter;
+      if (isNeedsUpdate || downloadModules.config.force) {
         downloadModules.getPackages();
       } else {
         downloadModules.config.callback("NO_UPDATE_REQUIRED");

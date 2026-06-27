@@ -10,14 +10,14 @@ before(async () => {
 
 function makeSlider (value, min, max) {
 
-  const props = {};
+  const properties = {};
 
   return {
     value: String(value),
     min: String(min),
     max: String(max),
-    style: {setProperty: (k, v) => { props[k] = v; }},
-    _props: props
+    style: {setProperty: (k, v) => { properties[k] = v; }},
+    _props: properties
   };
 
 }

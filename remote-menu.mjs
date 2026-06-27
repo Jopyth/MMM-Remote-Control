@@ -43,12 +43,12 @@ Object.assign(
         slider.addEventListener(
           "change",
           () => { this.action(action, {"value": slider.value}); },
-          false
+          {capture: false}
         );
         slider.addEventListener(
           "input",
           () => { this.updateSliderThumbColor(slider, type); },
-          false
+          {capture: false}
         );
         this.updateSliderThumbColor(slider, type);
 
@@ -63,7 +63,7 @@ Object.assign(
         picker.addEventListener(
           "change",
           () => { this.action(action, {"value": picker.value}); },
-          false
+          {capture: false}
         );
 
       }
@@ -90,7 +90,7 @@ Object.assign(
           );
 
         },
-        false
+        {capture: false}
       );
 
       deleteButton.addEventListener(
@@ -102,7 +102,7 @@ Object.assign(
           deleteButton.classList.add("hidden");
 
         },
-        false
+        {capture: false}
       );
 
     },
@@ -136,7 +136,7 @@ Object.assign(
 
               this.deletedModules = [];
               this.changedModules = [];
-              globalThis.location.hash = newMenu;
+              location.hash = newMenu;
 
             }
           );
@@ -149,7 +149,7 @@ Object.assign(
           );
 
           this.skipHashChange = true;
-          globalThis.location.hash = this.currentMenu;
+          location.hash = this.currentMenu;
 
           return;
 
@@ -217,7 +217,7 @@ Object.assign(
               "config"
             ),
             alertElement = document.querySelector("#alert-button");
-          if (!configData.modules.some((m) => m.module === "alert") && alertElement) {
+          if (configData.modules.every((m) => m.module !== "alert") && alertElement) {
 
             alertElement.remove();
 
@@ -323,13 +323,13 @@ Object.assign(
      */
     saveFormState () {
 
-      const notificationNameEl = document.querySelector("#notification-name"),
-        notificationPayloadEl = document.querySelector("#notification-payload");
-      if (notificationNameEl || notificationPayloadEl) {
+      const notificationNameElement = document.querySelector("#notification-name"),
+        notificationPayloadElement = document.querySelector("#notification-payload");
+      if (notificationNameElement || notificationPayloadElement) {
 
         Remote.formState = Remote.formState ?? {};
-        Remote.formState.notificationName = notificationNameEl?.value ?? "";
-        Remote.formState.notificationPayload = notificationPayloadEl?.value ?? "";
+        Remote.formState.notificationName = notificationNameElement?.value ?? "";
+        Remote.formState.notificationPayload = notificationPayloadElement?.value ?? "";
 
       }
 
@@ -416,8 +416,8 @@ Object.assign(
      */
     injectDynamicMenuButtons () {
 
-      const alertBtn = document.querySelector("#alert-button");
-      if (!alertBtn) {
+      const alertButton = document.querySelector("#alert-button");
+      if (!alertButton) {
 
         return;
 
@@ -429,7 +429,7 @@ Object.assign(
         this.createMenuElement(
           menu,
           "main",
-          alertBtn,
+          alertButton,
           true
         );
 
@@ -442,7 +442,7 @@ Object.assign(
         this.createMenuElement(
           pending,
           "main",
-          alertBtn,
+          alertButton,
           true
         );
 
@@ -620,10 +620,10 @@ Object.assign(
     onTranslationsLoaded () {
 
       // Set back-button aria-label from translations (button is always in header)
-      const backBtn = document.querySelector("#back-button");
-      if (backBtn) {
+      const backButton = document.querySelector("#back-button");
+      if (backButton) {
 
-        backBtn.setAttribute(
+        backButton.setAttribute(
           "aria-label",
           this.translate("BACK")
         );
@@ -640,29 +640,31 @@ Object.assign(
         const hash = e.target.closest("[data-hash]")?.dataset.hash;
         if (hash) {
 
-          globalThis.location.hash = hash;
+          location.hash = hash;
 
         }
 
       });
       mainContent?.addEventListener("keydown", (e) => {
 
-        if (e.key === "Enter" || e.key === " ") {
+        if (!(e.key === "Enter" || e.key === " ")) {
+          return;
+        }
 
-          const hash = e.target.closest("[data-hash]")?.dataset.hash;
-          if (hash) {
 
-            e.preventDefault();
-            globalThis.location.hash = hash;
+        const hash = e.target.closest("[data-hash]")?.dataset.hash;
+        if (hash) {
 
-          }
+          e.preventDefault();
+          location.hash = hash;
 
         }
+
 
       });
 
       // Lazy render: showMenu handles HTML, listeners, data loading, and header title
-      this.showMenu(globalThis.location.hash ? globalThis.location.hash.slice(1) : "main-menu");
+      this.showMenu(location.hash ? location.hash.slice(1) : "main-menu");
 
     },
 
@@ -730,7 +732,7 @@ Object.assign(
         "click",
         () => {
 
-          globalThis.location.hash = `${content.id}-menu`;
+          location.hash = `${content.id}-menu`;
 
         }
       );
@@ -760,9 +762,7 @@ Object.assign(
           this.action(content.action.toUpperCase(), {
             ...content.content,
             "payload": {
-              ...content.content === undefined
-                ? {}
-                : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
+              ...content.content !== undefined && (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
               "value": slide.value
             },
             "value": slide.value
@@ -791,9 +791,7 @@ Object.assign(
           this.action(content.action.toUpperCase(), {
             ...content.content,
             "payload": {
-              ...content.content === undefined
-                ? {}
-                : (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
+              ...content.content !== undefined && (typeof content.content.payload === "string" ? {string: content.content.payload} : content.content.payload),
               "value": input.value
             },
             "value": input.value
@@ -1011,9 +1009,9 @@ Object.assign(
          * NOT added to dynamicMenus yet — injectDynamicMenuButtons will do that on next main-menu render.
          * If user is back on main-menu before the socket packet arrived: redirect away from stale hash.
          */
-        if (globalThis.location.hash === `#${content.id}-menu`) {
+        if (location.hash === `#${content.id}-menu`) {
 
-          globalThis.location.hash = "main-menu";
+          location.hash = "main-menu";
 
         }
         return;
@@ -1035,11 +1033,11 @@ Object.assign(
       // Register and inject into the currently rendered main menu
       this.dynamicMenus = {...this.dynamicMenus, [content.id]: content};
 
-      const alertBtn = document.querySelector("#alert-button");
+      const alertButton = document.querySelector("#alert-button");
       this.createMenuElement(
         content,
         "main",
-        alertBtn,
+        alertButton,
         true
       );
 

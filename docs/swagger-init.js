@@ -15,7 +15,7 @@ const initSwaggerUI = async () => {
   });
 
   // Hide try-it buttons on GitHub Pages
-  if (globalThis.location.href.includes("github")) {
+  if (location.href.includes("github")) {
     const style = document.createElement("style");
     style.textContent = "button.btn.try-out__btn, .auth-wrapper {display: none !important;}";
     document.head.append(style);

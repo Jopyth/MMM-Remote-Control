@@ -35,25 +35,25 @@ describe("configUtils.cleanConfig", () => {
   });
 
   test("handles configs without a modules array", () => {
-    const cfg = {language: "en"};
-    cleanConfig({config: cfg, defaultConfig: {language: "en"}, moduleDefaultsMap: {}});
-    assert.ok(!("language" in cfg));
+    const config = {language: "en"};
+    cleanConfig({config: config, defaultConfig: {language: "en"}, moduleDefaultsMap: {}});
+    assert.ok(!("language" in config));
   });
 
   test("removes deep-equal defaults; preserves differing arrays/objects", () => {
     const defaultConfig = {language: "en", header: {enabled: true}, list: [1, 2, 3]};
     const moduleDefaultsMap = {foo: {arr: [1, 2], obj: {a: 1}}};
-    const cfg = {
+    const config = {
       language: "en", // should be removed
       header: {enabled: true}, // should be removed (deep equal)
       list: [1, 2, 3, 4], // differs -> keep
       modules: [{module: "foo", header: "", config: {arr: [1, 2], obj: {a: 1}, extra: 9, position: ""}}]
     };
-    cleanConfig({config: cfg, defaultConfig, moduleDefaultsMap});
-    assert.ok(!("language" in cfg));
-    assert.ok(!("header" in cfg));
-    assert.deepEqual(cfg.list, [1, 2, 3, 4]);
-    const m = cfg.modules[0];
+    cleanConfig({config: config, defaultConfig, moduleDefaultsMap});
+    assert.ok(!("language" in config));
+    assert.ok(!("header" in config));
+    assert.deepEqual(config.list, [1, 2, 3, 4]);
+    const m = config.modules[0];
     assert.ok(!("arr" in m.config));
     assert.ok(!("obj" in m.config));
     assert.equal(m.config.extra, 9);
@@ -62,9 +62,9 @@ describe("configUtils.cleanConfig", () => {
   });
 
   test("tolerates nulls at top level and unknown modules", () => {
-    const cfg = {language: null, modules: [{module: "unknown", config: {x: 1}}]};
-    cleanConfig({config: cfg, defaultConfig: {language: null}, moduleDefaultsMap: {}});
-    assert.ok(!("language" in cfg));
-    assert.equal(cfg.modules[0].config.x, 1);
+    const config = {language: null, modules: [{module: "unknown", config: {x: 1}}]};
+    cleanConfig({config: config, defaultConfig: {language: null}, moduleDefaultsMap: {}});
+    assert.ok(!("language" in config));
+    assert.equal(config.modules[0].config.x, 1);
   });
 });

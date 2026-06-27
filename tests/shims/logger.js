@@ -6,7 +6,7 @@
 const isTestEnvironment = process.env.NODE_ENV === "test" || typeof process.env.npm_lifecycle_event === "string" && process.env.npm_lifecycle_event.includes("test");
 
 // Flag to suppress expected errors during specific tests
-let suppressExpectedErrors = false;
+let isSuppressExpectedErrors = false;
 
 module.exports = {
   log: (...arguments_) => {
@@ -21,7 +21,7 @@ module.exports = {
   },
   warn: (...arguments_) => console.warn(...arguments_),
   error: (...arguments_) => {
-    if (!suppressExpectedErrors) {
+    if (!isSuppressExpectedErrors) {
       console.error(...arguments_);
     }
   },
@@ -32,6 +32,6 @@ module.exports = {
   },
   // Test helpers
   suppressExpectedErrors: (suppress) => {
-    suppressExpectedErrors = suppress;
+    isSuppressExpectedErrors = suppress;
   }
 };

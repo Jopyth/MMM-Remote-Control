@@ -48,17 +48,17 @@ describe("socketNotificationReceived", () => {
     const helper = freshHelper();
     helper.initialized = true;
     helper.socketNotificationReceived = helperFactory.socketNotificationReceived.bind(helper);
-    let callbackRun = false;
+    let isCallbackRun = false;
 
     helper.waiting.push({
       run: () => {
-        callbackRun = true;
+        isCallbackRun = true;
       }
     });
 
     helper.socketNotificationReceived("CURRENT_STATUS", {remoteConfig: {}});
 
-    assert.ok(callbackRun);
+    assert.ok(isCallbackRun);
     assert.equal(helper.waiting.length, 0);
   });
 

@@ -34,9 +34,9 @@ function freshHelper () {
 function mockRes () {
   const r = {
     _finishCb: null,
-    on (event, cb) {
+    on (event, callback) {
       if (event === "finish") {
-        r._finishCb = cb;
+        r._finishCb = callback;
       }
     },
     finish () {

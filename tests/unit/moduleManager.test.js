@@ -69,17 +69,17 @@ describe("lib/moduleManager basic functionality", () => {
   });
 
   it("updateModule should handle unknown module", async () => {
-    let errorCalled = false;
+    let isErrorCalled = false;
     await moduleManager.updateModule({
       moduleName: "NonExistent",
       baseDir: __dirname,
       modulesAvailable: [],
       onSuccess: null,
       onError: () => {
-        errorCalled = true;
+        isErrorCalled = true;
       }
     });
-    assert.strictEqual(errorCalled, true);
+    assert.strictEqual(isErrorCalled, true);
   });
 
   it("addModule should handle non-directory path", async () => {
@@ -102,7 +102,7 @@ describe("lib/moduleManager basic functionality", () => {
 });
 
 describe("lib/moduleManager additional coverage", () => {
-  let tempRoot;
+  let temporaryRoot;
 
   before(() => {
     Log.suppressExpectedErrors(true);
@@ -113,19 +113,19 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   beforeEach(async () => {
-    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "mmm-rc-module-manager-"));
+    temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "mmm-rc-module-manager-"));
   });
 
   afterEach(async () => {
-    await fs.rm(tempRoot, {recursive: true, force: true});
+    await fs.rm(temporaryRoot, {recursive: true, force: true});
   });
 
   it("readModuleData should load custom and default modules using new defaultmodules path", async () => {
-    const baseDir = path.join(tempRoot, "runtime", "server");
+    const baseDir = path.join(temporaryRoot, "runtime", "server");
     const parentDir = path.resolve(`${baseDir}/..`);
 
     await fs.mkdir(baseDir, {recursive: true});
-    await fs.mkdir(path.join(tempRoot, "defaultmodules"), {recursive: true});
+    await fs.mkdir(path.join(temporaryRoot, "defaultmodules"), {recursive: true});
 
     await fs.mkdir(path.join(parentDir, "MMM-Installed"), {recursive: true});
     await fs.mkdir(path.join(parentDir, "node_modules"), {recursive: true});
@@ -152,7 +152,7 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   it("readModuleData should fall back to old modules/default path", async () => {
-    const baseDir = path.join(tempRoot, "runtime", "server");
+    const baseDir = path.join(temporaryRoot, "runtime", "server");
     await fs.mkdir(baseDir, {recursive: true});
     await fs.writeFile(path.join(baseDir, "modules.json"), JSON.stringify([]), "utf8");
 
@@ -167,7 +167,7 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   it("addModule should mark existing module installed and queue update checks for git modules", async () => {
-    const modulesDir = path.join(tempRoot, "modules");
+    const modulesDir = path.join(temporaryRoot, "modules");
     const directoryName = "MMM-Example";
     const modulePath = path.join(modulesDir, directoryName);
 
@@ -209,7 +209,7 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   it("addModule should create local module metadata for non-git modules", async () => {
-    const modulesDir = path.join(tempRoot, "modules");
+    const modulesDir = path.join(temporaryRoot, "modules");
     const directoryName = "MMM-LocalOnly";
     const modulePath = path.join(modulesDir, directoryName);
 
@@ -240,9 +240,9 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   it("updateModule should report up-to-date when no updates are available", async () => {
-    const remoteParent = path.join(tempRoot, "git");
-    const sourcePath = path.join(tempRoot, "source");
-    const modulesParent = path.join(tempRoot, "modules");
+    const remoteParent = path.join(temporaryRoot, "git");
+    const sourcePath = path.join(temporaryRoot, "source");
+    const modulesParent = path.join(temporaryRoot, "modules");
     const baseDir = path.join(modulesParent, "server");
     const moduleName = "MMM-UpToDate";
     const remoteName = "origin.git";
@@ -286,9 +286,9 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   it("updateModule should perform update when commits are available", async () => {
-    const remoteParent = path.join(tempRoot, "git-update");
-    const sourcePath = path.join(tempRoot, "source-update");
-    const modulesParent = path.join(tempRoot, "modules-update");
+    const remoteParent = path.join(temporaryRoot, "git-update");
+    const sourcePath = path.join(temporaryRoot, "source-update");
+    const modulesParent = path.join(temporaryRoot, "modules-update");
     const baseDir = path.join(modulesParent, "server");
     const moduleName = "MMM-HasUpdate";
     const remoteName = "origin.git";

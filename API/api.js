@@ -159,7 +159,7 @@ module.exports = {
      */
     this.expressRouter.use((request, res, next) => {
       if (this.apiKey !== undefined) {
-        if (!("authorization" in request.headers) || request.headers.authorization.search(/(apikey|bearer)/gi) === -1) {
+        if (!("authorization" in request.headers) || !(/(apikey|bearer)/gi).test(request.headers.authorization)) {
           // API Key was not provided as a header. Check the URL.
           const {query} = request;
           if ("apiKey" in query) {
@@ -462,8 +462,8 @@ module.exports = {
           query.action = action;
         }
         // Skip response for all but the last module to avoid "headers already sent" error
-        const skipResponse = index < moduleData.length - 1;
-        this.executeQuery(this.checkDelay(query, request), res, skipResponse);
+        const isSkipResponse = index < moduleData.length - 1;
+        this.executeQuery(this.checkDelay(query, request), res, isSkipResponse);
       }
       this.sendSocketNotification("UPDATE");
       return;

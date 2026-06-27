@@ -26,10 +26,10 @@ describe("callAfterUpdate", () => {
   test("schedules callback and sends UPDATE notification", () => {
     const helper = freshHelper();
     helper.callAfterUpdate = helperFactory.callAfterUpdate.bind(helper);
-    let callbackExecuted = false;
+    let isCallbackExecuted = false;
 
     helper.callAfterUpdate(() => {
-      callbackExecuted = true;
+      isCallbackExecuted = true;
     }, 50);
 
     // Should add to waiting array
@@ -44,7 +44,7 @@ describe("callAfterUpdate", () => {
     return new Promise((resolve) => {
       setTimeout(() => {
         helper.waiting[0].run();
-        assert.ok(callbackExecuted, "Callback should be executed");
+        assert.ok(isCallbackExecuted, "Callback should be executed");
         resolve();
       }, 60);
     });

@@ -81,7 +81,7 @@ describe("answerPost config persistence", () => {
       configManager.saveConfigWithBackup = originalSaveConfigWithBackup;
     }
 
-    for (const [filePath] of moduleOverrides.entries()) {
+    for (const [filePath] of moduleOverrides) {
       delete require.cache[filePath];
     }
     moduleOverrides.clear();

@@ -16,10 +16,10 @@ Object.assign(
 
     filterModules (pattern) {
 
-      let filterInstalled = false;
+      let isFilterInstalled = false;
       if (pattern.includes("installed")) {
 
-        filterInstalled = true;
+        isFilterInstalled = true;
         pattern = pattern.replace("installed", "");
 
       }
@@ -54,7 +54,7 @@ Object.assign(
 
         }
 
-        let match = filterInstalled && currentData.installed;
+        let match = isFilterInstalled && currentData.installed;
 
         for (const key of searchIn) {
 
@@ -172,7 +172,7 @@ Object.assign(
       popupContainer?.classList.add("hidden");
       if (popupContents) {
 
-        popupContents.innerHTML = "";
+        popupContents.replaceChildren();
 
       }
 
@@ -372,7 +372,7 @@ Object.assign(
       parent.replaceChildren();
 
       const items = [
-        {"icon": "fa-book", "text": this.translate("API_DOCS"), "url": `${globalThis.location.origin}/api/docs/`},
+        {"icon": "fa-book", "text": this.translate("API_DOCS"), "url": `${location.origin}/api/docs/`},
         {"icon": "fa-globe", "text": this.translate("WEBSITE"), "url": "https://magicmirror.builders/"},
         {"icon": "fa-comments", "text": this.translate("FORUM"), "url": "https://forum.magicmirror.builders/"},
         {"icon": "fa-github", "text": this.translate("REPOSITORY"), "url": "https://github.com/Jopyth/MMM-Remote-Control"}
@@ -404,7 +404,7 @@ Object.assign(
         wrapper.addEventListener(
           "click",
           eventListener,
-          false
+          {capture: false}
         );
 
       }

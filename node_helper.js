@@ -113,8 +113,8 @@ module.exports = NodeHelper.create({
 
   stop () {
     // Clear all timeouts for clean shutdown
-    for (const t of Object.keys(this.delayedQueryTimers)) {
-      clearTimeout(this.delayedQueryTimers[t]);
+    for (const value of Object.values(this.delayedQueryTimers)) {
+      clearTimeout(value);
     }
   },
 
@@ -603,10 +603,10 @@ module.exports = NodeHelper.create({
   },
 
   callAfterUpdate (callback, timeout = 3000) {
-    let done = false;
+    let isDone = false;
     const once = () => {
-      if (done) { return; }
-      done = true;
+      if (isDone) { return; }
+      isDone = true;
       callback();
     };
     this.waiting.push({run: once});
@@ -633,12 +633,12 @@ module.exports = NodeHelper.create({
   sendResponse (res, error, data) {
     let response = {success: true};
     let status = 200;
-    let result = true;
+    let isResult = true;
     if (error) {
       Log.error(error);
       response = {success: false, status: "error", reason: "unknown", info: error};
       status = 400;
-      result = false;
+      isResult = false;
     }
     if (data) {
       response = {...response, ...data};
@@ -650,7 +650,7 @@ module.exports = NodeHelper.create({
         res.status(status).json(response);
       }
     }
-    return result;
+    return isResult;
   },
 
   handleShowAlert (query, res) {

@@ -17,9 +17,9 @@ function freshHelper (overrides = {}) {
   helper.sendSocketNotification = (what, payload) => {
     helper.__sent.push({what, payload});
   };
-  helper.sendResponse = (res, err, data) => {
-    helper.__responses.push({res, err, data});
-    return !err;
+  helper.sendResponse = (res, error, data) => {
+    helper.__responses.push({res, err: error, data});
+    return !error;
   };
   helper.thisConfig = {classes: {}};
   helper.configOnHd = {};

@@ -45,23 +45,23 @@ const buttons = {
   },
   "back-button" () {
 
-    if (globalThis.location.hash === "#add-module-menu") {
+    if (location.hash === "#add-module-menu") {
 
-      globalThis.location.hash = "settings-menu";
+      location.hash = "settings-menu";
       return;
 
     }
-    const currentButton = document.querySelector(globalThis.location.hash.replace(
+    const currentButton = document.querySelector(location.hash.replace(
       "-menu",
       "-button"
     ));
     if (currentButton && currentButton.dataset.parent) {
 
-      globalThis.location.hash = `${currentButton.dataset.parent}-menu`;
+      location.hash = `${currentButton.dataset.parent}-menu`;
       return;
 
     }
-    globalThis.location.hash = "main-menu";
+    location.hash = "main-menu";
 
   },
 
@@ -345,7 +345,7 @@ Remote.updateNotificationUrl = function () {
 
   }
 
-  const {origin} = globalThis.location,
+  const {origin} = location,
     base = `${origin}/api/notification/${encodeURIComponent(name)}`,
 
     setMethod = (method) => {
@@ -433,7 +433,7 @@ Remote.init = function () {
         return;
 
       }
-      Remote.showMenu(globalThis.location.hash ? globalThis.location.hash.slice(1) : "main-menu");
+      Remote.showMenu(location.hash ? location.hash.slice(1) : "main-menu");
 
     }
   );

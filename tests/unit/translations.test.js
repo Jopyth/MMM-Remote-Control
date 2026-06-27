@@ -20,11 +20,13 @@ function getAllTranslations () {
   const translations = {};
 
   for (const file of files) {
-    if (file.endsWith(".json")) {
-      const lang = file.replace(".json", "");
-      const content = fs.readFileSync(path.join(translationsDir, file), "utf8");
-      translations[lang] = JSON.parse(content);
+    if (!file.endsWith(".json")) {
+      continue;
     }
+
+    const lang = file.replace(".json", "");
+    const content = fs.readFileSync(path.join(translationsDir, file), "utf8");
+    translations[lang] = JSON.parse(content);
   }
 
   return translations;
@@ -53,7 +55,7 @@ function getAllKeys (translations) {
  */
 function getUsedTranslationKeys () {
   const usedKeys = new Set();
-  const searchDirs = [
+  const searchDirectories = [
     path.join(__dirname, "../../"),
     path.join(__dirname, "../../API")
   ];
@@ -81,7 +83,7 @@ function getUsedTranslationKeys () {
     }
   }
 
-  for (const dir of searchDirs) {
+  for (const dir of searchDirectories) {
     if (fs.existsSync(dir)) {
       collectFiles(dir);
     }
@@ -157,39 +159,41 @@ function checkSwaggerTranslations () {
 
   // Check paths for descriptions
   if (swagger.paths) {
-    for (const [pathName, pathObj] of Object.entries(swagger.paths)) {
-      for (const [method, methodObj] of Object.entries(pathObj)) {
-        if (typeof methodObj === "object" && methodObj !== null) {
-          // Check summary
-          if (!methodObj.summary || methodObj.summary.trim() === "") {
-            issues.push({
-              type: "missing",
-              path: `paths["${pathName}"].${method}.summary`
-            });
-          }
+    for (const [pathName, pathObject] of Object.entries(swagger.paths)) {
+      for (const [method, methodObject] of Object.entries(pathObject)) {
+        if (!(typeof methodObject === "object" && methodObject !== null)) {
+          continue;
+        }
 
-          // Check parameters descriptions
-          if (methodObj.parameters) {
-            for (const [paramIndex, param] of methodObj.parameters.entries()) {
-              if (!param.description || param.description.trim() === "") {
-                issues.push({
-                  type: "missing",
-                  path: `paths["${pathName}"].${method}.parameters[${paramIndex}].description`,
-                  name: param.name
-                });
-              }
+        // Check summary
+        if (!methodObject.summary || methodObject.summary.trim() === "") {
+          issues.push({
+            type: "missing",
+            path: `paths["${pathName}"].${method}.summary`
+          });
+        }
+
+        // Check parameters descriptions
+        if (methodObject.parameters) {
+          for (const [parameterIndex, parameter] of methodObject.parameters.entries()) {
+            if (!parameter.description || parameter.description.trim() === "") {
+              issues.push({
+                type: "missing",
+                path: `paths["${pathName}"].${method}.parameters[${parameterIndex}].description`,
+                name: parameter.name
+              });
             }
           }
+        }
 
-          // Check response descriptions
-          if (methodObj.responses) {
-            for (const [code, response] of Object.entries(methodObj.responses)) {
-              if (!response.description || response.description.trim() === "") {
-                issues.push({
-                  type: "empty",
-                  path: `paths["${pathName}"].${method}.responses["${code}"].description`
-                });
-              }
+        // Check response descriptions
+        if (methodObject.responses) {
+          for (const [code, response] of Object.entries(methodObject.responses)) {
+            if (!response.description || response.description.trim() === "") {
+              issues.push({
+                type: "empty",
+                path: `paths["${pathName}"].${method}.responses["${code}"].description`
+              });
             }
           }
         }
@@ -259,14 +263,16 @@ describe("Translation Completeness", () => {
     const files = fs.readdirSync(translationsDir);
 
     for (const file of files) {
-      if (file.endsWith(".json")) {
-        const filePath = path.join(translationsDir, file);
-        const content = fs.readFileSync(filePath, "utf8");
-
-        assert.doesNotThrow(() => {
-          JSON.parse(content);
-        }, `${file} should be valid JSON`);
+      if (!file.endsWith(".json")) {
+        continue;
       }
+
+      const filePath = path.join(translationsDir, file);
+      const content = fs.readFileSync(filePath, "utf8");
+
+      assert.doesNotThrow(() => {
+        JSON.parse(content);
+      }, `${file} should be valid JSON`);
     }
   });
 
@@ -432,8 +438,8 @@ describe("Translation Usage", () => {
     }
 
     if (unusedKeys.length > 0) {
-      const warningMsg = `\nInfo: Found ${unusedKeys.length} potentially unused translation keys:\n${unusedKeys.join(", ")}\n\nNote: These keys might be used dynamically (e.g., in custom_menu.example.json) or in ways not detected by the search patterns.\nIf you're sure they're unused, consider removing them to keep translations clean.`;
-      console.log(warningMsg);
+      const warningMessage = `\nInfo: Found ${unusedKeys.length} potentially unused translation keys:\n${unusedKeys.join(", ")}\n\nNote: These keys might be used dynamically (e.g., in custom_menu.example.json) or in ways not detected by the search patterns.\nIf you're sure they're unused, consider removing them to keep translations clean.`;
+      console.log(warningMessage);
 
       /*
        * This is informational only - don't fail the test

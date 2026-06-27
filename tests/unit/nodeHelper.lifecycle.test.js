@@ -32,19 +32,19 @@ describe("node_helper lifecycle and queue", () => {
       loadedLanguage = lang;
     };
 
-    let updateModuleListCalled = false;
+    let isUpdateModuleListCalled = false;
     helper.updateModuleList = () => {
-      updateModuleListCalled = true;
+      isUpdateModuleListCalled = true;
     };
 
-    let createRoutesCalled = false;
+    let isCreateRoutesCalled = false;
     helper.createRoutes = () => {
-      createRoutesCalled = true;
+      isCreateRoutesCalled = true;
     };
 
-    let createApiRoutesCalled = false;
+    let isCreateApiRoutesCalled = false;
     helper.createApiRoutes = () => {
-      createApiRoutesCalled = true;
+      isCreateApiRoutesCalled = true;
     };
 
     const originalCombineConfig = configManager.combineConfig;
@@ -73,9 +73,9 @@ describe("node_helper lifecycle and queue", () => {
     assert.deepEqual(helper.delayedQueryTimers, {});
     assert.equal(helper.maxParallelUpdateChecks, 10);
     assert.equal(loadedLanguage, "en");
-    assert.equal(updateModuleListCalled, true);
-    assert.equal(createRoutesCalled, true);
-    assert.equal(createApiRoutesCalled, true);
+    assert.equal(isUpdateModuleListCalled, true);
+    assert.equal(isCreateRoutesCalled, true);
+    assert.equal(isCreateApiRoutesCalled, true);
     assert.equal(helper.template, "<html>remote</html>");
   });
 
@@ -87,7 +87,7 @@ describe("node_helper lifecycle and queue", () => {
     };
 
     let clearCalls = 0;
-    const originalClearTimeout = globalThis.clearTimeout;
+    const originalClearTimeout = clearTimeout;
     globalThis.clearTimeout = (timer) => {
       clearCalls++;
       return originalClearTimeout(timer);

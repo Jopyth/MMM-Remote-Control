@@ -49,9 +49,9 @@ Module.register("MMM-Remote-Control", {
     }
 
     if (!document.getElementById("remote-control-overlay-temp")) {
-      const tempOverlay = document.createElement("div");
-      tempOverlay.id = "remote-control-overlay-temp";
-      document.documentElement.insertBefore(tempOverlay, document.body);
+      const temporaryOverlay = document.createElement("div");
+      temporaryOverlay.id = "remote-control-overlay-temp";
+      document.documentElement.insertBefore(temporaryOverlay, document.body);
     }
   },
 
@@ -202,26 +202,26 @@ Module.register("MMM-Remote-Control", {
   },
 
   setBackgroundColor (color) {
-    let styleEl = document.getElementById("remote-control-background-color-override");
-    if (!styleEl) {
-      styleEl = document.createElement("style");
-      styleEl.id = "remote-control-background-color-override";
-      document.head.append(styleEl);
+    let styleElement = document.getElementById("remote-control-background-color-override");
+    if (!styleElement) {
+      styleElement = document.createElement("style");
+      styleElement.id = "remote-control-background-color-override";
+      document.head.append(styleElement);
     }
-    styleEl.textContent = color
+    styleElement.textContent = color
       ? `html, body { background-color: ${color} !important; }`
       : "";
     this.backgroundColor = color;
   },
 
   setFontColor (color) {
-    let styleEl = document.getElementById("remote-control-font-color-override");
-    if (!styleEl) {
-      styleEl = document.createElement("style");
-      styleEl.id = "remote-control-font-color-override";
-      document.head.append(styleEl);
+    let styleElement = document.getElementById("remote-control-font-color-override");
+    if (!styleElement) {
+      styleElement = document.createElement("style");
+      styleElement.id = "remote-control-font-color-override";
+      document.head.append(styleElement);
     }
-    styleEl.textContent = color ? `body * { color: ${color} !important; }` : "";
+    styleElement.textContent = color ? `body * { color: ${color} !important; }` : "";
     this.fontColor = color;
   },
 

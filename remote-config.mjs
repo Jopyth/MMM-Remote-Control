@@ -73,7 +73,7 @@ Object.assign(
           }
 
         },
-        false
+        {capture: false}
       );
       select.addEventListener(
         "blur",
@@ -82,7 +82,7 @@ Object.assign(
           select.replaceWith(oldElement);
 
         },
-        false
+        {capture: false}
       );
       return select;
 
@@ -360,14 +360,14 @@ Object.assign(
 
     hasForcedType (path) {
 
-      let forcedType = false;
+      let isForcedType = false;
       if ((path.match(/\//g) || []).length === 1) {
 
         // Disable type editing in root layer
-        forcedType = true;
+        isForcedType = true;
 
       }
-      return forcedType;
+      return isForcedType;
 
     },
 
@@ -443,7 +443,7 @@ Object.assign(
             ));
 
           },
-          false
+          {capture: false}
         );
         return wrapper;
 
@@ -510,19 +510,21 @@ Object.assign(
         symbol.addEventListener(
           "click",
           addFunction,
-          false
+          {capture: false}
         );
         inputWrapper.append(symbol);
         input.addEventListener(
           "keydown",
           (event) => {
 
-            if (event.key === "Enter") {
-
-              event.preventDefault();
-              addFunction();
-
+            if (event.key !== "Enter") {
+              return;
             }
+
+
+            event.preventDefault();
+            addFunction();
+
 
           }
         );
@@ -826,28 +828,30 @@ Object.assign(
 
         this.getModuleUrl(data.module).then((url) => {
 
-          if (url) {
-
-            const repoButton = this.createSymbolText(
-              "fa fa-fw fa-github",
-              this.translate("REPOSITORY"),
-              () => {
-
-                window.open(
-                  url,
-                  "_blank"
-                );
-
-              },
-              "span"
-            );
-            repoButton.className = "button";
-            buttonsContainer.insertBefore(
-              repoButton,
-              buttonsContainer.firstChild
-            );
-
+          if (!url) {
+            return;
           }
+
+
+          const repoButton = this.createSymbolText(
+            "fa fa-fw fa-github",
+            this.translate("REPOSITORY"),
+            () => {
+
+              window.open(
+                url,
+                "_blank"
+              );
+
+            },
+            "span"
+          );
+          repoButton.className = "button";
+          buttonsContainer.insertBefore(
+            repoButton,
+            buttonsContainer.firstChild
+          );
+
 
         });
 

@@ -9,10 +9,10 @@ import {Remote} from "./remote.mjs";
  * @param {string} [hash] - Optional URL hash to set on click via data-hash attribute
  * @returns {string} HTML string for the button
  */
-function navBtn (id, icon, text, hasArrow = false, hash = "") {
+function navButton (id, icon, text, hasArrow = false, hash = "") {
   const arrow = hasArrow ? "<span class=\"fa fa-fw fa-angle-right\" aria-hidden=\"true\"></span>" : "";
-  const hashAttr = hash ? ` data-hash="${hash}"` : "";
-  return `<div id="${id}" class="button"${hashAttr} role="button" tabindex="0">
+  const hashAttribute = hash ? ` data-hash="${hash}"` : "";
+  return `<div id="${id}" class="button"${hashAttribute} role="button" tabindex="0">
       <span class="fa fa-fw ${icon}" aria-hidden="true"></span>
       <span class="text">${text}</span>
       ${arrow}
@@ -29,10 +29,10 @@ function navBtn (id, icon, text, hasArrow = false, hash = "") {
  * @param {string} [hash] - Optional URL hash to set on click via data-hash attribute
  * @returns {string} HTML string for the stacked button
  */
-function stackBtn (id, outerIcon, innerIcon, text, hasArrow = false, hash = "") {
+function stackButton (id, outerIcon, innerIcon, text, hasArrow = false, hash = "") {
   const arrow = hasArrow ? "<span class=\"fa fa-fw fa-angle-right\" aria-hidden=\"true\"></span>" : "";
-  const hashAttr = hash ? ` data-hash="${hash}"` : "";
-  return `<div id="${id}" class="button"${hashAttr} role="button" tabindex="0">
+  const hashAttribute = hash ? ` data-hash="${hash}"` : "";
+  return `<div id="${id}" class="button"${hashAttribute} role="button" tabindex="0">
       <span class="stack fa-fw">
         <span class="fa fa-fw ${outerIcon} outer-label fa-stack-1x" aria-hidden="true"></span>
         <span class="fa fa-fw ${innerIcon} inner-monitor-label fa-stack-1x" aria-hidden="true"></span>
@@ -52,8 +52,8 @@ function stackBtn (id, outerIcon, innerIcon, text, hasArrow = false, hash = "") 
  * @returns {string} HTML string for the result list container
  */
 function resultList (id, loadingText, emptyText, dataParent = "") {
-  const dataAttr = dataParent ? ` data-parent="${dataParent}"` : "";
-  return `<div id="${id}-container" class="result-list"${dataAttr}>
+  const dataAttribute = dataParent ? ` data-parent="${dataParent}"` : "";
+  return `<div id="${id}-container" class="result-list"${dataAttribute}>
         <div id="${id}-loading">
           <span class="fa fa-fw fa-spinner fa-pulse"></span>
           <span class="text">${loadingText}</span>
@@ -74,7 +74,7 @@ function resultList (id, loadingText, emptyText, dataParent = "") {
  * @param {string} label - aria-label for accessibility
  * @returns {string} HTML string for the reset button
  */
-function resetBtn (id, label) {
+function resetButton (id, label) {
   return `<span id="${id}-reset" class="inline-menu-element hidden button" role="button" aria-label="${label}" tabindex="0"><span class="fa fa-fw fa-undo" aria-hidden="true"></span></span>`;
 }
 
@@ -110,15 +110,15 @@ Object.assign(Remote, {
   renderMainMenu () {
     const t = (key) => this.translate(key);
     return `<nav class="menu-nav">
-        ${navBtn("power-button", "fa-power-off", t("SHUTDOWN_MENU_NAME"), true, "power-menu")}
-        ${stackBtn("edit-button", "fa-television", "fa-pencil", t("EDIT_MENU_NAME"), true, "edit-menu")}
-        ${navBtn("settings-button", "fa-wrench", t("CONFIGURE_MENU_NAME"), true, "settings-menu")}
-        ${navBtn("classes-button", "fa-object-group", t("CLASSES_MENU_NAME"), true, "classes-menu")}
-        ${navBtn("update-button", "fa-download", t("UPDATE_MENU_NAME"), true, "update-menu")}
-        ${navBtn("alert-button", "fa-envelope-o", t("ALERT_MENU_NAME"), true, "alert-menu")}
-        ${navBtn("notification-button", "fa-bell-o", t("NOTIFICATION_MENU_NAME"), true, "notification-menu")}
-        ${navBtn("links-button", "fa-link", t("LINKS"), true, "links-menu")}
-        ${navBtn("mirror-link-button", "fa-external-link", t("VIEW_MIRROR"))}
+        ${navButton("power-button", "fa-power-off", t("SHUTDOWN_MENU_NAME"), true, "power-menu")}
+        ${stackButton("edit-button", "fa-television", "fa-pencil", t("EDIT_MENU_NAME"), true, "edit-menu")}
+        ${navButton("settings-button", "fa-wrench", t("CONFIGURE_MENU_NAME"), true, "settings-menu")}
+        ${navButton("classes-button", "fa-object-group", t("CLASSES_MENU_NAME"), true, "classes-menu")}
+        ${navButton("update-button", "fa-download", t("UPDATE_MENU_NAME"), true, "update-menu")}
+        ${navButton("alert-button", "fa-envelope-o", t("ALERT_MENU_NAME"), true, "alert-menu")}
+        ${navButton("notification-button", "fa-bell-o", t("NOTIFICATION_MENU_NAME"), true, "notification-menu")}
+        ${navButton("links-button", "fa-link", t("LINKS"), true, "links-menu")}
+        ${navButton("mirror-link-button", "fa-external-link", t("VIEW_MIRROR"))}
       </nav>`;
   },
 
@@ -129,15 +129,15 @@ Object.assign(Remote, {
   renderPowerMenu () {
     const t = (key) => this.translate(key);
     return `<nav class="menu-nav">
-        ${navBtn("shut-down-button", "fa-power-off", t("SHUTDOWN"))}
-        ${navBtn("restart-button", "fa-refresh", t("REBOOT"))}
-        ${navBtn("restart-mm-button", "fa-recycle", t("RESTARTMM"))}
-        ${navBtn("refresh-mm-button", "fa-globe", t("REFRESHMM"))}
-        ${stackBtn("monitor-on-button", "fa-television", "fa-check", t("MONITORON"))}
-        ${stackBtn("monitor-off-button", "fa-television", "fa-close", t("MONITOROFF"))}
-        ${navBtn("fullscreen-button", "fa-arrows-alt", t("FULLSCREEN"))}
-        ${navBtn("minimize-button", "fa-window-minimize", t("MINIMIZE"))}
-        ${navBtn("devtools-button", "fa-terminal", t("DEVTOOLS"))}
+        ${navButton("shut-down-button", "fa-power-off", t("SHUTDOWN"))}
+        ${navButton("restart-button", "fa-refresh", t("REBOOT"))}
+        ${navButton("restart-mm-button", "fa-recycle", t("RESTARTMM"))}
+        ${navButton("refresh-mm-button", "fa-globe", t("REFRESHMM"))}
+        ${stackButton("monitor-on-button", "fa-television", "fa-check", t("MONITORON"))}
+        ${stackButton("monitor-off-button", "fa-television", "fa-close", t("MONITOROFF"))}
+        ${navButton("fullscreen-button", "fa-arrows-alt", t("FULLSCREEN"))}
+        ${navButton("minimize-button", "fa-window-minimize", t("MINIMIZE"))}
+        ${navButton("devtools-button", "fa-terminal", t("DEVTOOLS"))}
       </nav>`;
   },
 
@@ -194,8 +194,8 @@ Object.assign(Remote, {
   renderAlertMenu () {
     const t = (key) => this.translate(key);
     return `<nav class="menu-nav">
-        ${navBtn("send-alert-button", "fa-send-o", t("SENDALERT"))}
-        ${navBtn("hide-alert-button", "fa-eye-slash", t("HIDEALERT"))}
+        ${navButton("send-alert-button", "fa-send-o", t("SENDALERT"))}
+        ${navButton("hide-alert-button", "fa-eye-slash", t("HIDEALERT"))}
       </nav>
       <section class="menu-content">
         ${this.renderAlertForm()}
@@ -209,8 +209,8 @@ Object.assign(Remote, {
   renderNotificationMenu () {
     const t = (key) => this.translate(key);
     return `<nav class="menu-nav">
-        ${navBtn("send-notification-button", "fa-send-o", t("SEND_NOTIFICATION"))}
-        ${navBtn("restore-notification-button", "fa-history", t("RESTORE"))}
+        ${navButton("send-notification-button", "fa-send-o", t("SEND_NOTIFICATION"))}
+        ${navButton("restore-notification-button", "fa-history", t("RESTORE"))}
       </nav>
       <section class="menu-content">
         ${this.renderNotificationForm()}
@@ -339,33 +339,33 @@ Object.assign(Remote, {
           <div id="brightness-container" class="slider-container" data-label="Brightness">
             <input id="brightness-slider" type="range" min="0" max="100" step="5" value="100" class="slider" aria-label="${t("BRIGHTNESS")}" />
           </div>
-          ${resetBtn("brightness", "Reset brightness")}
+          ${resetButton("brightness", "Reset brightness")}
         </div>
         <div class="one-line">
           <span class="fa fa-fw fa-thermometer-three-quarters" aria-hidden="true"></span>
           <div id="temp-container" class="slider-container" data-label="Color Temperature">
             <input id="temp-slider" type="range" min="140" max="500" step="20" value="325" class="slider" aria-label="Color temperature" />
           </div>
-          ${resetBtn("temp", "Reset color temperature")}
+          ${resetButton("temp", "Reset color temperature")}
         </div>
         <div class="one-line">
           <span class="fa fa-fw fa-search-plus" aria-hidden="true"></span>
           <div id="zoom-container" class="slider-container" data-label="Zoom">
             <input id="zoom-slider" type="range" min="0" max="200" step="5" value="100" class="slider" aria-label="${t("ZOOM")}" />
           </div>
-          ${resetBtn("zoom", "Reset zoom")}
+          ${resetButton("zoom", "Reset zoom")}
         </div>
         <div class="one-line">
           <span class="fa fa-fw fa-adjust" aria-hidden="true"></span>
           <label for="background-color-picker" class="color-label">${t("BACKGROUND_COLOR")}</label>
           <input id="background-color-picker" type="color" value="#000000" class="color-picker" aria-label="${t("BACKGROUND_COLOR")}" />
-          ${resetBtn("background-color", "Reset background color")}
+          ${resetButton("background-color", "Reset background color")}
         </div>
         <div class="one-line">
           <span class="fa fa-fw fa-font" aria-hidden="true"></span>
           <label for="font-color-picker" class="color-label">${t("FONT_COLOR")}</label>
           <input id="font-color-picker" type="color" value="#ffffff" class="color-picker" aria-label="${t("FONT_COLOR")}" />
-          ${resetBtn("font-color", "Reset font color")}
+          ${resetButton("font-color", "Reset font color")}
         </div>
       </div>`;
   },
