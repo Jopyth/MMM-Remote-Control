@@ -46,6 +46,7 @@ describe("API HTTP-Layer Smoke Tests", () => {
   let server;
   let port;
   let baseUrl;
+  let mockContext;
   const notifications = [];
 
   before(async () => {
@@ -72,7 +73,7 @@ describe("API HTTP-Layer Smoke Tests", () => {
     const helperModule = require("../../node_helper.js");
 
     // Create minimal context for API
-    const mockContext = {
+    mockContext = {
       expressApp: app,
       expressRouter: express.Router(),
       externalApiRoutes: {},
@@ -81,7 +82,19 @@ describe("API HTTP-Layer Smoke Tests", () => {
         moduleData: []
       },
       configOnHd: {
-        modules: []
+        modules: [
+          {
+            module: "MMM-Remote-Control",
+            config: {
+              classes: {
+                "mode-test": {
+                  show: ["clock"],
+                  hide: ["calendar"]
+                }
+              }
+            }
+          }
+        ]
       },
       thisConfig: {},
       initialized: true,
@@ -122,6 +135,10 @@ describe("API HTTP-Layer Smoke Tests", () => {
 
       delayedQuery () {
         // Stub - not tested in smoke
+      },
+
+      executeQuery (query, res) {
+        mockContext.sendResponse(res, undefined, {query});
       },
 
       getExternalApiByGuessing () {
@@ -272,5 +289,44 @@ describe("API HTTP-Layer Smoke Tests", () => {
     assert.equal(response.status, 200);
     assert.equal(data.success, true);
     assert.ok(Array.isArray(data.data), "should return array of modules");
+  });
+
+  test("GET /api/classes/:value executes MANAGE_CLASSES for configured class", async () => {
+    const response = await fetch(`${baseUrl}/api/classes/mode-test`);
+    const data = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(data.success, true);
+    assert.equal(data.query.action, "MANAGE_CLASSES");
+    assert.equal(data.query.payload.classes, "mode-test");
+  });
+
+  test("GET /api/classes/:value returns 400 for unknown class", async () => {
+    const response = await fetch(`${baseUrl}/api/classes/does-not-exist`);
+    const data = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.equal(data.success, false);
+    assert.match(data.message, /Invalid value/i);
+  });
+
+  test("GET /api/classes/:value returns 400 when no classes are configured", async () => {
+    mockContext.configOnHd.modules[0].config = {};
+
+    const response = await fetch(`${baseUrl}/api/classes/mode-test`);
+    const data = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.equal(data.success, false);
+    assert.match(data.message, /No classes configured/i);
+
+    mockContext.configOnHd.modules[0].config = {
+      classes: {
+        "mode-test": {
+          show: ["clock"],
+          hide: ["calendar"]
+        }
+      }
+    };
   });
 });

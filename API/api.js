@@ -219,13 +219,22 @@ module.exports = {
 
     this.expressRouter.route("/classes/:value").
       get((request, response) => {
-        const classes = this.getConfig().modules.find((m) => m.module === "MMM-Remote-Control").config || {};
-        const value = decodeURIComponent(request.params.value);
-        if (classes.classes && Object.hasOwn(classes.classes, value)) {
-          this.executeQuery({action: "MANAGE_CLASSES", payload: {classes: request.params.value}}, response);
-        } else {
-          response.status(400).json({success: false, message: `Invalid value ${value} provided in request. Use /api/classes to see actual values`});
+        const remoteControlConfig = this.configOnHd?.modules?.find((m) => m.module === "MMM-Remote-Control")?.config;
+        const configuredClasses = remoteControlConfig?.classes;
+
+        if (!configuredClasses || typeof configuredClasses !== "object") {
+          response.status(400).json({success: false, message: "No classes configured. Use /api/classes to inspect available values."});
+          return;
         }
+
+        const className = decodeURIComponent(request.params.value);
+
+        if (!Object.hasOwn(configuredClasses, className)) {
+          response.status(400).json({success: false, message: `Invalid value ${className} provided in request. Use /api/classes to see actual values`});
+          return;
+        }
+
+        this.executeQuery({action: "MANAGE_CLASSES", payload: {classes: className}}, response);
       });
 
     this.expressRouter.route("/command/:value").
