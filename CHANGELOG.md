@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.2](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.1...v5.0.2) (2026-06-27)
+
+### Fixed
+
+- **api:** fix classes route via configOnHd, refactor and add test ([eea4caa](https://github.com/jopyth/MMM-Remote-Control/commit/eea4caaa130debf2ca8f4f691d6ef33c55c965ea))
+- dynamic submenu reload after refresh ([58386aa](https://github.com/jopyth/MMM-Remote-Control/commit/58386aae8834cb0907c22374b259ff070327a2b9))
+
+### Chores
+
+- update dependencies ([d3dad90](https://github.com/jopyth/MMM-Remote-Control/commit/d3dad909d4677c7baaf4437713aeb43024e56ca5))
+
+### Code Refactoring
+
+- fix auto-fixable linting issues ([a82457c](https://github.com/jopyth/MMM-Remote-Control/commit/a82457cc107cd853e71e1f9041348f2095ce3069))
+- manual unicorn lint cleanup ([4842890](https://github.com/jopyth/MMM-Remote-Control/commit/48428905f002c1c8fb65c9ec1022a9a9261b6926))
+- overhaul remote menu routing ([661fe4c](https://github.com/jopyth/MMM-Remote-Control/commit/661fe4ce71e019d53644627b348d5c859f467d52))
+
 ## [5.0.1](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.0...v5.0.1) (2026-06-09)
 
 ### Fixed
