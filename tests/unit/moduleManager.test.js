@@ -72,7 +72,7 @@ describe("lib/moduleManager basic functionality", () => {
     let isErrorCalled = false;
     await moduleManager.updateModule({
       moduleName: "NonExistent",
-      baseDir: __dirname,
+      baseDirectory: __dirname,
       modulesAvailable: [],
       onSuccess: null,
       onError: () => {
@@ -90,7 +90,7 @@ describe("lib/moduleManager basic functionality", () => {
     await assert.doesNotReject(async () => {
       await moduleManager.addModule({
         directoryName: "test-file.txt",
-        modulesDir: __dirname,
+        modulesDirectory: __dirname,
         modulesAvailable,
         modulesInstalled,
         onModuleLoaded: null,
@@ -167,9 +167,9 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   it("addModule should mark existing module installed and queue update checks for git modules", async () => {
-    const modulesDir = path.join(temporaryRoot, "modules");
+    const modulesDirectory = path.join(temporaryRoot, "modules");
     const directoryName = "MMM-Example";
-    const modulePath = path.join(modulesDir, directoryName);
+    const modulePath = path.join(modulesDirectory, directoryName);
 
     await fs.mkdir(modulePath, {recursive: true});
     await fs.writeFile(path.join(modulePath, "CHANGELOG.md"), "# Changelog", "utf8");
@@ -185,7 +185,7 @@ describe("lib/moduleManager additional coverage", () => {
 
     await moduleManager.addModule({
       directoryName,
-      modulesDir,
+      modulesDirectory,
       modulesAvailable,
       modulesInstalled,
       onModuleLoaded: (module, loadedPath, isLast) => {
@@ -209,9 +209,9 @@ describe("lib/moduleManager additional coverage", () => {
   });
 
   it("addModule should create local module metadata for non-git modules", async () => {
-    const modulesDir = path.join(temporaryRoot, "modules");
+    const modulesDirectory = path.join(temporaryRoot, "modules");
     const directoryName = "MMM-LocalOnly";
-    const modulePath = path.join(modulesDir, directoryName);
+    const modulePath = path.join(modulesDirectory, directoryName);
 
     await fs.mkdir(modulePath, {recursive: true});
 
@@ -221,7 +221,7 @@ describe("lib/moduleManager additional coverage", () => {
 
     await moduleManager.addModule({
       directoryName,
-      modulesDir,
+      modulesDirectory,
       modulesAvailable,
       modulesInstalled,
       onModuleLoaded: null,
@@ -243,14 +243,14 @@ describe("lib/moduleManager additional coverage", () => {
     const remoteParent = path.join(temporaryRoot, "git");
     const sourcePath = path.join(temporaryRoot, "source");
     const modulesParent = path.join(temporaryRoot, "modules");
-    const baseDir = path.join(modulesParent, "server");
+    const baseDirectory = path.join(modulesParent, "server");
     const moduleName = "MMM-UpToDate";
     const remoteName = "origin.git";
 
     await fs.mkdir(remoteParent, {recursive: true});
     await fs.mkdir(sourcePath, {recursive: true});
     await fs.mkdir(modulesParent, {recursive: true});
-    await fs.mkdir(baseDir, {recursive: true});
+    await fs.mkdir(baseDirectory, {recursive: true});
 
     const sourceGit = simpleGit(sourcePath);
     await sourceGit.init();
@@ -270,7 +270,7 @@ describe("lib/moduleManager additional coverage", () => {
 
     await moduleManager.updateModule({
       moduleName,
-      baseDir,
+      baseDirectory,
       modulesAvailable: [{name: moduleName}],
       onSuccess: (response) => {
         responses.push(response);
@@ -289,14 +289,14 @@ describe("lib/moduleManager additional coverage", () => {
     const remoteParent = path.join(temporaryRoot, "git-update");
     const sourcePath = path.join(temporaryRoot, "source-update");
     const modulesParent = path.join(temporaryRoot, "modules-update");
-    const baseDir = path.join(modulesParent, "server");
+    const baseDirectory = path.join(modulesParent, "server");
     const moduleName = "MMM-HasUpdate";
     const remoteName = "origin.git";
 
     await fs.mkdir(remoteParent, {recursive: true});
     await fs.mkdir(sourcePath, {recursive: true});
     await fs.mkdir(modulesParent, {recursive: true});
-    await fs.mkdir(baseDir, {recursive: true});
+    await fs.mkdir(baseDirectory, {recursive: true});
 
     // Create initial commit in source
     const sourceGit = simpleGit(sourcePath);
@@ -330,7 +330,7 @@ describe("lib/moduleManager additional coverage", () => {
 
     await moduleManager.updateModule({
       moduleName,
-      baseDir,
+      baseDirectory,
       modulesAvailable: [{name: moduleName}],
       onSuccess: (response) => { responses.push(response); },
       onError: (error, data) => { errors.push({error, data}); }

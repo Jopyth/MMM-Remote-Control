@@ -118,12 +118,14 @@ Object.assign(
 
       for (const key of ["show", "hide", "toggle"]) {
 
-        if (!classData[key]) {
+        const classEntry = classData[key];
+
+        if (!classEntry) {
 
           continue;
 
         }
-        const modules = Array.isArray(classData[key]) ? classData[key] : [classData[key]];
+        const modules = Array.isArray(classEntry) ? classEntry : [classEntry];
         for (const moduleName of modules) {
 
           const module = moduleMap[moduleName];
@@ -247,10 +249,8 @@ Object.assign(
             if (currentTarget.classList.contains("external-locked")) {
 
               const wrapper = document.createElement("div");
-              wrapper.innerHTML = `<span>${this.translate("LOCKSTRING_WARNING").replace(
-                "LIST_OF_MODULES",
-                visibilityStatus.modules
-              )}</span>`;
+              const lockWarningText = this.translate("LOCKSTRING_WARNING");
+              wrapper.innerHTML = `<span>${lockWarningText.split("LIST_OF_MODULES").join(visibilityStatus.modules)}</span>`;
 
               const ok = this.createSymbolText(
                 "fa fa-check-circle",
@@ -378,7 +378,7 @@ Object.assign(
           "classes"
         );
 
-        for (const index of Object.keys(classes)) {
+        for (const [index, classData] of Object.entries(classes)) {
 
           const node = document.createElement("div");
           node.id = "classes-before-result";
@@ -396,7 +396,7 @@ Object.assign(
                   "classes": index
                 }
               },
-              "classData": classes[index] // Store class data for status checking
+              "classData": classData // Store class data for status checking
             },
 
             existingButton = document.getElementById(`${content.id}-button`);
@@ -579,10 +579,10 @@ Object.assign(
               buttonText,
               (event) => {
 
-                const index_ = event.currentTarget.id.replace(
-                  "install-module-",
-                  ""
-                );
+                const installPrefix = "install-module-";
+                const index_ = event.currentTarget.id.startsWith(installPrefix)
+                  ? event.currentTarget.id.slice(installPrefix.length)
+                  : "";
                 this.createAddingPopup(index_);
 
               },
@@ -614,7 +614,7 @@ Object.assign(
 
     },
 
-    offerReload (message, includeReload = true) {
+    offerReload (message, shouldIncludeReload = true) {
 
       const wrapper = document.createElement("div");
       wrapper.innerHTML = `<span>${message}</span>`;
@@ -625,7 +625,7 @@ Object.assign(
       );
       restart.querySelector(".text")?.classList.add("text");
       wrapper.append(restart);
-      if (includeReload) {
+      if (shouldIncludeReload) {
 
         const reload = this.createSymbolText(
           "fa fa-fw fa-globe",
@@ -769,10 +769,10 @@ Object.assign(
               "Update",
               (event) => {
 
-                const moduleName = event.currentTarget.id.replace(
-                  "update-module-",
-                  ""
-                );
+                const updatePrefix = "update-module-";
+                const moduleName = event.currentTarget.id.startsWith(updatePrefix)
+                  ? event.currentTarget.id.slice(updatePrefix.length)
+                  : "";
                 this.updateModule(moduleName);
 
               }

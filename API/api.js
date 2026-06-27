@@ -40,40 +40,40 @@ const getActions = (handler) => {
  * Registers color-related API routes (zoom, background color, font color).
  * Extracted to keep createApiRoutes within line limits.
  * @param {object} router - Express router
- * @param {object} ctx - API context (for executeQuery)
+ * @param {object} context - API context (for executeQuery)
  */
-function registerColorRoutes (router, ctx) {
+function registerColorRoutes (router, context) {
   router.route(["/zoom/:setting"]).
-    get((request, res) => {
+    get((request, response) => {
     // Only allow numeric settings, otherwise return 400
       if (!(/^\d+$/).test(request.params.setting)) {
-        return res.status(400).json({success: false, message: "Invalid zoom setting, must be a number (30-200)"});
+        return response.status(400).json({success: false, message: "Invalid zoom setting, must be a number (30-200)"});
       }
-      ctx.executeQuery({action: "ZOOM", value: request.params.setting}, res);
+      context.executeQuery({action: "ZOOM", value: request.params.setting}, response);
     });
 
   router.route(["/backgroundcolor/:color"]).
-    get((request, res) => {
+    get((request, response) => {
       const {color} = request.params;
       if (color === "reset") {
-        return ctx.executeQuery({action: "BACKGROUND_COLOR", value: ""}, res);
+        return context.executeQuery({action: "BACKGROUND_COLOR", value: ""}, response);
       }
       if (!(/^[\da-f]{6}$/i).test(color)) {
-        return res.status(400).json({success: false, message: "Invalid color, use rrggbb hex format or 'reset'"});
+        return response.status(400).json({success: false, message: "Invalid color, use rrggbb hex format or 'reset'"});
       }
-      ctx.executeQuery({action: "BACKGROUND_COLOR", value: `#${color}`}, res);
+      context.executeQuery({action: "BACKGROUND_COLOR", value: `#${color}`}, response);
     });
 
   router.route(["/fontcolor/:color"]).
-    get((request, res) => {
+    get((request, response) => {
       const {color} = request.params;
       if (color === "reset") {
-        return ctx.executeQuery({action: "FONT_COLOR", value: ""}, res);
+        return context.executeQuery({action: "FONT_COLOR", value: ""}, response);
       }
       if (!(/^[\da-f]{6}$/i).test(color)) {
-        return res.status(400).json({success: false, message: "Invalid color, use rrggbb hex format or 'reset'"});
+        return response.status(400).json({success: false, message: "Invalid color, use rrggbb hex format or 'reset'"});
       }
-      ctx.executeQuery({action: "FONT_COLOR", value: `#${color}`}, res);
+      context.executeQuery({action: "FONT_COLOR", value: `#${color}`}, response);
     });
 }
 
@@ -104,9 +104,10 @@ module.exports = {
     if (!this.configOnHd) { return; }
 
     const skippedModules = new Set(["clock", "compliments", "MMM-Remote-Control"]);
+    const activeModules = this.configOnHd.modules.filter((module__) => !skippedModules.has(module__.module));
 
-    for (const module_ of this.configOnHd.modules.filter((module__) => !skippedModules.has(module__.module))) {
-      if (module_.module in this.externalApiRoutes) { continue; }
+    for (const module_ of activeModules) {
+      if (Object.hasOwn(this.externalApiRoutes, module_.module)) { continue; }
 
       try {
         const moduleActions = getActions(Module.notificationHandler?.[module_.module]);
@@ -147,9 +148,9 @@ module.exports = {
 
     // Route for testing the api at http://mirror:8080/api/test
     this.expressRouter.route(["/test", "/"]). // Test without apiKey
-      get((request, res) => {
-        if (!this.checkInitialized(res)) { return; }
-        res.json({success: true});
+      get((request, response) => {
+        if (!this.checkInitialized(response)) { return; }
+        response.json({success: true});
       });
 
     /*
@@ -157,26 +158,26 @@ module.exports = {
      * Can be passed as a header "Authorization: apiKey YOURAPIKEY" or "Authorization: Bearer YOURAPIKEY"
      * or can be passed in the url ?apiKey=YOURAPIKEY
      */
-    this.expressRouter.use((request, res, next) => {
+    this.expressRouter.use((request, response, next) => {
       if (this.apiKey !== undefined) {
         if (!("authorization" in request.headers) || !(/(apikey|bearer)/gi).test(request.headers.authorization)) {
           // API Key was not provided as a header. Check the URL.
           const {query} = request;
           if ("apiKey" in query) {
             if (query.apiKey !== this.apiKey) {
-              return res.status(401).json({success: false, message: "Unauthorized: Wrong API Key Provided!"});
+              return response.status(401).json({success: false, message: "Unauthorized: Wrong API Key Provided!"});
             }
           } else {
-            return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided! Pass it as header (Authorization: apiKey YOUR_KEY)."});
+            return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided! Pass it as header (Authorization: apiKey YOUR_KEY)."});
           }
         } else if (request.headers.authorization.split(" ", 2)[1] !== this.apiKey) {
-          return res.status(401).json({success: false, message: "Unauthorized: Wrong API Key Provided!"});
+          return response.status(401).json({success: false, message: "Unauthorized: Wrong API Key Provided!"});
         }
       }
 
       // Check for correct Content-Type header (skip check if no content-type is set):
       if (request.method === "POST" && request.headers["content-type"] && !request.is("application/json")) {
-        res.status(400).json({success: false, message: "Incorrect content-type, must be 'application/json'"});
+        response.status(400).json({success: false, message: "Incorrect content-type, must be 'application/json'"});
         return;
       }
 
@@ -192,10 +193,10 @@ module.exports = {
       "/translations",
       "/mmUpdateAvailable",
       "/config"
-    ]).get((request, res) => {
+    ]).get((request, response) => {
       let r = request.path.slice(1);
       r = r.replace(/\/([a-z])/i, (v) => v.slice(1).toUpperCase()).replace("/", "");
-      this.answerGet({data: r}, res);
+      this.answerGet({data: r}, response);
     });
 
     let route = [
@@ -210,122 +211,122 @@ module.exports = {
     ];
 
     this.expressRouter.route(route).
-      get((request, res) => {
-        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+      get((request, response) => {
+        if (!this.apiKey && this.secureEndpoints) { return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         const r = request.path.split("/", 2)[1].toUpperCase();
-        this.executeQuery(this.checkDelay({action: r}, request), res);
+        this.executeQuery(this.checkDelay({action: r}, request), response);
       });
 
     this.expressRouter.route("/classes/:value").
-      get((request, res) => {
+      get((request, response) => {
         const classes = this.getConfig().modules.find((m) => m.module === "MMM-Remote-Control").config || {};
         const value = decodeURIComponent(request.params.value);
-        if (classes.classes && classes.classes[value]) {
-          this.executeQuery({action: "MANAGE_CLASSES", payload: {classes: request.params.value}}, res);
+        if (classes.classes && Object.hasOwn(classes.classes, value)) {
+          this.executeQuery({action: "MANAGE_CLASSES", payload: {classes: request.params.value}}, response);
         } else {
-          res.status(400).json({success: false, message: `Invalid value ${value} provided in request. Use /api/classes to see actual values`});
+          response.status(400).json({success: false, message: `Invalid value ${value} provided in request. Use /api/classes to see actual values`});
         }
       });
 
     this.expressRouter.route("/command/:value").
-      get((request, res) => {
-        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
-        this.executeQuery({action: "COMMAND", command: request.params.value}, res);
+      get((request, response) => {
+        if (!this.apiKey && this.secureEndpoints) { return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+        this.executeQuery({action: "COMMAND", command: request.params.value}, response);
       });
 
     route = "/userpresence{/:value}";
     this.expressRouter.route(route).
-      get((request, res) => {
+      get((request, response) => {
         if (request.params.value) {
           if (request.params.value === "true" || request.params.value === "false") {
-            this.executeQuery({action: "USER_PRESENCE", value: request.params.value === "true"}, res);
+            this.executeQuery({action: "USER_PRESENCE", value: request.params.value === "true"}, response);
           } else {
-            res.status(400).json({success: false, message: `Invalid value ${request.params.value} provided in request. Must be true or false.`});
+            response.status(400).json({success: false, message: `Invalid value ${request.params.value} provided in request. Must be true or false.`});
           }
         } else {
-          this.answerGet({data: "userPresence"}, res);
+          this.answerGet({data: "userPresence"}, response);
         }
       });
 
     route = "/update{/:moduleName}";
     this.expressRouter.route(route).
-      get((request, res) => {
-        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
-        if (!request.params.moduleName) { return this.answerGet({data: "mmUpdateAvailable"}, res); }
+      get((request, response) => {
+        if (!this.apiKey && this.secureEndpoints) { return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+        if (!request.params.moduleName) { return this.answerGet({data: "mmUpdateAvailable"}, response); }
         switch (request.params.moduleName) {
-          case "mm": case "MM": this.answerGet({data: "mmUpdateAvailable"}, res); break;
+          case "mm": case "MM": this.answerGet({data: "mmUpdateAvailable"}, response); break;
 
-          case "rc": case "RC": this.updateModule("MMM-Remote-Control", res); break;
+          case "rc": case "RC": this.updateModule("MMM-Remote-Control", response); break;
 
-          default: this.updateModule(request.params.moduleName, res); break;
+          default: this.updateModule(request.params.moduleName, response); break;
 
         }
       });
 
     this.expressRouter.route("/install").
-      get((request, res) => {
-        res.status(400).json({success: false, message: "Invalid method, use POST"});
+      get((request, response) => {
+        response.status(400).json({success: false, message: "Invalid method, use POST"});
       }).
-      post((request, res) => {
-        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+      post((request, response) => {
+        if (!this.apiKey && this.secureEndpoints) { return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         if (request.body !== undefined && "url" in request.body) {
-          this.installModule(request.body.url, res);
+          this.installModule(request.body.url, response);
         } else {
-          res.status(400).json({success: false, message: "Invalid URL provided in request body"});
+          response.status(400).json({success: false, message: "Invalid URL provided in request body"});
         }
       });
 
     // edit config, payload is completely new config object with your changes(edits).
     this.expressRouter.route("/config/edit").
-      get((request, res) => {
-        res.status(400).json({success: false, message: "Invalid method, use POST"});
+      get((request, response) => {
+        response.status(400).json({success: false, message: "Invalid method, use POST"});
       }).
-      post((request, res) => {
-        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+      post((request, response) => {
+        if (!this.apiKey && this.secureEndpoints) { return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         if (request.body !== undefined && "payload" in request.body) {
-          this.answerPost({data: "config"}, {body: request.body.payload}, res);
+          this.answerPost({data: "config"}, {body: request.body.payload}, response);
         } else {
-          res.status(400).json({success: false, message: "Invalid URL provided in request body"});
+          response.status(400).json({success: false, message: "Invalid URL provided in request body"});
         }
       });
     // edit config
 
     route = "/notification/:notification{/:p}{/:delayed}";
     this.expressRouter.route(route).
-      get((request, res) => {
-        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
-        this.answerNotifyApi(request, res);
+      get((request, response) => {
+        if (!this.apiKey && this.secureEndpoints) { return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+        this.answerNotifyApi(request, response);
       }).
-      post((request, res) => {
-        if (!this.apiKey && this.secureEndpoints) { return res.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
+      post((request, response) => {
+        if (!this.apiKey && this.secureEndpoints) { return response.status(403).json({success: false, message: "Forbidden: API Key Not Provided in Config! Use secureEndpoints to bypass this message"}); }
         request.params = {
           ...request.params,
           ...request.body
         };
-        this.answerNotifyApi(request, res);
+        this.answerNotifyApi(request, response);
       });
 
     route = "/module{/:moduleName}{/:action}{/:delayed}";
     this.expressRouter.route(route).
-      get((request, res) => {
-        this.answerModuleApi(request, res);
+      get((request, response) => {
+        this.answerModuleApi(request, response);
       }).
-      post((request, res) => {
+      post((request, response) => {
         request.params = {
           ...request.params,
           ...request.body
         };
-        this.answerModuleApi(request, res);
+        this.answerModuleApi(request, response);
       });
 
     route = "/monitor{/:action}{/:delayed}";
     this.expressRouter.route(route).
-      get((request, res) => {
+      get((request, response) => {
         if (!request.params.action) { request.params.action = "STATUS"; }
         const actionName = request.params.action.toUpperCase();
-        this.executeQuery(this.checkDelay({action: `MONITOR${actionName}`}, request), res);
+        this.executeQuery(this.checkDelay({action: `MONITOR${actionName}`}, request), response);
       }).
-      post((request, res) => {
+      post((request, response) => {
         let actionName = "STATUS";
         if (request.body !== undefined && "monitor" in request.body) {
           if (["OFF", "ON", "TOGGLE"].includes(request.body.monitor.toUpperCase())) {
@@ -334,21 +335,21 @@ module.exports = {
         } else {
           actionName = request.params.action ? request.params.action.toUpperCase() : "STATUS";
         }
-        this.executeQuery(this.checkDelay({action: `MONITOR${actionName}`}, request), res);
+        this.executeQuery(this.checkDelay({action: `MONITOR${actionName}`}, request), response);
       });
 
     this.expressRouter.route(["/brightness/:setting"]).
-      get((request, res) => {
+      get((request, response) => {
       // Only allow numeric settings, otherwise return 400
         if (!(/^\d+$/).test(request.params.setting)) {
-          return res.status(400).json({success: false, message: "Invalid brightness setting"});
+          return response.status(400).json({success: false, message: "Invalid brightness setting"});
         }
-        this.executeQuery({action: "BRIGHTNESS", value: request.params.setting}, res);
+        this.executeQuery({action: "BRIGHTNESS", value: request.params.setting}, response);
       });
 
     registerColorRoutes(this.expressRouter, this);
 
-    this.expressRouter.route("/timers").get((request, res) => { this.sendResponse(res, undefined, this.delayedQueryTimers); });
+    this.expressRouter.route("/timers").get((request, response) => { this.sendResponse(response, undefined, this.delayedQueryTimers); });
 
     this.expressApp.use("/api", this.expressRouter);
   },
@@ -389,12 +390,12 @@ module.exports = {
     return query;
   },
 
-  answerModuleApi (request, res) {
-    if (!this.checkInitialized(res)) { return; }
+  answerModuleApi (request, response) {
+    if (!this.checkInitialized(response)) { return; }
     const dataMerged = this.mergeData().data;
 
     if (!request.params.moduleName) {
-      res.json({success: true, data: dataMerged});
+      response.json({success: true, data: dataMerged});
       return;
     }
 
@@ -423,12 +424,12 @@ module.exports = {
     }
 
     if (moduleData.length === 0) {
-      res.status(400).json({success: false, message: "Module Name or Identifier Not Found!"});
+      response.status(400).json({success: false, message: "Module Name or Identifier Not Found!"});
       return;
     }
 
     if (!request.params.action) {
-      res.json({success: true, data: moduleData});
+      response.json({success: true, data: moduleData});
       return;
     }
 
@@ -436,7 +437,7 @@ module.exports = {
 
     if (["SHOW", "HIDE", "FORCE", "TOGGLE", "DEFAULTS"].includes(action)) { // /api/modules part of the code
       if (action === "DEFAULTS") {
-        this.answerGet({data: "defaultConfig", module: request.params.moduleName}, res);
+        this.answerGet({data: "defaultConfig", module: request.params.moduleName}, response);
         return;
       }
 
@@ -448,7 +449,7 @@ module.exports = {
         } else {
           query.action = action;
         }
-        this.executeQuery(this.checkDelay(query, request), res);
+        this.executeQuery(this.checkDelay(query, request), response);
         return;
       }
 
@@ -463,7 +464,7 @@ module.exports = {
         }
         // Skip response for all but the last module to avoid "headers already sent" error
         const isSkipResponse = index < moduleData.length - 1;
-        this.executeQuery(this.checkDelay(query, request), res, isSkipResponse);
+        this.executeQuery(this.checkDelay(query, request), response, isSkipResponse);
       }
       this.sendSocketNotification("UPDATE");
       return;
@@ -473,10 +474,10 @@ module.exports = {
     if (!moduleData[0].actions) {
       // Special case: alert/showalert maps to SHOW_ALERT (MM default module without REGISTER_API)
       if (request.params.moduleName === "alert" && request.params.action === "showalert") {
-        this.answerNotifyApi(request, res, {notification: "SHOW_ALERT", prettyName: "Show Alert"});
+        this.answerNotifyApi(request, response, {notification: "SHOW_ALERT", prettyName: "Show Alert"});
         return;
       }
-      res.status(400).json({success: false, message: `Module ${request.params.moduleName} does not have any actions defined.`});
+      response.status(400).json({success: false, message: `Module ${request.params.moduleName} does not have any actions defined.`});
       return;
     }
 
@@ -484,16 +485,16 @@ module.exports = {
 
     if (action) {
       if ("method" in action && action.method !== request.method) {
-        res.status(400).json({success: false, message: `Method ${request.method} is not allowed for ${request.params.moduleName}/${request.params.action}.`});
+        response.status(400).json({success: false, message: `Method ${request.method} is not allowed for ${request.params.moduleName}/${request.params.action}.`});
         return;
       }
-      this.answerNotifyApi(request, res, action);
+      this.answerNotifyApi(request, response, action);
     } else {
-      res.status(400).json({success: false, message: `Action ${request.params.action} not found for module ${request.params.moduleName}.`});
+      response.status(400).json({success: false, message: `Action ${request.params.action} not found for module ${request.params.moduleName}.`});
     }
   },
 
-  answerNotifyApi (request, res, action) {
+  answerNotifyApi (request, response, action) {
     // Build the payload to send with our notification.
     let n = "";
     if (action) { n = action.notification; } else if ("notification" in request.params) {
@@ -543,24 +544,24 @@ module.exports = {
      * Also supports negative numbers: /api/notification/PAGE_SELECT/-1
      */
     if (typeof payload === "string" && (/^-?\d+$/).test(payload)) {
-      payload = Number.parseInt(payload, 10);
+      payload = Number(payload);
     }
 
     if ("action" in query && query.action == "DELAYED") {
       query.query.payload = payload;
       query.query.action = "NOTIFICATION";
-      this.delayedQuery(query, res);
+      this.delayedQuery(query, response);
     } else {
       query.payload = payload;
       this.sendSocketNotification("NOTIFICATION", query);
-      res.json({success: true, ...query});
+      response.json({success: true, ...query});
     }
 
   },
 
-  checkInitialized (res) {
+  checkInitialized (response) {
     if (!this.initialized) {
-      this.sendResponse(res, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror²?");
+      this.sendResponse(response, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror²?");
       return false;
     }
     return true;
@@ -584,13 +585,13 @@ module.exports = {
         text: r.module,
         items: []
       };
-      for (const a of Object.keys(r.actions)) {
+      for (const [a, action] of Object.entries(r.actions)) {
         const item = {id: `mc-${r.path}-${a}`,
           menu: "item",
           icon: "dot-circle-o",
           action: "NOTIFICATION",
-          content: r.actions[a],
-          text: "prettyName" in r.actions[a] ? this.translate(r.actions[a].prettyName) : this.translate(r.actions[a].notification).toLowerCase().replaceAll(/(^|_)(\w)/g, ($0, $1, $2) => ($1 && " ") + $2.toUpperCase())};
+          content: action,
+          text: "prettyName" in action ? this.translate(action.prettyName) : this.translate(action.notification).toLowerCase().replaceAll(/(^|_)(\w)/g, ($0, $1, $2) => ($1 && " ") + $2.toUpperCase())};
         sub.items.push(item);
       }
       this.moduleApiMenu.items.push(sub);

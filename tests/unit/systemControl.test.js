@@ -51,9 +51,7 @@ function createMockExec (execResults) {
     // SAFETY: Never execute real commands, only record them
     execResults.push({command, options});
     setImmediate(() => {
-      if (command.includes("--off")) {
-        callback(null, "", "");
-      } else if (command.includes("--on")) {
+      if (command.includes("--off") || command.includes("--on")) {
         callback(null, "", "");
       } else {
         // Status command: report monitor as on
@@ -387,13 +385,13 @@ describe("systemControl", () => {
       BrowserWindow: {
         getAllWindows: () => [
           {
-            minimize: () => windowActions.push("minimize"),
-            setFullScreen: (value) => windowActions.push(`fullscreen:${value}`),
+            minimize: () => { windowActions.push("minimize"); },
+            setFullScreen: (value) => { windowActions.push(`fullscreen:${value}`); },
             isFullScreen: () => false,
             webContents: {
               isDevToolsOpened: () => false,
-              openDevTools: () => windowActions.push("devtools:open"),
-              closeDevTools: () => windowActions.push("devtools:close")
+              openDevTools: () => { windowActions.push("devtools:open"); },
+              closeDevTools: () => { windowActions.push("devtools:close"); }
             }
           }
         ]

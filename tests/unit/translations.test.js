@@ -127,15 +127,72 @@ function getUsedTranslationKeys () {
 }
 
 /**
+ * Check whether a value is a non-null object.
+ * @param {unknown} value - Value to inspect
+ * @returns {boolean} Whether the value is an object and not null
+ */
+function isNonNullObject (value) {
+  return typeof value === "object" && value !== null;
+}
+
+/**
+ * Collect missing/empty description issues for one swagger path object.
+ * @param {string} pathName - Swagger path key
+ * @param {object} pathObject - Swagger methods for one path
+ * @param {Array<object>} issues - Mutable issues accumulator
+ * @returns {void}
+ */
+function collectPathDescriptionIssues (pathName, pathObject, issues) {
+  for (const [method, methodObject] of Object.entries(pathObject)) {
+    if (!isNonNullObject(methodObject)) {
+      continue;
+    }
+
+    // Check summary
+    if (!methodObject.summary || methodObject.summary.trim() === "") {
+      issues.push({
+        type: "missing",
+        path: `paths["${pathName}"].${method}.summary`
+      });
+    }
+
+    // Check parameters descriptions
+    if (methodObject.parameters) {
+      for (const [parameterIndex, parameter] of methodObject.parameters.entries()) {
+        if (!parameter.description || parameter.description.trim() === "") {
+          issues.push({
+            type: "missing",
+            path: `paths["${pathName}"].${method}.parameters[${parameterIndex}].description`,
+            name: parameter.name
+          });
+        }
+      }
+    }
+
+    // Check response descriptions
+    if (methodObject.responses) {
+      for (const [code, response] of Object.entries(methodObject.responses)) {
+        if (!response.description || response.description.trim() === "") {
+          issues.push({
+            type: "empty",
+            path: `paths["${pathName}"].${method}.responses["${code}"].description`
+          });
+        }
+      }
+    }
+  }
+}
+
+/**
  * Check if swagger.json has translatable descriptions
  * @returns {Array} Array of issues found
  */
 function checkSwaggerTranslations () {
-  const issues = [];
-
   if (!fs.existsSync(swaggerPath)) {
     return [{type: "missing", message: "swagger.json file not found"}];
   }
+
+  const issues = [];
 
   const swagger = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
 
@@ -160,44 +217,7 @@ function checkSwaggerTranslations () {
   // Check paths for descriptions
   if (swagger.paths) {
     for (const [pathName, pathObject] of Object.entries(swagger.paths)) {
-      for (const [method, methodObject] of Object.entries(pathObject)) {
-        if (!(typeof methodObject === "object" && methodObject !== null)) {
-          continue;
-        }
-
-        // Check summary
-        if (!methodObject.summary || methodObject.summary.trim() === "") {
-          issues.push({
-            type: "missing",
-            path: `paths["${pathName}"].${method}.summary`
-          });
-        }
-
-        // Check parameters descriptions
-        if (methodObject.parameters) {
-          for (const [parameterIndex, parameter] of methodObject.parameters.entries()) {
-            if (!parameter.description || parameter.description.trim() === "") {
-              issues.push({
-                type: "missing",
-                path: `paths["${pathName}"].${method}.parameters[${parameterIndex}].description`,
-                name: parameter.name
-              });
-            }
-          }
-        }
-
-        // Check response descriptions
-        if (methodObject.responses) {
-          for (const [code, response] of Object.entries(methodObject.responses)) {
-            if (!response.description || response.description.trim() === "") {
-              issues.push({
-                type: "empty",
-                path: `paths["${pathName}"].${method}.responses["${code}"].description`
-              });
-            }
-          }
-        }
-      }
+      collectPathDescriptionIssues(pathName, pathObject, issues);
     }
   }
 
@@ -350,13 +370,13 @@ describe("Swagger.json Documentation", () => {
     const extraInSwagger = [];
 
     for (const key of Object.keys(enTranslations)) {
-      if (!(key in exampleData)) {
+      if (!Object.hasOwn(exampleData, key)) {
         missingInSwagger.push(key);
       }
     }
 
     for (const key of Object.keys(exampleData)) {
-      if (!(key in enTranslations)) {
+      if (!Object.hasOwn(enTranslations, key)) {
         extraInSwagger.push(key);
       }
     }

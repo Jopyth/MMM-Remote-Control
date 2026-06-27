@@ -244,11 +244,12 @@ Module.register("MMM-Remote-Control", {
     const {moduleData} = payload;
     const hideModules = {};
     for (const moduleDatum of moduleData) {
-      for (const lockString of moduleDatum.lockStrings || []) {
-        if (lockString.includes("MMM-Remote-Control")) {
-          hideModules[moduleDatum.identifier] = true;
-          break;
-        }
+      const lockStrings = Array.isArray(moduleDatum.lockStrings)
+        ? moduleDatum.lockStrings
+        : [];
+      const hasRemoteControlLock = lockStrings.some((lockString) => lockString.includes("MMM-Remote-Control"));
+      if (hasRemoteControlLock) {
+        hideModules[moduleDatum.identifier] = true;
       }
     }
 

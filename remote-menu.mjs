@@ -15,11 +15,11 @@ Object.assign(
 
     loadButtons (buttons) {
 
-      for (const key of Object.keys(buttons)) {
+      for (const [key, button] of Object.entries(buttons)) {
 
         document.getElementById(key)?.addEventListener(
           "click",
-          buttons[key],
+          button,
           false
         );
 
@@ -181,7 +181,8 @@ Object.assign(
           const nav = document.createElement("nav");
           nav.className = "menu-nav";
           main.append(nav);
-          for (const item of dynamicContent.items ?? []) {
+          const menuItems = dynamicContent.items ?? [];
+          for (const item of menuItems) {
 
             this.createMenuElement(
               item,
@@ -327,7 +328,7 @@ Object.assign(
         notificationPayloadElement = document.querySelector("#notification-payload");
       if (notificationNameElement || notificationPayloadElement) {
 
-        Remote.formState = Remote.formState ?? {};
+        Remote.formState ??= {};
         Remote.formState.notificationName = notificationNameElement?.value ?? "";
         Remote.formState.notificationPayload = notificationPayloadElement?.value ?? "";
 
@@ -336,7 +337,7 @@ Object.assign(
       const alertForm = document.querySelector("#alert");
       if (alertForm) {
 
-        Remote.formState = Remote.formState ?? {};
+        Remote.formState ??= {};
         Remote.formState.alertType = alertForm.querySelector("[name='type']")?.value;
         Remote.formState.alertTitle = alertForm.querySelector("[name='title']")?.value;
         Remote.formState.alertMessage = alertForm.querySelector("[name='message']")?.value;
@@ -424,7 +425,8 @@ Object.assign(
       }
 
       // Re-create buttons for already-registered dynamic menus
-      for (const menu of Object.values(this.dynamicMenus ?? {})) {
+      const dynamicMenus = Object.values(this.dynamicMenus ?? {});
+      for (const menu of dynamicMenus) {
 
         this.createMenuElement(
           menu,
@@ -436,7 +438,8 @@ Object.assign(
       }
 
       // Drain pending menus received before main menu was ever shown
-      for (const pending of (this.pendingDynamicMenus ?? [])) {
+      const pendingMenus = this.pendingDynamicMenus ?? [];
+      for (const pending of pendingMenus) {
 
         this.dynamicMenus = {...this.dynamicMenus, [pending.id]: pending};
         this.createMenuElement(
@@ -460,7 +463,7 @@ Object.assign(
     findDynamicMenuData (menuName) {
 
       const menuId = menuName.replace(/-menu$/u, "");
-      if (this.dynamicMenus?.[menuId]) {
+      if (Object.hasOwn(this.dynamicMenus ?? {}, menuId)) {
 
         return this.dynamicMenus[menuId];
 
@@ -492,7 +495,8 @@ Object.assign(
 
       };
 
-      for (const menu of Object.values(this.dynamicMenus ?? {})) {
+      const dynamicMenus = Object.values(this.dynamicMenus ?? {});
+      for (const menu of dynamicMenus) {
 
         const found = searchItems(menu.items);
         if (found) {
@@ -635,9 +639,9 @@ Object.assign(
        * Survives main.innerHTML replacements since it lives on the persistent container.
        */
       const mainContent = document.querySelector(".main-content");
-      mainContent?.addEventListener("click", (e) => {
+      mainContent?.addEventListener("click", (event) => {
 
-        const hash = e.target.closest("[data-hash]")?.dataset.hash;
+        const hash = event.target.closest("[data-hash]")?.dataset.hash;
         if (hash) {
 
           location.hash = hash;
@@ -645,17 +649,17 @@ Object.assign(
         }
 
       });
-      mainContent?.addEventListener("keydown", (e) => {
+      mainContent?.addEventListener("keydown", (event) => {
 
-        if (!(e.key === "Enter" || e.key === " ")) {
+        if (!(event.key === "Enter" || event.key === " ")) {
           return;
         }
 
 
-        const hash = e.target.closest("[data-hash]")?.dataset.hash;
+        const hash = event.target.closest("[data-hash]")?.dataset.hash;
         if (hash) {
 
-          e.preventDefault();
+          event.preventDefault();
           location.hash = hash;
 
         }
@@ -835,7 +839,7 @@ Object.assign(
 
     },
 
-    createMenuElement (content, menu, insertAfter, visible = true) {
+    createMenuElement (content, menu, insertAfter, isVisible = true) {
 
       if (!content) {
 
@@ -922,7 +926,7 @@ Object.assign(
 
       }
 
-      if (!visible) {
+      if (!isVisible) {
 
         item.classList.add("hidden");
 
@@ -957,7 +961,7 @@ Object.assign(
             index,
             content.id,
             nestedNav || item,
-            visible
+            isVisible
           );
 
         }
@@ -980,7 +984,8 @@ Object.assign(
 
       }
       document.getElementById(`${node.id}-button`)?.remove();
-      for (const item of node.items ?? []) {
+      const nodeItems = node.items ?? [];
+      for (const item of nodeItems) {
 
         this.removeDynamicMenuButtons(item);
 

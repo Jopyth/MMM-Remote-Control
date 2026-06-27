@@ -22,7 +22,7 @@ function freshHelper () {
   h.loadDefaultSettings = () => {};
   h.getIpAddresses = helperFactory.getIpAddresses.bind(h);
   h.executeQuery = (query, res) => {
-    h.__executeQueryCalls = h.__executeQueryCalls || [];
+    h.__executeQueryCalls ||= [];
     h.__executeQueryCalls.push({query, res});
   };
   return h;

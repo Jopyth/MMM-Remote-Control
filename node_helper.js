@@ -142,50 +142,50 @@ module.exports = NodeHelper.create({
   },
 
   createRoutes () {
-    this.expressApp.get("/remote-service-worker.js", (request, res) => {
-      res.set("Cache-Control", "no-cache");
-      res.contentType("application/javascript");
-      res.sendFile(path.resolve(`${__dirname}/service-worker.js`));
+    this.expressApp.get("/remote-service-worker.js", (request, response) => {
+      response.set("Cache-Control", "no-cache");
+      response.contentType("application/javascript");
+      response.sendFile(path.resolve(`${__dirname}/service-worker.js`));
     });
 
-    this.expressApp.get("/remote.html", (request, res) => {
+    this.expressApp.get("/remote.html", (request, response) => {
       if (this.template === "") {
-        res.sendStatus(503);
+        response.sendStatus(503);
       } else {
-        res.contentType("text/html");
-        res.set("Content-Security-Policy", "frame-ancestors http://*:*");
+        response.contentType("text/html");
+        response.set("Content-Security-Policy", "frame-ancestors http://*:*");
         const transformedData = this.fillTemplates(this.template);
-        res.send(transformedData);
+        response.send(transformedData);
       }
     });
 
-    this.expressApp.get("/get", (request, res) => {
+    this.expressApp.get("/get", (request, response) => {
       const {query} = request;
 
-      this.answerGet(query, res);
+      this.answerGet(query, response);
     });
-    this.expressApp.post("/post", (request, res) => {
+    this.expressApp.post("/post", (request, response) => {
       const {query} = request;
 
-      this.answerPost(query, request, res);
+      this.answerPost(query, request, response);
     });
 
-    this.expressApp.get("/config-help.html", (request, res) => {
+    this.expressApp.get("/config-help.html", (request, response) => {
       const {query} = request;
 
-      this.answerConfigHelp(query, res);
+      this.answerConfigHelp(query, response);
     });
 
-    this.expressApp.get("/remote", (request, res) => {
+    this.expressApp.get("/remote", (request, response) => {
       const {query} = request;
 
       if (query.action && !["COMMAND"].includes(query.action)) {
-        const result = this.executeQuery(query, res);
+        const result = this.executeQuery(query, response);
         if (result === true) {
           return;
         }
       }
-      res.send({"status": "error", "reason": "unknown_command", "info": `original input: ${JSON.stringify(query)}`});
+      response.send({"status": "error", "reason": "unknown_command", "info": `original input: ${JSON.stringify(query)}`});
     });
   },
 
@@ -225,8 +225,8 @@ module.exports = NodeHelper.create({
       this.modulesInstalled = result.modulesInstalled;
 
       // Process installed modules
-      for (const [index, dir] of result.installedModules.entries()) {
-        await this.addModule(dir, index === result.installedModules.length - 1);
+      for (const [index, directory] of result.installedModules.entries()) {
+        await this.addModule(directory, index === result.installedModules.length - 1);
       }
     } catch (error) {
       Log.error(`Error reading module data: ${error.message || error}`);
@@ -246,7 +246,7 @@ module.exports = NodeHelper.create({
   async addModule (directoryName, lastOne) {
     await moduleManager.addModule({
       directoryName,
-      modulesDir: this.getModuleDir(),
+      modulesDirectory: this.getModuleDir(),
       modulesAvailable: this.modulesAvailable,
       modulesInstalled: this.modulesInstalled,
       onModuleLoaded: (module, modulePath) => {
@@ -311,11 +311,11 @@ module.exports = NodeHelper.create({
     if (lastOne) { this.onModulesLoaded(); }
   },
 
-  answerConfigHelp (query, res) {
+  answerConfigHelp (query, response) {
     if (defaultModules.includes(query.module)) {
       // default module
-      const dir = path.resolve(`${__dirname}/..`);
-      const git = simpleGit(dir);
+      const moduleDirectory = path.resolve(`${__dirname}/..`);
+      const git = simpleGit(moduleDirectory);
       git.revparse(["HEAD"], (error, result) => {
         if (error) {
           Log.error(error);
@@ -328,8 +328,8 @@ module.exports = NodeHelper.create({
         const githubPath = defaultModulesPath.includes("defaultmodules/defaultmodules.js")
           ? "defaultmodules"
           : "modules/default";
-        res.writeHead(302, {"Location": `https://github.com/MagicMirrorOrg/MagicMirror/tree/${result.trim()}/${githubPath}/${query.module}`});
-        res.end();
+        response.writeHead(302, {"Location": `https://github.com/MagicMirrorOrg/MagicMirror/tree/${result.trim()}/${githubPath}/${query.module}`});
+        response.end();
       });
       return;
     }
@@ -340,16 +340,16 @@ module.exports = NodeHelper.create({
         Log.error(error);
       }
       let baseUrl = result[0].refs.fetch;
-      // replacements
-      baseUrl = baseUrl.replace(".git", "").replace("github.com:", "github.com/");
-      // if cloned with ssh
-      baseUrl = baseUrl.replace("git@", "https://");
+      // Normalize remote URLs like git@github.com:owner/repo.git to https://github.com/owner/repo
+      baseUrl = baseUrl.replace(/^git@/u, "https://");
+      baseUrl = baseUrl.replace(/^https:\/\/github\.com:/u, "https://github.com/");
+      baseUrl = baseUrl.replace(/\.git$/u, "");
       git.revparse(["HEAD"], (error, result) => {
         if (error) {
           Log.error(error);
         }
-        res.writeHead(302, {"Location": `${baseUrl}/tree/${result.trim()}`});
-        res.end();
+        response.writeHead(302, {"Location": `${baseUrl}/tree/${result.trim()}`});
+        response.end();
       });
     });
   },
@@ -358,23 +358,23 @@ module.exports = NodeHelper.create({
    * Handle POST API requests
    * @param {object} query - Query parameters
    * @param {object} request - Express request object
-   * @param {object} res - Express response object
+   * @param {object} response - Express response object
    * @returns {void}
    */
-  async answerPost (query, request, res) {
+  async answerPost (query, request, response) {
     if (query.data === "config") {
-      await this.saveConfigWithBackup(request.body, res, query);
+      await this.saveConfigWithBackup(request.body, response, query);
     }
   },
 
-  async saveConfigWithBackup (configData, res, query) {
+  async saveConfigWithBackup (configData, response, query) {
     const configPath = configManager.getConfigPath(__dirname);
     const backupSlot = await configManager.findBestBackupSlot();
 
     if (!backupSlot) {
       const error = new Error("Backing up config failed, not saving!");
       Log.error(error.message);
-      this.sendResponse(res, error, {query});
+      this.sendResponse(response, error, {query});
       return;
     }
 
@@ -401,14 +401,14 @@ module.exports = NodeHelper.create({
       query.data = "config_update";
       Log.info("Saved new config!");
       Log.info(`Used backup: ${backupPath}`);
-      this.sendResponse(res, undefined, {
+      this.sendResponse(response, undefined, {
         query,
         backup: backupPath,
         data: this.configOnHd
       });
     } catch (error) {
       query.data = "config_update";
-      this.sendResponse(res, error, {
+      this.sendResponse(response, error, {
         query,
         backup: backupPath,
         data: this.configOnHd
@@ -419,21 +419,21 @@ module.exports = NodeHelper.create({
   /**
    * Handle request for list of available modules
    * @param {object} query - Query parameters
-   * @param {object} res - Express response object
+   * @param {object} response - Express response object
    * @returns {void}
    */
-  handleGetModuleAvailable (query, res) {
+  handleGetModuleAvailable (query, response) {
     this.modulesAvailable.sort((a, b) => a.name.localeCompare(b.name));
-    this.sendResponse(res, undefined, {query, data: this.modulesAvailable});
+    this.sendResponse(response, undefined, {query, data: this.modulesAvailable});
   },
 
   /**
    * Handle request for list of installed modules
    * @param {object} query - Query parameters
-   * @param {object} res - Express response object
+   * @param {object} response - Express response object
    * @returns {void}
    */
-  handleGetModuleInstalled (query, res) {
+  handleGetModuleInstalled (query, response) {
 
     // Wait for pending update checks to complete before sending response
     const startTime = Date.now();
@@ -456,33 +456,33 @@ module.exports = NodeHelper.create({
         }
         const installed = this.modulesAvailable.filter((value) => value.installed && !value.isDefaultModule);
         installed.sort((a, b) => a.name.localeCompare(b.name));
-        this.sendResponse(res, undefined, {query, data: installed});
+        this.sendResponse(response, undefined, {query, data: installed});
       }
     };
     waitForUpdateChecks();
   },
 
-  handleGetMmUpdateAvailable (query, res) {
+  handleGetMmUpdateAvailable (query, response) {
     const sg = simpleGit(`${__dirname}/..`);
     sg.fetch().status((error, data) => {
       if (!error && data.behind > 0) {
-        this.sendResponse(res, undefined, {query, result: true});
+        this.sendResponse(response, undefined, {query, result: true});
         return;
       }
-      this.sendResponse(res, undefined, {query, result: false});
+      this.sendResponse(response, undefined, {query, result: false});
     });
   },
 
-  handleGetClasses (query, res) {
+  handleGetClasses (query, response) {
     const config = configManager.getConfig(this.configOnHd, this.configData);
     const thisConfig = config.modules.find((m) => m.module === "MMM-Remote-Control")?.config || {};
-    this.sendResponse(res, undefined, {
+    this.sendResponse(response, undefined, {
       query,
       data: thisConfig.classes || {}
     });
   },
 
-  async handleGetSaves (query, res) {
+  async handleGetSaves (query, response) {
     const backupHistorySize = 5;
     const times = [];
 
@@ -496,56 +496,56 @@ module.exports = NodeHelper.create({
         continue;
       }
     }
-    this.sendResponse(res, undefined, {query, data: times.toSorted((a, b) => b - a)});
+    this.sendResponse(response, undefined, {query, data: times.toSorted((a, b) => b - a)});
   },
 
-  handleGetDefaultConfig (query, res) {
-    if (query.module in Module.configDefaults) {
-      this.sendResponse(res, undefined, {query, data: Module.configDefaults[query.module]});
+  handleGetDefaultConfig (query, response) {
+    if (Object.hasOwn(Module.configDefaults, query.module)) {
+      this.sendResponse(response, undefined, {query, data: Module.configDefaults[query.module]});
     } else {
-      this.sendResponse(res, undefined, {query, data: {}});
+      this.sendResponse(response, undefined, {query, data: {}});
     }
   },
 
-  handleGetModules (query, res) {
-    if (!this.checkInitialized(res)) { return; }
+  handleGetModules (query, response) {
+    if (!this.checkInitialized(response)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, {query, data: this.configData.moduleData});
+      this.sendResponse(response, undefined, {query, data: this.configData.moduleData});
     });
   },
 
-  handleGetBrightness (query, res) {
-    if (!this.checkInitialized(res)) { return; }
+  handleGetBrightness (query, response) {
+    if (!this.checkInitialized(response)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, {query, result: this.configData.brightness});
+      this.sendResponse(response, undefined, {query, result: this.configData.brightness});
     });
   },
 
-  handleGetTemp (query, res) {
-    if (!this.checkInitialized(res)) { return; }
+  handleGetTemp (query, response) {
+    if (!this.checkInitialized(response)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, {query, result: this.configData.temp});
+      this.sendResponse(response, undefined, {query, result: this.configData.temp});
     });
   },
 
-  handleGetZoom (query, res) {
-    if (!this.checkInitialized(res)) { return; }
+  handleGetZoom (query, response) {
+    if (!this.checkInitialized(response)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, {query, result: this.configData.zoom});
+      this.sendResponse(response, undefined, {query, result: this.configData.zoom});
     });
   },
 
-  handleGetBackgroundColor (query, res) {
-    if (!this.checkInitialized(res)) { return; }
+  handleGetBackgroundColor (query, response) {
+    if (!this.checkInitialized(response)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, {query, result: this.configData.backgroundColor});
+      this.sendResponse(response, undefined, {query, result: this.configData.backgroundColor});
     });
   },
 
-  handleGetFontColor (query, res) {
-    if (!this.checkInitialized(res)) { return; }
+  handleGetFontColor (query, response) {
+    if (!this.checkInitialized(response)) { return; }
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, {query, result: this.configData.fontColor});
+      this.sendResponse(response, undefined, {query, result: this.configData.fontColor});
     });
   },
 
@@ -573,32 +573,32 @@ module.exports = NodeHelper.create({
    * Handle GET API requests
    * @param {object} query - Query parameters
    * @param {string} query.data - Data type requested
-   * @param {object} res - Express response object
+   * @param {object} response - Express response object
    * @returns {void}
    */
-  answerGet (query, res) {
+  answerGet (query, response) {
     const handlers = this.getDataHandlers();
     const handler = handlers[query.data];
 
     if (handler) {
-      handler(query, res);
+      handler(query, response);
       return;
     }
 
     // Unknown Command, Return Error
-    this.sendResponse(res, "Unknown or Bad Command.", query);
+    this.sendResponse(response, "Unknown or Bad Command.", query);
   },
 
-  async answerGetChangelog (query, res) {
+  async answerGetChangelog (query, response) {
     const moduleName = query.module;
     const modulePath = `${this.getModuleDir()}/${moduleName}`;
     const changelogPath = path.join(modulePath, "CHANGELOG.md");
 
     try {
       const changelog = await fs.promises.readFile(changelogPath, "utf8");
-      this.sendResponse(res, undefined, {action: "GET_CHANGELOG", changelog, module: moduleName});
+      this.sendResponse(response, undefined, {action: "GET_CHANGELOG", changelog, module: moduleName});
     } catch {
-      this.sendResponse(res, new Error("Changelog not found"), {action: "GET_CHANGELOG", query});
+      this.sendResponse(response, new Error("Changelog not found"), {action: "GET_CHANGELOG", query});
     }
   },
 
@@ -614,8 +614,8 @@ module.exports = NodeHelper.create({
     setTimeout(once, timeout);
   },
 
-  delayedQuery (query, res) {
-    if (query.did in this.delayedQueryTimers) {
+  delayedQuery (query, response) {
+    if (Object.hasOwn(this.delayedQueryTimers, query.did)) {
       clearTimeout(this.delayedQueryTimers[query.did]);
       delete this.delayedQueryTimers[query.did];
     }
@@ -627,34 +627,34 @@ module.exports = NodeHelper.create({
         ? query.timeout
         : 10) * 1000);
     }
-    this.sendResponse(res, undefined, query);
+    this.sendResponse(response, undefined, query);
   },
 
-  sendResponse (res, error, data) {
-    let response = {success: true};
+  sendResponse (response, error, data) {
+    let responsePayload = {success: true};
     let status = 200;
     let isResult = true;
     if (error) {
       Log.error(error);
-      response = {success: false, status: "error", reason: "unknown", info: error};
+      responsePayload = {success: false, status: "error", reason: "unknown", info: error};
       status = 400;
       isResult = false;
     }
     if (data) {
-      response = {...response, ...data};
+      responsePayload = {...responsePayload, ...data};
     }
-    if (res) {
-      if ("isSocket" in res && res.isSocket) {
-        this.sendSocketNotification("REMOTE_ACTION_RESULT", response);
+    if (response) {
+      if ("isSocket" in response && response.isSocket) {
+        this.sendSocketNotification("REMOTE_ACTION_RESULT", responsePayload);
       } else {
-        res.status(status).json(response);
+        response.status(status).json(responsePayload);
       }
     }
     return isResult;
   },
 
-  handleShowAlert (query, res) {
-    this.sendResponse(res);
+  handleShowAlert (query, response) {
+    this.sendResponse(response);
 
     const type = query.type || "alert";
     const title = query.title || "Note";
@@ -675,10 +675,10 @@ module.exports = NodeHelper.create({
    * @param {object} query - Query with notification name and optional payload
    * @param {string} query.notification - Notification name to broadcast
    * @param {object|string|number|boolean|null} query.payload - Payload (object, JSON string, or primitive)
-   * @param {object} res - Express response object
+   * @param {object} response - Express response object
    * @returns {boolean} Always true (errors are handled internally)
    */
-  handleNotification (query, res) {
+  handleNotification (query, response) {
     try {
       let payload = query.payload;
 
@@ -698,7 +698,7 @@ module.exports = NodeHelper.create({
       }
 
       this.sendSocketNotification(query.action, {notification: query.notification, payload});
-      this.sendResponse(res);
+      this.sendResponse(response);
       return true;
     } catch (error) {
 
@@ -711,42 +711,43 @@ module.exports = NodeHelper.create({
       } else {
         Log.error(error);
       }
-      this.sendResponse(res, error, {reason: error.message});
+      this.sendResponse(response, error, {reason: error.message});
       return true;
     }
   },
 
-  handleManageClasses (query, res) {
+  handleManageClasses (query, response) {
     if (query.payload && query.payload.classes && this.thisConfig && this.thisConfig.classes) {
       const classes = [];
       switch (typeof query.payload.classes) {
         case "string": classes.push(this.thisConfig.classes[query.payload.classes]); break;
 
-        case "object": for (const t of query.payload.classes) classes.push(this.thisConfig.classes[t]);
+        case "object": for (const className of query.payload.classes) classes.push(this.thisConfig.classes[className]);
 
       }
-      for (const cl of classes) {
-        for (const act in cl) {
+      for (const classConfig of classes) {
+        for (const actionName in classConfig) {
           if ([
             "SHOW",
             "HIDE",
             "TOGGLE"
-          ].includes(act.toUpperCase())) {
-            if (typeof cl[act] === "string") {
-              this.sendSocketNotification(act.toUpperCase(), {module: cl[act]});
+          ].includes(actionName.toUpperCase())) {
+            if (typeof classConfig[actionName] === "string") {
+              this.sendSocketNotification(actionName.toUpperCase(), {module: classConfig[actionName]});
             } else {
-              for (const t of cl[act]) {
-                this.sendSocketNotification(act.toUpperCase(), {module: t});
+              const modules = classConfig[actionName];
+              for (const moduleName of modules) {
+                this.sendSocketNotification(actionName.toUpperCase(), {module: moduleName});
               }
             }
           }
         }
       }
     }
-    this.sendResponse(res);
+    this.sendResponse(response);
   },
 
-  handleRestart (query, res) {
+  handleRestart (query, response) {
     try {
       const {app} = require("electron");
       if (!app) { throw "Could not get Electron app instance."; }
@@ -759,104 +760,105 @@ module.exports = NodeHelper.create({
 
       if (isManagedProcess) {
         Log.log("Running under pm2 (or similar process manager), exiting cleanly for managed restart...");
-        this.sendResponse(res, undefined, {action: "RESTART", info: "Exiting for process manager restart..."});
+        this.sendResponse(response, undefined, {action: "RESTART", info: "Exiting for process manager restart..."});
 
-        if (res && res.on) {
-          res.on("finish", () => app.quit());
+        if (response && response.on) {
+          response.on("finish", () => app.quit());
         } else {
           setTimeout(() => app.quit(), 1000);
         }
       } else {
-        this.sendResponse(res, undefined, {action: "RESTART", info: "Restarting Electron..."});
+        this.sendResponse(response, undefined, {action: "RESTART", info: "Restarting Electron..."});
         app.relaunch();
         app.quit();
       }
     } catch (error) {
       // Electron not available (server mode) - exit cleanly and let process manager restart
       Log.log(`Electron not available (${error?.message || "server mode"}), exiting process for restart by process manager...`);
-      this.sendResponse(res, undefined, {action: "RESTART", info: "Exiting process for restart..."});
+      this.sendResponse(response, undefined, {action: "RESTART", info: "Exiting process for restart..."});
 
       // Wait for response to be sent before exiting
-      if (res && res.on) {
-        res.on("finish", () => {
+      if (response && response.on) {
+        response.on("finish", () => {
           // eslint-disable-next-line unicorn/no-process-exit
           process.exit(0);
         });
       } else {
-        // Fallback if res doesn't have event emitter (socket response)
+        // Fallback if response doesn't have event emitter (socket response)
         // eslint-disable-next-line unicorn/no-process-exit
         setTimeout(() => process.exit(0), 1000);
       }
     }
   },
 
-  handleStop (query, res) {
+  handleStop (query, response) {
     Log.log("Stopping MagicMirror...");
-    this.sendResponse(res, undefined, {action: "STOP", info: "Stopping process..."});
+    this.sendResponse(response, undefined, {action: "STOP", info: "Stopping process..."});
 
     // Wait for response to be sent before exiting
-    if (res && res.on) {
-      res.on("finish", () => {
+    if (response && response.on) {
+      response.on("finish", () => {
         // eslint-disable-next-line unicorn/no-process-exit
         process.exit(1);
       });
     } else {
-      // Fallback if res doesn't have event emitter (socket response)
+      // Fallback if response doesn't have event emitter (socket response)
       // eslint-disable-next-line unicorn/no-process-exit
       setTimeout(() => process.exit(1), 1000);
     }
   },
 
-  handleCommand (query, res) {
+  handleCommand (query, response) {
     const options = {timeout: 15_000};
-    if (this.thisConfig.customCommand && this.thisConfig.customCommand[query.command]) {
-      exec(this.thisConfig.customCommand[query.command], options, (error, stdout, stderr) => {
-        this.checkForExecError(error, stdout, stderr, res, {stdout});
+    const command = this.thisConfig.customCommand?.[query.command];
+    if (command) {
+      exec(command, options, (error, stdout, stderr) => {
+        this.checkForExecError(error, stdout, stderr, response, {stdout});
       });
     } else {
-      this.sendResponse(res, new Error("Command not found"), query);
+      this.sendResponse(response, new Error("Command not found"), query);
     }
   },
 
-  handleUserPresence (query, res) {
+  handleUserPresence (query, response) {
     this.sendSocketNotification("USER_PRESENCE", query.value);
     this.userPresence = query.value;
-    this.sendResponse(res, undefined, query);
+    this.sendResponse(response, undefined, query);
   },
 
   /**
    * Forwards action to frontend without validation.
    * Used for SHOW/HIDE/TOGGLE - frontend filters invalid/missing module parameters.
    * @param {object} query - Query object containing action and optional module identifier
-   * @param {object} res - Express response object or socket placeholder
+   * @param {object} response - Express response object or socket placeholder
    */
-  handleSimpleSocketNotification (query, res) {
+  handleSimpleSocketNotification (query, response) {
     this.sendSocketNotification(query.action, query);
-    this.sendResponse(res);
+    this.sendResponse(response);
   },
 
-  handleSimpleValueNotification (query, res) {
-    this.sendResponse(res);
+  handleSimpleValueNotification (query, response) {
+    this.sendResponse(response);
     this.sendSocketNotification(query.action, query.value);
   },
 
-  handleSimpleNotification (query, res) {
-    this.sendResponse(res);
+  handleSimpleNotification (query, response) {
+    this.sendResponse(response);
     this.sendSocketNotification(query.action);
   },
 
-  handleSave (query, res) {
-    this.sendResponse(res);
+  handleSave (query, response) {
+    this.sendResponse(response);
     this.callAfterUpdate(() => { this.saveDefaultSettings(); });
   },
 
-  handleModuleData (query, res) {
+  handleModuleData (query, response) {
     this.callAfterUpdate(() => {
-      this.sendResponse(res, undefined, this.configData);
+      this.sendResponse(response, undefined, this.configData);
     });
   },
 
-  handleDelayed (query, res) {
+  handleDelayed (query, response) {
 
     /*
      * Expects a nested query object
@@ -873,24 +875,24 @@ module.exports = NodeHelper.create({
      *   }
      * Resending with same ID resets delay, unless abort:true
      */
-    this.delayedQuery(query, res);
+    this.delayedQuery(query, response);
   },
 
   getActionHandlers () {
     const options = {timeout: 15_000};
 
-    const callMonitorControl = (action, res) => systemControl.monitorControl(
+    const callMonitorControl = (action, response) => systemControl.monitorControl(
       action,
       this.thisConfig,
       options,
-      res,
+      response,
       this.checkForExecError.bind(this),
       this.sendSocketNotification.bind(this)
     );
 
-    const callShutdownControl = (action, res) => systemControl.shutdownControl(action, this.thisConfig, options, res, this.sendResponse.bind(this));
+    const callShutdownControl = (action, response) => systemControl.shutdownControl(action, this.thisConfig, options, response, this.sendResponse.bind(this));
 
-    const callElectronActions = (query, res) => systemControl.handleElectronActions(query, res, this.sendResponse.bind(this));
+    const callElectronActions = (query, response) => systemControl.handleElectronActions(query, response, this.sendResponse.bind(this));
 
     return {
       GET_CHANGELOG: (q, r) => this.answerGetChangelog(q, r),
@@ -928,17 +930,17 @@ module.exports = NodeHelper.create({
     };
   },
 
-  executeQuery (query, res, skipResponse = false) {
+  executeQuery (query, response, shouldSkipResponse = false) {
     const handlers = this.getActionHandlers();
     const handler = handlers[query.action];
 
     if (handler) {
-      handler(query, skipResponse ? null : res);
+      handler(query, shouldSkipResponse ? null : response);
       return true;
     }
 
-    if (!skipResponse) {
-      this.sendResponse(res, new Error(`Invalid Option: ${query.action}`));
+    if (!shouldSkipResponse) {
+      this.sendResponse(response, new Error(`Invalid Option: ${query.action}`));
     }
     return false;
   },
@@ -946,51 +948,50 @@ module.exports = NodeHelper.create({
   /**
    * Install a module from a git repository
    * @param {string} url - Git repository URL
-   * @param {object} res - Express response object
+   * @param {object} response - Express response object
    * @param {object} data - Additional installation data
    * @returns {void}
    */
-  async installModule (url, res, data) {
+  async installModule (url, response, data) {
     await moduleManager.installModule({
       url,
-      baseDir: __dirname,
+      baseDirectory: __dirname,
       onSuccess: async (result) => {
         await this.readModuleData();
-        this.sendResponse(res, undefined, {stdout: result.stdout, ...data});
+        this.sendResponse(response, undefined, {stdout: result.stdout, ...data});
       },
       onError: (error, result) => {
-        this.sendResponse(res, error, {stdout: result.stdout, stderr: result.stderr, ...data});
+        this.sendResponse(response, error, {stdout: result.stdout, stderr: result.stderr, ...data});
       }
     });
   },
 
-  async updateModule (module, res) {
+  async updateModule (module, response) {
     await moduleManager.updateModule({
       moduleName: module,
-      baseDir: __dirname,
+      baseDirectory: __dirname,
       modulesAvailable: this.modulesAvailable,
       onSuccess: (result) => {
         if (result.code !== "up-to-date") {
           this.readModuleData();
         }
-        this.sendResponse(res, undefined, result);
+        this.sendResponse(response, undefined, result);
       },
       onError: (error, result) => {
-        this.sendResponse(res, error, result);
+        this.sendResponse(response, error, result);
       }
     });
   },
 
-  checkForExecError (error, stdout, stderr, res, data) {
+  checkForExecError (error, stdout, stderr, response, data) {
     if (error) { Log.error(stderr); }
-    this.sendResponse(res, error, data);
+    this.sendResponse(response, error, data);
   },
 
   translate (data) {
-    for (const t of Object.keys(this.translation)) {
+    for (const [t, translation] of Object.entries(this.translation)) {
       const pattern = `%%TRANSLATE:${t}%%`;
-      const re = new RegExp(pattern, "g");
-      data = data.replace(re, this.translation[t]);
+      data = data.split(pattern).join(translation);
     }
     return data;
   },
@@ -1014,7 +1015,7 @@ module.exports = NodeHelper.create({
     const configPath = globalThis.configuration_file === undefined
       ? "config/config.js"
       : globalThis.configuration_file;
-    data = data.replaceAll("%%CONFIG_PATH%%", configPath);
+    data = data.split("%%CONFIG_PATH%%").join(configPath);
     return data;
   },
 
@@ -1053,86 +1054,98 @@ module.exports = NodeHelper.create({
    */
   socketNotificationReceived (notification, payload) {
 
-    if (notification === "CURRENT_STATUS") {
-      this.configData = payload;
-      this.thisConfig = payload.remoteConfig;
-      if (this.initialized) {
-        for (const o of this.waiting) { o.run(); }
-        this.waiting = [];
-      } else {
+    switch (notification) {
+      case "CURRENT_STATUS":
+        this.configData = payload;
+        this.thisConfig = payload.remoteConfig;
+        if (this.initialized) {
+          for (const o of this.waiting) { o.run(); }
+          this.waiting = [];
+        } else {
         // Do anything else required to initialize
-        this.initialized = true;
-      }
-    }
-    if (notification === "REQUEST_DEFAULT_SETTINGS") {
-      // module started, answer with current ip addresses
-      this.sendSocketNotification("IP_ADDRESSES", this.getIpAddresses());
-      this.sendSocketNotification("LOAD_PORT", this.configOnHd.port || "");
-      // check if we have got saved default settings
-      this.loadDefaultSettings();
-    }
-    if (notification === "GENERATE_QR_CODE") {
-      this.generateQRCode(payload);
-    }
-    if (notification === "REMOTE_ACTION") {
-      if ("action" in payload) {
-        this.executeQuery(payload, {isSocket: true});
-      } else if ("data" in payload) {
-        this.answerGet(payload, {isSocket: true});
-      }
-    }
-    if (notification === "UNDO_CONFIG") {
-      const backupHistorySize = 5;
-      let iteration = -1;
-
-      for (let index = backupHistorySize - 1; index > 0; index--) {
-        const backupPath = path.resolve(`config/config.js.backup${index}`);
-        try {
-          const stats = fs.statSync(backupPath);
-          if (stats.mtime.toISOString() == payload) {
-            iteration = index;
-            index = -1;
-          }
-        } catch (error) {
-          Log.debug(`Backup ${index} does not exist: ${error}.`);
-          continue;
+          this.initialized = true;
         }
-      }
-      if (iteration < 0) {
-        this.answerGet({data: "saves"}, {isSocket: true});
-        return;
-      }
-      const backupPath = path.resolve(`config/config.js.backup${iteration}`);
-      const request = require(backupPath);
 
-      this.answerPost({data: "config"}, {body: request}, {isSocket: true});
-    }
-    if (notification === "NEW_CONFIG") {
-      this.answerPost({data: "config"}, {body: payload}, {isSocket: true});
-    }
-    if (notification === "REMOTE_CLIENT_CONNECTED") {
-      this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
-      this.loadCustomMenus();
-      if ("id" in this.moduleApiMenu) {
-        this.sendSocketNotification("REMOTE_CLIENT_MODULEAPI_MENU", this.moduleApiMenu);
-      }
-    }
-    if (notification === "REMOTE_NOTIFICATION_ECHO_IN") {
-      this.sendSocketNotification("REMOTE_NOTIFICATION_ECHO_OUT", payload);
-    }
-    if (notification === "USER_PRESENCE") {
-      this.userPresence = payload;
-    }
+        break;
+      case "REQUEST_DEFAULT_SETTINGS":
+      // module started, answer with current ip addresses
+        this.sendSocketNotification("IP_ADDRESSES", this.getIpAddresses());
+        this.sendSocketNotification("LOAD_PORT", this.configOnHd.port || "");
+        // check if we have got saved default settings
+        this.loadDefaultSettings();
 
-    /* API EXTENSION -- added v2.0.0 */
-    if (notification === "REGISTER_API" && "module" in payload) {
-      if ("actions" in payload && Object.keys(payload.actions).length > 0) {
-        this.externalApiRoutes[payload.module] = payload;
-      } else {
+        break;
+      case "GENERATE_QR_CODE":
+        this.generateQRCode(payload);
+
+        break;
+      case "REMOTE_ACTION":
+        if ("action" in payload) {
+          this.executeQuery(payload, {isSocket: true});
+        } else if ("data" in payload) {
+          this.answerGet(payload, {isSocket: true});
+        }
+
+        break;
+      case "UNDO_CONFIG": {
+        const backupHistorySize = 5;
+        let iteration = -1;
+
+        for (let index = backupHistorySize - 1; index > 0; index--) {
+          const backupPath = path.resolve(`config/config.js.backup${index}`);
+          try {
+            const stats = fs.statSync(backupPath);
+            if (stats.mtime.toISOString() == payload) {
+              iteration = index;
+              index = -1;
+            }
+          } catch (error) {
+            Log.debug(`Backup ${index} does not exist: ${error}.`);
+            continue;
+          }
+        }
+        if (iteration < 0) {
+          this.answerGet({data: "saves"}, {isSocket: true});
+          return;
+        }
+        const backupPath = path.resolve(`config/config.js.backup${iteration}`);
+        const request = require(backupPath);
+
+        this.answerPost({data: "config"}, {body: request}, {isSocket: true});
+
+        break;
+      }
+      case "NEW_CONFIG":
+        this.answerPost({data: "config"}, {body: payload}, {isSocket: true});
+
+        break;
+      case "REMOTE_CLIENT_CONNECTED":
+        this.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
+        this.loadCustomMenus();
+        if ("id" in this.moduleApiMenu) {
+          this.sendSocketNotification("REMOTE_CLIENT_MODULEAPI_MENU", this.moduleApiMenu);
+        }
+
+        break;
+      case "REMOTE_NOTIFICATION_ECHO_IN":
+        this.sendSocketNotification("REMOTE_NOTIFICATION_ECHO_OUT", payload);
+
+        break;
+      case "USER_PRESENCE":
+        this.userPresence = payload;
+
+        break;
+      default: if (notification === "REGISTER_API" && "module" in payload) {
+
+        /* API EXTENSION -- added v2.0.0 */
+        if ("actions" in payload && Object.keys(payload.actions).length > 0) {
+          this.externalApiRoutes[payload.module] = payload;
+        } else {
         // Blank actions means the module has requested to be removed from API
-        delete this.externalApiRoutes[payload.module];
+          delete this.externalApiRoutes[payload.module];
+        }
+        this.updateModuleApiMenu();
       }
-      this.updateModuleApiMenu();
     }
   },
 

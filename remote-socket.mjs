@@ -135,9 +135,10 @@ Object.assign(
                 "fontColor": "#font-color-picker"
               };
               const dataKey = payload.query.data;
-              if (sliderMap[dataKey]) {
+              const sliderConfig = sliderMap[dataKey];
+              if (sliderConfig) {
 
-                const {selector, type} = sliderMap[dataKey],
+                const {selector, type} = sliderConfig,
                   slider = document.querySelector(selector);
                 slider.value = payload.result;
                 this.updateSliderThumbColor(
@@ -145,18 +146,23 @@ Object.assign(
                   type
                 );
 
-              } else if (pickerMap[dataKey]) {
-
-                const picker = document.querySelector(pickerMap[dataKey]);
-                if (payload.result) {
-
-                  picker.value = payload.result;
-
-                }
-
               } else {
 
-                this.handleLoadList(payload);
+                const pickerSelector = pickerMap[dataKey];
+                if (pickerSelector) {
+
+                  const picker = document.querySelector(pickerSelector);
+                  if (payload.result) {
+
+                    picker.value = payload.result;
+
+                  }
+
+                } else {
+
+                  this.handleLoadList(payload);
+
+                }
 
               }
 
@@ -383,7 +389,10 @@ Object.assign(
 
       try {
 
-        const dataSize = Array.isArray(result.data) ? result.data.length : Object.keys(result.data ?? {}).length;
+        const dataItems = Array.isArray(result.data)
+          ? result.data
+          : Object.keys(result.data ?? {});
+        const dataSize = dataItems.length;
         emptyIndicator?.classList.toggle("hidden", dataSize > 0);
         this.savedData[result.query.data] = result.data;
 

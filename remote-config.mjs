@@ -11,12 +11,9 @@ Object.assign(
     recreateConfigElement (key, previousType, newType) {
 
       const input = document.getElementById(key);
-      let oldGUI = input.parentNode;
-      if (previousType === "array" || previousType === "object") {
-
-        oldGUI = input;
-
-      }
+      const oldGUI = previousType === "array" || previousType === "object"
+        ? input
+        : input.parentNode;
       const path = key.split("/"),
         name = path.at(-1);
 
@@ -137,10 +134,13 @@ Object.assign(
           this.translate("REMOVE"),
           (event) => {
 
-            const thisElement = event.currentTarget,
-              elementToRemove = type === "array" || type === "object"
-                ? thisElement.parentNode.parentNode
-                : thisElement.parentNode;
+            const thisElement = event.currentTarget;
+            let elementToRemove = thisElement.parentNode;
+            if (type === "array" || type === "object") {
+
+              elementToRemove = elementToRemove.parentNode;
+
+            }
             elementToRemove.remove();
 
           },
@@ -329,11 +329,9 @@ Object.assign(
     getTypeAsString (dataToEdit, path) {
 
       let type = typeof dataToEdit;
-      if (path === "<root>/position") {
-
-        type = "position";
-
-      }
+      type = path === "<root>/position"
+        ? "position"
+        : type;
       if (this.createConfigElement(type)) {
 
         return type;
@@ -360,14 +358,7 @@ Object.assign(
 
     hasForcedType (path) {
 
-      let isForcedType = false;
-      if ((path.match(/\//g) || []).length === 1) {
-
-        // Disable type editing in root layer
-        isForcedType = true;
-
-      }
-      return isForcedType;
+      return (path.match(/\//g) || []).length === 1;
 
     },
 
@@ -719,10 +710,9 @@ Object.assign(
 
           value = element.checked;
 
-        }
-        if (element.type === "number") {
+        } else if (element.type === "number") {
 
-          value = Number.parseFloat(value);
+          value = Number(value);
 
         }
         this.setValue(
@@ -811,7 +801,7 @@ Object.assign(
 
     },
 
-    appendModuleEditElements (wrapper, moduleData) {
+    async appendModuleEditElements (wrapper, moduleData) {
 
       for (const [index, data] of moduleData.entries()) {
 
@@ -826,12 +816,8 @@ Object.assign(
         );
         const buttonsContainer = wrapper.lastElementChild.querySelector(".module-buttons");
 
-        this.getModuleUrl(data.module).then((url) => {
-
-          if (!url) {
-            return;
-          }
-
+        const url = await this.getModuleUrl(data.module);
+        if (url) {
 
           const repoButton = this.createSymbolText(
             "fa fa-fw fa-github",
@@ -852,8 +838,7 @@ Object.assign(
             buttonsContainer.firstChild
           );
 
-
-        });
+        }
 
         const editButton = this.createSymbolText(
           "fa fa-fw fa-pencil",
@@ -975,11 +960,12 @@ Object.assign(
       if (result.success) {
 
         const dates = {};
-        for (const index in result.data) {
+        for (const dateValue of result.data) {
+          const dateLabel = String(new Date(dateValue));
 
-          dates[new Date(result.data[index])] = () => {
+          dates[dateLabel] = () => {
 
-            this.restoreConfig(result.data[index]);
+            this.restoreConfig(dateValue);
 
           };
 

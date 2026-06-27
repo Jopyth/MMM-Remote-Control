@@ -125,8 +125,7 @@ const buttons = {
   // Notification menu
   "send-notification-button" () {
 
-    const name = document.querySelector("#notification-name").value.trim().toUpperCase(),
-      rawPayload = document.querySelector("#notification-payload").value.trim();
+    const name = document.querySelector("#notification-name").value.trim().toUpperCase();
     if (!name) {
 
       Remote.setStatus(
@@ -136,6 +135,7 @@ const buttons = {
       return;
 
     }
+    const rawPayload = document.querySelector("#notification-payload").value.trim();
     let payload;
     if (rawPayload) {
 
@@ -202,9 +202,9 @@ const buttons = {
 
     const kvpairs = {},
       form = document.querySelector("#alert");
-    for (const e of form.elements) {
+    for (const element of form.elements) {
 
-      kvpairs[e.name] = e.value;
+      kvpairs[element.name] = element.value;
 
     }
     Remote.sendSocketNotification(
@@ -252,11 +252,12 @@ function showConfirmation (confirmKey, icon, labelKey, action) {
 
 }
 
-for (const [id, {selector, defaultValue, type, action}] of Object.entries({
+const sliderResetEntries = Object.entries({
   "brightness-reset": {"selector": "#brightness-slider", "defaultValue": 100, "type": "brightness", "action": "BRIGHTNESS"},
   "temp-reset": {"selector": "#temp-slider", "defaultValue": 327, "type": "temp", "action": "TEMP"},
   "zoom-reset": {"selector": "#zoom-slider", "defaultValue": 100, "type": "zoom", "action": "ZOOM"}
-})) {
+});
+for (const [id, {selector, defaultValue, type, action}] of sliderResetEntries) {
 
   buttons[id] = () => {
 
@@ -275,10 +276,11 @@ for (const [id, {selector, defaultValue, type, action}] of Object.entries({
 
 }
 
-for (const [id, {selector, defaultValue, action}] of Object.entries({
+const colorResetEntries = Object.entries({
   "background-color-reset": {"selector": "#background-color-picker", "defaultValue": "#000000", "action": "BACKGROUND_COLOR"},
   "font-color-reset": {"selector": "#font-color-picker", "defaultValue": "#ffffff", "action": "FONT_COLOR"}
-})) {
+});
+for (const [id, {selector, defaultValue, action}] of colorResetEntries) {
 
   buttons[id] = () => {
 
@@ -292,11 +294,12 @@ for (const [id, {selector, defaultValue, action}] of Object.entries({
 
 }
 
-for (const [id, {confirmKey, icon, labelKey, action}] of Object.entries({
+const confirmActionEntries = Object.entries({
   "shut-down-button": {"confirmKey": "CONFIRM_SHUTDOWN", "icon": "fa fa-power-off", "labelKey": "SHUTDOWN", "action": "SHUTDOWN"},
   "restart-button": {"confirmKey": "CONFIRM_REBOOT", "icon": "fa fa-refresh", "labelKey": "REBOOT", "action": "REBOOT"},
   "restart-mm-button": {"confirmKey": "CONFIRM_RESTARTMM", "icon": "fa fa-recycle", "labelKey": "RESTARTMM", "action": "RESTART"}
-})) {
+});
+for (const [id, {confirmKey, icon, labelKey, action}] of confirmActionEntries) {
 
   buttons[id] = () => showConfirmation(
     confirmKey,
@@ -307,7 +310,7 @@ for (const [id, {confirmKey, icon, labelKey, action}] of Object.entries({
 
 }
 
-for (const [id, action] of Object.entries({
+const simpleActionEntries = Object.entries({
   "monitor-on-button": "MONITORON",
   "monitor-off-button": "MONITOROFF",
   "refresh-mm-button": "REFRESH",
@@ -315,7 +318,8 @@ for (const [id, action] of Object.entries({
   "minimize-button": "MINIMIZE",
   "devtools-button": "DEVTOOLS",
   "save-button": "SAVE"
-})) {
+});
+for (const [id, action] of simpleActionEntries) {
 
   buttons[id] = () => Remote.action(action);
 
@@ -324,13 +328,13 @@ for (const [id, action] of Object.entries({
 Remote.updateNotificationUrl = function () {
 
   const nameElement = document.querySelector("#notification-name"),
-    urlElement = document.querySelector("#notification-url"),
-    methodElement = document.querySelector("#notification-url-method");
+    urlElement = document.querySelector("#notification-url");
   if (!nameElement || !urlElement) {
 
     return;
 
   }
+  const methodElement = document.querySelector("#notification-url-method");
 
   const name = nameElement.value.trim().toUpperCase();
   if (!name) {
@@ -416,14 +420,14 @@ Remote.updateNotificationUrl = function () {
 };
 
 // Initialize the Remote UI when DOM is ready
-Remote.init = function () {
+Remote.init = async function () {
 
   // Initialize socket connection
   Remote.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
   Remote.getData("translations");
   // Menu rendering + setup deferred to onTranslationsLoaded()
 
-  globalThis.addEventListener(
+  addEventListener(
     "hashchange",
     () => {
 
@@ -441,26 +445,25 @@ Remote.init = function () {
   // Register service worker for PWA support
   if ("serviceWorker" in navigator) {
 
-    navigator.serviceWorker.register(
-      "./remote-service-worker.js",
-      {"scope": "./"}
-    ).
-      then((registration) => {
+    try {
 
-        console.log(
-          "Service Worker registered:",
-          registration
-        );
+      const registration = await navigator.serviceWorker.register(
+        "./remote-service-worker.js",
+        {"scope": "./"}
+      );
+      console.log(
+        "Service Worker registered:",
+        registration
+      );
 
-      }).
-      catch((error) => {
+    } catch (error) {
 
-        console.log(
-          "Service Worker registration failed:",
-          error
-        );
+      console.log(
+        "Service Worker registration failed:",
+        error
+      );
 
-      });
+    }
 
   }
 

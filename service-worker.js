@@ -22,7 +22,7 @@ const urlsToCache = [
 ];
 
 // Install service worker and skip waiting
-globalThis.addEventListener("install", (event) => {
+addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await Promise.allSettled(urlsToCache.map(async (url) => {
@@ -37,7 +37,7 @@ globalThis.addEventListener("install", (event) => {
 });
 
 // Cache and return requests
-globalThis.addEventListener("fetch", (event) => {
+addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
     return;
   }
@@ -53,7 +53,7 @@ globalThis.addEventListener("fetch", (event) => {
 });
 
 // Update service worker
-globalThis.addEventListener("activate", (event) => {
+addEventListener("activate", (event) => {
   event.waitUntil((async () => {
     const cacheNames = await caches.keys();
     await Promise.all(cacheNames.map((cacheName) => {

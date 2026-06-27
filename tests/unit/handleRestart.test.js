@@ -84,8 +84,8 @@ describe("handleRestart", () => {
       const calls = [];
       currentElectronMock = {
         app: {
-          relaunch: () => calls.push("relaunch"),
-          quit: () => calls.push("quit")
+          relaunch: () => { calls.push("relaunch"); },
+          quit: () => { calls.push("quit"); }
         }
       };
 
@@ -114,7 +114,7 @@ describe("handleRestart", () => {
       const calls = [];
       currentElectronMock = {
         app: {
-          relaunch: () => calls.push("relaunch"),
+          relaunch: () => { calls.push("relaunch"); },
           quit: () => { calls.push("quit"); done(); }
         }
       };
@@ -163,7 +163,7 @@ describe("handleRestart", () => {
       const calls = [];
       currentElectronMock = {
         app: {
-          relaunch: () => calls.push("relaunch"),
+          relaunch: () => { calls.push("relaunch"); },
           quit: () => { calls.push("quit"); done(); }
         }
       };

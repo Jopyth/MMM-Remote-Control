@@ -83,4 +83,4 @@ const observeSwaggerUI = () => {
   enhanceUI();
 };
 
-globalThis.addEventListener("DOMContentLoaded", initSwaggerUI);
+addEventListener("DOMContentLoaded", initSwaggerUI);

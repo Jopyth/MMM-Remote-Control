@@ -32,7 +32,7 @@ describe("basePath-safe remote asset paths", () => {
   test("service worker precache list avoids root-absolute URLs", () => {
     const serviceWorkerPath = path.resolve(__dirname, "../../service-worker.js");
     const serviceWorker = fs.readFileSync(serviceWorkerPath, "utf8");
-    const matches = [...serviceWorker.matchAll(/"([^"\n]+)"/g)];
+    const matches = serviceWorker.matchAll(/"([^"\n]+)"/g).toArray();
     const urls = matches.map((match) => match[1]).filter((value) => value.startsWith("./") || value.startsWith("/"));
 
     assert.ok(urls.includes("./remote.html"));

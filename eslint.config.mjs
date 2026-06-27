@@ -16,6 +16,7 @@ const sharedJsExtends = [
     stylistic.configs.all,
     unicorn.configs.recommended
   ],
+
   sharedJsRules = {
     "@stylistic/array-element-newline": ["error", "consistent"],
     "@stylistic/brace-style": ["error", "1tbs", {"allowSingleLine": true}],
@@ -57,6 +58,7 @@ const sharedJsExtends = [
     "unicorn/prefer-module": "off",
     "unicorn/prefer-query-selector": "off",
     "unicorn/prevent-abbreviations": "off",
+    "unicorn/name-replacements": ["error", {"checkFilenames": false}],
     "unicorn/switch-case-braces": ["error", "avoid"]
   };
 
@@ -80,10 +82,30 @@ export default defineConfig([
     "rules": sharedJsRules
   },
   {
-    "files": ["**/*.test.js"],
+    "files": ["tests/**/*.js"],
     "rules": {
       "jsdoc/require-jsdoc": "off",
-      "max-lines-per-function": "off"
+      "max-lines-per-function": "off",
+      "unicorn/name-replacements": "off",
+      "unicorn/no-global-object-property-assignment": "off",
+      "unicorn/no-top-level-assignment-in-function": "off"
+    }
+  },
+  {
+    "files": ["tests/**/*.mjs"],
+    "rules": {
+      "class-methods-use-this": "off",
+      "func-style": "off",
+      "init-declarations": "off",
+      "jsdoc/require-jsdoc": "off",
+      "max-lines-per-function": "off",
+      "max-statements": "off",
+      "no-empty-function": "off",
+      "one-var": "off",
+      "require-atomic-updates": "off",
+      "unicorn/name-replacements": "off",
+      "unicorn/no-global-object-property-assignment": "off",
+      "unicorn/no-top-level-assignment-in-function": "off"
     }
   },
   {
@@ -104,7 +126,7 @@ export default defineConfig([
   },
   {
     "files": ["**/*.mjs"],
-    "ignores": ["remote.mjs", "remote-*.mjs"],
+    "ignores": ["remote.mjs", "remote-*.mjs", "tests/**/*.mjs"],
     "languageOptions": {
       "ecmaVersion": "latest",
       "globals": {
@@ -123,7 +145,8 @@ export default defineConfig([
       "import-x/no-unresolved": ["error", {"ignore": ["eslint/config"]}],
       "no-magic-numbers": "off",
       "sort-keys": "off",
-      "unicorn/filename-case": "off"
+      "unicorn/filename-case": "off",
+      "unicorn/name-replacements": ["error", {"checkFilenames": false}]
     }
   },
   {
@@ -133,6 +156,6 @@ export default defineConfig([
     }
   },
   {"files": ["**/*.json"], "ignores": ["package-lock.json"], "plugins": {json}, "extends": ["json/recommended"], "language": "json/json"},
-  {"files": ["tests/**/*.mjs"], "rules": {"class-methods-use-this": "off", "func-style": "off", "init-declarations": "off", "jsdoc/require-jsdoc": "off", "max-lines-per-function": "off", "max-statements": "off", "no-empty-function": "off", "one-var": "off", "require-atomic-updates": "off"}},
+  {"files": ["docs/**/*.js"], "rules": {"unicorn/no-global-object-property-assignment": "off"}},
   {"files": ["**/*.md"], "plugins": {markdown}, "extends": ["markdown/recommended"], "language": "markdown/gfm"}
 ]);

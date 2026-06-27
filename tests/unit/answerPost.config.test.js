@@ -4,7 +4,7 @@ const path = require("node:path");
 const ModuleLib = require("node:module");
 
 // Ensure shims resolve like other tests
-globalThis.process = globalThis.process || {};
+globalThis.process ||= {};
 const shimDir = path.resolve(__dirname, "../shims");
 process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : "");
 if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
@@ -103,7 +103,7 @@ describe("answerPost config persistence", () => {
       const match = (/backup(\d)/u).exec(filePath);
       if (!match) throw Object.assign(new Error("unexpected"), {code: "ENOENT"});
       const slot = Number(match[1]);
-      if (mtimeBySlot[slot]) {
+      if (Object.hasOwn(mtimeBySlot, slot)) {
         return {mtime: mtimeBySlot[slot]};
       }
       const error_ = new Error("missing");

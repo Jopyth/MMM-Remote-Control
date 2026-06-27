@@ -25,18 +25,17 @@ Object.assign(
       }
       pattern = pattern.trim();
 
-      const regex = new RegExp(
-          pattern,
-          "i"
-        ),
-        searchIn = ["maintainer", "description", "name"],
-
-        data = this.savedData.moduleAvailable;
+      const data = this.savedData.moduleAvailable;
       if (!Array.isArray(data)) {
 
         return;
 
       }
+      const regex = new RegExp(
+          pattern,
+          "i"
+        ),
+        searchIn = ["maintainer", "description", "name"];
       for (const [index, currentData] of data.entries()) {
 
         const id = `install-module-${index}`,
@@ -55,17 +54,7 @@ Object.assign(
         }
 
         let match = isFilterInstalled && currentData.installed;
-
-        for (const key of searchIn) {
-
-          if (match || currentData[key]?.match(regex)) {
-
-            match = true;
-            break;
-
-          }
-
-        }
+        match ||= searchIn.some((key) => currentData[key]?.match(regex));
         element.classList.toggle(
           "hidden",
           !match
@@ -77,18 +66,9 @@ Object.assign(
 
     updateSliderThumbColor (slider, type) {
 
-      const value = Number.parseInt(
-          slider.value,
-          10
-        ),
-        min = Number.parseInt(
-          slider.min,
-          10
-        ),
-        max = Number.parseInt(
-          slider.max,
-          10
-        ),
+      const value = Number(slider.value),
+        min = Number(slider.min),
+        max = Number(slider.max),
         percent = (value - min) / (max - min);
 
       let thumbColor, trackGradient;
@@ -185,9 +165,9 @@ Object.assign(
 
     },
 
-    getPopupContent (clear = true) {
+    getPopupContent (shouldClear = true) {
 
-      if (clear) {
+      if (shouldClear) {
 
         this.closePopup();
 
@@ -244,79 +224,86 @@ Object.assign(
       let onClick,
         symbol,
         text;
-      if (status === "loading") {
+      switch (status) {
+        case "loading":
 
-        symbol = "fa-spinner fa-pulse";
-        text = this.translate("LOADING");
-        onClick = false;
+          symbol = "fa-spinner fa-pulse";
+          text = this.translate("LOADING");
+          onClick = false;
 
-      }
-      if (status === "error") {
 
-        symbol = "fa-exclamation-circle";
-        text = this.translate("ERROR");
-        onClick = () => {
+          break;
+        case "error":
 
-          this.setStatus("none");
-
-        };
-        // Only auto-hide errors if autoHideDelayError > 0, otherwise user must click to dismiss
-        if (this.autoHideDelayError > 0) {
-
-          this.autoHideTimer = setTimeout(
-            () => {
-
-              this.setStatus("none");
-
-            },
-            this.autoHideDelayError
-          );
-
-        }
-
-      }
-      if (status === "info") {
-
-        symbol = "fa-info-circle";
-        text = this.translate("INFO");
-        onClick = () => {
-
-          this.setStatus("none");
-
-        };
-        // Info messages (like restart/stop) should be displayed longer
-        if (this.autoHideDelayInfo > 0) {
-
-          this.autoHideTimer = setTimeout(
-            () => {
-
-              this.setStatus("none");
-
-            },
-            this.autoHideDelayInfo
-          );
-
-        }
-
-      }
-      if (status === "success") {
-
-        symbol = "fa-check-circle";
-        text = this.translate("DONE");
-        onClick = () => {
-
-          this.setStatus("none");
-
-        };
-        this.autoHideTimer = setTimeout(
-          () => {
+          symbol = "fa-exclamation-circle";
+          text = this.translate("ERROR");
+          onClick = () => {
 
             this.setStatus("none");
 
-          },
-          this.autoHideDelay
-        );
+          };
+          // Only auto-hide errors if autoHideDelayError > 0, otherwise user must click to dismiss
+          if (this.autoHideDelayError > 0) {
 
+            this.autoHideTimer = setTimeout(
+              () => {
+
+                this.setStatus("none");
+
+              },
+              this.autoHideDelayError
+            );
+
+          }
+
+
+          break;
+        case "info":
+
+          symbol = "fa-info-circle";
+          text = this.translate("INFO");
+          onClick = () => {
+
+            this.setStatus("none");
+
+          };
+          // Info messages (like restart/stop) should be displayed longer
+          if (this.autoHideDelayInfo > 0) {
+
+            this.autoHideTimer = setTimeout(
+              () => {
+
+                this.setStatus("none");
+
+              },
+              this.autoHideDelayInfo
+            );
+
+          }
+
+
+          break;
+        case "success":
+
+          symbol = "fa-check-circle";
+          text = this.translate("DONE");
+          onClick = () => {
+
+            this.setStatus("none");
+
+          };
+          this.autoHideTimer = setTimeout(
+            () => {
+
+              this.setStatus("none");
+
+            },
+            this.autoHideDelay
+          );
+
+
+          break;
+      // No default
       }
       if (message) {
 

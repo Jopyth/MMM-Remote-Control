@@ -120,7 +120,7 @@ describe("configManager.findBestBackupSlot", () => {
 
     fs.promises.stat = async (filePath) => {
       const match = (/backup(\d)/u).exec(filePath);
-      if (match && mtimes[Number(match[1])]) {
+      if (match && Object.hasOwn(mtimes, Number(match[1]))) {
         return {mtime: mtimes[Number(match[1])]};
       }
       const error = new Error("missing");
