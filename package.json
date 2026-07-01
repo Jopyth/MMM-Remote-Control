@@ -32,7 +32,7 @@
   "scripts": {
     "demo": "cd ../../ && MM_CONFIG_FILE=modules/MMM-Remote-Control/demo.config.js node --run start:dev",
     "download_modules": "node ./scripts/download_modules_manually.mjs",
-    "generate-apikey": "node -p 'require(\"uuid\").v4()'",
+    "generate-apikey": "node -p 'require(\"node:crypto\").randomUUID()'",
     "lint": "eslint && prettier . --check",
     "lint:fix": "eslint --fix && prettier . --write",
     "prepare": "simple-git-hooks || echo 'No problem. Skipping git hooks installation.'",
@@ -49,8 +49,7 @@
     "marked": "^18.0.5",
     "qrcode": "^1.5.4",
     "simple-git": "^3.36.0",
-    "swagger-ui-dist": "^5.32.8",
-    "uuid": "^14.0.1"
+    "swagger-ui-dist": "^5.32.8"
   },
   "devDependencies": {
     "@eslint/css": "^1.3.0",

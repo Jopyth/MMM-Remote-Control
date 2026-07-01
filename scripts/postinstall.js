@@ -7,7 +7,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const {v4: uuid} = require("uuid");
+const {randomUUID} = require("node:crypto");
 
 const moduleDirectory = path.resolve(__dirname, "..");
 const modulesSourceFile = path.join(moduleDirectory, "modules.json.template");
@@ -24,7 +24,7 @@ try {
   }
 
   // Always generate and display a fresh API key
-  const apiKey = uuid();
+  const apiKey = randomUUID();
   console.log("\n\u{1B}[1m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u{1B}[0m");
   console.log("\u{1B}[1m Sample API key for your config.js:\u{1B}[0m");
   console.log("\u{1B}[33m  apiKey: \"" + apiKey + "\"\u{1B}[0m");

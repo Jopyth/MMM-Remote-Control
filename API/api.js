@@ -9,7 +9,7 @@
  */
 
 const path = require("node:path");
-const {v4: uuid} = require("uuid");
+const {randomUUID} = require("node:crypto");
 const express = require("express");
 
 const getActions = (handler) => {
@@ -373,7 +373,7 @@ module.exports = {
     if (request.params && request.params.delayed && request.params.delayed === "delay") {
       const dQuery = {
         action: "DELAYED",
-        did: request.query.did || request.body.did || uuid().replaceAll("-", ""),
+        did: request.query.did || request.body.did || randomUUID().replaceAll("-", ""),
         timeout: request.query.timeout || request.body.timeout || 10,
         abort: request.query.abort && request.query.abort === "true" ? true : Boolean(request.query.abort && request.query.abort === "true"),
         query
