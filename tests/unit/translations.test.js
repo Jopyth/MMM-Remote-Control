@@ -465,14 +465,9 @@ describe("Translation Usage", () => {
     }
 
     if (unusedKeys.length > 0) {
-      const warningMessage = `\nInfo: Found ${unusedKeys.length} potentially unused translation keys:\n${unusedKeys.join(", ")}\n\nNote: These keys might be used dynamically (e.g., in custom_menu.example.json) or in ways not detected by the search patterns.\nIf you're sure they're unused, consider removing them to keep translations clean.`;
-      console.log(warningMessage);
-
-      /*
-       * This is informational only - don't fail the test
-       * Uncomment the line below if you want to enforce zero unused keys:
-       * assert.fail(`Found ${unusedKeys.length} unused translation keys. See console output above for details.`);
-       */
+      assert.fail(`Found ${unusedKeys.length} unused translation keys: ${unusedKeys.join(", ")}\n\n` +
+        "Remove these keys from translation files or add them to the code. " +
+        "If used dynamically (e.g., in custom_menu.example.json), add them to the code scanner patterns.");
     }
   });
 });
