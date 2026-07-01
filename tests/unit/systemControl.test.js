@@ -21,16 +21,17 @@ childProcess.exec = (command) => {
   throw new Error(`SAFETY: Blocked real exec call in tests: ${command}`);
 };
 
-// Mock logger as console (has .log, .error, .warn methods)
+// Mock logger with the test shim (suppresses log in test environment)
 const Module = require("node:module");
 const originalLoad = Module._load;
+const logger = require("../shims/logger.js");
 
 // Global electron mock for handleElectronActions tests
 let currentElectronMock = null;
 
 Module._load = function (request, parent, isMain) {
   if (request === "logger") {
-    return console;
+    return logger; // Use test shim, not console
   }
   if (request === "electron" && currentElectronMock) {
     return currentElectronMock;
