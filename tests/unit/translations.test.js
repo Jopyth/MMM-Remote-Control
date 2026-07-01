@@ -77,7 +77,13 @@ function getUsedTranslationKeys () {
           continue;
         }
         collectFiles(fullPath);
-      } else if (entry.isFile() && (/\.(js|mjs|html|css)$/).test(entry.name)) {
+      } else if (
+        entry.isFile() &&
+        (
+          (/\.(js|mjs|html|css)$/).test(entry.name) ||
+          (/custom_menu.*\.json$/).test(entry.name)
+        )
+      ) {
         filesToSearch.push(fullPath);
       }
     }
