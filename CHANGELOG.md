@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.3](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.2...v5.0.3) (2026-07-01)
+
+### Chores
+
+- remove unused INVALID_JSON translation key ([1d79d84](https://github.com/jopyth/MMM-Remote-Control/commit/1d79d8422b97d20bddd933d2acc278ce7bb2c7be))
+- replace uuid with crypto.randomUUID() ([777ba20](https://github.com/jopyth/MMM-Remote-Control/commit/777ba208f0e733c11c02c0d9c52c5d7efa140d87))
+- update checkout action to v7 ([4b49737](https://github.com/jopyth/MMM-Remote-Control/commit/4b497374b60573bcffc882cc05df12e4ec5eeadf))
+- update devDependencies ([8e6c53f](https://github.com/jopyth/MMM-Remote-Control/commit/8e6c53f52a99cb1147111834fd5730f1fc1a0292))
+
+### Code Refactoring
+
+- move remote UI files into remote/ subdirectory ([ae74417](https://github.com/jopyth/MMM-Remote-Control/commit/ae744171912b67a0b80f6c684dafc6684584cd83))
+- split registerRemoteMenuUI into 6 specialized functions ([8e71a5d](https://github.com/jopyth/MMM-Remote-Control/commit/8e71a5d75d09558bcd24ef250b64403da557b6f9))
+
+### Tests
+
+- enforce strict translation key validation ([b1cc5bd](https://github.com/jopyth/MMM-Remote-Control/commit/b1cc5bdef6da0f8fc87eea953fa556af473bcf50))
+- improve translation scanner for .mjs files and t() shorthand ([c3b8c26](https://github.com/jopyth/MMM-Remote-Control/commit/c3b8c26c6eba1bfb46a990469b5cd03f8a6c276c))
+- scan custom_menu.json for translation keys ([7a45662](https://github.com/jopyth/MMM-Remote-Control/commit/7a4566271b02deb3d9f69ece5d1c13977eb67100))
+- suppress debug output in systemControl tests using logger shim ([7da3064](https://github.com/jopyth/MMM-Remote-Control/commit/7da30640c130788e022c875d3380f333a54610c0))
+
 ## [5.0.2](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.1...v5.0.2) (2026-06-27)
 
 ### Fixed
