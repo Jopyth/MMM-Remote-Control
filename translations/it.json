@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Modifica vista",
   "SHUTDOWN_MENU_NAME": "Alimentazione",
   "CONFIGURE_MENU_NAME": "Modifica config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Sito web",
   "FORUM": "Forum",
   "REPOSITORY": "Repository",
-
   "BACK": "Indietro",
-
   "BRIGHTNESS": "Luminosità",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Colore di sfondo",
   "FONT_COLOR": "Colore del testo",
-
   "REFRESHMM": "Aggiorna browser",
   "MONITOROFF": "Spegni il monitor",
   "MONITORON": "Accendi il monitor",
@@ -28,7 +24,6 @@
   "FULLSCREEN": "Attiva/disattiva schermo intero",
   "MINIMIZE": "Minimizza (riavvia per ripristinare)",
   "DEVTOOLS": "Attiva/disattiva DevTools",
-
   "SHOWALL": "Mostra tutto",
   "HIDEALL": "Nascondi tutto",
   "RESTORE": "Ripristina",
@@ -52,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Annulla modifiche",
   "CANCEL": "Annulla",
-
   "NO_MODULES_LOADED": "Nessun modulo caricato.",
   "SAVE": "Salva",
-
   "EXPERIMENTAL": "Questa è una funzione sperimentale e potrebbe rendere illeggibile il file config. Effettua prima il backup del tuo config per sicurezza!",
-
   "CONFIRM_SHUTDOWN": "Il sistema verrà arrestato.",
   "CONFIRM_REBOOT": "Il sistema verrà riavviato.",
   "CONFIRM_RESTARTMM": "MagicMirror² verrà riavviato.",
-
   "LOAD_ERROR": "Se leggi questo messaggo allora c'è stato un errore nel caricare il file javascript. Per favore vai al link seguente e verifica se sia un problema conosciuto del tuo browser:",
   "ISSUE_LINK": "Pagina Github del problema",
-
   "DONE": "Fatto.",
   "ERROR": "Errore!",
   "INFO": "Info",
   "LOADING": "Sto caricando …",
-
   "LOCKSTRING_WARNING": "Questo modulo è stato nascosto da LIST_OF_MODULES e non può essere mostrato.",
   "FORCE_SHOW": "Procedi comunque.",
-
   "UPDATE_MENU_NAME": "Aggiornamenti",
-
   "ALERT_MENU_NAME": "Avviso",
   "SENDALERT": "Invia",
   "HIDEALERT": "Nascondi",
@@ -86,11 +73,9 @@
   "FORM_MESSAGE": "Messaggio:",
   "FORM_MESSAGE_PLACEHOLDER": "Inserisci il messaggio...",
   "FORM_SECONDS": "Secondi:",
-
   "RESPONSE_ERROR": "Non ha funzionato. Controlla i log MM per maggiori dettagli.",
   "MODULE_CONTROLS": "Controlli Modulo",
   "CUSTOM_MENU": "Il Mio Menu Personalizzato",
-
   "NOTIFICATION_MENU_NAME": "Notifica",
   "SEND_NOTIFICATION": "Invia",
   "FORM_NOTIFICATION_NAME": "Notifica:",
@@ -98,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Per favore inserisci un nome per la notifica.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON o stringa, opzionale):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Payload JSON non valido."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

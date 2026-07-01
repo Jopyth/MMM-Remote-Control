@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Sunting tampilan",
   "SHUTDOWN_MENU_NAME": "Power",
   "CONFIGURE_MENU_NAME": "Sunting config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Situs web",
   "FORUM": "Forum",
   "REPOSITORY": "Repositori",
-
   "BACK": "Kembali",
-
   "BRIGHTNESS": "Kecerahan",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Warna latar",
   "FONT_COLOR": "Warna teks",
-
   "REFRESHMM": "Refresh Browser",
   "MONITOROFF": "Matikan monitor",
   "MONITORON": "Nyalakan monitor",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Beralih ke Layar Penuh",
   "MINIMIZE": "Perkecil (mulai ulang untuk memulihkan)",
   "DEVTOOLS": "Beralih ke DevTools",
-
   "SHOWALL": "Tampilkan semua",
   "HIDEALL": "Sembunyikan semua",
   "RESTORE": "Pulihkan",
-
   "ADD_MODULE": "Tambah modul",
   "SEARCH": "Cari …",
   "INSTALLED": "Terinstal",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Abaikan perubahan",
   "CANCEL": "Membatalkan",
-
   "NO_MODULES_LOADED": "Tidak ada modul yang dimuat.",
   "SAVE": "Simpan",
-
   "EXPERIMENTAL": "Ini adalah fitur percobaan, dapat merusak file config Anda. Backup config Anda terlebih dahulu, untuk berjaga-jaga!",
-
   "CONFIRM_SHUTDOWN": "Sistem akan matikan.",
   "CONFIRM_REBOOT": "Sistem akan restart.",
   "CONFIRM_RESTARTMM": "MagicMirror² akan restart.",
-
   "LOAD_ERROR": "Jika Anda melihat pesan ini, telah terjadi kesalahan ketika memuat file javascript. Silakan kunjungi link berikut dan cek masalah ini di browser Anda:",
   "ISSUE_LINK": "Halaman isu Github",
-
   "DONE": "Selesai.",
   "ERROR": "Error!",
   "INFO": "Info",
   "LOADING": "Memuat …",
-
   "LOCKSTRING_WARNING": "Modul ini disembunyikan oleh LIST_OF_MODULES, tidak dapat ditampilkan.",
   "FORCE_SHOW": "Lakukan saja.",
-
   "UPDATE_MENU_NAME": "Pembaharuan",
-
   "ALERT_MENU_NAME": "Peringatan",
   "SENDALERT": "Kirim",
   "HIDEALERT": "Sembunyikan",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Pesan:",
   "FORM_MESSAGE_PLACEHOLDER": "Tuliskan pesan...",
   "FORM_SECONDS": "Detik:",
-
   "RESPONSE_ERROR": "Tidak berhasil. Periksa log MM untuk detail lebih lanjut.",
   "MODULE_CONTROLS": "Kontrol Modul",
   "CUSTOM_MENU": "Menu Kustom Saya",
-
   "NOTIFICATION_MENU_NAME": "Pemberitahuan",
   "SEND_NOTIFICATION": "Kirim",
   "FORM_NOTIFICATION_NAME": "Pemberitahuan:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Silakan masukkan nama untuk pemberitahuan.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON atau string, opsional):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Payload JSON tidak valid."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

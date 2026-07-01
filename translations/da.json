@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Udseende",
   "SHUTDOWN_MENU_NAME": "Strøm",
   "CONFIGURE_MENU_NAME": "Rediger config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Hjemmeside",
   "FORUM": "Forum",
   "REPOSITORY": "Repository",
-
   "BACK": "Tilbage",
-
   "BRIGHTNESS": "Lysstyrke",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Baggrundsfarve",
   "FONT_COLOR": "Skriftfarve",
-
   "REFRESHMM": "Genindlæs Browser",
   "MONITOROFF": "Sluk skærm",
   "MONITORON": "Tænd skærm",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Toggle fuldskærm",
   "MINIMIZE": "Minimer (genstart for at gendanne)",
   "DEVTOOLS": "Åben DevTools",
-
   "SHOWALL": "Vis alle",
   "HIDEALL": "Skjul alle",
   "RESTORE": "Gendan",
-
   "ADD_MODULE": "Tilføj modul",
   "SEARCH": "Søg …",
   "INSTALLED": "Installeret",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Forkast ændringer",
   "CANCEL": "Annullere",
-
   "NO_MODULES_LOADED": "Ingen moduler indlæst.",
   "SAVE": "Gem",
-
   "EXPERIMENTAL": "Dette er en eksperimentel funktion, det kan ødelægge din konfigurationsfil. Sikkerhedskopier først din konfiguration, hvis det er tilfældet!",
-
   "CONFIRM_SHUTDOWN": "Systemet lukker ned.",
   "CONFIRM_REBOOT": "Systemet genstarter.",
   "CONFIRM_RESTARTMM": "MagicMirror² genstarter.",
-
   "LOAD_ERROR": "Hvis du ser denne meddelelse, opstod der en fejl under indlæsning af javascript-filen. Gå til følgende link og se, om dette er et kendt problem med din browser:",
   "ISSUE_LINK": "Github fejlrapportering",
-
   "DONE": "Færdig.",
   "ERROR": "Fejl!",
   "INFO": "Info",
   "LOADING": "Indlæser …",
-
   "LOCKSTRING_WARNING": "Dette modul blev skjult af LIST_OF_MODULES, det kan ikke vises.",
   "FORCE_SHOW": "Gør det alligevel.",
-
   "UPDATE_MENU_NAME": "Opdateringer",
-
   "ALERT_MENU_NAME": "Alarm",
   "SENDALERT": "Send",
   "HIDEALERT": "Skjul",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Besked:",
   "FORM_MESSAGE_PLACEHOLDER": "Skriv besked...",
   "FORM_SECONDS": "Sekunder:",
-
   "RESPONSE_ERROR": "Nå, det virkede ikke. Kontroller MM-logfilerne for at få flere oplysninger",
   "MODULE_CONTROLS": "Modul kontrol",
   "CUSTOM_MENU": "Min tilpassede menu",
-
   "NOTIFICATION_MENU_NAME": "Notifikation",
   "SEND_NOTIFICATION": "Send",
   "FORM_NOTIFICATION_NAME": "Notifikation:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Indtast venligst et navn til notifikationen.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON eller streng, valgfri):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Ugyldig JSON payload."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

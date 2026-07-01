@@ -699,8 +699,7 @@
                     "FORM_NOTIFICATION_NAME_MISSING": "Please enter a notification name.",
                     "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON or string, optional):",
                     "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-                    "FORM_NOTIFICATION_URL": "API URL:",
-                    "INVALID_JSON": "Invalid JSON payload."
+                    "FORM_NOTIFICATION_URL": "API URL:"
                   }
                 }
               }

@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Aanzicht aanpassen",
   "SHUTDOWN_MENU_NAME": "Stroom",
   "CONFIGURE_MENU_NAME": "config.js aanpassen",
@@ -11,14 +10,11 @@
   "WEBSITE": "Website",
   "FORUM": "Forum",
   "REPOSITORY": "Repository",
-
   "BACK": "Terug",
-
   "BRIGHTNESS": "Helderheid",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Achtergrondkleur",
   "FONT_COLOR": "Letterkleur",
-
   "REFRESHMM": "Browser verversen",
   "MONITOROFF": "Schakel monitor UIT",
   "MONITORON": "Schakel monitor AAN",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Schakel volledig scherm in/uit",
   "MINIMIZE": "Minimaliseren (herstart om te herstellen)",
   "DEVTOOLS": "Schakel DevTools in/uit",
-
   "SHOWALL": "Toon alles",
   "HIDEALL": "Verberg alles",
   "RESTORE": "Herstellen",
-
   "ADD_MODULE": "Module toevoegen",
   "SEARCH": "Zoeken …",
   "INSTALLED": "Gëinstalleerd",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Wijzigingen ongedaan maken",
   "CANCEL": "Annuleren",
-
   "NO_MODULES_LOADED": "Geen module geladen.",
   "SAVE": "Opslaan",
-
   "EXPERIMENTAL": "Dit is een experimentele feature, het kan je configuratie bestand onleesbaar maken. Sla voor de zekerheid eerst je configuratie op!",
-
   "CONFIRM_SHUTDOWN": "Het systeem wordt uitgeschakeld.",
   "CONFIRM_REBOOT": "Het systeem wordt opnieuw gestart.",
   "CONFIRM_RESTARTMM": "MagicMirror² wordt opnieuw gestart.",
-
   "LOAD_ERROR": "Wanneer je dit bericht ziet, dan is er een fout opgetreden bij het laden van het javascript bestand. Ga naar de volgende link en controlleer of dit een bekend probleem is het de browser die je gebruikt:",
   "ISSUE_LINK": "Github issue pagina",
-
   "DONE": "Klaar.",
   "ERROR": "Fout!",
   "INFO": "Info",
   "LOADING": "Laden …",
-
   "LOCKSTRING_WARNING": "Deze module is verborgen door LIST_OF_MODULES en kan niet worden weergegeven.",
   "FORCE_SHOW": "Doe het toch.",
-
   "UPDATE_MENU_NAME": "Updates",
-
   "ALERT_MENU_NAME": "Waarschuwing",
   "SENDALERT": "Verstuur",
   "HIDEALERT": "Verberg",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Bericht:",
   "FORM_MESSAGE_PLACEHOLDER": "Voer bericht in...",
   "FORM_SECONDS": "Seconden:",
-
   "RESPONSE_ERROR": "Dat heeft niet gewerkt. Bekijk de MM-logboeken voor meer details.",
   "MODULE_CONTROLS": "Modulebesturing",
   "CUSTOM_MENU": "Mijn Aangepaste Menu",
-
   "NOTIFICATION_MENU_NAME": "Notificatie",
   "SEND_NOTIFICATION": "Verstuur",
   "FORM_NOTIFICATION_NAME": "Notificatie:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Voer een naam in voor de notificatie.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON of string, optioneel):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Ongeldige JSON-payload."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

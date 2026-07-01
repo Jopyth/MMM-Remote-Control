@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "编辑界面",
   "SHUTDOWN_MENU_NAME": "电源",
   "CONFIGURE_MENU_NAME": "编辑 config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "网站",
   "FORUM": "论坛",
   "REPOSITORY": "仓库",
-
   "BACK": "返回",
-
   "BRIGHTNESS": "亮度",
   "ZOOM": "缩放",
   "BACKGROUND_COLOR": "背景颜色",
   "FONT_COLOR": "字体颜色",
-
   "REFRESHMM": "刷新界面",
   "MONITOROFF": "关闭显示器",
   "MONITORON": "打开显示器",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "切换全屏",
   "MINIMIZE": "最小化 (重启以恢复)",
   "DEVTOOLS": "打开开发者工具",
-
   "SHOWALL": "打开全部",
   "HIDEALL": "关闭全部",
   "RESTORE": "恢复",
-
   "ADD_MODULE": "添加模块",
   "SEARCH": "搜索 …",
   "INSTALLED": "安装",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "放弃更改",
   "CANCEL": "取消",
-
   "NO_MODULES_LOADED": "无模块.",
   "SAVE": "保存",
-
   "EXPERIMENTAL": "这是一个实验特性, 它可能会损坏你的配置文件.",
-
   "CONFIRM_SHUTDOWN": "即将关机.",
   "CONFIRM_REBOOT": "系统即将重启.",
   "CONFIRM_RESTARTMM": "MagicMirror²即将重启.",
-
   "LOAD_ERROR": "如果你看到这个消息, 说明加载javascript文件时出错。请转到以下链接，查看浏览器是否存在已知问题:",
   "ISSUE_LINK": "Issue链接",
-
   "DONE": "完成.",
   "ERROR": "错误!",
   "INFO": "信息",
   "LOADING": "加载中 …",
-
   "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
   "FORCE_SHOW": "继续.",
-
   "UPDATE_MENU_NAME": "更新",
-
   "ALERT_MENU_NAME": "通知",
   "SENDALERT": "发送",
   "HIDEALERT": "隐藏",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "消息:",
   "FORM_MESSAGE_PLACEHOLDER": "输入消息...",
   "FORM_SECONDS": "显示时长(秒):",
-
   "RESPONSE_ERROR": "操作失败. 查看 MagicMirror² 日志获取更多信息",
   "MODULE_CONTROLS": "模块控制",
   "CUSTOM_MENU": "我的自定义菜单",
-
   "NOTIFICATION_MENU_NAME": "通知",
   "SEND_NOTIFICATION": "发送",
   "FORM_NOTIFICATION_NAME": "通知:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "请输入通知名称。",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON 或字符串, 可选):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "无效的 JSON payload."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

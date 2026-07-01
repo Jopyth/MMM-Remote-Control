@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Editar Vista",
   "SHUTDOWN_MENU_NAME": "Encendido",
   "CONFIGURE_MENU_NAME": "Editar config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Sitio web",
   "FORUM": "Foro",
   "REPOSITORY": "Repositorio",
-
   "BACK": "Atrás",
-
   "BRIGHTNESS": "Brillo",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Color de fondo",
   "FONT_COLOR": "Color de fuente",
-
   "REFRESHMM": "Recargar Navegador",
   "MONITOROFF": "Apagar monitor",
   "MONITORON": "Encender monitor",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Pantalla completa",
   "MINIMIZE": "Minimizar (reiniciar para restaurar)",
   "DEVTOOLS": "Abrir herram. para desarrolladores",
-
   "SHOWALL": "Mostrar Todos",
   "HIDEALL": "Ocultar Todos",
   "RESTORE": "Restaurar",
-
   "ADD_MODULE": "Añadir módulo",
   "SEARCH": "Buscar …",
   "INSTALLED": "Instalado",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Descartar cambios",
   "CANCEL": "Cancelar",
-
   "NO_MODULES_LOADED": "No hay modulos cargados.",
   "SAVE": "Guardar",
-
   "EXPERIMENTAL": "Esta es una función experimental, puede corromper tu archivo config. Haz copia de tu configuración primero, por si acaso!",
-
   "CONFIRM_SHUTDOWN": "El sistema se apagará.",
   "CONFIRM_REBOOT": "El sistema se reiniciará.",
   "CONFIRM_RESTARTMM": "El MagicMirror² se reiniciará.",
-
   "LOAD_ERROR": "Si ves este mensaje, un error ha ocurrido cargando el archivo javascript. Por favor, revisa este enlace para ver si es un problema con tu navegador:",
   "ISSUE_LINK": "Página de problemas de Github",
-
   "DONE": "Hecho.",
   "ERROR": "Error!",
   "INFO": "Info",
   "LOADING": "Cargando …",
-
   "LOCKSTRING_WARNING": "Este módulo fué ocultado por LIST_OF_MODULES, no puede ser mostrado.",
   "FORCE_SHOW": "Hazlo igualmente.",
-
   "UPDATE_MENU_NAME": "Actualizaciones",
-
   "ALERT_MENU_NAME": "Alertas / Notificaciones",
   "SENDALERT": "Envía alerta",
   "HIDEALERT": "Oculta alerta",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Mensaje:",
   "FORM_MESSAGE_PLACEHOLDER": "Introduce mensaje...",
   "FORM_SECONDS": "Segundos:",
-
   "RESPONSE_ERROR": "No ha funcionado. Comprueba los MM logs para más detalles",
   "MODULE_CONTROLS": "Controles de módulos",
   "CUSTOM_MENU": "Mi Menú Personalizado",
-
   "NOTIFICATION_MENU_NAME": "Notificación",
   "SEND_NOTIFICATION": "Enviar",
   "FORM_NOTIFICATION_NAME": "Notificación:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Por favor, introduce un nombre para la notificación.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON o cadena, opcional):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Payload JSON no válido."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

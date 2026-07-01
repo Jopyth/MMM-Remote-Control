@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Edit view",
   "SHUTDOWN_MENU_NAME": "Power",
   "CONFIGURE_MENU_NAME": "Edit config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Website",
   "FORUM": "Forum",
   "REPOSITORY": "Repository",
-
   "BACK": "Back",
-
   "BRIGHTNESS": "Brightness",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Background color",
   "FONT_COLOR": "Font color",
-
   "REFRESHMM": "Refresh Browser",
   "MONITOROFF": "Turn monitor OFF",
   "MONITORON": "Turn monitor ON",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Toggle Fullscreen",
   "MINIMIZE": "Minimize (restart to restore)",
   "DEVTOOLS": "Toggle DevTools",
-
   "SHOWALL": "Show all",
   "HIDEALL": "Hide all",
   "RESTORE": "Restore",
-
   "ADD_MODULE": "Add module",
   "SEARCH": "Search …",
   "INSTALLED": "Installed",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Discard changes",
   "CANCEL": "Cancel",
-
   "NO_MODULES_LOADED": "No module loaded.",
   "SAVE": "Save",
-
   "EXPERIMENTAL": "This is an experimental feature, it could corrupt your config file. Backup your config first, just in case!",
-
   "CONFIRM_SHUTDOWN": "The system will shut down.",
   "CONFIRM_REBOOT": "The system will restart.",
   "CONFIRM_RESTARTMM": "MagicMirror² will restart.",
-
   "LOAD_ERROR": "If you see this message, an errror occured when loading the javascript file. Please go to the following link and see if this a known problem with your browser:",
   "ISSUE_LINK": "Github issue page",
-
   "DONE": "Done.",
   "ERROR": "Error!",
   "INFO": "Info",
   "LOADING": "Loading …",
-
   "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
   "FORCE_SHOW": "Do it anyway.",
-
   "UPDATE_MENU_NAME": "Updates",
-
   "ALERT_MENU_NAME": "Alert",
   "SENDALERT": "Send",
   "NOTIFICATION_MENU_NAME": "Notification",
@@ -86,7 +72,6 @@
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON or string, optional):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
   "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Invalid JSON payload.",
   "HIDEALERT": "Hide",
   "FORM_TYPE": "Type:",
   "FORM_ALERT": "Alert",
@@ -96,7 +81,6 @@
   "FORM_MESSAGE": "Message:",
   "FORM_MESSAGE_PLACEHOLDER": "Enter message...",
   "FORM_SECONDS": "Seconds:",
-
   "RESPONSE_ERROR": "Well that didn't work. Check the MM logs for more details.",
   "MODULE_CONTROLS": "Module Controls",
   "CUSTOM_MENU": "My Custom Menu"

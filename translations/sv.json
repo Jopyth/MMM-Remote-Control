@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Editera synlighet",
   "SHUTDOWN_MENU_NAME": "Av och På",
   "CONFIGURE_MENU_NAME": "Editera config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Webbplats",
   "FORUM": "Forum",
   "REPOSITORY": "Repository",
-
   "BACK": "Tillbaka",
-
   "BRIGHTNESS": "Ljusstyrka",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Bakgrundsfärg",
   "FONT_COLOR": "Teckenfärg",
-
   "REFRESHMM": "Uppdatea Webläsaren",
   "MONITOROFF": "Sätt skärmen i vila",
   "MONITORON": "Väck skärmen",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Växla fullskärm",
   "MINIMIZE": "Minimera (starta om för att återställa)",
   "DEVTOOLS": "Växla DevTools",
-
   "SHOWALL": "Visa alla",
   "HIDEALL": "Dölj alla",
   "RESTORE": "Återställ",
-
   "ADD_MODULE": "Lägg till modul",
   "SEARCH": "Sök …",
   "INSTALLED": "Installerad",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Spara inte ändringar",
   "CANCEL": "Avbryt",
-
   "NO_MODULES_LOADED": "Ingen modul laddad.",
   "SAVE": "Spara",
-
   "EXPERIMENTAL": "Detta är en experimentell funktion, den skulle kunna förstöra din konfigfil. Se till du har en kopia på din konfigfil innan du går vidare, för att vara på säkra sidan!",
-
   "CONFIRM_SHUTDOWN": "Systemet stängs av.",
   "CONFIRM_REBOOT": "Systemet startas om.",
   "CONFIRM_RESTARTMM": "MagicMirror² startas om.",
-
   "LOAD_ERROR": "Om du ser detta meddelande så har något gott fel när javascriptfilen laddades. Vänligen gå till följande länk och se om det är ett känt problem med din Webbläsare:",
   "ISSUE_LINK": "Githubs ärendesida",
-
   "DONE": "Klart.",
   "ERROR": "Fel!",
   "INFO": "Info",
   "LOADING": "Laddar …",
-
   "LOCKSTRING_WARNING": "Denna modul doldes av LIST_OF_MODULES, den kan inte visas.",
   "FORCE_SHOW": "Gör det ändå.",
-
   "UPDATE_MENU_NAME": "Uppdateringar",
-
   "ALERT_MENU_NAME": "Larm",
   "SENDALERT": "Skicka",
   "HIDEALERT": "Göm",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Meddelande:",
   "FORM_MESSAGE_PLACEHOLDER": "Skriv meddelande...",
   "FORM_SECONDS": "Sekunder:",
-
   "RESPONSE_ERROR": "Det fungerade inte. Kontrollera MM-loggarna för mer information.",
   "MODULE_CONTROLS": "Modulkontroller",
   "CUSTOM_MENU": "Mitt Anpassade Meny",
-
   "NOTIFICATION_MENU_NAME": "Notifikation",
   "SEND_NOTIFICATION": "Skicka",
   "FORM_NOTIFICATION_NAME": "Notifikation:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Vänligen ange ett namn för notifikationen.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON eller sträng, valfritt):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Ogiltig JSON-payload."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

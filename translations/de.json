@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Ansicht bearbeiten",
   "SHUTDOWN_MENU_NAME": "Energieoptionen",
   "CONFIGURE_MENU_NAME": "Einstellungen",
@@ -11,14 +10,11 @@
   "WEBSITE": "Webseite",
   "FORUM": "Forum",
   "REPOSITORY": "Repository",
-
   "BACK": "Zurück",
-
   "BRIGHTNESS": "Helligkeit",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Hintergrundfarbe",
   "FONT_COLOR": "Schriftfarbe",
-
   "REFRESHMM": "Browser neu laden",
   "MONITOROFF": "Bildschirm ausschalten",
   "MONITORON": "Bildschirm einschalten",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Vollbildmodus",
   "MINIMIZE": "Minimieren (Neustart zum Wiederherstellen)",
   "DEVTOOLS": "Entwicklerwerkzeuge",
-
   "SHOWALL": "Alle anzeigen",
   "HIDEALL": "Alle verbergen",
   "RESTORE": "Wiederherstellen",
-
   "ADD_MODULE": "Neues Modul",
   "SEARCH": "Suchen …",
   "INSTALLED": "Installiert",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Verwerfen",
   "CANCEL": "Abbrechen",
-
   "NO_MODULES_LOADED": "Keine Module geladen.",
   "SAVE": "Speichern",
-
   "EXPERIMENTAL": "Dies ist ein experimentelles Feature, es könnte Probleme verursachen. Mache ein Backup von deiner config!",
-
   "CONFIRM_SHUTDOWN": "Das System wird ausgeschaltet.",
   "CONFIRM_REBOOT": "Das System wird neu starten.",
   "CONFIRM_RESTARTMM": "MagicMirror² wird neu gestartet.",
-
   "LOAD_ERROR": "Wenn du diese Nachricht lesen kannst, konnte die javascript Datei nicht korrekt geladen werden. Bitte folge dem Link, und sehe nach, ob dies ein bekanntes Problem mit deinem Browser ist:",
   "ISSUE_LINK": "Github-Issue-Seite",
-
   "DONE": "Fertig.",
   "ERROR": "Fehler!",
   "INFO": "Info",
   "LOADING": "Lade …",
-
   "LOCKSTRING_WARNING": "Dieses Modul wurde durch LIST_OF_MODULES versteckt, es kann nicht angezeigt werden.",
   "FORCE_SHOW": "Mach es trotzdem!",
-
   "UPDATE_MENU_NAME": "Aktualisierungen",
-
   "ALERT_MENU_NAME": "Alert",
   "SENDALERT": "Senden",
   "NOTIFICATION_MENU_NAME": "Notification",
@@ -86,7 +72,6 @@
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON oder String, optional):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
   "FORM_NOTIFICATION_URL": "API-URL:",
-  "INVALID_JSON": "Ungültiger JSON-Payload.",
   "HIDEALERT": "Verstecken",
   "FORM_TYPE": "Typ:",
   "FORM_ALERT": "Groß",
@@ -96,7 +81,6 @@
   "FORM_MESSAGE": "Nachricht:",
   "FORM_MESSAGE_PLACEHOLDER": "Nachricht eingeben...",
   "FORM_SECONDS": "Sekunden:",
-
   "RESPONSE_ERROR": "Dies hat nicht funktioniert. Schau dir die MM-Logs für weitere Details an.",
   "MODULE_CONTROLS": "Modul-Steuerung",
   "CUSTOM_MENU": "Mein eigenes Menü"

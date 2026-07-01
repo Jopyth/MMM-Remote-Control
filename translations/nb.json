@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Rediger visning",
   "SHUTDOWN_MENU_NAME": "Strøm",
   "CONFIGURE_MENU_NAME": "Rediger config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Nettsted",
   "FORUM": "Forum",
   "REPOSITORY": "Repository",
-
   "BACK": "Tilbake",
-
   "BRIGHTNESS": "Lysstyrke",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Bakgrunnsfarge",
   "FONT_COLOR": "Skriftfarge",
-
   "REFRESHMM": "Oppdater nettleseren",
   "MONITOROFF": "Slå av skjermen",
   "MONITORON": "Slå på skjermen",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Bytt til fullskjerm",
   "MINIMIZE": "Minimer (start på nytt for å gjenopprette)",
   "DEVTOOLS": "Bytt til DevTools",
-
   "SHOWALL": "Vis alle",
   "HIDEALL": "Skjul alle",
   "RESTORE": "Gjenopprett",
-
   "ADD_MODULE": "Legg til modul",
   "SEARCH": "Søk …",
   "INSTALLED": "Installert",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Forkaste endringer",
   "CANCEL": "Avbryt",
-
   "NO_MODULES_LOADED": "Ingen modul lastet.",
   "SAVE": "Lagre",
-
   "EXPERIMENTAL": "Dette er en eksperimentell funksjon, det kan ødelegge konfigurasjonsfilen din. Sikkerhetskopier din konfigurasjon først, bare i tilfelle!",
-
   "CONFIRM_SHUTDOWN": "Systemet slås av.",
   "CONFIRM_REBOOT": "Systemet vil starte på nytt.",
   "CONFIRM_RESTARTMM": "MagicMirror² vil starte på nytt.",
-
   "LOAD_ERROR": "Hvis du ser denne meldingen, oppstod det en feil ved lasting av javascriptfilen. Vennligst gå til den følgende lenken og se om dette er et kjent problem med nettleseren din:",
   "ISSUE_LINK": "Github problem side",
-
   "DONE": "Ferdig.",
   "ERROR": "Feil!",
   "INFO": "Info",
   "LOADING": "Laster …",
-
   "LOCKSTRING_WARNING": "Denne modulen ble skjult av LIST_OF_MODULES, det kan ikke vises.",
   "FORCE_SHOW": "Gjør det likevel.",
-
   "UPDATE_MENU_NAME": "Oppdateringer",
-
   "ALERT_MENU_NAME": "Varsling",
   "SENDALERT": "Send",
   "HIDEALERT": "Skjul",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Beskjed:",
   "FORM_MESSAGE_PLACEHOLDER": "Skriv inn melding...",
   "FORM_SECONDS": "Sekunder:",
-
   "RESPONSE_ERROR": "Det fungerte ikke. Sjekk MM-loggene for flere detaljer.",
   "MODULE_CONTROLS": "Modulkontroller",
   "CUSTOM_MENU": "Min Tilpassede Meny",
-
   "NOTIFICATION_MENU_NAME": "Varsling",
   "SEND_NOTIFICATION": "Send",
   "FORM_NOTIFICATION_NAME": "Varsling:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Vennligst skriv inn et navn for varslingen.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON eller streng, valgfritt):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Ugyldig JSON-payload."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

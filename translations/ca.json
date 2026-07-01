@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Editar Vista",
   "SHUTDOWN_MENU_NAME": "Encendre/Apagar",
   "CONFIGURE_MENU_NAME": "Editar config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Lloc web",
   "FORUM": "Fòrum",
   "REPOSITORY": "Repositori",
-
   "BACK": "Endarrera",
-
   "BRIGHTNESS": "Brillantor",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Color de fons",
   "FONT_COLOR": "Color de lletra",
-
   "REFRESHMM": "Recarregar Navegador",
   "MONITOROFF": "Apagar monitor",
   "MONITORON": "Encendre monitor",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Pantalla sencera",
   "MINIMIZE": "Minimitzar (reiniciar per restaurar)",
   "DEVTOOLS": "Obrir Eines per desenvolupadors",
-
   "SHOWALL": "Mostrar Tots",
   "HIDEALL": "Amagar Tots",
   "RESTORE": "Restaurar",
-
   "ADD_MODULE": "Afegir mòdul",
   "SEARCH": "Buscar …",
   "INSTALLED": "Instal.lat",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Descartar canvis",
   "CANCEL": "Cancel.lar",
-
   "NO_MODULES_LOADED": "No hi han móduls carregats.",
   "SAVE": "Guardar",
-
   "EXPERIMENTAL": "Aquesta es una funciò experimental, pot corrompre el teu arxiu config. Fes còpia de seguretat primer, per si de cas!",
-
   "CONFIRM_SHUTDOWN": "El sistema s'apagarà.",
   "CONFIRM_REBOOT": "El sistema es reiniciarà.",
   "CONFIRM_RESTARTMM": "El MagicMirror² es reiniciarà.",
-
   "LOAD_ERROR": "Si ves este mensaje, un error ha ocurrido cargando el archivo javascript. Si us plau, revisa aquest enllaç per veure si es un problema amb el teu navegador:",
   "ISSUE_LINK": "Pàgina de problemes de Github",
-
   "DONE": "Fet.",
   "ERROR": "Error!",
   "INFO": "Informació",
   "LOADING": "Carregant …",
-
   "LOCKSTRING_WARNING": "Aquest mòdul ha estat ocultat per LIST_OF_MODULES, no pot ser mostrat.",
   "FORCE_SHOW": "Fes-ho igualment.",
-
   "UPDATE_MENU_NAME": "Actualitzacions",
-
   "ALERT_MENU_NAME": "Alertes / Notificacions",
   "SENDALERT": "Envia alerta",
   "HIDEALERT": "Oculta alerta",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Missatge:",
   "FORM_MESSAGE_PLACEHOLDER": "Introdueix missatge...",
   "FORM_SECONDS": "Segons:",
-
   "RESPONSE_ERROR": "No ha funcionat. Comprova els MM logs per més detalls",
   "MODULE_CONTROLS": "Controls de mòduls",
   "CUSTOM_MENU": "El meu Menú Personalitzat",
-
   "NOTIFICATION_MENU_NAME": "Notificació",
   "SEND_NOTIFICATION": "Envia",
   "FORM_NOTIFICATION_NAME": "Notificació:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Si us plau, introdueix un nom per a la notificació.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON o cadena, opcional):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Payload JSON no vàlid."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

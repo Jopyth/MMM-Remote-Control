@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Editar a aparência",
   "SHUTDOWN_MENU_NAME": "Ligar/Desligar",
   "CONFIGURE_MENU_NAME": "Editar o config.js",
@@ -11,14 +10,11 @@
   "WEBSITE": "Website",
   "FORUM": "Fórum",
   "REPOSITORY": "Repositório",
-
   "BACK": "Voltar",
-
   "BRIGHTNESS": "Luminosidade",
   "ZOOM": "Zoom",
   "BACKGROUND_COLOR": "Cor de fundo",
   "FONT_COLOR": "Cor da fonte",
-
   "REFRESHMM": "Atualizar página",
   "MONITOROFF": "Desligar o monitor",
   "MONITORON": "Ligar o monitor",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Alternar para ecrã completo",
   "MINIMIZE": "Minimizar (reiniciar para restaurar)",
   "DEVTOOLS": "Alternar DevTools",
-
   "SHOWALL": "Mostrar tudo",
   "HIDEALL": "Esconder tudo",
   "RESTORE": "Restaurar",
-
   "ADD_MODULE": "Adicionar módulo",
   "SEARCH": "Procurar …",
   "INSTALLED": "Instalado",
@@ -53,29 +47,21 @@
   "OK": "Ok",
   "DISCARD": "Cancelar alterações",
   "CANCEL": "Cancelar",
-
   "NO_MODULES_LOADED": "Nenhum módulo carregado.",
   "SAVE": "Guardar",
-
   "EXPERIMENTAL": "Esta é uma função experimental e pode corromper o seu ficheiro de configuração. Faça backup da sua configuração por precaução!",
-
   "CONFIRM_SHUTDOWN": "O sistema irá desligar.",
   "CONFIRM_REBOOT": "O sistema irá reiniciar.",
   "CONFIRM_RESTARTMM": "O MagicMirror² irá reiniciar.",
-
   "LOAD_ERROR": "Ocorreu um erro ao ler o seu ficheiro. Por favor, visite este website e veja se o caso aplica-se a si.",
   "ISSUE_LINK": "Página do problema no Github",
-
   "DONE": "Concluído.",
   "ERROR": "Erro!",
   "INFO": "Info",
   "LOADING": "A carregar …",
-
   "LOCKSTRING_WARNING": "Este módulo foi ocultado por LIST_OF_MODULES, não pode ser mostrado.",
   "FORCE_SHOW": "Fazer mesmo assim.",
-
   "UPDATE_MENU_NAME": "Atualizações",
-
   "ALERT_MENU_NAME": "Alerta",
   "SENDALERT": "Enviar",
   "HIDEALERT": "Esconder",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Mensagem:",
   "FORM_MESSAGE_PLACEHOLDER": "Digite a mensagem...",
   "FORM_SECONDS": "Segundos:",
-
   "RESPONSE_ERROR": "Isso não funcionou. Verifique os logs do MM para mais detalhes.",
   "MODULE_CONTROLS": "Controles de Módulo",
   "CUSTOM_MENU": "Meu Menu Personalizado",
-
   "NOTIFICATION_MENU_NAME": "Notificação",
   "SEND_NOTIFICATION": "Enviar",
   "FORM_NOTIFICATION_NAME": "Notificação:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Por favor, insira um nome para a notificação.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON ou string, opcional):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Payload JSON inválido."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }

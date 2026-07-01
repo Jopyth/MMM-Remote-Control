@@ -1,6 +1,5 @@
 {
   "TITLE": "MagicMirror²",
-
   "EDIT_MENU_NAME": "Görünümü Düzenle",
   "SHUTDOWN_MENU_NAME": "Güç",
   "CONFIGURE_MENU_NAME": "config.js dosyasını düzenle",
@@ -11,14 +10,11 @@
   "WEBSITE": "Web sitesi",
   "FORUM": "Forum",
   "REPOSITORY": "Depo",
-
   "BACK": "Geri",
-
   "BRIGHTNESS": "Parlaklık",
   "ZOOM": "Yaklaştır",
   "BACKGROUND_COLOR": "Arka plan rengi",
   "FONT_COLOR": "Yazı tipi rengi",
-
   "REFRESHMM": "Tarayıcıyı Yenile",
   "MONITOROFF": "Monitörü KAPAT",
   "MONITORON": "Monitörü AÇ",
@@ -28,11 +24,9 @@
   "FULLSCREEN": "Tam Ekran",
   "MINIMIZE": "Küçült (geri yüklemek için yeniden başlat)",
   "DEVTOOLS": "DevTools Aracını Çalıştır",
-
   "SHOWALL": "Hepsi Göster",
   "HIDEALL": "Hepsi Gizle",
   "RESTORE": "Geri Yükle",
-
   "ADD_MODULE": "Modül Ekle",
   "SEARCH": "Ara …",
   "INSTALLED": "Kurulu",
@@ -53,29 +47,21 @@
   "OK": "Tama",
   "DISCARD": "Değişikliklerden Vazgeç",
   "CANCEL": "İptal",
-
   "NO_MODULES_LOADED": "Modül yüklenmedi.",
   "SAVE": "Kaydet",
-
   "EXPERIMENTAL": "Bu deneysel bir özellik dolayısıyla config.js dosyanız zarar görebilir. Önce config.js dosyanızı yedekleyin!",
-
   "CONFIRM_SHUTDOWN": "Sistem kapatılacak.",
   "CONFIRM_REBOOT": "Sistem yeniden başlatılacak.",
   "CONFIRM_RESTARTMM": "MagicMirror² yeniden başlatılacak.",
-
   "LOAD_ERROR": "Eğer bu mesajı görüyorsanız, javascript dosyası yüklenirken bir hata oluşmuş demektir. Lütfen aşağıdaki linke gidin ve tarayıcınızla yaşadığınız problemin daha önceden farkedilip edilmediğine bakın:",
   "ISSUE_LINK": "Github Sorun Sayfası",
-
   "DONE": "Tamamlandı.",
   "ERROR": "Hata!",
   "INFO": "Bilgi",
   "LOADING": "Yükleniyor …",
-
   "LOCKSTRING_WARNING": "Bu modül LIST_OF_MODULES kısmında gizlendiği için gösterilemez.",
   "FORCE_SHOW": "Yine de göster.",
-
   "UPDATE_MENU_NAME": "Güncellemeler",
-
   "ALERT_MENU_NAME": "Uyarı",
   "SENDALERT": "Gönder",
   "HIDEALERT": "Gizle",
@@ -87,11 +73,9 @@
   "FORM_MESSAGE": "Mesaj:",
   "FORM_MESSAGE_PLACEHOLDER": "Mesajı yazın...",
   "FORM_SECONDS": "Saniye:",
-
   "RESPONSE_ERROR": "Bu şu anda çalışmıyor, daha fazla bilgi için MM log kayıtlarına bakın",
   "MODULE_CONTROLS": "Modül Kontrolleri",
   "CUSTOM_MENU": "Kişisel Menü",
-
   "NOTIFICATION_MENU_NAME": "Bildirim",
   "SEND_NOTIFICATION": "Gönder",
   "FORM_NOTIFICATION_NAME": "Bildirim:",
@@ -99,6 +83,5 @@
   "FORM_NOTIFICATION_NAME_MISSING": "Lütfen bir bildirim adı girin.",
   "FORM_NOTIFICATION_PAYLOAD": "Payload (JSON veya dize, isteğe bağlı):",
   "FORM_NOTIFICATION_PAYLOAD_PLACEHOLDER": "{\"key\": \"value\"}",
-  "FORM_NOTIFICATION_URL": "API URL:",
-  "INVALID_JSON": "Geçersiz JSON payload."
+  "FORM_NOTIFICATION_URL": "API URL:"
 }
