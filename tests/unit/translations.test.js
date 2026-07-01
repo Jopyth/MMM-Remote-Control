@@ -77,7 +77,7 @@ function getUsedTranslationKeys () {
           continue;
         }
         collectFiles(fullPath);
-      } else if (entry.isFile() && (/\.(js|html|css)$/).test(entry.name)) {
+      } else if (entry.isFile() && (/\.(js|mjs|html|css)$/).test(entry.name)) {
         filesToSearch.push(fullPath);
       }
     }
@@ -102,10 +102,11 @@ function getUsedTranslationKeys () {
   const patterns = [
     /this\.translate\(["']([A-Z_]+)["']/g,
     /translate\(["']([A-Z_]+)["']/g,
+    /\bt\(["']([A-Z_]+)["']/g, // t() local shorthand
     /data-i18n=["']([A-Z_]+)["']/g,
     /i18n\.([A-Z_]+)/g,
     /%%TRANSLATE:([A-Z_]+)%%/g,
-    /:\s*["']([A-Z][A-Z_]{3,})["']/g // Matches : "KEY" where KEY is 4+ chars uppercase, likely a translation reference
+    /:\s*["']([A-Z][A-Z_]{3,})["']/g
   ];
 
   for (const file of filesToSearch) {
