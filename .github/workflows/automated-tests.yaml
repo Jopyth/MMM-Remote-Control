@@ -15,7 +15,7 @@ jobs:
     steps:
       - run: "echo '🚀 Starting code quality checks for ${{ github.repository }} (ref: ${{ github.ref }})'"
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
