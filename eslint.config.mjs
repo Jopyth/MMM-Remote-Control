@@ -109,7 +109,7 @@ export default defineConfig([
     }
   },
   {
-    "files": ["remote.mjs", "remote-*.mjs"],
+    "files": ["remote/remote.mjs", "remote/remote-*.mjs"],
     "languageOptions": {
       "ecmaVersion": "latest",
       "sourceType": "module",
@@ -122,11 +122,14 @@ export default defineConfig([
     },
     "plugins": {js, "jsdoc": pluginJsdoc},
     "extends": sharedJsExtends,
-    "rules": sharedJsRules
+    "rules": {
+      ...sharedJsRules,
+      "unicorn/no-this-outside-of-class": "off"
+    }
   },
   {
     "files": ["**/*.mjs"],
-    "ignores": ["remote.mjs", "remote-*.mjs", "tests/**/*.mjs"],
+    "ignores": ["remote/remote.mjs", "remote/remote-*.mjs", "tests/**/*.mjs"],
     "languageOptions": {
       "ecmaVersion": "latest",
       "globals": {
@@ -150,7 +153,7 @@ export default defineConfig([
     }
   },
   {
-    "files": ["MMM-Remote-Control.js", "node_helper.js", "API/api.js", "remote*.mjs", "remote-*.mjs"],
+    "files": ["MMM-Remote-Control.js", "node_helper.js", "API/api.js"],
     "rules": {
       "unicorn/no-this-outside-of-class": "off"
     }

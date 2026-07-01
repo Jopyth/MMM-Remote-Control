@@ -97,8 +97,7 @@
       "docs/**",
       "img/**",
       "remote.html",
-      "remote.js",
-      "remote.css",
+      "remote/remote.css",
       "**/*.md"
     ],
     "check-coverage": true,

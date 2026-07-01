@@ -26,7 +26,10 @@
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/roboto.css" />
     <link rel="stylesheet" href="css/font-awesome.css" />
-    <link rel="stylesheet" href="modules/MMM-Remote-Control/remote.css" />
+    <link
+      rel="stylesheet"
+      href="modules/MMM-Remote-Control/remote/remote.css"
+    />
     <link
       rel="apple-touch-icon"
       href="modules/MMM-Remote-Control/img/icon-192.png"
@@ -122,7 +125,7 @@
         await loadLegacySocketClient();
       }
 
-      await import("./modules/MMM-Remote-Control/remote-menu.mjs");
+      await import("./modules/MMM-Remote-Control/remote/remote-menu.mjs");
     </script>
   </body>
 </html>

@@ -22,7 +22,7 @@ describe("basePath-safe remote asset paths", () => {
   });
 
   test("service worker is registered from the remote root scope", () => {
-    const remoteMjsPath = path.resolve(__dirname, "../../remote.mjs");
+    const remoteMjsPath = path.resolve(__dirname, "../../remote/remote.mjs");
     const remoteMjs = fs.readFileSync(remoteMjsPath, "utf8");
 
     assert.match(remoteMjs, /navigator\.serviceWorker\.register\(\s*"\.\/remote-service-worker\.js"/);

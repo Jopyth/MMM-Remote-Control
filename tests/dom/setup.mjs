@@ -37,12 +37,12 @@ export async function setupRemote () {
   globalThis.location = {"hash": ""};
   globalThis.localStorage = {"getItem": () => {}, "setItem": () => {}};
 
-  const {Remote} = await import("../../remote.mjs");
-  await import("../../remote-utils.mjs");
-  await import("../../remote-socket.mjs");
-  await import("../../remote-modules.mjs");
-  await import("../../remote-config.mjs");
-  await import("../../remote-menu.mjs");
+  const {Remote} = await import("../../remote/remote.mjs");
+  await import("../../remote/remote-utils.mjs");
+  await import("../../remote/remote-socket.mjs");
+  await import("../../remote/remote-modules.mjs");
+  await import("../../remote/remote-config.mjs");
+  await import("../../remote/remote-menu.mjs");
 
   remoteInstance = Remote;
 
