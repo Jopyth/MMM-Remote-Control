@@ -63,6 +63,14 @@ Module.register("MMM-Remote-Control", {
     Log.debug(`${this.name} received a module notification: ${notification} from sender: ${sender}`);
     switch (notification) {
       case "DOM_OBJECTS_CREATED":
+      // Fallback: DOM_OBJECTS_CREATED can occasionally fire before this module
++     // has fully registered as a notification listener (race condition seen with
++     // newer Node.js/Electron versions), causing the event to be missed and the
++     // module to stay permanently "not initialized". ALL_MODULES_STARTED is
++     // received reliably afterwards and acts as a safety net.
++     case "ALL_MODULES_STARTED":
++       if (this.currentDataSent) { break; }
++       this.currentDataSent = true;
         this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
         this.sendCurrentData();
         break;
