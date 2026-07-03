@@ -10,6 +10,27 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
 
 const helperFactory = require("../../node_helper.js");
 
+function wiredHelper () {
+  const helper = Object.create(helperFactory);
+  helper.__socketNotifications = [];
+  helper.__responses = [];
+  helper.waiting = [];
+  helper.initialized = false;
+  helper.configData = {};
+  helper.sendSocketNotification = (action, payload) => {
+    helper.__socketNotifications.push({action, payload});
+  };
+  helper.sendResponse = (_res, error, data) => {
+    helper.__responses.push({error, data});
+    return !error;
+  };
+  helper.callAfterUpdate = helperFactory.callAfterUpdate.bind(helper);
+  helper.requireLiveState = helperFactory.requireLiveState.bind(helper);
+  helper.handleGetBrightness = helperFactory.handleGetBrightness.bind(helper);
+  helper.socketNotificationReceived = helperFactory.socketNotificationReceived.bind(helper);
+  return helper;
+}
+
 function freshHelper () {
   const h = Object.create(helperFactory);
   h.__socketNotifications = [];
@@ -260,5 +281,25 @@ describe("socketNotificationReceived", () => {
     const errorNotification = helper.__socketNotifications.find((n) => n.action === "QR_CODE_ERROR");
     assert.ok(errorNotification);
     assert.ok(errorNotification.payload.includes("forced qrcode failure"));
+  });
+});
+
+describe("self-healing initialization (regression)", () => {
+  test("an API request that arrives before any boot notification is served once the frontend answers the pull", () => {
+    const helper = wiredHelper();
+
+    // No DOM_OBJECTS_CREATED / CURRENT_STATUS has ever been received.
+    helper.handleGetBrightness({data: "brightness"}, {});
+
+    // The request must not fail permanently while state is still missing.
+    assert.equal(helper.__responses.length, 0, "request must not be answered before state arrives");
+
+    // The frontend answers the pull (even though it missed the boot broadcast).
+    helper.socketNotificationReceived("CURRENT_STATUS", {remoteConfig: {}, brightness: 42});
+
+    // The parked request is now served with the freshly pulled value.
+    assert.equal(helper.__responses.length, 1);
+    assert.equal(helper.__responses[0].error, undefined);
+    assert.equal(helper.__responses[0].data.result, 42);
   });
 });

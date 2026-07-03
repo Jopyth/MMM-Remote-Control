@@ -93,7 +93,8 @@ function createMockContext (app, notifications) {
     handleGetModuleInstalled: helperModule.handleGetModuleInstalled,
     getDataHandlers: helperModule.getDataHandlers,
     sendResponse: helperModule.sendResponse,
-    checkInitialized: helperModule.checkInitialized,
+    requireLiveState: (_res, cb) => cb(),
+    resolveModuleApi: apiModule.resolveModuleApi,
     getActionHandlers: helperModule.getActionHandlers,
     executeQuery: helperModule.executeQuery,
     handleSimpleSocketNotification: helperModule.handleSimpleSocketNotification,
@@ -129,7 +130,6 @@ function createMockContext (app, notifications) {
   mockContext.handleGetModuleInstalled = mockContext.handleGetModuleInstalled.bind(mockContext);
   mockContext.getDataHandlers = mockContext.getDataHandlers.bind(mockContext);
   mockContext.sendResponse = mockContext.sendResponse.bind(mockContext);
-  mockContext.checkInitialized = mockContext.checkInitialized.bind(mockContext);
   mockContext.getActionHandlers = mockContext.getActionHandlers.bind(mockContext);
   mockContext.executeQuery = mockContext.executeQuery.bind(mockContext);
   mockContext.handleSimpleSocketNotification = mockContext.handleSimpleSocketNotification.bind(mockContext);
@@ -138,6 +138,7 @@ function createMockContext (app, notifications) {
   mockContext.checkDelay = mockContext.checkDelay.bind(mockContext);
   mockContext.answerNotifyApi = mockContext.answerNotifyApi.bind(mockContext);
   mockContext.answerModuleApi = mockContext.answerModuleApi.bind(mockContext);
+  mockContext.resolveModuleApi = mockContext.resolveModuleApi.bind(mockContext);
   mockContext.mergeData = mockContext.mergeData.bind(mockContext);
 
   return mockContext;

@@ -13,7 +13,8 @@ function makeContext (overrides = {}) {
     mergeData: () => ({success: true, data: context.configData.moduleData}),
     sendSocketNotification: () => {},
     sendResponse: () => {},
-    checkInitialized: () => true,
+    requireLiveState: (_res, cb) => cb(),
+    resolveModuleApi: apiModule.resolveModuleApi,
     translate: (s) => s,
     thisConfig: {},
     ...overrides

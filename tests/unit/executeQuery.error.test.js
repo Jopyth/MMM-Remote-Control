@@ -24,7 +24,6 @@ function freshHelper (overrides = {}) {
   helper.thisConfig = {classes: {}};
   helper.configOnHd = {};
   helper.configData = {moduleData: []};
-  helper.checkInitialized = () => true;
   helper.executeQuery = helperFactory.executeQuery.bind(helper);
   helper.handleNotification = helperFactory.handleNotification.bind(helper);
   helper.handleSimpleSocketNotification = helperFactory.handleSimpleSocketNotification.bind(helper);

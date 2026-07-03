@@ -508,43 +508,37 @@ module.exports = NodeHelper.create({
   },
 
   handleGetModules (query, response) {
-    if (!this.checkInitialized(response)) { return; }
-    this.callAfterUpdate(() => {
+    this.requireLiveState(response, () => {
       this.sendResponse(response, undefined, {query, data: this.configData.moduleData});
     });
   },
 
   handleGetBrightness (query, response) {
-    if (!this.checkInitialized(response)) { return; }
-    this.callAfterUpdate(() => {
+    this.requireLiveState(response, () => {
       this.sendResponse(response, undefined, {query, result: this.configData.brightness});
     });
   },
 
   handleGetTemp (query, response) {
-    if (!this.checkInitialized(response)) { return; }
-    this.callAfterUpdate(() => {
+    this.requireLiveState(response, () => {
       this.sendResponse(response, undefined, {query, result: this.configData.temp});
     });
   },
 
   handleGetZoom (query, response) {
-    if (!this.checkInitialized(response)) { return; }
-    this.callAfterUpdate(() => {
+    this.requireLiveState(response, () => {
       this.sendResponse(response, undefined, {query, result: this.configData.zoom});
     });
   },
 
   handleGetBackgroundColor (query, response) {
-    if (!this.checkInitialized(response)) { return; }
-    this.callAfterUpdate(() => {
+    this.requireLiveState(response, () => {
       this.sendResponse(response, undefined, {query, result: this.configData.backgroundColor});
     });
   },
 
   handleGetFontColor (query, response) {
-    if (!this.checkInitialized(response)) { return; }
-    this.callAfterUpdate(() => {
+    this.requireLiveState(response, () => {
       this.sendResponse(response, undefined, {query, result: this.configData.fontColor});
     });
   },
@@ -604,14 +598,36 @@ module.exports = NodeHelper.create({
 
   callAfterUpdate (callback, timeout = 3000) {
     let isDone = false;
-    const once = () => {
+    const once = (didUpdate) => {
       if (isDone) { return; }
       isDone = true;
-      callback();
+      callback(didUpdate);
     };
-    this.waiting.push({run: once});
+    this.waiting.push({run: () => once(true)});
     this.sendSocketNotification("UPDATE");
-    setTimeout(once, timeout);
+    setTimeout(() => once(false), timeout);
+  },
+
+  /**
+   * Serve a request that depends on live frontend state.
+   *
+   * Instead of relying on a boot-time notification having been received, this
+   * actively pulls a fresh CURRENT_STATUS from the frontend (via callAfterUpdate).
+   * It is self-healing: even if the frontend missed DOM_OBJECTS_CREATED at
+   * startup, the triggered UPDATE makes it resend its state. An error is only
+   * returned when no state can be obtained at all (no browser connected).
+   * @param {object} response - Express or socket response object
+   * @param {() => void} callback - Invoked once live state is available
+   * @returns {void}
+   */
+  requireLiveState (response, callback) {
+    this.callAfterUpdate((didUpdate) => {
+      if (didUpdate || this.initialized) {
+        callback();
+      } else {
+        this.sendResponse(response, "Not connected to the MagicMirror² frontend. Open or refresh a browser pointing at the mirror.");
+      }
+    });
   },
 
   delayedQuery (query, response) {
@@ -1058,13 +1074,14 @@ module.exports = NodeHelper.create({
       case "CURRENT_STATUS":
         this.configData = payload;
         this.thisConfig = payload.remoteConfig;
-        if (this.initialized) {
-          for (const o of this.waiting) { o.run(); }
-          this.waiting = [];
-        } else {
-        // Do anything else required to initialize
-          this.initialized = true;
-        }
+        this.initialized = true;
+
+        /*
+         * Always drain requests waiting for fresh frontend state. The pull is
+         * idempotent, so a missed boot-time notification is no longer fatal.
+         */
+        for (const o of this.waiting) { o.run(); }
+        this.waiting = [];
 
         break;
       case "REQUEST_DEFAULT_SETTINGS":

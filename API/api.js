@@ -149,8 +149,7 @@ module.exports = {
     // Route for testing the api at http://mirror:8080/api/test
     this.expressRouter.route(["/test", "/"]). // Test without apiKey
       get((request, response) => {
-        if (!this.checkInitialized(response)) { return; }
-        response.json({success: true});
+        response.json({success: true, initialized: Boolean(this.initialized)});
       });
 
     /*
@@ -400,7 +399,10 @@ module.exports = {
   },
 
   answerModuleApi (request, response) {
-    if (!this.checkInitialized(response)) { return; }
+    this.requireLiveState(response, () => this.resolveModuleApi(request, response));
+  },
+
+  resolveModuleApi (request, response) {
     const dataMerged = this.mergeData().data;
 
     if (!request.params.moduleName) {
@@ -566,14 +568,6 @@ module.exports = {
       response.json({success: true, ...query});
     }
 
-  },
-
-  checkInitialized (response) {
-    if (!this.initialized) {
-      this.sendResponse(response, "Not initialized, have you opened or refreshed your browser since the last time you started MagicMirror²?");
-      return false;
-    }
-    return true;
   },
 
   updateModuleApiMenu () {

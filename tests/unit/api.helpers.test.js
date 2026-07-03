@@ -12,7 +12,6 @@ function makeContext (overrides = {}) {
     translation: {},
     sendSocketNotification: () => {},
     sendResponse: () => {},
-    checkInitialized: () => true,
     translate: (s) => s,
     thisConfig: {},
     ...overrides
@@ -150,24 +149,6 @@ describe("API helpers", () => {
       answerNotifyApi(request, res);
 
       assert.deepEqual(captured.payload.payload, {param: "raw-value", foo: "bar"});
-    });
-  });
-
-  describe("checkInitialized", () => {
-    test("returns false and sends response when helper is not initialized", () => {
-      let capturedError;
-      const context = makeContext({
-        initialized: false,
-        sendResponse: (_res, error) => {
-          capturedError = error;
-        }
-      });
-
-      const result = apiModule.checkInitialized.call(context, {status: () => ({json: () => {}})});
-
-      assert.equal(result, false);
-      assert.equal(typeof capturedError, "string");
-      assert.ok(capturedError.includes("Not initialized"));
     });
   });
 });

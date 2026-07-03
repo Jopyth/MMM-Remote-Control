@@ -80,6 +80,47 @@ describe("callAfterUpdate", () => {
   });
 });
 
+describe("requireLiveState", () => {
+  test("serves fresh state when frontend responds to the pull", () => {
+    const helper = freshHelper();
+    helper.initialized = false;
+    helper.callAfterUpdate = (cb) => cb(true);
+    helper.requireLiveState = helperFactory.requireLiveState.bind(helper);
+
+    let isServed = false;
+    helper.requireLiveState({}, () => { isServed = true; });
+
+    assert.ok(isServed);
+    assert.equal(helper.__responses.length, 0);
+  });
+
+  test("serves existing state when the pull times out but state is present", () => {
+    const helper = freshHelper();
+    helper.initialized = true;
+    helper.callAfterUpdate = (cb) => cb(false);
+    helper.requireLiveState = helperFactory.requireLiveState.bind(helper);
+
+    let isServed = false;
+    helper.requireLiveState({}, () => { isServed = true; });
+
+    assert.ok(isServed);
+  });
+
+  test("responds with an error when no state can be obtained at all", () => {
+    const helper = freshHelper();
+    helper.initialized = false;
+    helper.callAfterUpdate = (cb) => cb(false);
+    helper.requireLiveState = helperFactory.requireLiveState.bind(helper);
+
+    let isServed = false;
+    helper.requireLiveState({}, () => { isServed = true; });
+
+    assert.equal(isServed, false);
+    assert.equal(helper.__responses.length, 1);
+    assert.ok(String(helper.__responses[0].err).includes("Not connected"));
+  });
+});
+
 describe("getActionHandlers", () => {
   test("returns object with all action handlers", () => {
     const helper = freshHelper();

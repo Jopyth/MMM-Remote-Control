@@ -121,12 +121,12 @@ describe("API HTTP-Layer Smoke Tests", () => {
         return !error;
       },
 
-      checkInitialized (res) {
-        if (!mockContext.initialized) {
-          mockContext.sendResponse(res, new Error("System not initialized"));
-          return false;
+      requireLiveState (res, cb) {
+        if (mockContext.initialized) {
+          cb();
+        } else {
+          mockContext.sendResponse(res, new Error("Not connected to frontend"));
         }
-        return true;
       },
 
       getApiKey () {
@@ -159,7 +159,8 @@ describe("API HTTP-Layer Smoke Tests", () => {
 
       // Bind API methods
       answerNotifyApi: apiModule.answerNotifyApi,
-      answerModuleApi: apiModule.answerModuleApi
+      answerModuleApi: apiModule.answerModuleApi,
+      resolveModuleApi: apiModule.resolveModuleApi
     };
 
     // Bind all methods to context
@@ -169,6 +170,7 @@ describe("API HTTP-Layer Smoke Tests", () => {
     mockContext.getDataHandlers = mockContext.getDataHandlers.bind(mockContext);
     mockContext.answerNotifyApi = mockContext.answerNotifyApi.bind(mockContext);
     mockContext.answerModuleApi = mockContext.answerModuleApi.bind(mockContext);
+    mockContext.resolveModuleApi = mockContext.resolveModuleApi.bind(mockContext);
 
     // Bind API methods to context
     apiModule.createApiRoutes.call(mockContext);

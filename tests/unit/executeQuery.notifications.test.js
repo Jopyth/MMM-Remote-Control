@@ -18,7 +18,6 @@ function freshHelper () {
     h.__socketNotifications.push({action, payload});
   };
   h.sendResponse = (_res, error, data) => { h.__responses.push({err: error, data}); };
-  h.checkInitialized = () => true;
   h.thisConfig = {};
   return h;
 }

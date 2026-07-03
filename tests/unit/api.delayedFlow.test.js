@@ -11,7 +11,6 @@ function makeContext (overrides = {}) {
     translation: {},
     sendSocketNotification: () => {},
     sendResponse: () => {},
-    checkInitialized: () => true,
     checkDelay: apiModule.checkDelay,
     translate: (s) => s,
     delayedQuery: () => {},

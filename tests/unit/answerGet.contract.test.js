@@ -22,7 +22,7 @@ function freshHelper (overrides = {}) {
   helper.configOnHd = {language: "en", modules: []};
   helper.configData = {moduleData: []};
   helper.sendSocketNotification = () => {};
-  helper.checkInitialized = () => true;
+  helper.initialized = true;
   helper.callAfterUpdate = (function_) => function_();
   helper.removeDefaultValues = (config) => config;
   helper.answerGet = helperFactory.answerGet.bind(helper);
