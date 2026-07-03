@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.4](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.3...v5.0.4) (2026-07-03)
+
+### Fixed
+
+- recover API when startup notification is missed ([46a27f7](https://github.com/jopyth/MMM-Remote-Control/commit/46a27f70dc6cd23b8b42c778f3e0e7acbb60e792)), closes [#412](https://github.com/jopyth/MMM-Remote-Control/issues/412)
+
+### Chores
+
+- update devDependencies ([b81f5a3](https://github.com/jopyth/MMM-Remote-Control/commit/b81f5a3aaa6744aa5f28f43f990e95a09e553110))
+
 ## [5.0.3](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.2...v5.0.3) (2026-07-01)
 
 ### Chores
