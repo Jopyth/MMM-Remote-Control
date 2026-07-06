@@ -395,7 +395,15 @@ Object.assign(
         );
 
       }
-      wrapper.innerHTML = `<span class="${symbol}"></span><span class="symbol-text-padding">${text}</span>`;
+      const icon = document.createElement("span"),
+        label = document.createElement("span");
+      icon.className = symbol;
+      label.className = "symbol-text-padding";
+      label.textContent = text ?? "";
+      wrapper.append(
+        icon,
+        label
+      );
       return wrapper;
 
     }

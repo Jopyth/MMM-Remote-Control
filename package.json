@@ -46,6 +46,7 @@
     "test:unit": "node --test tests/unit/**/*.test.js"
   },
   "dependencies": {
+    "dompurify": "^3.4.11",
     "marked": "^18.0.5",
     "qrcode": "^1.5.4",
     "simple-git": "^3.36.0",

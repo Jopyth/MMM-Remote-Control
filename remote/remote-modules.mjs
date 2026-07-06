@@ -1,5 +1,6 @@
 import {Remote} from "./remote.mjs";
 import {marked} from "marked";
+import {createSanitizedMarkdownBlock} from "./remote-sanitize.mjs";
 
 /**
  * Module management methods for MMM-Remote-Control.
@@ -39,7 +40,7 @@ Object.assign(
 
       if (text) {
 
-        text.innerHTML = ` ${this.translate("DOWNLOADING")}`;
+        text.textContent = ` ${this.translate("DOWNLOADING")}`;
 
       }
 
@@ -192,22 +193,32 @@ Object.assign(
 
           }
           const visibilityStatus = this.getVisibilityStatus(module),
-            label = "header" in module
-              ? ` ${module.name} (${module.header})`
-              : ` ${module.name}`;
-          parent.insertAdjacentHTML(
-            "beforeend",
-            `
-          <div class="button module-line ${visibilityStatus.status}" id="${module.identifier}">
-            <span class="stack fa-fw">
-              <span class="fa fa-fw fa-toggle-on outer-label fa-stack-1x"></span>
-              <span class="fa fa-fw fa-toggle-off outer-label fa-stack-1x"></span>
-              <span class="fa fa-fw fa-lock inner-small-label fa-stack-1x"></span>
-            </span>
-            <span class="text">${label}</span>
-          </div>
-        `
+            moduleLine = document.createElement("div"),
+            stack = document.createElement("span"),
+            toggleOn = document.createElement("span"),
+            toggleOff = document.createElement("span"),
+            lock = document.createElement("span"),
+            text = document.createElement("span");
+          moduleLine.className = `button module-line ${visibilityStatus.status}`;
+          moduleLine.id = module.identifier;
+          stack.className = "stack fa-fw";
+          toggleOn.className = "fa fa-fw fa-toggle-on outer-label fa-stack-1x";
+          toggleOff.className = "fa fa-fw fa-toggle-off outer-label fa-stack-1x";
+          lock.className = "fa fa-fw fa-lock inner-small-label fa-stack-1x";
+          text.className = "text";
+          text.textContent = "header" in module
+            ? ` ${module.name ?? ""} (${module.header ?? ""})`
+            : ` ${module.name ?? ""}`;
+          stack.append(
+            toggleOn,
+            toggleOff,
+            lock
           );
+          moduleLine.append(
+            stack,
+            text
+          );
+          parent.append(moduleLine);
           this.makeToggleButton(
             parent.lastElementChild,
             visibilityStatus
@@ -250,7 +261,10 @@ Object.assign(
 
               const wrapper = document.createElement("div");
               const lockWarningText = this.translate("LOCKSTRING_WARNING");
-              wrapper.innerHTML = `<span>${lockWarningText.split("LIST_OF_MODULES").join(visibilityStatus.modules)}</span>`;
+              const warningModules = lockWarningText.split("LIST_OF_MODULES");
+              const text = document.createElement("span");
+              text.textContent = warningModules.join(visibilityStatus.modules);
+              wrapper.append(text);
 
               const ok = this.createSymbolText(
                 "fa fa-check-circle",
@@ -448,13 +462,19 @@ Object.assign(
       const data = this.savedData.moduleAvailable[index],
         wrapper = this.getPopupContent();
 
-      wrapper.insertAdjacentHTML(
-        "beforeend",
-        `
-      <div class="bright title">${data.name}</div>
-      <div class="subtitle small">${this.translate("BY")} ${data.maintainer}</div>
-      <div class="small flex-fill">${data.description}</div>
-    `
+      const title = document.createElement("div"),
+        subtitle = document.createElement("div"),
+        description = document.createElement("div");
+      title.className = "bright title";
+      title.textContent = data.name ?? "";
+      subtitle.className = "subtitle small";
+      subtitle.textContent = `${this.translate("BY")} ${data.maintainer ?? ""}`;
+      description.className = "small flex-fill";
+      description.textContent = data.description ?? "";
+      wrapper.append(
+        title,
+        subtitle,
+        description
       );
 
       const footer = document.createElement("div");
@@ -532,20 +552,30 @@ Object.assign(
           parent = document.querySelector("#add-module-results");
         for (const [index, module] of modules.entries()) {
 
-          parent.insertAdjacentHTML(
-            "beforeend",
-            `
-          <div class="module-line">
-            <div class="module-info">
-              <div class="module-name">${module.name}</div>
-              ${module.description
-                ? `<div class="module-description">${module.description}</div>`
-                : ""}
-            </div>
-            <div class="module-buttons"></div>
-          </div>
-        `
+          const moduleLine = document.createElement("div"),
+            moduleInfo = document.createElement("div"),
+            moduleName = document.createElement("div"),
+            moduleButtons = document.createElement("div");
+          moduleLine.className = "module-line";
+          moduleInfo.className = "module-info";
+          moduleName.className = "module-name";
+          moduleName.textContent = module.name ?? "";
+          moduleButtons.className = "module-buttons";
+          moduleInfo.append(moduleName);
+          if (module.description) {
+
+            const moduleDescription = document.createElement("div");
+            moduleDescription.className = "module-description";
+            moduleDescription.textContent = module.description ?? "";
+            moduleInfo.append(moduleDescription);
+
+          }
+          moduleLine.append(
+            moduleInfo,
+            moduleButtons
           );
+          parent.append(moduleLine);
+
           const buttonsContainer = parent.lastElementChild.querySelector(".module-buttons");
 
           if (module.url) {
@@ -617,7 +647,17 @@ Object.assign(
     offerReload (message, shouldIncludeReload = true) {
 
       const wrapper = document.createElement("div");
-      wrapper.innerHTML = `<span>${message}</span>`;
+      if (message instanceof Node) {
+
+        wrapper.append(message);
+
+      } else {
+
+        const text = document.createElement("span");
+        text.textContent = message;
+        wrapper.append(text);
+
+      }
       const restart = this.createSymbolText(
         "fa fa-fw fa-recycle",
         this.translate("RESTARTMM"),
@@ -647,7 +687,17 @@ Object.assign(
     offerOptions (message, data) {
 
       const wrapper = document.createElement("div");
-      wrapper.innerHTML = `<span>${message}</span>`;
+      if (message instanceof Node) {
+
+        wrapper.append(message);
+
+      } else {
+
+        const text = document.createElement("span");
+        text.textContent = message;
+        wrapper.append(text);
+
+      }
       for (const b in data) {
 
         const button = this.createSymbolText(
@@ -752,15 +802,19 @@ Object.assign(
         // Module rows
         for (const module of modules) {
 
-          parent.insertAdjacentHTML(
-            "beforeend",
-            `
-          <div class="module-line">
-            <div class="module-name">${module.name}</div>
-            <div class="module-buttons"></div>
-          </div>
-        `
+          const moduleLine = document.createElement("div"),
+            moduleName = document.createElement("div"),
+            moduleButtons = document.createElement("div");
+          moduleLine.className = "module-line";
+          moduleName.className = "module-name";
+          moduleName.textContent = module.name ?? "";
+          moduleButtons.className = "module-buttons";
+          moduleLine.append(
+            moduleName,
+            moduleButtons
           );
+          parent.append(moduleLine);
+
           const buttonsContainer = parent.lastElementChild.querySelector(".module-buttons");
 
           if (module.updateAvailable) {
@@ -825,8 +879,10 @@ Object.assign(
 
       if (result.success && result.changelog) {
 
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = `<h3>${result.module || "Changelog"}</h3><div id='changelog'>${marked.parse(result.changelog)}</div>`;
+        const wrapper = createSanitizedMarkdownBlock(
+          result.module || "Changelog",
+          marked.parse(result.changelog)
+        );
         this.setStatus(
           "success",
           false,

@@ -1,5 +1,6 @@
 import {Remote} from "./remote.mjs";
 import {marked} from "marked";
+import {createSanitizedMarkdownBlock} from "./remote-sanitize.mjs";
 
 /**
  * Socket communication methods for MMM-Remote-Control.
@@ -174,9 +175,22 @@ Object.assign(
         }
         if ("code" in payload && payload.code === "restart") {
 
-          this.offerRestart(payload.chlog
-            ? `${payload.info}<br><div id='changelog'>${marked.parse(payload.chlog)}</div>`
-            : payload.info);
+          const wrapper = document.createElement("div"),
+            info = document.createElement("span");
+          info.textContent = payload.info ?? "";
+          wrapper.append(info);
+          if (payload.chlog) {
+
+            wrapper.append(
+              document.createElement("br"),
+              createSanitizedMarkdownBlock(
+                "Changelog",
+                marked.parse(payload.chlog)
+              )
+            );
+
+          }
+          this.offerRestart(wrapper);
           return;
 
         }
