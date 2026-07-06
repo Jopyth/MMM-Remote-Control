@@ -324,10 +324,10 @@ Object.assign(
         if (error.name === "AbortError") {
 
           console.error("Request was aborted.");
-          document.body.insertAdjacentHTML(
-            "beforeend",
-            "<div class=\"error-message\">The request was aborted. Please try again.</div>"
-          );
+          const errorMessage = document.createElement("div");
+          errorMessage.className = "error-message";
+          errorMessage.textContent = "The request was aborted. Please try again.";
+          document.body.append(errorMessage);
 
         } else {
 

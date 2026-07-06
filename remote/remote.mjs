@@ -235,7 +235,9 @@ Remote.buttons = buttons;
 function showConfirmation (confirmKey, icon, labelKey, action) {
 
   const wrapper = document.createElement("div");
-  wrapper.innerHTML = `<span>${Remote.translate(confirmKey)}</span>`;
+  const text = document.createElement("span");
+  text.textContent = Remote.translate(confirmKey);
+  wrapper.append(text);
   wrapper.append(Remote.createSymbolText(
     icon,
     Remote.translate(labelKey),

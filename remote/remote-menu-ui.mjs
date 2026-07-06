@@ -281,7 +281,29 @@ function registerMenuRendering (remote) {
           ? (this.translate("LOADING") || "Loading...")
           : (this.translate("LOAD_ERROR") || "Menu could not be loaded.");
 
-      main.innerHTML = `<section class="menu-content"><div class="result-list"><div class="route-state"><span class="fa fa-fw ${iconClass}" aria-hidden="true"></span><span class="text">${text}</span></div></div></section>`;
+      main.replaceChildren();
+      const section = document.createElement("section"),
+        resultList = document.createElement("div"),
+        routeState = document.createElement("div"),
+        icon = document.createElement("span"),
+        textElement = document.createElement("span");
+      section.className = "menu-content";
+      resultList.className = "result-list";
+      routeState.className = "route-state";
+      icon.className = `fa fa-fw ${iconClass}`;
+      icon.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+      textElement.className = "text";
+      textElement.textContent = text;
+      routeState.append(
+        icon,
+        textElement
+      );
+      resultList.append(routeState);
+      section.append(resultList);
+      main.append(section);
       main.scrollTop = 0;
 
       document.querySelector("#back-button")?.classList.toggle(
@@ -385,7 +407,9 @@ function registerMenuRendering (remote) {
         if (changes > 0) {
 
           const wrapper = document.createElement("div");
-          wrapper.innerHTML = `<span>${this.translate("UNSAVED_CHANGES")}</span>`;
+          const text = document.createElement("span");
+          text.textContent = this.translate("UNSAVED_CHANGES");
+          wrapper.append(text);
 
           const ok = this.createSymbolText(
             "fa fa-check-circle",

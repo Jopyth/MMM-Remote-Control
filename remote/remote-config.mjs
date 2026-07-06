@@ -40,7 +40,7 @@ Object.assign(
       for (const typeOption of this.types) {
 
         const option = document.createElement("option");
-        option.innerHTML = typeOption;
+        option.textContent = typeOption;
         option.value = typeOption;
         if (typeOption === type) {
 
@@ -307,7 +307,7 @@ Object.assign(
 
             const option = document.createElement("option");
             option.value = position;
-            option.innerHTML = position
+            option.textContent = position
               ? this.formatPosition(position)
               : this.translate("NO_POSITION");
             if (position === value) {
@@ -751,12 +751,15 @@ Object.assign(
 
       const wrapper = this.getPopupContent();
 
-      wrapper.insertAdjacentHTML(
-        "beforeend",
-        `
-      <div class="bright title medium">${data.module}</div>
-      <div class="subtitle xsmall dimmed">${data.module} (#${index + 1})</div>
-    `
+      const title = document.createElement("div"),
+        subtitle = document.createElement("div");
+      title.className = "bright title medium";
+      title.textContent = data.module ?? "";
+      subtitle.className = "subtitle xsmall dimmed";
+      subtitle.textContent = `${data.module ?? ""} (#${index + 1})`;
+      wrapper.append(
+        title,
+        subtitle
       );
 
       this.appendConfigMenu(
@@ -805,15 +808,20 @@ Object.assign(
 
       for (const [index, data] of moduleData.entries()) {
 
-        wrapper.insertAdjacentHTML(
-          "beforeend",
-          `
-        <div class="module-line" data-module-index="${index}">
-          <div class="module-name">${data.module}</div>
-          <div class="module-buttons"></div>
-        </div>
-      `
+        const moduleLine = document.createElement("div"),
+          moduleName = document.createElement("div"),
+          moduleButtons = document.createElement("div");
+        moduleLine.className = "module-line";
+        moduleLine.dataset.moduleIndex = index;
+        moduleName.className = "module-name";
+        moduleName.textContent = data.module ?? "";
+        moduleButtons.className = "module-buttons";
+        moduleLine.append(
+          moduleName,
+          moduleButtons
         );
+        wrapper.append(moduleLine);
+
         const buttonsContainer = wrapper.lastElementChild.querySelector(".module-buttons");
 
         const url = await this.getModuleUrl(data.module);
