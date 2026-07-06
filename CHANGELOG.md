@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.5](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.4...v5.0.5) (2026-07-06)
+
+### Fixed
+
+- prevent XSS in remote UI via DOM APIs and DOMPurify changelog sanitizing ([01a51df](https://github.com/jopyth/MMM-Remote-Control/commit/01a51df26c703e8d9e44a6d40ac84fffac32d096))
+
+### Documentation
+
+- add note about npm allow-scripts warning during installation ([4f78ac0](https://github.com/jopyth/MMM-Remote-Control/commit/4f78ac0b3ba0a8b92618c37a21fa812d34cac00b))
+
+### Chores
+
+- update devDependencies ([e2c6784](https://github.com/jopyth/MMM-Remote-Control/commit/e2c6784dc73afc335ac64d0507e10068a25c1a3c))
+
+### Code Refactoring
+
+- replace innerHTML with textContent for safer DOM manipulation ([06fae35](https://github.com/jopyth/MMM-Remote-Control/commit/06fae353bb9b51ff6c81bd04d7b5d364b4207321))
+
 ## [5.0.4](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.3...v5.0.4) (2026-07-03)
 
 ### Fixed
