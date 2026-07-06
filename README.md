@@ -44,7 +44,9 @@ The module also includes a **RESTful API** for controlling all aspects of your m
    npm ci --omit=dev
    ```
 
-   The installation will display a sample API key that you can use (optional).
+> Note: You may see an npm allow-scripts warning for @scarf/scarf (via swagger-ui-dist) during install; this is upstream and harmless for MMM-Remote-Control runtime, so you can ignore it or run npm approve-scripts @scarf/scarf for cleaner install output.
+
+The installation will display a sample API key that you can use (optional).
 
 2. Add the module to your `config.js` file. **Note:** You must set a `position` to display the URL/QR code on the mirror.
 
