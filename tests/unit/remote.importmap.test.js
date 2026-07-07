@@ -4,13 +4,20 @@ const path = require("node:path");
 const {describe, test} = require("node:test");
 
 describe("basePath-safe remote asset paths", () => {
-  test("uses a valid relative import-map URL for marked", () => {
+  test("uses valid relative import-map URLs for browser ESM deps", () => {
     const remoteHtmlPath = path.resolve(__dirname, "../../remote.html");
     const html = fs.readFileSync(remoteHtmlPath, "utf8");
-    const match = html.match(/"marked"\s*:\s*"([^"]+)"/);
+    const markedMatch = html.match(/"marked"\s*:\s*"([^"]+)"/);
+    const dompurifyMatch = html.match(/"dompurify"\s*:\s*"([^"]+)"/);
 
-    assert.ok(match, "Expected a marked entry in the import map");
-    assert.equal(match[1], "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js");
+    assert.ok(markedMatch, "Expected a marked entry in the import map");
+    assert.equal(markedMatch[1], "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js");
+
+    assert.ok(dompurifyMatch, "Expected a dompurify entry in the import map");
+    assert.equal(
+      dompurifyMatch[1],
+      "./modules/MMM-Remote-Control/node_modules/dompurify/dist/purify.es.mjs"
+    );
   });
 
   test("manifest uses paths relative to the MagicMirror basePath", () => {

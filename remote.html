@@ -92,7 +92,12 @@
     <script src="%%CONFIG_PATH%%"></script>
     <script src="socket.io/socket.io.js"></script>
     <script type="importmap">
-      {"imports": {"marked": "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js"}}
+      {
+        "imports": {
+          "marked": "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js",
+          "dompurify": "./modules/MMM-Remote-Control/node_modules/dompurify/dist/purify.es.mjs"
+        }
+      }
     </script>
     <script type="module">
       // TODO: Backward-compatibility shim for pre-ESM MagicMirror socketclient.js.
