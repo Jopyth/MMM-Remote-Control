@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.6](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.5...v5.0.6) (2026-07-07)
+
+### Fixed
+
+- **remote:** add dompurify importmap mapping ([922edda](https://github.com/jopyth/MMM-Remote-Control/commit/922eddad917a5aca7859493d4d2eb67004780f2f))
+
+### Chores
+
+- update devDependencies ([510efa3](https://github.com/jopyth/MMM-Remote-Control/commit/510efa3e6f9a13eb357903e67932e8ab4dc4a5a7))
+
 ## [5.0.5](https://github.com/jopyth/MMM-Remote-Control/compare/v5.0.4...v5.0.5) (2026-07-06)
 
 ### Fixed
