@@ -54,7 +54,7 @@ Object.assign(
         "change",
         () => {
 
-          const newType = select.options[select.selectedIndex].innerHTML.toLowerCase();
+          const newType = select.options[select.selectedIndex].getHTML().toLowerCase();
           if (previousType === newType) {
 
             select.replaceWith(oldElement);

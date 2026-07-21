@@ -235,7 +235,7 @@ Module.register("MMM-Remote-Control", {
     if (settingsVersion === undefined) {
       settingsVersion = 0;
     }
-    if (settingsVersion < this.settingsVersion && settingsVersion === 0) {
+    if (settingsVersion === 0 && settingsVersion < this.settingsVersion) {
       // move old data into moduleData
       payload = {moduleData: payload, brightness: 100};
       payload = {moduleData: payload, temp: 327};

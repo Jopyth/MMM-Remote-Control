@@ -351,7 +351,7 @@ function registerMenuRendering (remote) {
             "config"
           ),
           alertElement = document.querySelector("#alert-button");
-        if (configData.modules.every((m) => m.module !== "alert") && alertElement) {
+        if (alertElement && configData.modules.every((m) => m.module !== "alert")) {
 
           alertElement.remove();
 
@@ -359,13 +359,13 @@ function registerMenuRendering (remote) {
 
         const moduleConfig = configData.modules.find((m) => m.module === "MMM-Remote-Control").config,
           classesButton = document.querySelector("#classes-button");
-        if ((!moduleConfig || !moduleConfig.classes) && classesButton) {
+        if (classesButton && (!moduleConfig || !moduleConfig.classes)) {
 
           classesButton.remove();
 
         }
         const notificationButton = document.querySelector("#notification-button");
-        if (moduleConfig && moduleConfig.showNotificationMenu === false && notificationButton) {
+        if (notificationButton && moduleConfig && moduleConfig.showNotificationMenu === false) {
 
           notificationButton.remove();
 
@@ -968,7 +968,7 @@ function registerMenuElementBuilders (remote) {
             ...content.content
           });
 
-          if (content.action === "MANAGE_CLASSES" && menu === "classes") {
+          if (menu === "classes" && content.action === "MANAGE_CLASSES") {
 
             setTimeout(
               () => {
