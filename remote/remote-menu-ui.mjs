@@ -120,6 +120,37 @@ function registerFormAndInputListeners (remote) {
 
     },
 
+    attachUpdateFilterListener () {
+
+      const toggle = document.querySelector("#update-filter-toggle");
+      if (!toggle) {
+
+        return;
+
+      }
+
+      const isActive = localStorage.getItem("mmrc_update_filter_active") === "true";
+      toggle.classList.toggle("toggled-on", isActive);
+      toggle.classList.toggle("toggled-off", !isActive);
+      toggle.setAttribute("aria-checked", String(isActive));
+
+      toggle.addEventListener(
+        "click",
+        () => {
+
+          const isNowActive = !toggle.classList.contains("toggled-on");
+          toggle.classList.toggle("toggled-on", isNowActive);
+          toggle.classList.toggle("toggled-off", !isNowActive);
+          toggle.setAttribute("aria-checked", String(isNowActive));
+          localStorage.setItem("mmrc_update_filter_active", String(isNowActive));
+          this.applyUpdateFilter();
+
+        },
+        {capture: false}
+      );
+
+    },
+
     setupNotificationForm () {
 
       const payloadTextarea = document.querySelector("#notification-payload");

@@ -177,12 +177,21 @@ Object.assign(Remote, {
   },
 
   /**
-   * Returns HTML for the update menu (update-module result list only).
+   * Returns HTML for the update menu (filter toggle + update-module result list).
    * @returns {string} HTML string for the update menu section
    */
   renderUpdateMenu () {
     const t = (key) => this.translate(key);
-    return `<section class="menu-content">
+    return `<nav class="menu-nav">
+        <div id="update-filter-toggle" class="button toggled-off" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="stack fa-fw">
+            <span class="fa fa-fw fa-toggle-on outer-label fa-stack-1x" aria-hidden="true"></span>
+            <span class="fa fa-fw fa-toggle-off outer-label fa-stack-1x" aria-hidden="true"></span>
+          </span>
+          <span class="text">${t("UPDATE_FILTER_LABEL")}</span>
+        </div>
+      </nav>
+      <section class="menu-content">
         ${resultList("update-module", t("LOADING"), t("NO_MODULES_LOADED"))}
       </section>`;
   },

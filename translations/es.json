@@ -62,6 +62,7 @@
   "LOCKSTRING_WARNING": "Este módulo fué ocultado por LIST_OF_MODULES, no puede ser mostrado.",
   "FORCE_SHOW": "Hazlo igualmente.",
   "UPDATE_MENU_NAME": "Actualizaciones",
+  "UPDATE_FILTER_LABEL": "Mostrar solo actualizables",
   "ALERT_MENU_NAME": "Alertas / Notificaciones",
   "SENDALERT": "Envía alerta",
   "HIDEALERT": "Oculta alerta",

@@ -39,6 +39,7 @@ export const MENU_SIDE_EFFECTS = {
   },
   "update-menu" () {
 
+    this.attachUpdateFilterListener();
     this.loadModulesToUpdate();
 
   },

@@ -62,6 +62,7 @@
   "LOCKSTRING_WARNING": "Dette modul blev skjult af LIST_OF_MODULES, det kan ikke vises.",
   "FORCE_SHOW": "Gør det alligevel.",
   "UPDATE_MENU_NAME": "Opdateringer",
+  "UPDATE_FILTER_LABEL": "Vis kun opdaterbare",
   "ALERT_MENU_NAME": "Alarm",
   "SENDALERT": "Send",
   "HIDEALERT": "Skjul",

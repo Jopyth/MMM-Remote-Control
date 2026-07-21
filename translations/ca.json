@@ -62,6 +62,7 @@
   "LOCKSTRING_WARNING": "Aquest mòdul ha estat ocultat per LIST_OF_MODULES, no pot ser mostrat.",
   "FORCE_SHOW": "Fes-ho igualment.",
   "UPDATE_MENU_NAME": "Actualitzacions",
+  "UPDATE_FILTER_LABEL": "Mostra només actualitzables",
   "ALERT_MENU_NAME": "Alertes / Notificacions",
   "SENDALERT": "Envia alerta",
   "HIDEALERT": "Oculta alerta",

@@ -62,6 +62,7 @@
   "LOCKSTRING_WARNING": "This module was hidden by LIST_OF_MODULES, it can not be shown.",
   "FORCE_SHOW": "Do it anyway.",
   "UPDATE_MENU_NAME": "Updates",
+  "UPDATE_FILTER_LABEL": "Show only updatable",
   "ALERT_MENU_NAME": "Alert",
   "SENDALERT": "Send",
   "NOTIFICATION_MENU_NAME": "Notification",

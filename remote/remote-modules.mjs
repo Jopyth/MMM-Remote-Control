@@ -744,6 +744,29 @@ Object.assign(
 
       }
 
+      document.querySelector("#mm-update-container")?.classList.toggle("module-updatable", Boolean(result));
+      this.applyUpdateFilter();
+
+    },
+
+    applyUpdateFilter () {
+
+      const parent = document.querySelector("#update-module-results");
+      if (!parent) {
+
+        return;
+
+      }
+      const isActive = document.querySelector("#update-filter-toggle")?.classList.contains("toggled-on") ?? false;
+      for (const line of parent.children) {
+
+        const isUpdatable = line.classList.contains("module-updatable");
+        line.classList.toggle(
+          "hidden",
+          isActive && !isUpdatable
+        );
+
+      }
 
     },
 
@@ -806,6 +829,7 @@ Object.assign(
             moduleName = document.createElement("div"),
             moduleButtons = document.createElement("div");
           moduleLine.className = "module-line";
+          moduleLine.classList.toggle("module-updatable", Boolean(module.updateAvailable));
           moduleName.className = "module-name";
           moduleName.textContent = module.name ?? "";
           moduleButtons.className = "module-buttons";
@@ -856,6 +880,8 @@ Object.assign(
           }
 
         }
+
+        this.applyUpdateFilter();
 
       } catch (error) {
 

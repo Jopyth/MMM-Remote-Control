@@ -62,6 +62,7 @@
   "LOCKSTRING_WARNING": "Modul ini disembunyikan oleh LIST_OF_MODULES, tidak dapat ditampilkan.",
   "FORCE_SHOW": "Lakukan saja.",
   "UPDATE_MENU_NAME": "Pembaharuan",
+  "UPDATE_FILTER_LABEL": "Tampilkan hanya yang dapat diperbarui",
   "ALERT_MENU_NAME": "Peringatan",
   "SENDALERT": "Kirim",
   "HIDEALERT": "Sembunyikan",
