@@ -46,11 +46,11 @@
     "test:unit": "node --test tests/unit/**/*.test.js"
   },
   "dependencies": {
-    "dompurify": "^3.4.11",
-    "marked": "^18.0.5",
+    "dompurify": "^3.4.12",
+    "marked": "^18.0.7",
     "qrcode": "^1.5.4",
     "simple-git": "^3.36.0",
-    "swagger-ui-dist": "^5.32.8"
+    "swagger-ui-dist": "^5.32.10"
   },
   "devDependencies": {
     "@eslint/css": "^1.4.0",
@@ -58,18 +58,18 @@
     "@eslint/json": "^2.0.1",
     "@eslint/markdown": "^8.0.3",
     "@stylistic/eslint-plugin": "^5.10.0",
-    "c8": "^11.0.0",
-    "commit-and-tag-version": "^12.7.3",
+    "c8": "^12.0.0",
+    "commit-and-tag-version": "^13.1.0",
     "cspell": "^10.0.1",
-    "eslint": "^10.6.0",
+    "eslint": "^10.7.0",
     "eslint-plugin-import-x": "^4.17.1",
-    "eslint-plugin-jsdoc": "^63.0.12",
-    "eslint-plugin-unicorn": "^71.1.0",
+    "eslint-plugin-jsdoc": "^63.2.0",
+    "eslint-plugin-unicorn": "^72.0.0",
     "express": "^5.2.1",
     "globals": "^17.7.0",
-    "happy-dom": "^20.10.6",
-    "lint-staged": "^17.0.8",
-    "prettier": "^3.9.4",
+    "happy-dom": "^20.11.0",
+    "lint-staged": "^17.1.0",
+    "prettier": "^3.9.6",
     "simple-git-hooks": "^2.13.1"
   },
   "simple-git-hooks": {
