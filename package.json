@@ -67,7 +67,7 @@
     "eslint-plugin-unicorn": "^72.0.0",
     "express": "^5.2.1",
     "globals": "^17.7.0",
-    "happy-dom": "^20.11.0",
+    "happy-dom": "^20.11.1",
     "lint-staged": "^17.1.0",
     "prettier": "^3.9.6",
     "simple-git-hooks": "^2.13.1"
