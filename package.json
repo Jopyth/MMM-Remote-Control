@@ -50,7 +50,7 @@
     "marked": "^18.0.7",
     "qrcode": "^1.5.4",
     "simple-git": "^3.36.0",
-    "swagger-ui-dist": "^5.32.10"
+    "swagger-ui-dist": "^5.32.11"
   },
   "devDependencies": {
     "@eslint/css": "^1.4.0",
