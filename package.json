@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "dompurify": "^3.4.13",
-    "marked": "^18.0.9",
+    "marked": "^18.0.11",
     "qrcode": "^1.5.4",
     "simple-git": "^3.36.0",
     "swagger-ui-dist": "^5.32.12"
