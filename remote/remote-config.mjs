@@ -347,12 +347,7 @@ Object.assign(
         return "null";
 
       }
-      if (dataToEdit === undefined) {
-
-        return "undefined";
-
-      }
-      return "object";
+      return dataToEdit === undefined ? "undefined" : "object";
 
     },
 
@@ -632,12 +627,7 @@ Object.assign(
 
     navigate (parent, name) {
 
-      if (name.includes("#")) {
-
-        return parent.at(-1);
-
-      }
-      return parent[name];
+      return name.includes("#") ? parent.at(-1) : parent[name];
 
     },
 

@@ -48,11 +48,11 @@ Module.register("MMM-Remote-Control", {
       document.documentElement.insertBefore(brightnessOverlay, document.body);
     }
 
-    if (!document.getElementById("remote-control-overlay-temp")) {
-      const temporaryOverlay = document.createElement("div");
-      temporaryOverlay.id = "remote-control-overlay-temp";
-      document.documentElement.insertBefore(temporaryOverlay, document.body);
-    }
+    if (document.getElementById("remote-control-overlay-temp")) return;
+
+    const temporaryOverlay = document.createElement("div");
+    temporaryOverlay.id = "remote-control-overlay-temp";
+    document.documentElement.insertBefore(temporaryOverlay, document.body);
   },
 
   getStyles () {
@@ -394,8 +394,7 @@ Module.register("MMM-Remote-Control", {
     const filters = Array.isArray(filter) ? filter : [filter];
 
     return allModules.filter((module) => {
-      if (!module) return false;
-      return filters.some((f) => module.identifier === f || module.name === f);
+      return module ? filters.some((f) => module.identifier === f || module.name === f) : false;
     });
   }
 });

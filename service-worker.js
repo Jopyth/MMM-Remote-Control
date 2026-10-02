@@ -47,10 +47,7 @@ addEventListener("fetch", (event) => {
   event.respondWith((async () => {
     const response = await caches.match(event.request);
     // Cache hit - return response
-    if (response) {
-      return response;
-    }
-    return fetch(event.request);
+    return response || fetch(event.request);
   })());
 });
 

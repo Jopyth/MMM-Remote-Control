@@ -256,13 +256,13 @@ describe("Translation Completeness", () => {
       }
     }
 
-    if (Object.keys(missingKeys).length > 0) {
-      let errorMessage = "Missing translation keys found:\n";
-      for (const [lang, keys] of Object.entries(missingKeys)) {
-        errorMessage += `\n${lang}.json is missing: ${keys.join(", ")}`;
-      }
-      assert.fail(errorMessage);
+    if (Object.keys(missingKeys).length === 0) return;
+
+    let errorMessage = "Missing translation keys found:\n";
+    for (const [lang, keys] of Object.entries(missingKeys)) {
+      errorMessage += `\n${lang}.json is missing: ${keys.join(", ")}`;
     }
+    assert.fail(errorMessage);
   });
 
   it("should have all translation files with same number of keys", () => {
@@ -277,13 +277,13 @@ describe("Translation Completeness", () => {
     const counts = Object.values(keyCounts);
     const allSame = counts.every((count) => count === counts[0]);
 
-    if (!allSame) {
-      let errorMessage = "Translation files have different number of keys:\n";
-      for (const [lang, count] of Object.entries(keyCounts)) {
-        errorMessage += `\n${lang}.json: ${count} keys`;
-      }
-      assert.fail(errorMessage);
+    if (allSame) return;
+
+    let errorMessage = "Translation files have different number of keys:\n";
+    for (const [lang, count] of Object.entries(keyCounts)) {
+      errorMessage += `\n${lang}.json: ${count} keys`;
     }
+    assert.fail(errorMessage);
   });
 
   it("should have valid JSON in all translation files", () => {
@@ -321,13 +321,13 @@ describe("Translation Completeness", () => {
       }
     }
 
-    if (Object.keys(emptyValues).length > 0) {
-      let errorMessage = "Empty translation values found:\n";
-      for (const [lang, keys] of Object.entries(emptyValues)) {
-        errorMessage += `\n${lang}.json has empty values for: ${keys.join(", ")}`;
-      }
-      assert.fail(errorMessage);
+    if (Object.keys(emptyValues).length === 0) return;
+
+    let errorMessage = "Empty translation values found:\n";
+    for (const [lang, keys] of Object.entries(emptyValues)) {
+      errorMessage += `\n${lang}.json has empty values for: ${keys.join(", ")}`;
     }
+    assert.fail(errorMessage);
   });
 });
 
@@ -335,19 +335,19 @@ describe("Swagger.json Documentation", () => {
   it("should have descriptions for all API endpoints", () => {
     const issues = checkSwaggerTranslations();
 
-    if (issues.length > 0) {
-      let errorMessage = "Missing or empty descriptions in swagger.json:\n";
+    if (issues.length === 0) return;
 
-      for (const issue of issues) {
-        if (issue.type === "missing") {
-          errorMessage += `\n- ${issue.path}${issue.name ? ` (${issue.name})` : ""}`;
-        } else if (issue.type === "empty") {
-          errorMessage += `\n- ${issue.path} is empty`;
-        }
+    let errorMessage = "Missing or empty descriptions in swagger.json:\n";
+
+    for (const issue of issues) {
+      if (issue.type === "missing") {
+        errorMessage += `\n- ${issue.path}${issue.name ? ` (${issue.name})` : ""}`;
+      } else if (issue.type === "empty") {
+        errorMessage += `\n- ${issue.path} is empty`;
       }
-
-      assert.fail(errorMessage);
     }
+
+    assert.fail(errorMessage);
   });
 
   it("should have up-to-date translation example in /api/translations endpoint", () => {
@@ -398,9 +398,9 @@ describe("Swagger.json Documentation", () => {
       errors.push(`Extra keys in swagger.json /api/translations example (not in en.json): ${extraInSwagger.join(", ")}`);
     }
 
-    if (errors.length > 0) {
-      assert.fail(errors.join("\n\n"));
-    }
+    if (errors.length === 0) return;
+
+    assert.fail(errors.join("\n\n"));
   });
 });
 
@@ -418,37 +418,37 @@ describe("Translation Usage", () => {
       }
     }
 
-    if (missingTranslations.length > 0) {
-      // Filter out common false positives (notification names, constants, etc.)
-      const likelyRealMissing = missingTranslations.filter((key) => ![
-        "MANAGE_CLASSES",
-        "COMMAND",
-        "USER_PRESENCE",
-        "STATUS",
-        "DELAYED",
-        "NOTIFICATION",
-        "GET_CHANGELOG",
-        "RESTART",
-        "STOP",
-        "SOME_UNIQUE_ID",
-        "SHOW_ALERT",
-        "TEMP",
-        "SHOW",
-        "HIDE",
-        "INSTALL",
-        "UPDATE",
-        "REFRESH",
-        "TOGGLEFULLSCREEN",
-        "HIDE_ALERT",
-        "ON",
-        "OFF",
-        "TOGGLE"
-      ].includes(key));
+    if (missingTranslations.length === 0) return;
 
-      if (likelyRealMissing.length > 0) {
-        assert.fail(`Translation keys used in code but not found in translation files:\n${likelyRealMissing.join(", ")}`);
-      }
-    }
+    // Filter out common false positives (notification names, constants, etc.)
+    const likelyRealMissing = missingTranslations.filter((key) => ![
+      "MANAGE_CLASSES",
+      "COMMAND",
+      "USER_PRESENCE",
+      "STATUS",
+      "DELAYED",
+      "NOTIFICATION",
+      "GET_CHANGELOG",
+      "RESTART",
+      "STOP",
+      "SOME_UNIQUE_ID",
+      "SHOW_ALERT",
+      "TEMP",
+      "SHOW",
+      "HIDE",
+      "INSTALL",
+      "UPDATE",
+      "REFRESH",
+      "TOGGLEFULLSCREEN",
+      "HIDE_ALERT",
+      "ON",
+      "OFF",
+      "TOGGLE"
+    ].includes(key));
+
+    if (likelyRealMissing.length === 0) return;
+
+    assert.fail(`Translation keys used in code but not found in translation files:\n${likelyRealMissing.join(", ")}`);
   });
 
   it("should only have translation keys that are used in code", () => {
@@ -464,10 +464,10 @@ describe("Translation Usage", () => {
       }
     }
 
-    if (unusedKeys.length > 0) {
-      assert.fail(`Found ${unusedKeys.length} unused translation keys: ${unusedKeys.join(", ")}\n\n` +
-        "Remove these keys from translation files or add them to the code. " +
-        "If used dynamically (e.g., in custom_menu.example.json), add them to the code scanner patterns.");
-    }
+    if (unusedKeys.length === 0) return;
+
+    assert.fail(`Found ${unusedKeys.length} unused translation keys: ${unusedKeys.join(", ")}\n\n` +
+      "Remove these keys from translation files or add them to the code. " +
+      "If used dynamically (e.g., in custom_menu.example.json), add them to the code scanner patterns.");
   });
 });

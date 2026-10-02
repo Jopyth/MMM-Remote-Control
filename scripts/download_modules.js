@@ -35,11 +35,7 @@ const downloadModules = {
     try {
       const data = JSON.parse(content);
 
-      if (data.modules && Array.isArray(data.modules)) {
-        return data.modules;
-      }
-
-      return [];
+      return data.modules && Array.isArray(data.modules) ? data.modules : [];
     } catch (error) {
       console.error("MODULE LIST ERROR: Failed to parse JSON:", error.message);
       return [];

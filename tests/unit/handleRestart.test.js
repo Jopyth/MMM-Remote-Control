@@ -15,10 +15,7 @@ const originalLoad = ModuleLib._load;
 let currentElectronMock = null;
 
 ModuleLib._load = function (request, parent, isMain) {
-  if (request === "electron" && currentElectronMock !== null) {
-    return currentElectronMock;
-  }
-  return originalLoad(request, parent, isMain);
+  return request === "electron" && currentElectronMock !== null ? currentElectronMock : originalLoad(request, parent, isMain);
 };
 
 function freshHelper () {

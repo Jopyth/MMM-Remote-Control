@@ -86,10 +86,12 @@ module.exports = {
    */
   getApiKey () {
     const thisConfig = this.configOnHd.modules.find((x) => x.module === "MMM-Remote-Control");
-    if (thisConfig !== undefined && "config" in thisConfig) {
-      this.apiKey = "apiKey" in thisConfig.config && thisConfig.config.apiKey !== "" ? thisConfig.config.apiKey : undefined;
-      this.secureEndpoints = "secureEndpoints" in thisConfig.config && !thisConfig.config.secureEndpoints ? false : true;
+    if (thisConfig === undefined || !("config" in thisConfig)) {
+      return;
     }
+
+    this.apiKey = "apiKey" in thisConfig.config && thisConfig.config.apiKey !== "" ? thisConfig.config.apiKey : undefined;
+    this.secureEndpoints = "secureEndpoints" in thisConfig.config && !thisConfig.config.secureEndpoints ? false : true;
   },
 
   /*

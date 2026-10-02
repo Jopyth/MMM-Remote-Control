@@ -130,18 +130,18 @@ Object.assign(
         for (const moduleName of modules) {
 
           const module = moduleMap[moduleName];
-          if (module) {
+          if (!module) {
+            continue;
+          }
 
-            totalCount++;
-            if (module.hidden) {
+          totalCount++;
+          if (module.hidden) {
 
-              hiddenCount++;
+            hiddenCount++;
 
-            } else {
+          } else {
 
-              visibleCount++;
-
-            }
+            visibleCount++;
 
           }
 
@@ -862,22 +862,20 @@ Object.assign(
 
           }
 
-          if (module.hasChangelog) {
+          if (!module.hasChangelog) continue;
 
-            const changelogButton = this.createSymbolText(
-              "fa fa-fw fa-file-text-o",
-              "Changelog",
-              (event) => {
+          const changelogButton = this.createSymbolText(
+            "fa fa-fw fa-file-text-o",
+            "Changelog",
+            (event) => {
 
-                event.stopPropagation();
-                this.showChangelog(module.name);
+              event.stopPropagation();
+              this.showChangelog(module.name);
 
-              }
-            );
-            changelogButton.className = "button";
-            buttonsContainer.append(changelogButton);
-
-          }
+            }
+          );
+          changelogButton.className = "button";
+          buttonsContainer.append(changelogButton);
 
         }
 

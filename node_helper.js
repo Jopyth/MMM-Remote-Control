@@ -1036,10 +1036,12 @@ module.exports = NodeHelper.create({
 
   async loadCustomMenus () {
     const customMenu = await configManager.loadCustomMenus(__dirname, this.thisConfig, (data) => this.translate(data));
-    if (customMenu) {
-      this.customMenu = {...this.customMenu, ...customMenu};
-      this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
+    if (!customMenu) {
+      return;
     }
+
+    this.customMenu = {...this.customMenu, ...customMenu};
+    this.sendSocketNotification("REMOTE_CLIENT_CUSTOM_MENU", this.customMenu);
   },
 
   getIpAddresses () {

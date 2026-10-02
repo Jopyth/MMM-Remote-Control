@@ -1,17 +1,17 @@
 import {defineConfig, globalIgnores} from "eslint/config";
+import pluginJsdoc, {configs as jsdocConfigs} from "eslint-plugin-jsdoc";
 import css from "@eslint/css";
 import globals from "globals";
 import {flatConfigs as importX} from "eslint-plugin-import-x";
 import js from "@eslint/js";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
-import pluginJsdoc from "eslint-plugin-jsdoc";
 import stylistic from "@stylistic/eslint-plugin";
 import unicorn from "eslint-plugin-unicorn";
 
 const sharedJsExtends = [
     importX.recommended,
-    pluginJsdoc.configs["flat/recommended"],
+    jsdocConfigs["flat/recommended"],
     "js/recommended",
     stylistic.configs.all,
     unicorn.configs.recommended

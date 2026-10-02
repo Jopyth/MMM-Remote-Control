@@ -33,10 +33,7 @@ Module._load = function (request, parent, isMain) {
   if (request === "logger") {
     return logger; // Use test shim, not console
   }
-  if (request === "electron" && currentElectronMock) {
-    return currentElectronMock;
-  }
-  return originalLoad(request, parent, isMain);
+  return request === "electron" && currentElectronMock ? currentElectronMock : originalLoad(request, parent, isMain);
 };
 
 // Import systemControl functions - will be reloaded in each test suite with mocked exec

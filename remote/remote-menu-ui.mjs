@@ -209,15 +209,15 @@ function registerFormAndInputListeners (remote) {
       }
 
       const alertForm = document.querySelector("#alert");
-      if (alertForm) {
-
-        Remote.formState ??= {};
-        Remote.formState.alertType = alertForm.querySelector("[name='type']")?.value;
-        Remote.formState.alertTitle = alertForm.querySelector("[name='title']")?.value;
-        Remote.formState.alertMessage = alertForm.querySelector("[name='message']")?.value;
-        Remote.formState.alertTimer = alertForm.querySelector("[name='timer']")?.value;
-
+      if (!alertForm) {
+        return;
       }
+
+      Remote.formState ??= {};
+      Remote.formState.alertType = alertForm.querySelector("[name='type']")?.value;
+      Remote.formState.alertTitle = alertForm.querySelector("[name='title']")?.value;
+      Remote.formState.alertMessage = alertForm.querySelector("[name='message']")?.value;
+      Remote.formState.alertTimer = alertForm.querySelector("[name='timer']")?.value;
 
     },
 
@@ -668,12 +668,12 @@ function registerHeaderAndNavigation (remote) {
 
 
         const hash = event.target.closest("[data-hash]")?.dataset.hash;
-        if (hash) {
-
-          event.preventDefault();
-          this.navigateToMenu(hash);
-
+        if (!hash) {
+          return;
         }
+
+        event.preventDefault();
+        this.navigateToMenu(hash);
 
 
       });
