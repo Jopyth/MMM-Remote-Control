@@ -1,6 +1,16 @@
 const {test, describe, before} = require("node:test");
 const assert = require("node:assert/strict");
 
+const buildMenu = (id, text) => ({
+  id,
+  type: "menu",
+  text,
+  icon: "window-restore",
+  items: [{id: `${id}-item`, type: "item", action: "NOTIFICATION", content: {notification: "TEST"}}]
+});
+
+const countButtons = (id) => [...document.querySelectorAll("[id]")].filter((element) => element.id === `${id}-button`).length;
+
 describe("remote.js DOM smoke tests", () => {
   let Remote;
 
@@ -147,6 +157,41 @@ describe("remote.js DOM smoke tests", () => {
     assert.equal(document.querySelector("#mc-pages-next-button"), null);
     // Data structure holds the latest (explicit) menu content
     assert.equal(Remote.dynamicMenus["module-control"].items[0].items[0].id, "mc-pages-next");
+  });
+
+  test("injectDynamicMenuButtons renders each queued menu only once", () => {
+    document.body.innerHTML = `
+      <nav class="menu-nav"><div id="alert-button"></div></nav>
+    `;
+
+    const originalCurrentMenu = Remote.currentMenu,
+      originalPendingMenus = Remote.pendingDynamicMenus,
+      originalDynamicMenus = Remote.dynamicMenus;
+
+    Remote.currentMenu = "classes-menu";
+    Remote.pendingDynamicMenus = [];
+    Remote.dynamicMenus = {};
+
+    try {
+      // Menus arriving while the main menu is not rendered are queued
+      Remote.createDynamicMenu(buildMenu("custom", "My Custom Menu"));
+      Remote.createDynamicMenu(buildMenu("module-control", "Module Controls"));
+
+      Remote.injectDynamicMenuButtons();
+
+      assert.equal(countButtons("custom"), 1);
+      assert.equal(countButtons("module-control"), 1);
+      assert.equal(Remote.pendingDynamicMenus.length, 0);
+
+      // Rendering again must not duplicate buttons either
+      Remote.injectDynamicMenuButtons();
+      assert.equal(countButtons("custom"), 1);
+      assert.equal(countButtons("module-control"), 1);
+    } finally {
+      Remote.currentMenu = originalCurrentMenu;
+      Remote.pendingDynamicMenus = originalPendingMenus;
+      Remote.dynamicMenus = originalDynamicMenus;
+    }
   });
 
   test("createDynamicMenu re-renders active dynamic submenu hash", () => {

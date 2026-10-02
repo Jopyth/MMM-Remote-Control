@@ -780,10 +780,19 @@ function registerDynamicMenus (remote) {
 
       }
 
-      // Re-create buttons for already-registered dynamic menus
+      // Menus queued before the main menu was shown are already registered, so each is rendered once
+      const pendingMenus = this.pendingDynamicMenus ?? [];
+      for (const pending of pendingMenus) {
+
+        this.dynamicMenus = {...this.dynamicMenus, [pending.id]: pending};
+
+      }
+      this.pendingDynamicMenus = [];
+
       const dynamicMenus = Object.values(this.dynamicMenus ?? {});
       for (const menu of dynamicMenus) {
 
+        this.removeDynamicMenuButtons(menu);
         this.createMenuElement(
           menu,
           "main",
@@ -792,21 +801,6 @@ function registerDynamicMenus (remote) {
         );
 
       }
-
-      // Drain pending menus received before main menu was ever shown
-      const pendingMenus = this.pendingDynamicMenus ?? [];
-      for (const pending of pendingMenus) {
-
-        this.dynamicMenus = {...this.dynamicMenus, [pending.id]: pending};
-        this.createMenuElement(
-          pending,
-          "main",
-          alertButton,
-          true
-        );
-
-      }
-      this.pendingDynamicMenus = [];
 
     },
 
