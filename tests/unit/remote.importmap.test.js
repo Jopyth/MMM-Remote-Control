@@ -45,4 +45,24 @@ describe("basePath-safe remote asset paths", () => {
     assert.ok(urls.includes("./remote.html"));
     assert.equal(urls.some((value) => value.startsWith("/")), false);
   });
+
+  test("service worker cache name matches the package version", () => {
+    const serviceWorker = fs.readFileSync(path.resolve(__dirname, "../../service-worker.js"), "utf8");
+    const {version} = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../../package.json"), "utf8"));
+
+    assert.match(serviceWorker, new RegExp(`const CACHE_NAME = "mmm-remote-control-v${version.replaceAll(".", String.raw`\.`)}";`));
+  });
+
+  test("service worker cache list covers every remote module and import-map target", () => {
+    const serviceWorker = fs.readFileSync(path.resolve(__dirname, "../../service-worker.js"), "utf8");
+    const html = fs.readFileSync(path.resolve(__dirname, "../../remote.html"), "utf8");
+    const remoteFiles = fs.readdirSync(path.resolve(__dirname, "../../remote")).
+      filter((file) => file.endsWith(".mjs")).
+      map((file) => `./modules/MMM-Remote-Control/remote/${file}`);
+    const importMapTargets = html.matchAll(/"(\.\/modules\/MMM-Remote-Control\/node_modules\/[^"]+)"/g).map((match) => match[1]);
+
+    for (const url of [...remoteFiles, ...importMapTargets]) {
+      assert.ok(serviceWorker.includes(`"${url}"`), `${url} is missing from the service worker precache list`);
+    }
+  });
 });

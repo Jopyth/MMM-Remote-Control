@@ -1,4 +1,4 @@
-const CACHE_NAME = "mmm-remote-control-v4.8.2-basepath";
+const CACHE_NAME = "mmm-remote-control-v5.1.1";
 const urlsToCache = [
   "./remote.html",
   "./css/main.css",
@@ -20,7 +20,9 @@ const urlsToCache = [
   "./modules/MMM-Remote-Control/remote/remote-modules.mjs",
   "./modules/MMM-Remote-Control/remote/remote-config.mjs",
   "./modules/MMM-Remote-Control/remote/remote-render.mjs",
-  "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js"
+  "./modules/MMM-Remote-Control/remote/remote-sanitize.mjs",
+  "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js",
+  "./modules/MMM-Remote-Control/node_modules/dompurify/dist/purify.es.mjs"
 ];
 
 // Install service worker and skip waiting
