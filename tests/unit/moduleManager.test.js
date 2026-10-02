@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs/promises");
 const os = require("node:os");
 const path = require("node:path");
-const simpleGit = require("simple-git");
+const {simpleGit} = require("simple-git");
 const moduleManager = require("../../lib/moduleManager.js");
 const Log = require("../../tests/shims/logger.js");
 

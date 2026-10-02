@@ -27,7 +27,7 @@ const {exec} = require("node:child_process");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const simpleGit = require("simple-git");
+const {simpleGit} = require("simple-git");
 
 let defaultModules;
 let defaultModulesPath;
