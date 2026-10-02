@@ -56,7 +56,7 @@ body:
       label: MagicMirror² Version
       description: |
         example:
-        - MM: 2.33.0
+        - MM: 2.38.0
 
         How to check your MagicMirror² version:
         - When you run MagicMirror², the version is shown in the terminal output at startup.

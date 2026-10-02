@@ -1022,11 +1022,6 @@ module.exports = NodeHelper.create({
 
   fillTemplates (data) {
     data = this.translate(data);
-    // Replace config path placeholder
-    const configPath = globalThis.configuration_file === undefined
-      ? "config/config.js"
-      : globalThis.configuration_file;
-    data = data.split("%%CONFIG_PATH%%").join(configPath);
     return data;
   },
 
