@@ -4,7 +4,6 @@ const urlsToCache = [
   "./css/main.css",
   "./css/roboto.css",
   "./css/font-awesome.css",
-  "./socket.io/socket.io.js",
   "./js/socketclient.js",
   "./modules/MMM-Remote-Control/remote/remote.css",
   "./modules/MMM-Remote-Control/manifest.json",
