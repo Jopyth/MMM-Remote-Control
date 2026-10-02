@@ -30,25 +30,11 @@ const path = require("node:path");
 const {simpleGit} = require("simple-git");
 
 let defaultModules;
-let defaultModulesPath;
 try {
-  // Try new path first (MM >= 2.35.0)
-  defaultModulesPath = path.resolve(`${__dirname}/../../defaultmodules/defaultmodules.js`);
-  defaultModules = require(defaultModulesPath);
+  defaultModules = require(path.resolve(`${__dirname}/../../defaultmodules/defaultmodules.js`));
 } catch {
-  try {
-
-    /*
-     * TODO: Remove this fallback to old path in 2027 (MM < 2.35.0)
-     * Fallback to old path (MM < 2.35.0)
-     */
-    defaultModulesPath = path.resolve(`${__dirname}/../../modules/default/defaultmodules.js`);
-    defaultModules = require(defaultModulesPath);
-  } catch {
-    // Fallback for test environment or standalone usage
-    defaultModulesPath = "./tests/shims/defaultmodules.js";
-    defaultModules = require(defaultModulesPath);
-  }
+  // Fallback for test environment or standalone usage
+  defaultModules = require("./tests/shims/defaultmodules.js");
 }
 const {includes} = require("./lib/utils.js");
 const configManager = require("./lib/configManager.js");
@@ -316,14 +302,7 @@ module.exports = NodeHelper.create({
           Log.error(error);
         }
 
-        /*
-         * TODO: Remove old path support in 2027 (MM < 2.35.0)
-         * Use appropriate path based on MM version (new: defaultmodules, old: modules/default)
-         */
-        const githubPath = defaultModulesPath.includes("defaultmodules/defaultmodules.js")
-          ? "defaultmodules"
-          : "modules/default";
-        response.writeHead(302, {"Location": `https://github.com/MagicMirrorOrg/MagicMirror/tree/${result.trim()}/${githubPath}/${query.module}`});
+        response.writeHead(302, {"Location": `https://github.com/MagicMirrorOrg/MagicMirror/tree/${result.trim()}/defaultmodules/${query.module}`});
         response.end();
       });
       return;

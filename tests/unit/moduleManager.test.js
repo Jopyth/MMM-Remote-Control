@@ -120,12 +120,11 @@ describe("lib/moduleManager additional coverage", () => {
     await fs.rm(temporaryRoot, {recursive: true, force: true});
   });
 
-  it("readModuleData should load custom and default modules using new defaultmodules path", async () => {
+  it("readModuleData should load custom and default modules from defaultmodules path", async () => {
     const baseDir = path.join(temporaryRoot, "runtime", "server");
     const parentDir = path.resolve(`${baseDir}/..`);
 
     await fs.mkdir(baseDir, {recursive: true});
-    await fs.mkdir(path.join(temporaryRoot, "defaultmodules"), {recursive: true});
 
     await fs.mkdir(path.join(parentDir, "MMM-Installed"), {recursive: true});
     await fs.mkdir(path.join(parentDir, "node_modules"), {recursive: true});
@@ -149,21 +148,6 @@ describe("lib/moduleManager additional coverage", () => {
     assert.equal(result.installedModules.includes("node_modules"), false);
     assert.equal(result.installedModules.includes("default"), false);
     assert.equal(result.installedModules.includes("README.md"), false);
-  });
-
-  it("readModuleData should fall back to old modules/default path", async () => {
-    const baseDir = path.join(temporaryRoot, "runtime", "server");
-    await fs.mkdir(baseDir, {recursive: true});
-    await fs.writeFile(path.join(baseDir, "modules.json"), JSON.stringify([]), "utf8");
-
-    const loadedDefaults = [];
-
-    await moduleManager.readModuleData(baseDir, "modules", (module, modulePath) => {
-      loadedDefaults.push({module, modulePath});
-    });
-
-    assert.equal(loadedDefaults.length, 8);
-    assert.equal(loadedDefaults.every((item) => item.modulePath.startsWith("modules/default/")), true);
   });
 
   it("addModule should mark existing module installed and queue update checks for git modules", async () => {
