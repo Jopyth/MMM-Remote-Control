@@ -99,35 +99,9 @@
       }
     </script>
     <script type="module">
-      // TODO: Backward-compatibility shim for pre-ESM MagicMirror socketclient.js.
-      // Remove in 2027 when old core versions are no longer supported.
-      const loadLegacySocketClient = async () => {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = "js/socketclient.js";
-          script.async = false;
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.append(script);
-        });
+      import {MMSocket} from "./js/socketclient.js";
 
-        if (!globalThis.MMSocket && typeof MMSocket !== "undefined") {
-          globalThis.MMSocket = MMSocket;
-        }
-      };
-
-      try {
-        const socketClientModule = await import("./js/socketclient.js");
-        if (socketClientModule?.MMSocket) {
-          globalThis.MMSocket = socketClientModule.MMSocket;
-        }
-      } catch {
-        await loadLegacySocketClient();
-      }
-
-      if (!globalThis.MMSocket) {
-        await loadLegacySocketClient();
-      }
+      globalThis.MMSocket = MMSocket;
 
       await import("./modules/MMM-Remote-Control/remote/remote-menu.mjs");
     </script>
