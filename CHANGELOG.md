@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.0.0](https://github.com/jopyth/MMM-Remote-Control/compare/v5.1.1...v6.0.0) (2026-10-02)
+
+### ⚠ BREAKING CHANGES
+
+- **remote:** drop config.js script, require MagicMirror 2.38.0
+
+### Fixed
+
+- **remote:** drop config.js script, require MagicMirror 2.38.0 ([bc36019](https://github.com/jopyth/MMM-Remote-Control/commit/bc36019996c8a41c67c59f386d6f2a92beea33d4))
+- **remote:** render queued dynamic menus only once ([419d85d](https://github.com/jopyth/MMM-Remote-Control/commit/419d85d67ae0157aad1f767ed36fdd0884356806))
+- **sw:** keep cache name in sync with release version ([6b14602](https://github.com/jopyth/MMM-Remote-Control/commit/6b14602e263a135b74c5141ab7ecdf1b4ebaae25))
+
+### Chores
+
+- remove engines field ([8c0ef9d](https://github.com/jopyth/MMM-Remote-Control/commit/8c0ef9dae099018be47cc5282af56ac2b1d81bd9))
+- update dependencies ([b53aeb2](https://github.com/jopyth/MMM-Remote-Control/commit/b53aeb269a0c3e028f64925e73663de09ef353c6))
+
+### Code Refactoring
+
+- destructure simpleGit import after update ([d0eafbf](https://github.com/jopyth/MMM-Remote-Control/commit/d0eafbfce819ffcb69fe6a60a91345ca775352d4))
+- fix new linter issues after update ([0d7f9ef](https://github.com/jopyth/MMM-Remote-Control/commit/0d7f9ef7bf87c2e609e189d255bfa4ce650c852f))
+- **remote:** drop redundant socket.io script ([7972aa8](https://github.com/jopyth/MMM-Remote-Control/commit/7972aa882302f1007d840888db63b3b4b66ba9e7))
+- **remote:** remove legacy socketclient shim ([3824e4a](https://github.com/jopyth/MMM-Remote-Control/commit/3824e4a4f47a6c62aa42a1ef0b960075162783db))
+- remove legacy default modules path fallbacks ([c4e0972](https://github.com/jopyth/MMM-Remote-Control/commit/c4e0972ecb372dce60c7cff12682c30287176a8f))
+
 ## [5.1.1](https://github.com/jopyth/MMM-Remote-Control/compare/v5.1.0...v5.1.1) (2026-08-07)
 
 ### Chores
