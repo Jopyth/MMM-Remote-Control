@@ -35,68 +35,63 @@ The module also includes a **RESTful API** for controlling all aspects of your m
 
 ## Installation
 
-1. Clone this repository in your `modules` directory, and install dependencies:
+Clone this repository in your `modules` directory, and install dependencies:
 
-   ```bash
-   cd ~/MagicMirror/modules
-   git clone https://github.com/Jopyth/MMM-Remote-Control
-   cd MMM-Remote-Control
-   npm ci --omit=dev
-   ```
+```bash
+cd ~/MagicMirror/modules
+git clone https://github.com/Jopyth/MMM-Remote-Control
+cd MMM-Remote-Control
+npm ci --omit=dev
+```
 
 > Note: You may see an npm allow-scripts warning for @scarf/scarf (via swagger-ui-dist) during install; this is upstream and harmless for MMM-Remote-Control runtime, so you can ignore it or run npm approve-scripts @scarf/scarf for cleaner install output.
 
 The installation will display a sample API key that you can use (optional).
 
-2. Add the module to your `config.js` file. **Note:** You must set a `position` to display the URL/QR code on the mirror.
+## Configuration
 
-   ```js
-   {
-       module: 'MMM-Remote-Control',
-       position: 'bottom_left', // Required to show URL/QR code on mirror
-       // you can hide this module afterwards from the remote control itself
-       config: {
-           customCommand: {},  // Optional, See "Using Custom Commands" below
-           secureEndpoints: true, // Optional, See API/README.md
-           // uncomment any of the lines below if you're gonna use it
-           // customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
-           // apiKey: "", // Optional, See API/README.md for details
-           // classes: {}, // Optional, See "Custom Classes" below
-           // showModuleApiMenu: false, // Optional, disable the Module Controls menu
-           // showNotificationMenu: false, // Optional, disable the Notification menu
+Add the module to the `modules` array in your `config.js`. Set a `position` to display the URL and QR code on the mirror. You can hide the module afterwards using the remote control itself.
 
-           // QR Code options (new!)
-           // showQRCode: true, // Optional, display QR code for easy mobile access (default: true)
-           // qrCodeSize: 150, // Optional, size of QR code in pixels (default: 150)
-           // qrCodePosition: "below" // Optional:
-           //   "below" - Show URL above, QR code below (default)
-           //   "above" - Show QR code above, URL below
-           //   "replace" - Show only QR code, no URL text
-       }
-   },
-   ```
+```js
+    {
+      module: "MMM-Remote-Control",
+      position: "bottom_left",
+      config: {
+        customCommand: {}, // Optional, see "Using Custom Commands" below
+        secureEndpoints: true, // Optional, see API/README.md
+        // Uncomment any of the following options to use them:
+        // customMenu: "custom_menu.json", // See "Custom Menu Items" below
+        // apiKey: "", // See API/README.md for details
+        // classes: {}, // See "Custom Classes" below
+        // showModuleApiMenu: false, // Disable the Module Controls menu
+        // showNotificationMenu: false, // Disable the Notification menu
+        // showQRCode: true, // Display a QR code for mobile access (default: true)
+        // qrCodeSize: 150, // QR code size in pixels (default: 150)
+        // qrCodePosition: "above" // "below", "above" (default), or "replace"
+      }
+    },
+```
 
-3. For security reasons, the MagicMirror² (and therefore the Remote Control) is _not_ reachable externally.
-   To change this, configure `address`, and `ipWhitelist` in your `config.js` (see [these lines in the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)).
-   For example change `address` to `0.0.0.0` and add two allowed devices with IP addresses `192.168.0.42` and `192.168.0.50`:
+For security reasons, MagicMirror² (and therefore the Remote Control) is _not_ reachable externally by default. To allow access from other devices, configure `address` and `ipWhitelist` in your `config.js` (see [the sample config](https://github.com/MagicMirrorOrg/MagicMirror/blob/master/config/config.js.sample#L12-L22)). For example, set `address` to `0.0.0.0` and allow two devices with IP addresses `192.168.0.42` and `192.168.0.50`:
 
-   ```js
-   address : '0.0.0.0',
-   port: 8080,
-   ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.42", "::ffff:192.168.0.50"],"
-   ```
+```js
+address: "0.0.0.0",
+port: 8080,
+ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.42", "::ffff:192.168.0.50"],
+```
 
-   You can also add multiple devices in an IP range (e.g. all devices with `192.168.0.X`):
+You can also allow a whole IP range, such as all devices with an address from `192.168.0.0` to `192.168.0.255`:
 
-   ```js
-   ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.1/120", "192.168.0.1/24"],
-   ```
+```js
+ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.0/120", "192.168.0.0/24"],
+```
 
-4. Restart MagicMirror².
+## Start and Access
 
-5. Access the remote interface on [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html) (replace with IP address of your RaspberryPi).
+1. Restart MagicMirror².
+2. Open the remote interface at [http://192.168.xxx.xxx:8080/remote.html](http://192.168.xxx.xxx:8080/remote.html), replacing the example address with your mirror's IP address.
 
-### Install as PWA (Progressive Web App)
+## Install as PWA (Progressive Web App)
 
 > **Note:** PWA installation may require HTTPS. If you experience issues, this feature might only work when MagicMirror² is running under HTTPS. Feedback would be appreciated!
 
@@ -107,7 +102,7 @@ You can install the remote control as an app on your smartphone:
 3. On **iOS** (Safari): Tap Share (□↑) → "Add to Home Screen"
 4. The remote control will now work like a native app with offline support!
 
-### Update
+## Update
 
 Update this module by navigating into its directory on the command line and using `git pull`:
 
@@ -117,7 +112,7 @@ git pull
 npm ci --omit=dev
 ```
 
-### Select version manually
+## Select version manually
 
 You can check out specific versions in the following way.
 First look at which versions are available:
