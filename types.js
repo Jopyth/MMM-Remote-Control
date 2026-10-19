@@ -95,4 +95,4 @@
  * @property {boolean} [skipNpmInstall] - Skip npm install after clone
  */
 
-module.exports = {};
+module.exports = {}

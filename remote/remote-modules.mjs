@@ -1,6 +1,6 @@
-import {Remote} from "./remote.mjs";
-import {marked} from "marked";
-import {createSanitizedMarkdownBlock} from "./remote-sanitize.mjs";
+import { Remote } from './remote.mjs'
+import { marked } from 'marked'
+import { createSanitizedMarkdownBlock } from './remote-sanitize.mjs'
 
 /**
  * Module management methods for MMM-Remote-Control.
@@ -10,85 +10,61 @@ Object.assign(
   Remote,
   {
 
-    showModule (id, force) {
-
-      this.action("SHOW", force ? {"force": true, "module": id} : {"module": id});
-
+    showModule(id, force) {
+      this.action('SHOW', force ? { force: true, module: id } : { module: id })
     },
 
-    hideModule (id) {
-
-      this.action("HIDE", {"module": id});
-
+    hideModule(id) {
+      this.action('HIDE', { module: id })
     },
 
-    install (url, index) {
-
-      const downloadButton = document.querySelector("#download-button"),
-        icon = downloadButton.querySelector("span:first-child"),
-        text = downloadButton.querySelector("span:last-child");
+    install(url, index) {
+      const downloadButton = document.querySelector('#download-button'),
+        icon = downloadButton.querySelector('span:first-child'),
+        text = downloadButton.querySelector('span:last-child')
 
       if (icon) {
-
-        icon.classList.remove("fa-download");
+        icon.classList.remove('fa-download')
         icon.classList.add(
-          "fa-spinner",
-          "fa-pulse"
-        );
-
+          'fa-spinner',
+          'fa-pulse',
+        )
       }
 
       if (text) {
-
-        text.textContent = ` ${this.translate("DOWNLOADING")}`;
-
+        text.textContent = ` ${this.translate('DOWNLOADING')}`
       }
 
-      this.action("INSTALL", {url, index});
-
+      this.action('INSTALL', { url, index })
     },
 
-    handleInstall (result) {
-
+    handleInstall(result) {
       if (!result.success) {
-        return;
+        return
       }
 
-
-      const bgElement = document.getElementById(`install-module-${result.index}`);
-      bgElement.firstChild.className = "fa fa-fw fa-check-circle";
-      this.savedData.moduleAvailable[result.index].installed = true;
-      this.createAddingPopup(result.index);
-
-
+      const bgElement = document.getElementById(`install-module-${result.index}`)
+      bgElement.firstChild.className = 'fa fa-fw fa-check-circle'
+      this.savedData.moduleAvailable[result.index].installed = true
+      this.createAddingPopup(result.index)
     },
 
-    getVisibilityStatus (data) {
-
-      let status = "toggled-on";
-      const modules = [];
+    getVisibilityStatus(data) {
+      let status = 'toggled-on'
+      const modules = []
       if (data.hidden) {
-
-        status = "toggled-off";
+        status = 'toggled-off'
         for (const lockString of data.lockStrings) {
-
-          if (lockString.includes("MMM-Remote-Control")) {
-
-            continue;
-
+          if (lockString.includes('MMM-Remote-Control')) {
+            continue
           }
-          modules.push(lockString);
+          modules.push(lockString)
           if (modules.length === 1) {
-
-            status += " external-locked";
-
+            status += ' external-locked'
           }
-
         }
-
       }
-      return {status, "modules": modules.join(", ")};
-
+      return { status, modules: modules.join(', ') }
     },
 
     /**
@@ -96,833 +72,677 @@ Object.assign(
      * @param {object} classData - Class data with show/hide/toggle arrays
      * @returns {object} Status object with status and details
      */
-    getClassStatus (classData) {
-
+    getClassStatus(classData) {
       if (!classData || !this.savedData.modules) {
-
-        return {"status": "unknown", "details": ""};
-
+        return { status: 'unknown', details: '' }
       }
 
       // Create map for fast module access
-      const moduleMap = {};
+      const moduleMap = {}
       for (const module of this.savedData.modules) {
-
-        moduleMap[module.name] = module;
-        moduleMap[module.identifier] = module;
-
+        moduleMap[module.name] = module
+        moduleMap[module.identifier] = module
       }
 
       let hiddenCount = 0,
         totalCount = 0,
-        visibleCount = 0;
+        visibleCount = 0
 
-      for (const key of ["show", "hide", "toggle"]) {
-
-        const classEntry = classData[key];
+      for (const key of ['show', 'hide', 'toggle']) {
+        const classEntry = classData[key]
 
         if (!classEntry) {
-
-          continue;
-
+          continue
         }
-        const modules = Array.isArray(classEntry) ? classEntry : [classEntry];
+        const modules = Array.isArray(classEntry) ? classEntry : [classEntry]
         for (const moduleName of modules) {
-
-          const module = moduleMap[moduleName];
+          const module = moduleMap[moduleName]
           if (!module) {
-            continue;
+            continue
           }
 
-          totalCount++;
+          totalCount++
           if (module.hidden) {
-
-            hiddenCount++;
-
-          } else {
-
-            visibleCount++;
-
+            hiddenCount++
           }
-
+          else {
+            visibleCount++
+          }
         }
-
       }
 
       // Determine status
-      let status = "class-mixed";
+      let status = 'class-mixed'
       if (totalCount === 0) {
-
-        status = "class-empty";
-
-      } else if (hiddenCount === 0 && visibleCount > 0) {
-
-        status = "class-active";
-
-      } else if (visibleCount === 0 && hiddenCount > 0) {
-
-        status = "class-inactive";
-
+        status = 'class-empty'
+      }
+      else if (hiddenCount === 0 && visibleCount > 0) {
+        status = 'class-active'
+      }
+      else if (visibleCount === 0 && hiddenCount > 0) {
+        status = 'class-inactive'
       }
 
       return {
         status,
-        "details": `${visibleCount}/${totalCount}`,
+        details: `${visibleCount}/${totalCount}`,
         visibleCount,
         hiddenCount,
-        totalCount
-      };
-
+        totalCount,
+      }
     },
 
-    async loadVisibleModules () {
-
+    async loadVisibleModules() {
       try {
-
-        const {"data": moduleData} = await this.loadList(
-            "visible-modules",
-            "modules"
+        const { 'data': moduleData } = await this.loadList(
+            'visible-modules',
+            'modules',
           ),
-          parent = document.querySelector("#visible-modules-results");
+          parent = document.querySelector('#visible-modules-results')
         for (const module of moduleData) {
-
           if (!module.position) {
-
             // Skip invisible modules
-            continue;
-
+            continue
           }
           const visibilityStatus = this.getVisibilityStatus(module),
-            moduleLine = document.createElement("div"),
-            stack = document.createElement("span"),
-            toggleOn = document.createElement("span"),
-            toggleOff = document.createElement("span"),
-            lock = document.createElement("span"),
-            text = document.createElement("span");
-          moduleLine.className = `button module-line ${visibilityStatus.status}`;
-          moduleLine.id = module.identifier;
-          stack.className = "stack fa-fw";
-          toggleOn.className = "fa fa-fw fa-toggle-on outer-label fa-stack-1x";
-          toggleOff.className = "fa fa-fw fa-toggle-off outer-label fa-stack-1x";
-          lock.className = "fa fa-fw fa-lock inner-small-label fa-stack-1x";
-          text.className = "text";
-          text.textContent = "header" in module
-            ? ` ${module.name ?? ""} (${module.header ?? ""})`
-            : ` ${module.name ?? ""}`;
+            moduleLine = document.createElement('div'),
+            stack = document.createElement('span'),
+            toggleOn = document.createElement('span'),
+            toggleOff = document.createElement('span'),
+            lock = document.createElement('span'),
+            text = document.createElement('span')
+          moduleLine.className = `button module-line ${visibilityStatus.status}`
+          moduleLine.id = module.identifier
+          stack.className = 'stack fa-fw'
+          toggleOn.className = 'fa fa-fw fa-toggle-on outer-label fa-stack-1x'
+          toggleOff.className = 'fa fa-fw fa-toggle-off outer-label fa-stack-1x'
+          lock.className = 'fa fa-fw fa-lock inner-small-label fa-stack-1x'
+          text.className = 'text'
+          text.textContent = 'header' in module
+            ? ` ${module.name ?? ''} (${module.header ?? ''})`
+            : ` ${module.name ?? ''}`
           stack.append(
             toggleOn,
             toggleOff,
-            lock
-          );
+            lock,
+          )
           moduleLine.append(
             stack,
-            text
-          );
-          parent.append(moduleLine);
+            text,
+          )
+          parent.append(moduleLine)
           this.makeToggleButton(
             parent.lastElementChild,
-            visibilityStatus
-          );
-
+            visibilityStatus,
+          )
         }
-
-      } catch (error) {
-
+      }
+      catch (error) {
         console.error(
-          "Error loading visible modules:",
-          error
-        );
-
+          'Error loading visible modules:',
+          error,
+        )
       }
-
     },
 
-    loadSettings () {
-
-      for (const name of ["brightness", "temp", "zoom", "backgroundColor", "fontColor"]) {
-
-        this.getData(name);
-
+    loadSettings() {
+      for (const name of ['brightness', 'temp', 'zoom', 'backgroundColor', 'fontColor']) {
+        this.getData(name)
       }
-
     },
 
-    makeToggleButton (moduleBox, visibilityStatus) {
-
+    makeToggleButton(moduleBox, visibilityStatus) {
       moduleBox.addEventListener(
-        "click",
+        'click',
         (event) => {
+          const currentTarget = event.currentTarget
 
-          const currentTarget = event.currentTarget;
-
-          if (currentTarget.classList.contains("toggled-off")) {
-
-            if (currentTarget.classList.contains("external-locked")) {
-
-              const wrapper = document.createElement("div");
-              const lockWarningText = this.translate("LOCKSTRING_WARNING");
-              const warningModules = lockWarningText.split("LIST_OF_MODULES");
-              const text = document.createElement("span");
-              text.textContent = warningModules.join(visibilityStatus.modules);
-              wrapper.append(text);
+          if (currentTarget.classList.contains('toggled-off')) {
+            if (currentTarget.classList.contains('external-locked')) {
+              const wrapper = document.createElement('div')
+              const lockWarningText = this.translate('LOCKSTRING_WARNING')
+              const warningModules = lockWarningText.split('LIST_OF_MODULES')
+              const text = document.createElement('span')
+              text.textContent = warningModules.join(visibilityStatus.modules)
+              wrapper.append(text)
 
               const ok = this.createSymbolText(
-                "fa fa-check-circle",
-                this.translate("OK"),
+                'fa fa-check-circle',
+                this.translate('OK'),
                 () => {
-
-                  this.setStatus("none");
-
-                }
-              );
-              wrapper.append(ok);
+                  this.setStatus('none')
+                },
+              )
+              wrapper.append(ok)
 
               const force = this.createSymbolText(
-                "fa fa-warning",
-                this.translate("FORCE_SHOW"),
+                'fa fa-warning',
+                this.translate('FORCE_SHOW'),
                 () => {
-
                   currentTarget.classList.remove(
-                    "external-locked",
-                    "toggled-off"
-                  );
-                  currentTarget.classList.add("toggled-on");
+                    'external-locked',
+                    'toggled-off',
+                  )
+                  currentTarget.classList.add('toggled-on')
                   this.showModule(
                     currentTarget.id,
-                    true
-                  );
-                  this.setStatus("none");
-
-                }
-              );
-              wrapper.append(force);
+                    true,
+                  )
+                  this.setStatus('none')
+                },
+              )
+              wrapper.append(force)
 
               this.setStatus(
-                "error",
+                'error',
                 false,
-                wrapper
-              );
-
-            } else {
-
-              currentTarget.classList.remove("toggled-off");
-              currentTarget.classList.add("toggled-on");
-              this.showModule(currentTarget.id);
-
+                wrapper,
+              )
             }
-
-          } else {
-
-            currentTarget.classList.remove("toggled-on");
-            currentTarget.classList.add("toggled-off");
-            this.hideModule(currentTarget.id);
-
+            else {
+              currentTarget.classList.remove('toggled-off')
+              currentTarget.classList.add('toggled-on')
+              this.showModule(currentTarget.id)
+            }
           }
-
-        }
-      );
-
+          else {
+            currentTarget.classList.remove('toggled-on')
+            currentTarget.classList.add('toggled-off')
+            this.hideModule(currentTarget.id)
+          }
+        },
+      )
     },
 
-    loadInstalledModulesCache () {
-
+    loadInstalledModulesCache() {
       if (this.installedModulesCachePromise) {
-
-        return this.installedModulesCachePromise;
-
+        return this.installedModulesCachePromise
       }
 
       this.installedModulesCachePromise = new Promise((resolve) => {
-
         const handleResponse = (result) => {
-
           this.installedModulesCache = result.success && result.data
             ? result.data
-            : [];
-          resolve();
-
-        };
+            : []
+          resolve()
+        }
 
         // Temporarily store the resolver
-        this.installedModulesCacheResolver = handleResponse;
-        this.getData("moduleInstalled");
+        this.installedModulesCacheResolver = handleResponse
+        this.getData('moduleInstalled')
+      })
 
-      });
-
-      return this.installedModulesCachePromise;
-
+      return this.installedModulesCachePromise
     },
 
-    async getModuleUrl (moduleName) {
-
+    async getModuleUrl(moduleName) {
       try {
-
         if (!this.installedModulesCache) {
-
-          await this.loadInstalledModulesCache();
-
+          await this.loadInstalledModulesCache()
         }
-        const module = this.installedModulesCache.find((m) => m.name === moduleName);
-        return module?.url || "";
-
-      } catch (error) {
-
-        console.error(
-          "Error loading module URL:",
-          error
-        );
-        return "";
-
+        const module = this.installedModulesCache.find(m => m.name === moduleName)
+        return module?.url || ''
       }
-
+      catch (error) {
+        console.error(
+          'Error loading module URL:',
+          error,
+        )
+        return ''
+      }
     },
 
-    async loadClasses () {
-
+    async loadClasses() {
       try {
-
         // Always reload module data to get fresh status
-        const {"data": moduleData} = await this.loadList(
-          "visible-modules",
-          "modules"
-        );
-        this.savedData.modules = moduleData;
-        const {"data": classes} = await this.loadList(
-          "classes",
-          "classes"
-        );
+        const { 'data': moduleData } = await this.loadList(
+          'visible-modules',
+          'modules',
+        )
+        this.savedData.modules = moduleData
+        const { 'data': classes } = await this.loadList(
+          'classes',
+          'classes',
+        )
 
         for (const [index, classData] of Object.entries(classes)) {
-
-          const node = document.createElement("div");
-          node.id = "classes-before-result";
-          node.hidden = true;
-          document.querySelector("#classes-results").append(node);
+          const node = document.createElement('div')
+          node.id = 'classes-before-result'
+          node.hidden = true
+          document.querySelector('#classes-results').append(node)
 
           const content = {
-              "id": index,
-              "text": index,
-              "icon": "dot-circle-o",
-              "type": "item",
-              "action": "MANAGE_CLASSES",
-              "content": {
-                "payload": {
-                  "classes": index
-                }
+              id: index,
+              text: index,
+              icon: 'dot-circle-o',
+              type: 'item',
+              action: 'MANAGE_CLASSES',
+              content: {
+                payload: {
+                  classes: index,
+                },
               },
-              "classData": classData // Store class data for status checking
+              classData: classData, // Store class data for status checking
             },
 
-            existingButton = document.getElementById(`${content.id}-button`);
+            existingButton = document.getElementById(`${content.id}-button`)
           if (existingButton) {
-
-            existingButton.remove();
-
+            existingButton.remove()
           }
 
           this.createMenuElement(
             content,
-            "classes",
-            node
-          );
-
+            'classes',
+            node,
+          )
         }
-
-      } catch (error) {
-
-        console.error(
-          "Error loading classes:",
-          error
-        );
-
       }
-
+      catch (error) {
+        console.error(
+          'Error loading classes:',
+          error,
+        )
+      }
     },
 
-    addClassStatusBadge (item, classData) {
-
+    addClassStatusBadge(item, classData) {
       const classStatus = this.getClassStatus(classData),
-        statusBadge = document.createElement("span");
-      statusBadge.className = `class-status-badge ${classStatus.status}`;
-      statusBadge.textContent = classStatus.details;
-      statusBadge.title = `${classStatus.visibleCount} visible, ${classStatus.hiddenCount} hidden`;
-      item.append(statusBadge);
-      item.classList.add(classStatus.status);
-
+        statusBadge = document.createElement('span')
+      statusBadge.className = `class-status-badge ${classStatus.status}`
+      statusBadge.textContent = classStatus.details
+      statusBadge.title = `${classStatus.visibleCount} visible, ${classStatus.hiddenCount} hidden`
+      item.append(statusBadge)
+      item.classList.add(classStatus.status)
     },
 
-    createAddingPopup (index) {
-
-      if (typeof index === "string") {
-
-        index = Number.parseInt(index);
-
+    createAddingPopup(index) {
+      if (typeof index === 'string') {
+        index = Number.parseInt(index)
       }
 
       const data = this.savedData.moduleAvailable[index],
-        wrapper = this.getPopupContent();
+        wrapper = this.getPopupContent()
 
-      const title = document.createElement("div"),
-        subtitle = document.createElement("div"),
-        description = document.createElement("div");
-      title.className = "bright title";
-      title.textContent = data.name ?? "";
-      subtitle.className = "subtitle small";
-      subtitle.textContent = `${this.translate("BY")} ${data.maintainer ?? ""}`;
-      description.className = "small flex-fill";
-      description.textContent = data.description ?? "";
+      const title = document.createElement('div'),
+        subtitle = document.createElement('div'),
+        description = document.createElement('div')
+      title.className = 'bright title'
+      title.textContent = data.name ?? ''
+      subtitle.className = 'subtitle small'
+      subtitle.textContent = `${this.translate('BY')} ${data.maintainer ?? ''}`
+      description.className = 'small flex-fill'
+      description.textContent = data.description ?? ''
       wrapper.append(
         title,
         subtitle,
-        description
-      );
+        description,
+      )
 
-      const footer = document.createElement("div");
-      footer.className = "fixed-size sub-menu";
+      const footer = document.createElement('div')
+      footer.className = 'fixed-size sub-menu'
 
       if (data.installed) {
-
         const add = this.createSymbolText(
-          "fa fa-fw fa-plus",
-          this.translate("ADD_THIS"),
+          'fa fa-fw fa-plus',
+          this.translate('ADD_THIS'),
           () => {
-
-            this.closePopup();
-            this.addModule = data.name;
-            this.navigateToMenu("settings-menu");
-
-          }
-        );
-        footer.append(add);
-
+            this.closePopup()
+            this.addModule = data.name
+            this.navigateToMenu('settings-menu')
+          },
+        )
+        footer.append(add)
       }
 
       if (data.installed) {
-
         footer.append(this.createSymbolText(
-          "fa fa-fw fa-check-circle",
-          this.translate("INSTALLED")
-        ));
-
-      } else {
-
+          'fa fa-fw fa-check-circle',
+          this.translate('INSTALLED'),
+        ))
+      }
+      else {
         const download = this.createSymbolText(
-          "fa fa-fw fa-download",
-          this.translate("DOWNLOAD"),
+          'fa fa-fw fa-download',
+          this.translate('DOWNLOAD'),
           () => {
-
             this.install(
               data.url,
-              index
-            );
-
-          }
-        );
-        download.id = "download-button";
-        footer.append(download);
-
+              index,
+            )
+          },
+        )
+        download.id = 'download-button'
+        footer.append(download)
       }
 
       const githubElement = this.createSymbolText(
-        "fa fa-fw fa-github",
-        this.translate("CODE_LINK"),
+        'fa fa-fw fa-github',
+        this.translate('CODE_LINK'),
         () => {
-
           window.open(
             data.url,
-            "_blank"
-          );
-
-        }
-      );
-      footer.append(githubElement);
-      wrapper.append(footer);
-      this.showPopup();
-
+            '_blank',
+          )
+        },
+      )
+      footer.append(githubElement)
+      wrapper.append(footer)
+      this.showPopup()
     },
 
-    async loadModulesToAdd () {
-
+    async loadModulesToAdd() {
       try {
-
-        const {"data": modules} = await this.loadList(
-            "add-module",
-            "moduleAvailable"
+        const { 'data': modules } = await this.loadList(
+            'add-module',
+            'moduleAvailable',
           ),
-          parent = document.querySelector("#add-module-results");
+          parent = document.querySelector('#add-module-results')
         for (const [index, module] of modules.entries()) {
-
-          const moduleLine = document.createElement("div"),
-            moduleInfo = document.createElement("div"),
-            moduleName = document.createElement("div"),
-            moduleButtons = document.createElement("div");
-          moduleLine.className = "module-line";
-          moduleInfo.className = "module-info";
-          moduleName.className = "module-name";
-          moduleName.textContent = module.name ?? "";
-          moduleButtons.className = "module-buttons";
-          moduleInfo.append(moduleName);
+          const moduleLine = document.createElement('div'),
+            moduleInfo = document.createElement('div'),
+            moduleName = document.createElement('div'),
+            moduleButtons = document.createElement('div')
+          moduleLine.className = 'module-line'
+          moduleInfo.className = 'module-info'
+          moduleName.className = 'module-name'
+          moduleName.textContent = module.name ?? ''
+          moduleButtons.className = 'module-buttons'
+          moduleInfo.append(moduleName)
           if (module.description) {
-
-            const moduleDescription = document.createElement("div");
-            moduleDescription.className = "module-description";
-            moduleDescription.textContent = module.description ?? "";
-            moduleInfo.append(moduleDescription);
-
+            const moduleDescription = document.createElement('div')
+            moduleDescription.className = 'module-description'
+            moduleDescription.textContent = module.description ?? ''
+            moduleInfo.append(moduleDescription)
           }
           moduleLine.append(
             moduleInfo,
-            moduleButtons
-          );
-          parent.append(moduleLine);
+            moduleButtons,
+          )
+          parent.append(moduleLine)
 
-          const buttonsContainer = parent.lastElementChild.querySelector(".module-buttons");
+          const buttonsContainer = parent.lastElementChild.querySelector('.module-buttons')
 
           if (module.url) {
-
-            const repoButton = this.createSymbolText(
-              "fa fa-fw fa-github",
-              "Repository",
+            const repositoryButton = this.createSymbolText(
+              'fa fa-fw fa-github',
+              'Repository',
               () => {
-
                 window.open(
                   module.url,
-                  "_blank"
-                );
-
+                  '_blank',
+                )
               },
-              "span"
-            );
-            repoButton.className = "button";
-            buttonsContainer.append(repoButton);
-
+              'span',
+            )
+            repositoryButton.className = 'button'
+            buttonsContainer.append(repositoryButton)
           }
 
           const symbol = module.installed
-              ? "fa fa-fw fa-check-circle"
-              : "fa fa-fw fa-cloud",
+              ? 'fa fa-fw fa-check-circle'
+              : 'fa fa-fw fa-cloud',
             buttonText = module.installed
-              ? "Installed"
-              : "Install",
+              ? 'Installed'
+              : 'Install',
             installButton = this.createSymbolText(
               symbol,
               buttonText,
               (event) => {
-
-                const installPrefix = "install-module-";
+                const installPrefix = 'install-module-'
                 const index_ = event.currentTarget.id.startsWith(installPrefix)
                   ? event.currentTarget.id.slice(installPrefix.length)
-                  : "";
-                this.createAddingPopup(index_);
-
+                  : ''
+                this.createAddingPopup(index_)
               },
-              "span"
-            );
-          installButton.className = "button";
-          installButton.id = `install-module-${index}`;
-          buttonsContainer.append(installButton);
-
+              'span',
+            )
+          installButton.className = 'button'
+          installButton.id = `install-module-${index}`
+          buttonsContainer.append(installButton)
         }
-
-      } catch (error) {
-
-        console.error(
-          "Error loading modules to add:",
-          error
-        );
-
       }
-
+      catch (error) {
+        console.error(
+          'Error loading modules to add:',
+          error,
+        )
+      }
     },
 
-    offerRestart (message) {
-
+    offerRestart(message) {
       this.offerReload(
         message,
-        false
-      );
-
+        false,
+      )
     },
 
-    offerReload (message, shouldIncludeReload = true) {
-
-      const wrapper = document.createElement("div");
+    offerReload(message, shouldIncludeReload = true) {
+      const wrapper = document.createElement('div')
       if (message instanceof Node) {
-
-        wrapper.append(message);
-
-      } else {
-
-        const text = document.createElement("span");
-        text.textContent = message;
-        wrapper.append(text);
-
+        wrapper.append(message)
+      }
+      else {
+        const text = document.createElement('span')
+        text.textContent = message
+        wrapper.append(text)
       }
       const restart = this.createSymbolText(
-        "fa fa-fw fa-recycle",
-        this.translate("RESTARTMM"),
-        this.buttons["restart-mm-button"]
-      );
-      restart.querySelector(".text")?.classList.add("text");
-      wrapper.append(restart);
+        'fa fa-fw fa-recycle',
+        this.translate('RESTARTMM'),
+        this.buttons['restart-mm-button'],
+      )
+      restart.querySelector('.text')?.classList.add('text')
+      wrapper.append(restart)
       if (shouldIncludeReload) {
-
         const reload = this.createSymbolText(
-          "fa fa-fw fa-globe",
-          this.translate("REFRESHMM"),
-          this.buttons["refresh-mm-button"]
-        );
-        reload.querySelector(".text")?.classList.add("text");
-        wrapper.append(reload);
-
+          'fa fa-fw fa-globe',
+          this.translate('REFRESHMM'),
+          this.buttons['refresh-mm-button'],
+        )
+        reload.querySelector('.text')?.classList.add('text')
+        wrapper.append(reload)
       }
       this.setStatus(
-        "success",
+        'success',
         false,
-        wrapper
-      );
-
+        wrapper,
+      )
     },
 
-    offerOptions (message, data) {
-
-      const wrapper = document.createElement("div");
+    offerOptions(message, data) {
+      const wrapper = document.createElement('div')
       if (message instanceof Node) {
-
-        wrapper.append(message);
-
-      } else {
-
-        const text = document.createElement("span");
-        text.textContent = message;
-        wrapper.append(text);
-
+        wrapper.append(message)
+      }
+      else {
+        const text = document.createElement('span')
+        text.textContent = message
+        wrapper.append(text)
       }
       for (const b in data) {
-
         const button = this.createSymbolText(
-          "fa fa-fw fa-recycle",
+          'fa fa-fw fa-recycle',
           b,
-          data[b]
-        );
-        button.querySelector(".text")?.classList.add("text");
-        wrapper.append(button);
-
+          data[b],
+        )
+        button.querySelector('.text')?.classList.add('text')
+        wrapper.append(button)
       }
       this.setStatus(
-        "success",
+        'success',
         false,
-        wrapper
-      );
-
+        wrapper,
+      )
     },
 
-    updateModule (module) {
-
-      this.action("UPDATE", {module});
-
+    updateModule(module) {
+      this.action('UPDATE', { module })
     },
 
-    handleMmUpdate (result) {
-
-      const activeMenu = this.getCurrentHashMenu();
-      if (activeMenu !== "update-menu") {
-        return;
+    handleMmUpdate(result) {
+      const activeMenu = this.getCurrentHashMenu()
+      if (activeMenu !== 'update-menu') {
+        return
       }
 
-
-      const updateButton = document.querySelector("#update-mm-button");
+      const updateButton = document.querySelector('#update-mm-button')
       if (result) {
-
-        updateButton?.classList.remove("hidden");
-        updateButton?.classList.add("bright");
-
-      } else {
-
-        updateButton?.classList.add("hidden");
-        updateButton?.classList.remove("bright");
-
+        updateButton?.classList.remove('hidden')
+        updateButton?.classList.add('bright')
+      }
+      else {
+        updateButton?.classList.add('hidden')
+        updateButton?.classList.remove('bright')
       }
 
-      document.querySelector("#mm-update-container")?.classList.toggle("module-updatable", Boolean(result));
-      this.applyUpdateFilter();
-
+      document.querySelector('#mm-update-container')?.classList.toggle('module-updatable', Boolean(result))
+      this.applyUpdateFilter()
     },
 
-    applyUpdateFilter () {
-
-      const parent = document.querySelector("#update-module-results");
+    applyUpdateFilter() {
+      const parent = document.querySelector('#update-module-results')
       if (!parent) {
-
-        return;
-
+        return
       }
-      const isActive = document.querySelector("#update-filter-toggle")?.classList.contains("toggled-on") ?? false;
+      const isActive = document.querySelector('#update-filter-toggle')?.classList.contains('toggled-on') ?? false
       for (const line of parent.children) {
-
-        const isUpdatable = line.classList.contains("module-updatable");
+        const isUpdatable = line.classList.contains('module-updatable')
         line.classList.toggle(
-          "hidden",
-          isActive && !isUpdatable
-        );
-
+          'hidden',
+          isActive && !isUpdatable,
+        )
       }
-
     },
 
-    async loadModulesToUpdate () {
-
-      this.getData("mmUpdateAvailable");
+    async loadModulesToUpdate() {
+      this.getData('mmUpdateAvailable')
 
       try {
-
-        const {"data": modules} = await this.loadList(
-            "update-module",
-            "moduleInstalled"
+        const { 'data': modules } = await this.loadList(
+            'update-module',
+            'moduleInstalled',
           ),
-          parent = document.querySelector("#update-module-results");
+          parent = document.querySelector('#update-module-results')
 
         // MagicMirror² row
         parent.insertAdjacentHTML(
-          "beforeend",
+          'beforeend',
           `
         <div class="module-line mm-update-line" id="mm-update-container">
           <div class="module-name">MagicMirror²</div>
           <div class="module-buttons"></div>
         </div>
-      `
-        );
-        const mmButtons = parent.lastElementChild.querySelector(".module-buttons"),
+      `,
+        )
+        const mmButtons = parent.lastElementChild.querySelector('.module-buttons'),
 
           mmUpdateButton = this.createSymbolText(
-            "fa fa-fw fa-toggle-up",
-            "Update",
+            'fa fa-fw fa-toggle-up',
+            'Update',
             () => {
-
-              this.updateModule();
-
-            }
-          );
-        mmUpdateButton.id = "update-mm-button";
-        mmUpdateButton.className = "button hidden";
-        mmButtons.append(mmUpdateButton);
+              this.updateModule()
+            },
+          )
+        mmUpdateButton.id = 'update-mm-button'
+        mmUpdateButton.className = 'button hidden'
+        mmButtons.append(mmUpdateButton)
 
         const mmChangelogButton = this.createSymbolText(
-          "fa fa-fw fa-file-text-o",
-          "Changelog",
+          'fa fa-fw fa-file-text-o',
+          'Changelog',
           () => {
-
             window.open(
-              "https://github.com/MagicMirrorOrg/MagicMirror/releases",
-              "_blank"
-            );
-
-          }
-        );
-        mmChangelogButton.className = "button";
-        mmButtons.append(mmChangelogButton);
+              'https://github.com/MagicMirrorOrg/MagicMirror/releases',
+              '_blank',
+            )
+          },
+        )
+        mmChangelogButton.className = 'button'
+        mmButtons.append(mmChangelogButton)
 
         // Module rows
         for (const module of modules) {
-
-          const moduleLine = document.createElement("div"),
-            moduleName = document.createElement("div"),
-            moduleButtons = document.createElement("div");
-          moduleLine.className = "module-line";
-          moduleLine.classList.toggle("module-updatable", Boolean(module.updateAvailable));
-          moduleName.className = "module-name";
-          moduleName.textContent = module.name ?? "";
-          moduleButtons.className = "module-buttons";
+          const moduleLine = document.createElement('div'),
+            moduleName = document.createElement('div'),
+            moduleButtons = document.createElement('div')
+          moduleLine.className = 'module-line'
+          moduleLine.classList.toggle('module-updatable', Boolean(module.updateAvailable))
+          moduleName.className = 'module-name'
+          moduleName.textContent = module.name ?? ''
+          moduleButtons.className = 'module-buttons'
           moduleLine.append(
             moduleName,
-            moduleButtons
-          );
-          parent.append(moduleLine);
+            moduleButtons,
+          )
+          parent.append(moduleLine)
 
-          const buttonsContainer = parent.lastElementChild.querySelector(".module-buttons");
+          const buttonsContainer = parent.lastElementChild.querySelector('.module-buttons')
 
           if (module.updateAvailable) {
-
             const updateButton = this.createSymbolText(
-              "fa fa-fw fa-toggle-up",
-              "Update",
+              'fa fa-fw fa-toggle-up',
+              'Update',
               (event) => {
-
-                const updatePrefix = "update-module-";
+                const updatePrefix = 'update-module-'
                 const moduleName = event.currentTarget.id.startsWith(updatePrefix)
                   ? event.currentTarget.id.slice(updatePrefix.length)
-                  : "";
-                this.updateModule(moduleName);
-
-              }
-            );
-            updateButton.className = "button bright";
-            updateButton.id = `update-module-${module.name}`;
-            buttonsContainer.append(updateButton);
-
+                  : ''
+                this.updateModule(moduleName)
+              },
+            )
+            updateButton.className = 'button bright'
+            updateButton.id = `update-module-${module.name}`
+            buttonsContainer.append(updateButton)
           }
 
-          if (!module.hasChangelog) continue;
+          if (!module.hasChangelog) continue
 
           const changelogButton = this.createSymbolText(
-            "fa fa-fw fa-file-text-o",
-            "Changelog",
+            'fa fa-fw fa-file-text-o',
+            'Changelog',
             (event) => {
-
-              event.stopPropagation();
-              this.showChangelog(module.name);
-
-            }
-          );
-          changelogButton.className = "button";
-          buttonsContainer.append(changelogButton);
-
+              event.stopPropagation()
+              this.showChangelog(module.name)
+            },
+          )
+          changelogButton.className = 'button'
+          buttonsContainer.append(changelogButton)
         }
 
-        this.applyUpdateFilter();
-
-      } catch (error) {
-
+        this.applyUpdateFilter()
+      }
+      catch (error) {
         console.error(
-          "Error loading modules to update:",
-          error
-        );
-
+          'Error loading modules to update:',
+          error,
+        )
       }
-
     },
 
-    showChangelog (moduleName) {
-
-      this.setStatus("loading");
-      this.action("GET_CHANGELOG", {"module": moduleName});
-
+    showChangelog(moduleName) {
+      this.setStatus('loading')
+      this.action('GET_CHANGELOG', { module: moduleName })
     },
 
-    handleShowChangelog (result) {
-
+    handleShowChangelog(result) {
       if (result.success && result.changelog) {
-
         const wrapper = createSanitizedMarkdownBlock(
-          result.module || "Changelog",
-          marked.parse(result.changelog)
-        );
+          result.module || 'Changelog',
+          marked.parse(result.changelog),
+        )
         this.setStatus(
-          "success",
+          'success',
           false,
-          wrapper
-        );
-
-      } else {
-
-        this.setStatus(
-          "error",
-          "Changelog not found"
-        );
-
+          wrapper,
+        )
       }
+      else {
+        this.setStatus(
+          'error',
+          'Changelog not found',
+        )
+      }
+    },
 
-    }
-
-  }
-);
+  },
+)

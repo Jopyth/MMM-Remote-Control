@@ -1,151 +1,141 @@
-const {test, describe, before} = require("node:test");
-const assert = require("node:assert/strict");
+const { test, describe, before } = require('node:test')
+const assert = require('node:assert/strict')
 
-let Remote;
+let Remote
 
 before(async () => {
-  const {setupRemote} = await import("./setup.mjs");
-  Remote = await setupRemote();
-});
+  const { setupRemote } = await import('./setup.mjs')
+  Remote = await setupRemote()
+})
 
-function makeSlider (value, min, max) {
-
-  const properties = {};
+function makeSlider(value) {
+  const properties = {}
 
   return {
     value: String(value),
-    min: String(min),
-    max: String(max),
-    style: {setProperty: (k, v) => { properties[k] = v; }},
-    _props: properties
-  };
-
+    min: String(0),
+    max: String(100),
+    style: { setProperty: (k, v) => { properties[k] = v } },
+    _props: properties,
+  }
 }
 
-describe("hasForcedType", () => {
+describe('hasForcedType', () => {
+  test('root-level path (1 slash) -> forcedType true', () => {
+    assert.equal(Remote.hasForcedType('<root>/position'), true)
+    assert.equal(Remote.hasForcedType('<root>/port'), true)
+  })
 
-  test("root-level path (1 slash) -> forcedType true", () => {
-    assert.equal(Remote.hasForcedType("<root>/position"), true);
-    assert.equal(Remote.hasForcedType("<root>/port"), true);
-  });
+  test('nested path (2 slashes) -> forcedType false', () => {
+    assert.equal(Remote.hasForcedType('<root>/config/key'), false)
+  })
 
-  test("nested path (2 slashes) -> forcedType false", () => {
-    assert.equal(Remote.hasForcedType("<root>/config/key"), false);
-  });
+  test('deeply nested path -> forcedType false', () => {
+    assert.equal(Remote.hasForcedType('<root>/a/b/c'), false)
+  })
 
-  test("deeply nested path -> forcedType false", () => {
-    assert.equal(Remote.hasForcedType("<root>/a/b/c"), false);
-  });
+  test('no slash -> forcedType false', () => {
+    assert.equal(Remote.hasForcedType('noslash'), false)
+  })
+})
 
-  test("no slash -> forcedType false", () => {
-    assert.equal(Remote.hasForcedType("noslash"), false);
-  });
+describe('getTypeAsString', () => {
+  test('null -> \'null\'', () => {
+    assert.equal(Remote.getTypeAsString(null, '<root>/key'), 'null')
+  })
 
-});
+  test('undefined -> \'undefined\'', () => {
+    assert.equal(Remote.getTypeAsString(undefined, '<root>/key'), 'undefined')
+  })
 
-describe("getTypeAsString", () => {
+  test('array -> \'array\'', () => {
+    assert.equal(Remote.getTypeAsString([1, 2, 3], '<root>/key'), 'array')
+  })
 
-  test("null -> 'null'", () => {
-    assert.equal(Remote.getTypeAsString(null, "<root>/key"), "null");
-  });
+  test('path \'<root>/position\' -> \'position\' regardless of value', () => {
+    assert.equal(Remote.getTypeAsString('top_left', '<root>/position'), 'position')
+    assert.equal(Remote.getTypeAsString(42, '<root>/position'), 'position')
+  })
 
-  test("undefined -> 'undefined'", () => {
-    assert.equal(Remote.getTypeAsString(undefined, "<root>/key"), "undefined");
-  });
+  test('string value -> \'string\'', () => {
+    assert.equal(Remote.getTypeAsString('hello', '<root>/key'), 'string')
+  })
 
-  test("array -> 'array'", () => {
-    assert.equal(Remote.getTypeAsString([1, 2, 3], "<root>/key"), "array");
-  });
+  test('number value -> \'number\'', () => {
+    assert.equal(Remote.getTypeAsString(42, '<root>/key'), 'number')
+  })
 
-  test("path '<root>/position' -> 'position' regardless of value", () => {
-    assert.equal(Remote.getTypeAsString("top_left", "<root>/position"), "position");
-    assert.equal(Remote.getTypeAsString(42, "<root>/position"), "position");
-  });
+  test('boolean value -> \'boolean\'', () => {
+    assert.equal(Remote.getTypeAsString(true, '<root>/key'), 'boolean')
+  })
 
-  test("string value -> 'string'", () => {
-    assert.equal(Remote.getTypeAsString("hello", "<root>/key"), "string");
-  });
+  test('plain object -> \'object\'', () => {
+    assert.equal(Remote.getTypeAsString({ a: 1 }, '<root>/key'), 'object')
+  })
+})
 
-  test("number value -> 'number'", () => {
-    assert.equal(Remote.getTypeAsString(42, "<root>/key"), "number");
-  });
+describe('createConfigInput', () => {
+  test('creates input element with correct id and class', () => {
+    const input = Remote.createConfigInput('my-key', 'my-value', false)
+    assert.equal(input.tagName.toLowerCase(), 'input')
+    assert.equal(input.id, 'my-key')
+    assert.ok(input.classList.contains('config-input'))
+  })
 
-  test("boolean value -> 'boolean'", () => {
-    assert.equal(Remote.getTypeAsString(true, "<root>/key"), "boolean");
-  });
+  test('sets value when omitValue is false', () => {
+    const input = Remote.createConfigInput('k', 'hello', false)
+    assert.equal(input.value, 'hello')
+  })
 
-  test("plain object -> 'object'", () => {
-    assert.equal(Remote.getTypeAsString({a: 1}, "<root>/key"), "object");
-  });
+  test('does not set value when omitValue is true', () => {
+    const input = Remote.createConfigInput('k', 'hello', true)
+    assert.equal(input.value, '')
+  })
 
-});
+  test('creates select element when element param is \'select\'', () => {
+    const select = Remote.createConfigInput('s', '', false, 'select')
+    assert.equal(select.tagName.toLowerCase(), 'select')
+    assert.equal(select.id, 's')
+  })
+})
 
-describe("createConfigInput", () => {
+describe('updateSliderThumbColor', () => {
+  test('brightness at 0% -> dark thumb color', () => {
+    const slider = makeSlider(0)
+    Remote.updateSliderThumbColor(slider, 'brightness')
+    assert.equal(slider._props['--thumb-color'], 'rgb(50, 50, 50)')
+  })
 
-  test("creates input element with correct id and class", () => {
-    const input = Remote.createConfigInput("my-key", "my-value", false);
-    assert.equal(input.tagName.toLowerCase(), "input");
-    assert.equal(input.id, "my-key");
-    assert.ok(input.classList.contains("config-input"));
-  });
+  test('brightness at 100% -> bright white thumb', () => {
+    const slider = makeSlider(100)
+    Remote.updateSliderThumbColor(slider, 'brightness')
+    assert.equal(slider._props['--thumb-color'], 'rgb(255, 255, 255)')
+  })
 
-  test("sets value when omitValue is false", () => {
-    const input = Remote.createConfigInput("k", "hello", false);
-    assert.equal(input.value, "hello");
-  });
-
-  test("does not set value when omitValue is true", () => {
-    const input = Remote.createConfigInput("k", "hello", true);
-    assert.equal(input.value, "");
-  });
-
-  test("creates select element when element param is 'select'", () => {
-    const select = Remote.createConfigInput("s", "", false, "select");
-    assert.equal(select.tagName.toLowerCase(), "select");
-    assert.equal(select.id, "s");
-  });
-
-});
-
-describe("updateSliderThumbColor", () => {
-
-  test("brightness at 0% -> dark thumb color", () => {
-    const slider = makeSlider(0, 0, 100);
-    Remote.updateSliderThumbColor(slider, "brightness");
-    assert.equal(slider._props["--thumb-color"], "rgb(50, 50, 50)");
-  });
-
-  test("brightness at 100% -> bright white thumb", () => {
-    const slider = makeSlider(100, 0, 100);
-    Remote.updateSliderThumbColor(slider, "brightness");
-    assert.equal(slider._props["--thumb-color"], "rgb(255, 255, 255)");
-  });
-
-  test("brightness also sets --track-gradient", () => {
-    const slider = makeSlider(50, 0, 100);
-    Remote.updateSliderThumbColor(slider, "brightness");
+  test('brightness also sets --track-gradient', () => {
+    const slider = makeSlider(50)
+    Remote.updateSliderThumbColor(slider, 'brightness')
     assert.ok(
-      slider._props["--track-gradient"].startsWith("linear-gradient"),
-      "track gradient should be set"
-    );
-  });
+      slider._props['--track-gradient'].startsWith('linear-gradient'),
+      'track gradient should be set',
+    )
+  })
 
-  test("temp at 0% -> cool blue thumb", () => {
-    const slider = makeSlider(0, 0, 100);
-    Remote.updateSliderThumbColor(slider, "temp");
-    assert.equal(slider._props["--thumb-color"], "rgb(100, 181, 246)");
-  });
+  test('temp at 0% -> cool blue thumb', () => {
+    const slider = makeSlider(0)
+    Remote.updateSliderThumbColor(slider, 'temp')
+    assert.equal(slider._props['--thumb-color'], 'rgb(100, 181, 246)')
+  })
 
-  test("temp at 100% -> warm orange thumb", () => {
-    const slider = makeSlider(100, 0, 100);
-    Remote.updateSliderThumbColor(slider, "temp");
-    assert.equal(slider._props["--thumb-color"], "rgb(255, 147, 41)");
-  });
+  test('temp at 100% -> warm orange thumb', () => {
+    const slider = makeSlider(100)
+    Remote.updateSliderThumbColor(slider, 'temp')
+    assert.equal(slider._props['--thumb-color'], 'rgb(255, 147, 41)')
+  })
 
-  test("unknown type -> no CSS properties set", () => {
-    const slider = makeSlider(50, 0, 100);
-    Remote.updateSliderThumbColor(slider, "unknown-type");
-    assert.equal(Object.keys(slider._props).length, 0);
-  });
-
-});
+  test('unknown type -> no CSS properties set', () => {
+    const slider = makeSlider(50)
+    Remote.updateSliderThumbColor(slider, 'unknown-type')
+    assert.equal(Object.keys(slider._props).length, 0)
+  })
+})

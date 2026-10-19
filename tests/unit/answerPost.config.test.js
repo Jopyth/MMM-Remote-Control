@@ -1,267 +1,267 @@
-const assert = require("node:assert/strict");
-const {describe, test, beforeEach, afterEach} = require("node:test");
-const path = require("node:path");
-const ModuleLib = require("node:module");
+const assert = require('node:assert/strict')
+const { describe, test, beforeEach, afterEach } = require('node:test')
+const path = require('node:path')
+const ModuleLib = require('node:module')
 
 // Ensure shims resolve like other tests
-globalThis.process ||= {};
-const shimDir = path.resolve(__dirname, "../shims");
-process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : "");
-if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
+globalThis.process ||= {}
+const shimDir = path.resolve(__dirname, '../shims')
+process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : '')
+if (typeof ModuleLib._initPaths === 'function') ModuleLib._initPaths()
 
-const helperFactory = require("../../node_helper.js");
+const helperFactory = require('../../node_helper.js')
 
-const originalLoad = ModuleLib._load;
-const originalResolveFilename = ModuleLib._resolveFilename;
-const moduleOverrides = new Map();
+const originalLoad = ModuleLib._load
+const originalResolveFilename = ModuleLib._resolveFilename
+const moduleOverrides = new Map()
 
-function setModuleValue (filePath, value) {
-  moduleOverrides.set(path.resolve(filePath), {type: "value", value});
+function setModuleValue(filePath, value) {
+  moduleOverrides.set(path.resolve(filePath), { type: 'value', value })
 }
 
-function setModuleError (filePath, error) {
-  moduleOverrides.set(path.resolve(filePath), {type: "error", error});
+function setModuleError(filePath, error) {
+  moduleOverrides.set(path.resolve(filePath), { type: 'error', error })
 }
 
-function freshHelper () {
-  const helper = Object.assign({}, helperFactory);
-  helper.__responses = [];
+function freshHelper() {
+  const helper = Object.assign({}, helperFactory)
+  helper.__responses = []
   helper.sendResponse = (_res, error, payload) => {
-    helper.__responses.push({error, payload});
-    return !error;
-  };
-  helper.thisConfig = {};
-  helper.configOnHd = {};
-  helper.configData = {moduleData: []};
-  return helper;
+    helper.__responses.push({ error, payload })
+    return !error
+  }
+  helper.thisConfig = {}
+  helper.configOnHd = {}
+  helper.configData = { moduleData: [] }
+  return helper
 }
 
-describe("answerPost config persistence", () => {
-  const originalFs = {};
-  const fs = require("node:fs");
-  const configManager = require("../../lib/configManager.js");
-  let originalSaveConfigWithBackup;
+describe('answerPost config persistence', () => {
+  const originalFs = {}
+  const fs = require('node:fs')
+  const configManager = require('../../lib/configManager.js')
+  let originalSaveConfigWithBackup
 
   beforeEach(() => {
     // Store original methods
-    originalFs.stat = fs.promises.stat;
-    originalFs.statSync = fs.statSync;
-    originalFs.copyFile = fs.promises.copyFile;
-    originalFs.writeFile = fs.promises.writeFile;
+    originalFs.stat = fs.promises.stat
+    originalFs.statSync = fs.statSync
+    originalFs.copyFile = fs.promises.copyFile
+    originalFs.writeFile = fs.promises.writeFile
 
     // Store original configManager method
-    originalSaveConfigWithBackup = configManager.saveConfigWithBackup;
+    originalSaveConfigWithBackup = configManager.saveConfigWithBackup
 
     ModuleLib._load = function (request, parent, isMain) {
       const resolved = path.isAbsolute(request)
         ? path.resolve(request)
-        : originalResolveFilename(request, parent, isMain);
-      const normalized = path.resolve(resolved);
+        : originalResolveFilename(request, parent, isMain)
+      const normalized = path.resolve(resolved)
       if (moduleOverrides.has(normalized)) {
-        const entry = moduleOverrides.get(normalized);
-        if (entry.type === "error") {
-          throw entry.error;
+        const entry = moduleOverrides.get(normalized)
+        if (entry.type === 'error') {
+          throw entry.error
         }
-        return entry.value;
+        return entry.value
       }
-      return originalLoad(request, parent, isMain);
-    };
-    moduleOverrides.clear();
-  });
+      return originalLoad(request, parent, isMain)
+    }
+    moduleOverrides.clear()
+  })
 
   afterEach(() => {
     // Restore original methods
-    fs.promises.stat = originalFs.stat;
-    fs.statSync = originalFs.statSync;
-    fs.promises.copyFile = originalFs.copyFile;
-    fs.promises.writeFile = originalFs.writeFile;
+    fs.promises.stat = originalFs.stat
+    fs.statSync = originalFs.statSync
+    fs.promises.copyFile = originalFs.copyFile
+    fs.promises.writeFile = originalFs.writeFile
 
     // Restore configManager
     if (originalSaveConfigWithBackup) {
-      configManager.saveConfigWithBackup = originalSaveConfigWithBackup;
+      configManager.saveConfigWithBackup = originalSaveConfigWithBackup
     }
 
     for (const [filePath] of moduleOverrides) {
-      delete require.cache[filePath];
+      delete require.cache[filePath]
     }
-    moduleOverrides.clear();
-    ModuleLib._load = originalLoad;
-  });
+    moduleOverrides.clear()
+    ModuleLib._load = originalLoad
+  })
 
-  test("rotates oldest backup and writes new config", async () => {
-    const helper = freshHelper();
+  test('rotates oldest backup and writes new config', async () => {
+    const helper = freshHelper()
     // The actual path configManager will resolve to
-    const expectedConfigPath = path.resolve(__dirname, "../../../../config/config.js");
+    const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
 
     const mtimeBySlot = {
-      4: new Date("2025-10-07T12:00:00Z"),
-      3: new Date("2025-10-01T12:00:00Z"),
-      2: new Date("2025-10-08T12:00:00Z"),
-      1: new Date("2025-10-06T12:00:00Z")
-    };
+      4: new Date('2025-10-07T12:00:00Z'),
+      3: new Date('2025-10-01T12:00:00Z'),
+      2: new Date('2025-10-08T12:00:00Z'),
+      1: new Date('2025-10-06T12:00:00Z'),
+    }
     fs.promises.stat = async (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath);
-      if (!match) throw Object.assign(new Error("unexpected"), {code: "ENOENT"});
-      const slot = Number(match[1]);
+      const match = (/backup(\d)/u).exec(filePath)
+      if (!match) throw Object.assign(new Error('unexpected'), { code: 'ENOENT' })
+      const slot = Number(match[1])
       if (Object.hasOwn(mtimeBySlot, slot)) {
-        return {mtime: mtimeBySlot[slot]};
+        return { mtime: mtimeBySlot[slot] }
       }
-      const error_ = new Error("missing");
-      error_.code = "ENOENT";
-      throw error_;
-    };
+      const error_ = new Error('missing')
+      error_.code = 'ENOENT'
+      throw error_
+    }
 
-    let written;
+    let written
     fs.promises.copyFile = async (source, destination) => {
-      assert.equal(source, expectedConfigPath);
-      assert.equal(destination, path.resolve("config/config.js.backup3"));
-    };
+      assert.equal(source, expectedConfigPath)
+      assert.equal(destination, path.resolve('config/config.js.backup3'))
+    }
     fs.promises.writeFile = async (target, contents) => {
-      written = {target, contents};
-    };
+      written = { target, contents }
+    }
 
-    const payload = {modules: [], foo: "bar"};
+    const payload = { modules: [], foo: 'bar' }
 
     const responsePromise = new Promise((resolve) => {
       helper.sendResponse = (_res, error, data) => {
-        helper.__responses.push({error, data});
-        resolve({error, data});
-        return !error;
-      };
-    });
+        helper.__responses.push({ error, data })
+        resolve({ error, data })
+        return !error
+      }
+    })
 
-    await helper.answerPost({data: "config"}, {body: payload}, {});
+    await helper.answerPost({ data: 'config' }, { body: payload }, {})
 
-    const {error, data} = await responsePromise;
-    assert.equal(error, undefined);
-    assert.equal(written.target, expectedConfigPath);
-    assert.ok(written.contents.includes("AUTO GENERATED BY REMOTE CONTROL MODULE"));
-    assert.equal(data.backup, path.resolve("config/config.js.backup3"));
-    assert.deepEqual(data.data, payload);
-  });
+    const { error, data } = await responsePromise
+    assert.equal(error, undefined)
+    assert.equal(written.target, expectedConfigPath)
+    assert.ok(written.contents.includes('AUTO GENERATED BY REMOTE CONTROL MODULE'))
+    assert.equal(data.backup, path.resolve('config/config.js.backup3'))
+    assert.deepEqual(data.data, payload)
+  })
 
-  test("aborts when no backup slot available", async () => {
-    const helper = freshHelper();
+  test('aborts when no backup slot available', async () => {
+    const helper = freshHelper()
 
     fs.promises.stat = async () => {
-      throw new Error("stat failed");
-    };
+      throw new Error('stat failed')
+    }
 
-    const responses = [];
+    const responses = []
     helper.sendResponse = function (_res, error, payload) {
-      responses.push({error, payload});
-      return !error;
-    };
+      responses.push({ error, payload })
+      return !error
+    }
 
-    await helper.answerPost({data: "config"}, {body: {}}, {});
+    await helper.answerPost({ data: 'config' }, { body: {} }, {})
 
-    assert.equal(responses.length, 1);
-    assert.ok(responses[0].error instanceof Error);
-    assert.match(String(responses[0].error), /Backing up config failed/);
-  });
+    assert.equal(responses.length, 1)
+    assert.ok(responses[0].error instanceof Error)
+    assert.match(String(responses[0].error), /Backing up config failed/)
+  })
 
-  test("propagates write errors", async () => {
-    const helper = freshHelper();
+  test('propagates write errors', async () => {
+    const helper = freshHelper()
 
     fs.promises.stat = async () => {
-      const error_ = new Error("missing");
-      error_.code = "ENOENT";
-      throw error_;
-    };
+      const error_ = new Error('missing')
+      error_.code = 'ENOENT'
+      throw error_
+    }
 
-    const writeError = new Error("disk full");
+    const writeError = new Error('disk full')
     fs.promises.copyFile = async () => {
       // Copy succeeds
-    };
+    }
     fs.promises.writeFile = async () => {
-      throw writeError;
-    };
+      throw writeError
+    }
 
     const responsePromise = new Promise((resolve) => {
       helper.sendResponse = function (_res, error, data) {
-        resolve({error, data});
-        return !error;
-      };
-    });
+        resolve({ error, data })
+        return !error
+      }
+    })
 
-    await helper.answerPost({data: "config"}, {body: {foo: "bar"}}, {});
+    await helper.answerPost({ data: 'config' }, { body: { foo: 'bar' } }, {})
 
-    const {error, data} = await responsePromise;
-    assert.equal(error, writeError);
-    assert.equal(data.query.data, "config_update");
-    assert.equal(data.backup, path.resolve("config/config.js.backup1"));
-  });
-  test("UNDO_CONFIG restores backup when timestamp matches", () => {
-    const helper = freshHelper();
-    let answerArguments;
+    const { error, data } = await responsePromise
+    assert.equal(error, writeError)
+    assert.equal(data.query.data, 'config_update')
+    assert.equal(data.backup, path.resolve('config/config.js.backup1'))
+  })
+  test('UNDO_CONFIG restores backup when timestamp matches', () => {
+    const helper = freshHelper()
+    let answerArguments
     helper.answerPost = (query, request, res) => {
-      answerArguments = {query, req: request, res};
-    };
+      answerArguments = { query, req: request, res }
+    }
 
-    const targetTime = new Date("2025-10-09T10:00:00Z");
+    const targetTime = new Date('2025-10-09T10:00:00Z')
     fs.statSync = (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath);
+      const match = (/backup(\d)/u).exec(filePath)
       if (!match) {
-        const error = new Error("missing");
-        error.code = "ENOENT";
-        throw error;
+        const error = new Error('missing')
+        error.code = 'ENOENT'
+        throw error
       }
       if (Number(match[1]) === 4) {
-        return {mtime: targetTime};
+        return { mtime: targetTime }
       }
-      const error = new Error("missing");
-      error.code = "ENOENT";
-      throw error;
-    };
+      const error = new Error('missing')
+      error.code = 'ENOENT'
+      throw error
+    }
 
-    const restoredConfig = {modules: [{module: "newsfeed"}]};
-    setModuleValue("config/config.js.backup4", restoredConfig);
+    const restoredConfig = { modules: [{ module: 'newsfeed' }] }
+    setModuleValue('config/config.js.backup4', restoredConfig)
 
-    helper.socketNotificationReceived("UNDO_CONFIG", targetTime.toISOString());
+    helper.socketNotificationReceived('UNDO_CONFIG', targetTime.toISOString())
 
-    assert.ok(answerArguments);
-    assert.deepEqual(answerArguments.query, {data: "config"});
-    assert.deepEqual(answerArguments.req.body, restoredConfig);
-    assert.deepEqual(answerArguments.res, {isSocket: true});
-  });
+    assert.ok(answerArguments)
+    assert.deepEqual(answerArguments.query, { data: 'config' })
+    assert.deepEqual(answerArguments.req.body, restoredConfig)
+    assert.deepEqual(answerArguments.res, { isSocket: true })
+  })
 
-  test("UNDO_CONFIG falls back when timestamp not found", () => {
-    const helper = freshHelper();
-    let answerArguments;
+  test('UNDO_CONFIG falls back when timestamp not found', () => {
+    const helper = freshHelper()
+    let answerArguments
     helper.answerGet = (query, res) => {
-      answerArguments = {query, res};
-    };
+      answerArguments = { query, res }
+    }
 
-    helper.socketNotificationReceived("UNDO_CONFIG", new Date("2025-10-01T12:00:00Z").toISOString());
+    helper.socketNotificationReceived('UNDO_CONFIG', new Date('2025-10-01T12:00:00Z').toISOString())
 
-    assert.ok(answerArguments);
-    assert.deepEqual(answerArguments.query, {data: "saves"});
-    assert.deepEqual(answerArguments.res, {isSocket: true});
-  });
+    assert.ok(answerArguments)
+    assert.deepEqual(answerArguments.query, { data: 'saves' })
+    assert.deepEqual(answerArguments.res, { isSocket: true })
+  })
 
-  test("UNDO_CONFIG surfaces load errors", () => {
-    const helper = freshHelper();
+  test('UNDO_CONFIG surfaces load errors', () => {
+    const helper = freshHelper()
 
-    const time = new Date("2025-10-05T09:00:00Z");
+    const time = new Date('2025-10-05T09:00:00Z')
     fs.statSync = (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath);
+      const match = (/backup(\d)/u).exec(filePath)
       if (!match) {
-        const error = new Error("missing");
-        error.code = "ENOENT";
-        throw error;
+        const error = new Error('missing')
+        error.code = 'ENOENT'
+        throw error
       }
       if (Number(match[1]) === 2) {
-        return {mtime: time};
+        return { mtime: time }
       }
-      const error = new Error("missing");
-      error.code = "ENOENT";
-      throw error;
-    };
+      const error = new Error('missing')
+      error.code = 'ENOENT'
+      throw error
+    }
 
-    setModuleError("config/config.js.backup2", new Error("invalid"));
+    setModuleError('config/config.js.backup2', new Error('invalid'))
 
     assert.throws(() => {
-      helper.socketNotificationReceived("UNDO_CONFIG", time.toISOString());
-    }, /invalid/);
-  });
-});
+      helper.socketNotificationReceived('UNDO_CONFIG', time.toISOString())
+    }, /invalid/)
+  })
+})

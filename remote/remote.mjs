@@ -1,229 +1,178 @@
 // Main javascript file for the remote control page
 
 export const Remote = {
-  "name": "MMM-Remote-Control",
-  "currentMenu": "main-menu",
-  "types": ["string", "number", "boolean", "array", "object", "null", "undefined"],
-  "values": ["", 0, true, [], {}, null, undefined],
-  "validPositions": [
-    "",
-    "top_bar",
-    "top_left",
-    "top_center",
-    "top_right",
-    "upper_third",
-    "middle_center",
-    "lower_third",
-    "bottom_left",
-    "bottom_center",
-    "bottom_right",
-    "bottom_bar",
-    "fullscreen_above",
-    "fullscreen_below"
+  name: 'MMM-Remote-Control',
+  currentMenu: 'main-menu',
+  types: ['string', 'number', 'boolean', 'array', 'object', 'null', 'undefined'],
+  values: ['', 0, true, [], {}, null, undefined],
+  validPositions: [
+    '',
+    'top_bar',
+    'top_left',
+    'top_center',
+    'top_right',
+    'upper_third',
+    'middle_center',
+    'lower_third',
+    'bottom_left',
+    'bottom_center',
+    'bottom_right',
+    'bottom_bar',
+    'fullscreen_above',
+    'fullscreen_below',
   ],
-  "savedData": {},
-  "translations": {},
-  "currentConfig": {},
-  "addModule": "",
-  "changedModules": [],
-  "deletedModules": [],
-  "autoHideTimer": undefined, // Internal: Reference to the active auto-hide timeout (do not modify manually)
-  "autoHideDelay": 2000, // Ms - Time after which success messages are auto hidden
-  "autoHideDelayError": 30 * 1000, // Ms - Time for error messages (0 = no auto-hide, must be clicked away)
-  "autoHideDelayInfo": 30 * 1000 // Ms - Time for info messages like restart/stop
+  savedData: {},
+  translations: {},
+  currentConfig: {},
+  addModule: '',
+  changedModules: [],
+  deletedModules: [],
+  autoHideTimer: undefined, // Internal: Reference to the active auto-hide timeout (do not modify manually)
+  autoHideDelay: 2000, // Ms - Time after which success messages are auto hidden
+  autoHideDelayError: 30 * 1000, // Ms - Time for error messages (0 = no auto-hide, must be clicked away)
+  autoHideDelayInfo: 30 * 1000, // Ms - Time for info messages like restart/stop
 
-};
+}
 
 const buttons = {
-  "mirror-link-button" () {
-
+  'mirror-link-button'() {
     window.open(
-      "/",
-      "_blank"
-    );
-
+      '/',
+      '_blank',
+    )
   },
-  "back-button" () {
+  'back-button'() {
+    const activeMenu = Remote.getCurrentHashMenu()
 
-    const activeMenu = Remote.getCurrentHashMenu();
-
-    if (activeMenu === "add-module-menu") {
-
-      Remote.navigateToMenu("settings-menu");
-      return;
-
+    if (activeMenu === 'add-module-menu') {
+      Remote.navigateToMenu('settings-menu')
+      return
     }
     const currentButton = document.querySelector(`#${activeMenu}`.replace(
-      "-menu",
-      "-button"
-    ));
+      '-menu',
+      '-button',
+    ))
     if (currentButton && currentButton.dataset.parent) {
-
-      Remote.navigateToMenu(`${currentButton.dataset.parent}-menu`);
-      return;
-
+      Remote.navigateToMenu(`${currentButton.dataset.parent}-menu`)
+      return
     }
-    Remote.navigateToMenu("main-menu");
-
+    Remote.navigateToMenu('main-menu')
   },
 
   // Edit menu buttons
-  "show-all-button" () {
-
-    const parent = document.querySelector("#visible-modules-results"),
-      buttons = [...parent.children];
+  'show-all-button'() {
+    const parent = document.querySelector('#visible-modules-results'),
+      buttons = [...parent.children]
     for (const button of buttons) {
-
-      if (button.classList.contains("external-locked")) {
-
-        continue;
-
+      if (button.classList.contains('external-locked')) {
+        continue
       }
-      button.classList.remove("toggled-off");
-      button.classList.add("toggled-on");
-      Remote.showModule(button.id);
-
+      button.classList.remove('toggled-off')
+      button.classList.add('toggled-on')
+      Remote.showModule(button.id)
     }
-
   },
-  "hide-all-button" () {
-
-    const parent = document.querySelector("#visible-modules-results"),
-      buttons = [...parent.children];
+  'hide-all-button'() {
+    const parent = document.querySelector('#visible-modules-results'),
+      buttons = [...parent.children]
     for (const button of buttons) {
-
-      button.classList.remove("toggled-on");
-      button.classList.add("toggled-off");
-      Remote.hideModule(button.id);
-
+      button.classList.remove('toggled-on')
+      button.classList.add('toggled-off')
+      Remote.hideModule(button.id)
     }
-
   },
 
   // Config menu buttons
-  "save-config" () {
-
-    Remote.saveConfig();
-
+  'save-config'() {
+    Remote.saveConfig()
   },
 
-  "restore-config" () {
-
-    Remote.restoreConfigMenu();
-
+  'restore-config'() {
+    Remote.restoreConfigMenu()
   },
   // Main menu
-  "close-popup" () {
-
-    Remote.closePopup();
-
+  'close-popup'() {
+    Remote.closePopup()
   },
-  "close-result" () {
-
-    Remote.setStatus("none");
-
+  'close-result'() {
+    Remote.setStatus('none')
   },
 
   // Notification menu
-  "send-notification-button" () {
-
-    const name = document.querySelector("#notification-name").value.trim().toUpperCase();
+  'send-notification-button'() {
+    const name = document.querySelector('#notification-name').value.trim().toUpperCase()
     if (!name) {
-
       Remote.setStatus(
-        "error",
-        Remote.translate("FORM_NOTIFICATION_NAME_MISSING")
-      );
-      return;
-
+        'error',
+        Remote.translate('FORM_NOTIFICATION_NAME_MISSING'),
+      )
+      return
     }
-    const rawPayload = document.querySelector("#notification-payload").value.trim();
-    let payload;
+    const rawPayload = document.querySelector('#notification-payload').value.trim()
+    let payload
     if (rawPayload) {
-
       try {
-
-        payload = JSON.parse(rawPayload);
-
-      } catch {
-
-        // Not valid JSON — treat as plain string
-        payload = rawPayload;
-
+        payload = JSON.parse(rawPayload)
       }
-
+      catch {
+        // Not valid JSON — treat as plain string
+        payload = rawPayload
+      }
     }
     localStorage.setItem(
-      "mmrc_notification_name",
-      name
-    );
+      'mmrc_notification_name',
+      name,
+    )
     localStorage.setItem(
-      "mmrc_notification_payload",
-      rawPayload
-    );
+      'mmrc_notification_payload',
+      rawPayload,
+    )
     Remote.action(
-      "NOTIFICATION",
+      'NOTIFICATION',
       {
-        "notification": name,
-        payload
-      }
-    );
-
+        notification: name,
+        payload,
+      },
+    )
   },
-  "restore-notification-button" () {
-
-    const savedName = localStorage.getItem("mmrc_notification_name"),
-      savedPayload = localStorage.getItem("mmrc_notification_payload");
+  'restore-notification-button'() {
+    const savedName = localStorage.getItem('mmrc_notification_name'),
+      savedPayload = localStorage.getItem('mmrc_notification_payload')
     if (savedName) {
-
-      document.querySelector("#notification-name").value = savedName;
-
+      document.querySelector('#notification-name').value = savedName
     }
     if (savedPayload !== null) {
-
-      const textarea = document.querySelector("#notification-payload");
-      textarea.value = savedPayload;
-      textarea.dispatchEvent(new Event("input"));
-
+      const textarea = document.querySelector('#notification-payload')
+      textarea.value = savedPayload
+      textarea.dispatchEvent(new Event('input'))
     }
-    Remote.updateNotificationUrl();
-
+    Remote.updateNotificationUrl()
   },
-  "notification-url-copy" () {
-
-    const url = document.querySelector("#notification-url")?.textContent;
+  'notification-url-copy'() {
+    const url = document.querySelector('#notification-url')?.textContent
     if (url) {
-
-      navigator.clipboard.writeText(url);
-
+      navigator.clipboard.writeText(url)
     }
-
   },
   // Alert menu
-  "send-alert-button" () {
-
+  'send-alert-button'() {
     const kvpairs = {},
-      form = document.querySelector("#alert");
+      form = document.querySelector('#alert')
     for (const element of form.elements) {
-
-      kvpairs[element.name] = element.value;
-
+      kvpairs[element.name] = element.value
     }
     Remote.sendSocketNotification(
-      "REMOTE_ACTION",
-      kvpairs
-    );
-
+      'REMOTE_ACTION',
+      kvpairs,
+    )
   },
-  "hide-alert-button" () {
-
-    Remote.action("HIDE_ALERT");
-
-  }
-};
+  'hide-alert-button'() {
+    Remote.action('HIDE_ALERT')
+  },
+}
 
 // Make buttons accessible to methods in topic files via this.buttons
-Remote.buttons = buttons;
+Remote.buttons = buttons
 
 /**
  * Shows a confirmation dialog for destructive actions.
@@ -232,240 +181,193 @@ Remote.buttons = buttons;
  * @param {string} labelKey - Translation key for the confirm button label.
  * @param {string} action - REMOTE_ACTION name to send on confirm.
  */
-function showConfirmation (confirmKey, icon, labelKey, action) {
-
-  const wrapper = document.createElement("div");
-  const text = document.createElement("span");
-  text.textContent = Remote.translate(confirmKey);
-  wrapper.append(text);
+function showConfirmation(confirmKey, icon, labelKey, action) {
+  const wrapper = document.createElement('div')
+  const text = document.createElement('span')
+  text.textContent = Remote.translate(confirmKey)
+  wrapper.append(text)
   wrapper.append(Remote.createSymbolText(
     icon,
     Remote.translate(labelKey),
-    () => { Remote.action(action); }
-  ));
+    () => { Remote.action(action) },
+  ))
   wrapper.append(Remote.createSymbolText(
-    "fa fa-times",
-    Remote.translate("CANCEL"),
-    () => { Remote.setStatus("none"); }
-  ));
+    'fa fa-times',
+    Remote.translate('CANCEL'),
+    () => { Remote.setStatus('none') },
+  ))
   Remote.setStatus(
     false,
     false,
-    wrapper
-  );
-
+    wrapper,
+  )
 }
 
 const sliderResetEntries = Object.entries({
-  "brightness-reset": {"selector": "#brightness-slider", "defaultValue": 100, "type": "brightness", "action": "BRIGHTNESS"},
-  "temp-reset": {"selector": "#temp-slider", "defaultValue": 327, "type": "temp", "action": "TEMP"},
-  "zoom-reset": {"selector": "#zoom-slider", "defaultValue": 100, "type": "zoom", "action": "ZOOM"}
-});
-for (const [id, {selector, defaultValue, type, action}] of sliderResetEntries) {
-
+  'brightness-reset': { selector: '#brightness-slider', defaultValue: 100, type: 'brightness', action: 'BRIGHTNESS' },
+  'temp-reset': { selector: '#temp-slider', defaultValue: 327, type: 'temp', action: 'TEMP' },
+  'zoom-reset': { selector: '#zoom-slider', defaultValue: 100, type: 'zoom', action: 'ZOOM' },
+})
+for (const [id, { selector, defaultValue, type, action }] of sliderResetEntries) {
   buttons[id] = () => {
-
-    const element = document.querySelector(selector);
-    element.value = defaultValue;
+    const element = document.querySelector(selector)
+    element.value = defaultValue
     Remote.updateSliderThumbColor(
       element,
-      type
-    );
+      type,
+    )
     Remote.action(
       action,
-      {"value": element.value}
-    );
-
-  };
-
+      { value: element.value },
+    )
+  }
 }
 
 const colorResetEntries = Object.entries({
-  "background-color-reset": {"selector": "#background-color-picker", "defaultValue": "#000000", "action": "BACKGROUND_COLOR"},
-  "font-color-reset": {"selector": "#font-color-picker", "defaultValue": "#ffffff", "action": "FONT_COLOR"}
-});
-for (const [id, {selector, defaultValue, action}] of colorResetEntries) {
-
+  'background-color-reset': { selector: '#background-color-picker', defaultValue: '#000000', action: 'BACKGROUND_COLOR' },
+  'font-color-reset': { selector: '#font-color-picker', defaultValue: '#ffffff', action: 'FONT_COLOR' },
+})
+for (const [id, { selector, defaultValue, action }] of colorResetEntries) {
   buttons[id] = () => {
-
-    document.querySelector(selector).value = defaultValue;
+    document.querySelector(selector).value = defaultValue
     Remote.action(
       action,
-      {"value": ""}
-    );
-
-  };
-
+      { value: '' },
+    )
+  }
 }
 
 const confirmActionEntries = Object.entries({
-  "shut-down-button": {"confirmKey": "CONFIRM_SHUTDOWN", "icon": "fa fa-power-off", "labelKey": "SHUTDOWN", "action": "SHUTDOWN"},
-  "restart-button": {"confirmKey": "CONFIRM_REBOOT", "icon": "fa fa-refresh", "labelKey": "REBOOT", "action": "REBOOT"},
-  "restart-mm-button": {"confirmKey": "CONFIRM_RESTARTMM", "icon": "fa fa-recycle", "labelKey": "RESTARTMM", "action": "RESTART"}
-});
-for (const [id, {confirmKey, icon, labelKey, action}] of confirmActionEntries) {
-
+  'shut-down-button': { confirmKey: 'CONFIRM_SHUTDOWN', icon: 'fa fa-power-off', labelKey: 'SHUTDOWN', action: 'SHUTDOWN' },
+  'restart-button': { confirmKey: 'CONFIRM_REBOOT', icon: 'fa fa-refresh', labelKey: 'REBOOT', action: 'REBOOT' },
+  'restart-mm-button': { confirmKey: 'CONFIRM_RESTARTMM', icon: 'fa fa-recycle', labelKey: 'RESTARTMM', action: 'RESTART' },
+})
+for (const [id, { confirmKey, icon, labelKey, action }] of confirmActionEntries) {
   buttons[id] = () => showConfirmation(
     confirmKey,
     icon,
     labelKey,
-    action
-  );
-
+    action,
+  )
 }
 
 const simpleActionEntries = Object.entries({
-  "monitor-on-button": "MONITORON",
-  "monitor-off-button": "MONITOROFF",
-  "refresh-mm-button": "REFRESH",
-  "fullscreen-button": "TOGGLEFULLSCREEN",
-  "minimize-button": "MINIMIZE",
-  "devtools-button": "DEVTOOLS",
-  "save-button": "SAVE"
-});
+  'monitor-on-button': 'MONITORON',
+  'monitor-off-button': 'MONITOROFF',
+  'refresh-mm-button': 'REFRESH',
+  'fullscreen-button': 'TOGGLEFULLSCREEN',
+  'minimize-button': 'MINIMIZE',
+  'devtools-button': 'DEVTOOLS',
+  'save-button': 'SAVE',
+})
 for (const [id, action] of simpleActionEntries) {
-
-  buttons[id] = () => Remote.action(action);
-
+  buttons[id] = () => Remote.action(action)
 }
 
 Remote.updateNotificationUrl = function () {
-
-  const nameElement = document.querySelector("#notification-name"),
-    urlElement = document.querySelector("#notification-url");
+  const nameElement = document.querySelector('#notification-name'),
+    urlElement = document.querySelector('#notification-url')
   if (!nameElement || !urlElement) {
-
-    return;
-
+    return
   }
-  const methodElement = document.querySelector("#notification-url-method");
+  const methodElement = document.querySelector('#notification-url-method')
 
-  const name = nameElement.value.trim().toUpperCase();
+  const name = nameElement.value.trim().toUpperCase()
   if (!name) {
-
-    urlElement.textContent = "";
+    urlElement.textContent = ''
     if (methodElement) {
-
-      methodElement.textContent = "";
-
+      methodElement.textContent = ''
     }
-    return;
-
+    return
   }
 
-  const {origin} = location,
+  const { origin } = location,
     base = `${origin}/api/notification/${encodeURIComponent(name)}`,
 
     setMethod = (method) => {
-
       if (!methodElement) {
-
-        return;
-
+        return
       }
-      methodElement.textContent = method;
+      methodElement.textContent = method
       methodElement.classList.toggle(
-        "method-post",
-        method === "POST"
-      );
-
+        'method-post',
+        method === 'POST',
+      )
     },
 
-    rawPayload = document.querySelector("#notification-payload")?.value.trim() ?? "";
+    rawPayload = document.querySelector('#notification-payload')?.value.trim() ?? ''
   if (!rawPayload) {
-
-    urlElement.textContent = base;
-    setMethod("GET");
-    return;
-
+    urlElement.textContent = base
+    setMethod('GET')
+    return
   }
 
-  let parsed;
+  let parsed
   try {
-
-    parsed = JSON.parse(rawPayload);
-
-  } catch {
-
+    parsed = JSON.parse(rawPayload)
+  }
+  catch {
     // Not valid JSON — treat as plain string path segment
-    urlElement.textContent = `${base}/${encodeURIComponent(rawPayload)}`;
-    setMethod("GET");
-    return;
-
+    urlElement.textContent = `${base}/${encodeURIComponent(rawPayload)}`
+    setMethod('GET')
+    return
   }
 
-  if (typeof parsed === "object" && parsed !== null) {
-
-    const keys = Object.keys(parsed);
+  if (typeof parsed === 'object' && parsed !== null) {
+    const keys = Object.keys(parsed)
     if (keys.length === 0) {
-
-      urlElement.textContent = base;
-      setMethod("GET");
-
-    } else if (Object.values(parsed).every((v) => typeof v !== "object" || v === null)) {
-
-      urlElement.textContent = `${base}?${new URLSearchParams(parsed).toString()}`;
-      setMethod("GET");
-
-    } else {
-
-      urlElement.textContent = base;
-      setMethod("POST");
-
+      urlElement.textContent = base
+      setMethod('GET')
     }
-
-  } else {
-
-    urlElement.textContent = `${base}/${encodeURIComponent(String(parsed))}`;
-    setMethod("GET");
-
+    else if (Object.values(parsed).every(v => typeof v !== 'object' || v === null)) {
+      urlElement.textContent = `${base}?${new URLSearchParams(parsed).toString()}`
+      setMethod('GET')
+    }
+    else {
+      urlElement.textContent = base
+      setMethod('POST')
+    }
   }
-
-};
+  else {
+    urlElement.textContent = `${base}/${encodeURIComponent(String(parsed))}`
+    setMethod('GET')
+  }
+}
 
 // Initialize the Remote UI when DOM is ready
 Remote.init = async function () {
-
   // Initialize socket connection
-  Remote.sendSocketNotification("REMOTE_CLIENT_CONNECTED");
-  Remote.getData("translations");
+  Remote.sendSocketNotification('REMOTE_CLIENT_CONNECTED')
+  Remote.getData('translations')
   // Menu rendering + setup deferred to onTranslationsLoaded()
 
   addEventListener(
-    "hashchange",
+    'hashchange',
     () => {
-
-      Remote.handleHashChange();
-
-    }
-  );
+      Remote.handleHashChange()
+    },
+  )
 
   // Register service worker for PWA support
-  if ("serviceWorker" in navigator) {
-
+  if ('serviceWorker' in navigator) {
     try {
-
       const registration = await navigator.serviceWorker.register(
-        "./remote-service-worker.js",
-        {"scope": "./"}
-      );
+        './remote-service-worker.js',
+        { scope: './' },
+      )
       console.log(
-        "Service Worker registered:",
-        registration
-      );
-
-    } catch (error) {
-
-      console.log(
-        "Service Worker registration failed:",
-        error
-      );
-
+        'Service Worker registered:',
+        registration,
+      )
     }
-
+    catch (error) {
+      console.log(
+        'Service Worker registration failed:',
+        error,
+      )
+    }
   }
 
   // Loading successful, remove error element
-  document.querySelector("#load-error")?.remove();
-
-};
+  document.querySelector('#load-error')?.remove()
+}

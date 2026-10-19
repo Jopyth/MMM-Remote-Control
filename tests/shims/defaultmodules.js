@@ -4,12 +4,12 @@
  */
 
 module.exports = [
-  "alert",
-  "updatenotification",
-  "clock",
-  "calendar",
-  "compliments",
-  "weather",
-  "newsfeed",
-  "helloworld"
-];
+  'alert',
+  'updatenotification',
+  'clock',
+  'calendar',
+  'compliments',
+  'weather',
+  'newsfeed',
+  'helloworld',
+]

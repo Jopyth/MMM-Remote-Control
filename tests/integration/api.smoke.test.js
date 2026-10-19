@@ -1,13 +1,13 @@
-const assert = require("node:assert/strict");
-const {describe, test, before, after} = require("node:test");
-const express = require("express");
-const path = require("node:path");
-const ModuleLib = require("node:module");
+const assert = require('node:assert/strict')
+const { describe, test, before, after } = require('node:test')
+const express = require('express')
+const path = require('node:path')
+const ModuleLib = require('node:module')
 
 // Ensure shims resolve like unit tests
-const shimDir = path.resolve(__dirname, "../shims");
-process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : "");
-if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
+const shimDir = path.resolve(__dirname, '../shims')
+process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : '')
+if (typeof ModuleLib._initPaths === 'function') ModuleLib._initPaths()
 
 /**
  * HTTP-layer smoke test for API endpoints.
@@ -42,35 +42,35 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
  * - Middleware execution
  */
 
-describe("API HTTP-Layer Smoke Tests", () => {
-  let server;
-  let port;
-  let baseUrl;
-  let mockContext;
-  const notifications = [];
+describe('API HTTP-Layer Smoke Tests', () => {
+  let server
+  let port
+  let baseUrl
+  let mockContext
+  const notifications = []
 
   before(async () => {
     // Mock MagicMirror globals
     globalThis.Module = {
       configDefaults: {},
-      _resolveFilename: require.resolve
-    };
+      _resolveFilename: require.resolve,
+    }
     globalThis.Log = {
       log: () => {},
       info: () => {},
       warn: () => {},
       error: () => {},
-      debug: () => {}
-    };
+      debug: () => {},
+    }
 
     // Setup minimal Express app
-    const app = express();
-    app.use(express.json());
-    app.use(express.urlencoded({extended: true}));
+    const app = express()
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }))
 
     // Load required modules
-    const apiModule = require("../../API/api.js");
-    const helperModule = require("../../node_helper.js");
+    const apiModule = require('../../API/api.js')
+    const helperModule = require('../../node_helper.js')
 
     // Create minimal context for API
     mockContext = {
@@ -79,22 +79,22 @@ describe("API HTTP-Layer Smoke Tests", () => {
       externalApiRoutes: {},
       moduleApiMenu: {},
       configData: {
-        moduleData: []
+        moduleData: [],
       },
       configOnHd: {
         modules: [
           {
-            module: "MMM-Remote-Control",
+            module: 'MMM-Remote-Control',
             config: {
               classes: {
-                "mode-test": {
-                  show: ["clock"],
-                  hide: ["calendar"]
-                }
-              }
-            }
-          }
-        ]
+                'mode-test': {
+                  show: ['clock'],
+                  hide: ['calendar'],
+                },
+              },
+            },
+          },
+        ],
       },
       thisConfig: {},
       initialized: true,
@@ -102,50 +102,51 @@ describe("API HTTP-Layer Smoke Tests", () => {
       secureEndpoints: false,
 
       // Capture socket notifications
-      sendSocketNotification (what, payload) {
-        notifications.push({what, payload});
+      sendSocketNotification(what, payload) {
+        notifications.push({ what, payload })
       },
 
       // Minimal response handler
-      sendResponse (res, error, data) {
-        let response = {success: true};
-        let status = 200;
+      sendResponse(res, error, data) {
+        let response = { success: true }
+        let status = 200
         if (error) {
-          response = {success: false, status: "error", reason: "unknown", info: error};
-          status = 400;
+          response = { success: false, status: 'error', reason: 'unknown', info: error }
+          status = 400
         }
         if (data) {
-          response = {...response, ...data};
+          response = { ...response, ...data }
         }
-        res.status(status).json(response);
-        return !error;
+        res.status(status).json(response)
+        return !error
       },
 
-      requireLiveState (res, cb) {
+      requireLiveState(res, cb) {
         if (mockContext.initialized) {
-          cb();
-        } else {
-          mockContext.sendResponse(res, new Error("Not connected to frontend"));
+          cb()
+        }
+        else {
+          mockContext.sendResponse(res, new Error('Not connected to frontend'))
         }
       },
 
-      getApiKey () {
+      getApiKey() {
         // No API key for smoke test
       },
 
-      delayedQuery () {
+      delayedQuery() {
         // Stub - not tested in smoke
       },
 
-      executeQuery (query, res) {
-        mockContext.sendResponse(res, undefined, {query});
+      executeQuery(query, res) {
+        mockContext.sendResponse(res, undefined, { query })
       },
 
-      getExternalApiByGuessing () {
+      getExternalApiByGuessing() {
         // Stub - module API guessing not needed for smoke test
       },
 
-      updateModuleApiMenu () {
+      updateModuleApiMenu() {
         // Stub - menu update not needed for smoke test
       },
 
@@ -160,175 +161,176 @@ describe("API HTTP-Layer Smoke Tests", () => {
       // Bind API methods
       answerNotifyApi: apiModule.answerNotifyApi,
       answerModuleApi: apiModule.answerModuleApi,
-      resolveModuleApi: apiModule.resolveModuleApi
-    };
+      resolveModuleApi: apiModule.resolveModuleApi,
+    }
 
     // Bind all methods to context
-    mockContext.answerGet = mockContext.answerGet.bind(mockContext);
-    mockContext.handleGetModuleAvailable = mockContext.handleGetModuleAvailable.bind(mockContext);
-    mockContext.handleGetModuleInstalled = mockContext.handleGetModuleInstalled.bind(mockContext);
-    mockContext.getDataHandlers = mockContext.getDataHandlers.bind(mockContext);
-    mockContext.answerNotifyApi = mockContext.answerNotifyApi.bind(mockContext);
-    mockContext.answerModuleApi = mockContext.answerModuleApi.bind(mockContext);
-    mockContext.resolveModuleApi = mockContext.resolveModuleApi.bind(mockContext);
+    mockContext.answerGet = mockContext.answerGet.bind(mockContext)
+    mockContext.handleGetModuleAvailable = mockContext.handleGetModuleAvailable.bind(mockContext)
+    mockContext.handleGetModuleInstalled = mockContext.handleGetModuleInstalled.bind(mockContext)
+    mockContext.getDataHandlers = mockContext.getDataHandlers.bind(mockContext)
+    mockContext.answerNotifyApi = mockContext.answerNotifyApi.bind(mockContext)
+    mockContext.answerModuleApi = mockContext.answerModuleApi.bind(mockContext)
+    mockContext.resolveModuleApi = mockContext.resolveModuleApi.bind(mockContext)
 
     // Bind API methods to context
-    apiModule.createApiRoutes.call(mockContext);
-    app.use("/api", mockContext.expressRouter);
+    apiModule.createApiRoutes.call(mockContext)
+    app.use('/api', mockContext.expressRouter)
 
     // Start server on random port
     await new Promise((resolve) => {
       server = app.listen(0, () => {
-        port = server.address().port;
-        baseUrl = `http://localhost:${port}`;
-        resolve();
-      });
-    });
-  });
+        port = server.address().port
+        baseUrl = `http://localhost:${port}`
+        resolve()
+      })
+    })
+  })
 
   after((done) => {
     if (server) {
-      server.close(done);
-    } else {
-      done();
+      server.close(done)
     }
-  });
+    else {
+      done()
+    }
+  })
 
-  test("GET /api/test returns success", async () => {
-    const response = await fetch(`${baseUrl}/api/test`);
-    const data = await response.json();
+  test('GET /api/test returns success', async () => {
+    const response = await fetch(`${baseUrl}/api/test`)
+    const data = await response.json()
 
-    assert.equal(response.status, 200);
-    assert.equal(response.headers.get("content-type"), "application/json; charset=utf-8");
-    assert.equal(data.success, true);
-  });
+    assert.equal(response.status, 200)
+    assert.equal(response.headers.get('content-type'), 'application/json; charset=utf-8')
+    assert.equal(data.success, true)
+  })
 
-  test("POST /api/notification sends socket notification", async () => {
-    notifications.length = 0; // Clear previous
+  test('POST /api/notification sends socket notification', async () => {
+    notifications.length = 0 // Clear previous
 
     const response = await fetch(`${baseUrl}/api/notification/TEST_NOTIFICATION`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({foo: "bar"})
-    });
-    const data = await response.json();
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ foo: 'bar' }),
+    })
+    const data = await response.json()
 
-    assert.equal(response.status, 200);
-    assert.equal(data.success, true);
-    assert.equal(data.notification, "TEST_NOTIFICATION");
-    assert.deepEqual(data.payload, {foo: "bar"});
+    assert.equal(response.status, 200)
+    assert.equal(data.success, true)
+    assert.equal(data.notification, 'TEST_NOTIFICATION')
+    assert.deepEqual(data.payload, { foo: 'bar' })
 
     // Verify socket notification was captured
-    assert.equal(notifications.length, 1);
-    assert.equal(notifications[0].what, "NOTIFICATION");
-    assert.equal(notifications[0].payload.notification, "TEST_NOTIFICATION");
-  });
+    assert.equal(notifications.length, 1)
+    assert.equal(notifications[0].what, 'NOTIFICATION')
+    assert.equal(notifications[0].payload.notification, 'TEST_NOTIFICATION')
+  })
 
-  test("GET /api/notification/:notification/:p converts numeric strings to numbers", async () => {
-    notifications.length = 0; // Clear previous
+  test('GET /api/notification/:notification/:p converts numeric strings to numbers', async () => {
+    notifications.length = 0 // Clear previous
 
-    const response = await fetch(`${baseUrl}/api/notification/PAGE_SELECT/1`);
-    const data = await response.json();
+    const response = await fetch(`${baseUrl}/api/notification/PAGE_SELECT/1`)
+    const data = await response.json()
 
-    assert.equal(response.status, 200);
-    assert.equal(data.success, true);
-    assert.equal(data.notification, "PAGE_SELECT");
+    assert.equal(response.status, 200)
+    assert.equal(data.success, true)
+    assert.equal(data.notification, 'PAGE_SELECT')
     // The payload should be a number, not a string
-    assert.strictEqual(data.payload, 1);
-    assert.equal(typeof data.payload, "number");
+    assert.strictEqual(data.payload, 1)
+    assert.equal(typeof data.payload, 'number')
 
     // Verify socket notification received the numeric payload
-    assert.equal(notifications.length, 1);
-    assert.equal(notifications[0].payload.notification, "PAGE_SELECT");
-    assert.strictEqual(notifications[0].payload.payload, 1);
-  });
+    assert.equal(notifications.length, 1)
+    assert.equal(notifications[0].payload.notification, 'PAGE_SELECT')
+    assert.strictEqual(notifications[0].payload.payload, 1)
+  })
 
-  test("GET /api/notification/:notification/:p converts negative numeric strings to numbers", async () => {
-    notifications.length = 0; // Clear previous
+  test('GET /api/notification/:notification/:p converts negative numeric strings to numbers', async () => {
+    notifications.length = 0 // Clear previous
 
-    const response = await fetch(`${baseUrl}/api/notification/PAGE_SELECT/-1`);
-    const data = await response.json();
+    const response = await fetch(`${baseUrl}/api/notification/PAGE_SELECT/-1`)
+    const data = await response.json()
 
-    assert.equal(response.status, 200);
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    assert.equal(data.success, true)
     // The payload should be a number, not a string
-    assert.strictEqual(data.payload, -1);
-    assert.equal(typeof data.payload, "number");
+    assert.strictEqual(data.payload, -1)
+    assert.equal(typeof data.payload, 'number')
 
     // Verify socket notification received the numeric payload
-    assert.equal(notifications.length, 1);
-    assert.strictEqual(notifications[0].payload.payload, -1);
-  });
+    assert.equal(notifications.length, 1)
+    assert.strictEqual(notifications[0].payload.payload, -1)
+  })
 
-  test("GET /api/config returns config structure", async () => {
-    const response = await fetch(`${baseUrl}/api/config`);
-    const data = await response.json();
+  test('GET /api/config returns config structure', async () => {
+    const response = await fetch(`${baseUrl}/api/config`)
+    const data = await response.json()
 
-    assert.equal(response.status, 200);
-    assert.equal(data.success, true);
-    assert.equal(data.query.data, "config");
-    assert.equal(typeof data.data, "object");
-    assert.ok(Array.isArray(data.data.modules), "config should have modules array");
-  });
+    assert.equal(response.status, 200)
+    assert.equal(data.success, true)
+    assert.equal(data.query.data, 'config')
+    assert.equal(typeof data.data, 'object')
+    assert.ok(Array.isArray(data.data.modules), 'config should have modules array')
+  })
 
-  test("POST without Content-Type application/json returns 400", async () => {
+  test('POST without Content-Type application/json returns 400', async () => {
     const response = await fetch(`${baseUrl}/api/notification/TEST`, {
-      method: "POST",
-      headers: {"Content-Type": "text/plain"},
-      body: "invalid"
-    });
-    const data = await response.json();
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: 'invalid',
+    })
+    const data = await response.json()
 
-    assert.equal(response.status, 400);
-    assert.equal(data.success, false);
-    assert.match(data.message, /content-type/i);
-  });
+    assert.equal(response.status, 400)
+    assert.equal(data.success, false)
+    assert.match(data.message, /content-type/i)
+  })
 
-  test("GET /api/module/available returns sorted module list", async () => {
-    const response = await fetch(`${baseUrl}/api/module/available`);
-    const data = await response.json();
+  test('GET /api/module/available returns sorted module list', async () => {
+    const response = await fetch(`${baseUrl}/api/module/available`)
+    const data = await response.json()
 
-    assert.equal(response.status, 200);
-    assert.equal(data.success, true);
-    assert.ok(Array.isArray(data.data), "should return array of modules");
-  });
+    assert.equal(response.status, 200)
+    assert.equal(data.success, true)
+    assert.ok(Array.isArray(data.data), 'should return array of modules')
+  })
 
-  test("GET /api/classes/:value executes MANAGE_CLASSES for configured class", async () => {
-    const response = await fetch(`${baseUrl}/api/classes/mode-test`);
-    const data = await response.json();
+  test('GET /api/classes/:value executes MANAGE_CLASSES for configured class', async () => {
+    const response = await fetch(`${baseUrl}/api/classes/mode-test`)
+    const data = await response.json()
 
-    assert.equal(response.status, 200);
-    assert.equal(data.success, true);
-    assert.equal(data.query.action, "MANAGE_CLASSES");
-    assert.equal(data.query.payload.classes, "mode-test");
-  });
+    assert.equal(response.status, 200)
+    assert.equal(data.success, true)
+    assert.equal(data.query.action, 'MANAGE_CLASSES')
+    assert.equal(data.query.payload.classes, 'mode-test')
+  })
 
-  test("GET /api/classes/:value returns 400 for unknown class", async () => {
-    const response = await fetch(`${baseUrl}/api/classes/does-not-exist`);
-    const data = await response.json();
+  test('GET /api/classes/:value returns 400 for unknown class', async () => {
+    const response = await fetch(`${baseUrl}/api/classes/does-not-exist`)
+    const data = await response.json()
 
-    assert.equal(response.status, 400);
-    assert.equal(data.success, false);
-    assert.match(data.message, /Invalid value/i);
-  });
+    assert.equal(response.status, 400)
+    assert.equal(data.success, false)
+    assert.match(data.message, /Invalid value/i)
+  })
 
-  test("GET /api/classes/:value returns 400 when no classes are configured", async () => {
-    mockContext.configOnHd.modules[0].config = {};
+  test('GET /api/classes/:value returns 400 when no classes are configured', async () => {
+    mockContext.configOnHd.modules[0].config = {}
 
-    const response = await fetch(`${baseUrl}/api/classes/mode-test`);
-    const data = await response.json();
+    const response = await fetch(`${baseUrl}/api/classes/mode-test`)
+    const data = await response.json()
 
-    assert.equal(response.status, 400);
-    assert.equal(data.success, false);
-    assert.match(data.message, /No classes configured/i);
+    assert.equal(response.status, 400)
+    assert.equal(data.success, false)
+    assert.match(data.message, /No classes configured/i)
 
     mockContext.configOnHd.modules[0].config = {
       classes: {
-        "mode-test": {
-          show: ["clock"],
-          hide: ["calendar"]
-        }
-      }
-    };
-  });
-});
+        'mode-test': {
+          show: ['clock'],
+          hide: ['calendar'],
+        },
+      },
+    }
+  })
+})

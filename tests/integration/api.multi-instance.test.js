@@ -1,13 +1,13 @@
-const assert = require("node:assert/strict");
-const {describe, test, before, after} = require("node:test");
-const express = require("express");
-const path = require("node:path");
-const ModuleLib = require("node:module");
+const assert = require('node:assert/strict')
+const { describe, test, before, after } = require('node:test')
+const express = require('express')
+const path = require('node:path')
+const ModuleLib = require('node:module')
 
 // Ensure shims resolve like unit tests
-const shimDir = path.resolve(__dirname, "../shims");
-process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : "");
-if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
+const shimDir = path.resolve(__dirname, '../shims')
+process.env.NODE_PATH = shimDir + (process.env.NODE_PATH ? path.delimiter + process.env.NODE_PATH : '')
+if (typeof ModuleLib._initPaths === 'function') ModuleLib._initPaths()
 
 /**
  * Integration test for multi-instance module handling.
@@ -27,9 +27,9 @@ if (typeof ModuleLib._initPaths === "function") ModuleLib._initPaths();
  * @param {Array} notifications - Notifications array to capture socket notifications
  * @returns {object} Mock context object
  */
-function createMockContext (app, notifications) {
-  const apiModule = require("../../API/api.js");
-  const helperModule = require("../../node_helper.js");
+function createMockContext(app, notifications) {
+  const apiModule = require('../../API/api.js')
+  const helperModule = require('../../node_helper.js')
 
   const mockContext = {
     expressApp: app,
@@ -40,40 +40,40 @@ function createMockContext (app, notifications) {
       moduleData: [
         // Simulate two instances of MMM-MotionEye
         {
-          identifier: "module_0_MMM-MotionEye",
-          name: "MMM-MotionEye",
+          identifier: 'module_0_MMM-MotionEye',
+          name: 'MMM-MotionEye',
           index: 0,
-          hidden: false
+          hidden: false,
         },
         {
-          identifier: "module_1_MMM-MotionEye",
-          name: "MMM-MotionEye",
+          identifier: 'module_1_MMM-MotionEye',
+          name: 'MMM-MotionEye',
           index: 1,
-          hidden: false
+          hidden: false,
         },
         // Simulate three instances of MMM-homeassistant-sensors
         {
-          identifier: "module_2_MMM-homeassistant-sensors",
-          name: "MMM-homeassistant-sensors",
+          identifier: 'module_2_MMM-homeassistant-sensors',
+          name: 'MMM-homeassistant-sensors',
           index: 0,
-          hidden: false
+          hidden: false,
         },
         {
-          identifier: "module_3_MMM-homeassistant-sensors",
-          name: "MMM-homeassistant-sensors",
+          identifier: 'module_3_MMM-homeassistant-sensors',
+          name: 'MMM-homeassistant-sensors',
           index: 1,
-          hidden: false
+          hidden: false,
         },
         {
-          identifier: "module_4_MMM-homeassistant-sensors",
-          name: "MMM-homeassistant-sensors",
+          identifier: 'module_4_MMM-homeassistant-sensors',
+          name: 'MMM-homeassistant-sensors',
           index: 2,
-          hidden: false
-        }
-      ]
+          hidden: false,
+        },
+      ],
     },
     configOnHd: {
-      modules: []
+      modules: [],
     },
     thisConfig: {},
     initialized: true,
@@ -81,8 +81,8 @@ function createMockContext (app, notifications) {
     secureEndpoints: false,
 
     // Capture socket notifications
-    sendSocketNotification (what, payload) {
-      notifications.push({what, payload});
+    sendSocketNotification(what, payload) {
+      notifications.push({ what, payload })
     },
 
     // Bind helper methods
@@ -107,252 +107,253 @@ function createMockContext (app, notifications) {
     answerModuleApi: apiModule.answerModuleApi,
     mergeData: apiModule.mergeData,
 
-    getApiKey () {
+    getApiKey() {
       // No API key for test
     },
 
-    delayedQuery () {
+    delayedQuery() {
       // Stub - not tested
     },
 
-    getExternalApiByGuessing () {
+    getExternalApiByGuessing() {
       // Stub - module API guessing not needed for test
     },
 
-    updateModuleApiMenu () {
+    updateModuleApiMenu() {
       // Stub - menu update not needed for test
-    }
-  };
+    },
+  }
 
   // Bind all methods to context
-  mockContext.answerGet = mockContext.answerGet.bind(mockContext);
-  mockContext.handleGetModuleAvailable = mockContext.handleGetModuleAvailable.bind(mockContext);
-  mockContext.handleGetModuleInstalled = mockContext.handleGetModuleInstalled.bind(mockContext);
-  mockContext.getDataHandlers = mockContext.getDataHandlers.bind(mockContext);
-  mockContext.sendResponse = mockContext.sendResponse.bind(mockContext);
-  mockContext.getActionHandlers = mockContext.getActionHandlers.bind(mockContext);
-  mockContext.executeQuery = mockContext.executeQuery.bind(mockContext);
-  mockContext.handleSimpleSocketNotification = mockContext.handleSimpleSocketNotification.bind(mockContext);
-  mockContext.handleSimpleValueNotification = mockContext.handleSimpleValueNotification.bind(mockContext);
-  mockContext.handleSimpleNotification = mockContext.handleSimpleNotification.bind(mockContext);
-  mockContext.checkDelay = mockContext.checkDelay.bind(mockContext);
-  mockContext.answerNotifyApi = mockContext.answerNotifyApi.bind(mockContext);
-  mockContext.answerModuleApi = mockContext.answerModuleApi.bind(mockContext);
-  mockContext.resolveModuleApi = mockContext.resolveModuleApi.bind(mockContext);
-  mockContext.mergeData = mockContext.mergeData.bind(mockContext);
+  mockContext.answerGet = mockContext.answerGet.bind(mockContext)
+  mockContext.handleGetModuleAvailable = mockContext.handleGetModuleAvailable.bind(mockContext)
+  mockContext.handleGetModuleInstalled = mockContext.handleGetModuleInstalled.bind(mockContext)
+  mockContext.getDataHandlers = mockContext.getDataHandlers.bind(mockContext)
+  mockContext.sendResponse = mockContext.sendResponse.bind(mockContext)
+  mockContext.getActionHandlers = mockContext.getActionHandlers.bind(mockContext)
+  mockContext.executeQuery = mockContext.executeQuery.bind(mockContext)
+  mockContext.handleSimpleSocketNotification = mockContext.handleSimpleSocketNotification.bind(mockContext)
+  mockContext.handleSimpleValueNotification = mockContext.handleSimpleValueNotification.bind(mockContext)
+  mockContext.handleSimpleNotification = mockContext.handleSimpleNotification.bind(mockContext)
+  mockContext.checkDelay = mockContext.checkDelay.bind(mockContext)
+  mockContext.answerNotifyApi = mockContext.answerNotifyApi.bind(mockContext)
+  mockContext.answerModuleApi = mockContext.answerModuleApi.bind(mockContext)
+  mockContext.resolveModuleApi = mockContext.resolveModuleApi.bind(mockContext)
+  mockContext.mergeData = mockContext.mergeData.bind(mockContext)
 
-  return mockContext;
+  return mockContext
 }
 
-describe("API Multi-Instance Module Tests", () => {
-  let server;
-  let port;
-  let baseUrl;
-  const notifications = [];
-  let mockContext;
+describe('API Multi-Instance Module Tests', () => {
+  let server
+  let port
+  let baseUrl
+  const notifications = []
+  let mockContext
 
   before(async () => {
     // Mock MagicMirror globals
     globalThis.Module = {
       configDefaults: {},
-      _resolveFilename: require.resolve
-    };
+      _resolveFilename: require.resolve,
+    }
     globalThis.Log = {
       log: () => {},
       info: () => {},
       warn: () => {},
       error: () => {},
-      debug: () => {}
-    };
+      debug: () => {},
+    }
 
     // Setup minimal Express app
-    const app = express();
-    app.use(express.json());
-    app.use(express.urlencoded({extended: true}));
+    const app = express()
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }))
 
     // Create mock context
-    const apiModule = require("../../API/api.js");
-    mockContext = createMockContext(app, notifications);
+    const apiModule = require('../../API/api.js')
+    mockContext = createMockContext(app, notifications)
 
     // Bind API routes
-    apiModule.createApiRoutes.call(mockContext);
-    app.use("/api", mockContext.expressRouter);
+    apiModule.createApiRoutes.call(mockContext)
+    app.use('/api', mockContext.expressRouter)
 
     // Start server on random port
     await new Promise((resolve) => {
       server = app.listen(0, () => {
-        port = server.address().port;
-        baseUrl = `http://localhost:${port}`;
-        resolve();
-      });
-    });
-  });
+        port = server.address().port
+        baseUrl = `http://localhost:${port}`
+        resolve()
+      })
+    })
+  })
 
   after((done) => {
     if (server) {
-      server.close(done);
-    } else {
-      done();
+      server.close(done)
     }
-  });
+    else {
+      done()
+    }
+  })
 
-  test("SHOW on multi-instance module should not throw 'headers already sent' error", async () => {
-    notifications.length = 0;
+  test('SHOW on multi-instance module should not throw \'headers already sent\' error', async () => {
+    notifications.length = 0
 
     const response = await fetch(`${baseUrl}/api/module/MMM-MotionEye/SHOW`, {
-      method: "GET"
-    });
+      method: 'GET',
+    })
 
     // Should not throw error
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should send notification for both instances
-    const showNotifications = notifications.filter((n) => n.what === "SHOW");
-    assert.equal(showNotifications.length, 2, "Should send SHOW notification for both instances");
-    assert.equal(showNotifications[0].payload.module, "module_0_MMM-MotionEye");
-    assert.equal(showNotifications[1].payload.module, "module_1_MMM-MotionEye");
-  });
+    const showNotifications = notifications.filter(n => n.what === 'SHOW')
+    assert.equal(showNotifications.length, 2, 'Should send SHOW notification for both instances')
+    assert.equal(showNotifications[0].payload.module, 'module_0_MMM-MotionEye')
+    assert.equal(showNotifications[1].payload.module, 'module_1_MMM-MotionEye')
+  })
 
-  test("HIDE on multi-instance module should not throw 'headers already sent' error", async () => {
-    notifications.length = 0;
+  test('HIDE on multi-instance module should not throw \'headers already sent\' error', async () => {
+    notifications.length = 0
 
     const response = await fetch(`${baseUrl}/api/module/MMM-homeassistant-sensors/HIDE`, {
-      method: "GET"
-    });
+      method: 'GET',
+    })
 
     // Should not throw error
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should send notification for all three instances
-    const hideNotifications = notifications.filter((n) => n.what === "HIDE");
-    assert.equal(hideNotifications.length, 3, "Should send HIDE notification for all three instances");
-    assert.equal(hideNotifications[0].payload.module, "module_2_MMM-homeassistant-sensors");
-    assert.equal(hideNotifications[1].payload.module, "module_3_MMM-homeassistant-sensors");
-    assert.equal(hideNotifications[2].payload.module, "module_4_MMM-homeassistant-sensors");
-  });
+    const hideNotifications = notifications.filter(n => n.what === 'HIDE')
+    assert.equal(hideNotifications.length, 3, 'Should send HIDE notification for all three instances')
+    assert.equal(hideNotifications[0].payload.module, 'module_2_MMM-homeassistant-sensors')
+    assert.equal(hideNotifications[1].payload.module, 'module_3_MMM-homeassistant-sensors')
+    assert.equal(hideNotifications[2].payload.module, 'module_4_MMM-homeassistant-sensors')
+  })
 
-  test("TOGGLE on multi-instance module should not throw 'headers already sent' error", async () => {
-    notifications.length = 0;
+  test('TOGGLE on multi-instance module should not throw \'headers already sent\' error', async () => {
+    notifications.length = 0
 
     const response = await fetch(`${baseUrl}/api/module/MMM-MotionEye/TOGGLE`, {
-      method: "POST"
-    });
+      method: 'POST',
+    })
 
     // Should not throw error
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should send notification for both instances
-    const toggleNotifications = notifications.filter((n) => n.what === "TOGGLE");
-    assert.equal(toggleNotifications.length, 2, "Should send TOGGLE notification for both instances");
-  });
+    const toggleNotifications = notifications.filter(n => n.what === 'TOGGLE')
+    assert.equal(toggleNotifications.length, 2, 'Should send TOGGLE notification for both instances')
+  })
 
-  test("FORCE (SHOW with force flag) on multi-instance module should not throw error", async () => {
-    notifications.length = 0;
+  test('FORCE (SHOW with force flag) on multi-instance module should not throw error', async () => {
+    notifications.length = 0
 
     const response = await fetch(`${baseUrl}/api/module/MMM-homeassistant-sensors/FORCE`, {
-      method: "GET"
-    });
+      method: 'GET',
+    })
 
     // Should not throw error
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should send SHOW notification with force flag for all three instances
-    const showNotifications = notifications.filter((n) => n.what === "SHOW");
-    assert.equal(showNotifications.length, 3, "Should send SHOW notification for all three instances");
-    assert.equal(showNotifications[0].payload.force, true);
-    assert.equal(showNotifications[1].payload.force, true);
-    assert.equal(showNotifications[2].payload.force, true);
-  });
+    const showNotifications = notifications.filter(n => n.what === 'SHOW')
+    assert.equal(showNotifications.length, 3, 'Should send SHOW notification for all three instances')
+    assert.equal(showNotifications[0].payload.force, true)
+    assert.equal(showNotifications[1].payload.force, true)
+    assert.equal(showNotifications[2].payload.force, true)
+  })
 
-  test("Single instance module should work normally", async () => {
+  test('Single instance module should work normally', async () => {
     // Add a single instance module to configData
-    const originalModuleData = mockContext.configData.moduleData;
+    const originalModuleData = mockContext.configData.moduleData
     mockContext.configData.moduleData = [
       ...originalModuleData,
       {
-        identifier: "module_5_clock",
-        name: "clock",
+        identifier: 'module_5_clock',
+        name: 'clock',
         index: 0,
-        hidden: false
-      }
-    ];
+        hidden: false,
+      },
+    ]
 
-    notifications.length = 0;
+    notifications.length = 0
 
     const response = await fetch(`${baseUrl}/api/module/clock/SHOW`, {
-      method: "GET"
-    });
+      method: 'GET',
+    })
 
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should send notification for single instance
-    const showNotifications = notifications.filter((n) => n.what === "SHOW");
-    assert.ok(showNotifications.length > 0, "Should send SHOW notification for clock module");
+    const showNotifications = notifications.filter(n => n.what === 'SHOW')
+    assert.ok(showNotifications.length > 0, 'Should send SHOW notification for clock module')
 
     // Restore original moduleData
-    mockContext.configData.moduleData = originalModuleData;
-  });
+    mockContext.configData.moduleData = originalModuleData
+  })
 
-  test("SHOW on specific module instance by identifier should only affect that instance", async () => {
-    notifications.length = 0;
+  test('SHOW on specific module instance by identifier should only affect that instance', async () => {
+    notifications.length = 0
 
     // Call SHOW on module_0_MMM-MotionEye specifically
     const response = await fetch(`${baseUrl}/api/module/module_0_MMM-MotionEye/SHOW`, {
-      method: "GET"
-    });
+      method: 'GET',
+    })
 
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should only send notification for module_0_MMM-MotionEye, not module_1_MMM-MotionEye
-    const showNotifications = notifications.filter((n) => n.what === "SHOW");
-    assert.equal(showNotifications.length, 1, "Should send SHOW notification for only one instance");
-    assert.equal(showNotifications[0].payload.module, "module_0_MMM-MotionEye");
-  });
+    const showNotifications = notifications.filter(n => n.what === 'SHOW')
+    assert.equal(showNotifications.length, 1, 'Should send SHOW notification for only one instance')
+    assert.equal(showNotifications[0].payload.module, 'module_0_MMM-MotionEye')
+  })
 
-  test("HIDE on specific module instance by number_name format should only affect that instance", async () => {
-    notifications.length = 0;
+  test('HIDE on specific module instance by number_name format should only affect that instance', async () => {
+    notifications.length = 0
 
     // Call HIDE on module_3_MMM-homeassistant-sensors specifically (the middle one of three)
     const response = await fetch(`${baseUrl}/api/module/module_3_MMM-homeassistant-sensors/HIDE`, {
-      method: "GET"
-    });
+      method: 'GET',
+    })
 
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should only send notification for module_3, not module_2 or module_4
-    const hideNotifications = notifications.filter((n) => n.what === "HIDE");
-    assert.equal(hideNotifications.length, 1, "Should send HIDE notification for only one instance");
-    assert.equal(hideNotifications[0].payload.module, "module_3_MMM-homeassistant-sensors");
-  });
+    const hideNotifications = notifications.filter(n => n.what === 'HIDE')
+    assert.equal(hideNotifications.length, 1, 'Should send HIDE notification for only one instance')
+    assert.equal(hideNotifications[0].payload.module, 'module_3_MMM-homeassistant-sensors')
+  })
 
-  test("SHOW by exact module name matches all instances (backwards compatibility)", async () => {
-    notifications.length = 0;
+  test('SHOW by exact module name matches all instances (backwards compatibility)', async () => {
+    notifications.length = 0
 
     // Call SHOW with just the module name "MMM-MotionEye" should affect both instances
     const response = await fetch(`${baseUrl}/api/module/MMM-MotionEye/SHOW`, {
-      method: "GET"
-    });
+      method: 'GET',
+    })
 
-    assert.equal(response.status, 200);
-    const data = await response.json();
-    assert.equal(data.success, true);
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.success, true)
 
     // Should send notification for both MMM-MotionEye instances (backwards compatible behavior)
-    const showNotifications = notifications.filter((n) => n.what === "SHOW");
-    assert.equal(showNotifications.length, 2, "Should send SHOW notification for all instances when using module name");
-  });
-});
+    const showNotifications = notifications.filter(n => n.what === 'SHOW')
+    assert.equal(showNotifications.length, 2, 'Should send SHOW notification for all instances when using module name')
+  })
+})

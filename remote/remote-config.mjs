@@ -1,4 +1,4 @@
-import {Remote} from "./remote.mjs";
+import { Remote } from './remote.mjs'
 
 /**
  * Config editor methods for MMM-Remote-Control.
@@ -8,1034 +8,839 @@ Object.assign(
   Remote,
   {
 
-    recreateConfigElement (key, previousType, newType) {
-
-      const input = document.getElementById(key);
-      const oldGUI = previousType === "array" || previousType === "object"
+    recreateConfigElement(key, previousType, newType) {
+      const input = document.getElementById(key)
+      const oldGUI = previousType === 'array' || previousType === 'object'
         ? input
-        : input.parentNode;
-      const path = key.split("/"),
-        name = path.at(-1);
+        : input.parentNode
+      const path = key.split('/'),
+        name = path.at(-1)
 
-      let current = this.currentConfig;
+      let current = this.currentConfig
       for (let index = 1; index < path.length - 1; index++) {
-
-        current = current[path[index]];
-
+        current = current[path[index]]
       }
       const initialValue = this.values[this.types.indexOf(newType)],
         newGUI = this.createObjectGUI(
           key,
           name,
-          initialValue
-        );
-      oldGUI.replaceWith(newGUI);
-
+          initialValue,
+        )
+      oldGUI.replaceWith(newGUI)
     },
 
-    createTypeEditSelection (key, parent, type, oldElement) {
-
+    createTypeEditSelection(key, parent, type, oldElement) {
       const previousType = type.toLowerCase(),
-        select = document.createElement("select");
+        select = document.createElement('select')
       for (const typeOption of this.types) {
-
-        const option = document.createElement("option");
-        option.textContent = typeOption;
-        option.value = typeOption;
+        const option = document.createElement('option')
+        option.textContent = typeOption
+        option.value = typeOption
         if (typeOption === type) {
-
-          option.selected = true;
-
+          option.selected = true
         }
-        select.append(option);
-
+        select.append(option)
       }
       select.addEventListener(
-        "change",
+        'change',
         () => {
-
-          const newType = select.options[select.selectedIndex].getHTML().toLowerCase();
+          const newType = select.options[select.selectedIndex].getHTML().toLowerCase()
           if (previousType === newType) {
-
-            select.replaceWith(oldElement);
-
-          } else {
-
+            select.replaceWith(oldElement)
+          }
+          else {
             this.recreateConfigElement(
               key,
               previousType,
-              newType
-            );
-
+              newType,
+            )
           }
-
         },
-        {capture: false}
-      );
+        { capture: false },
+      )
       select.addEventListener(
-        "blur",
+        'blur',
         () => {
-
-          select.replaceWith(oldElement);
-
+          select.replaceWith(oldElement)
         },
-        {capture: false}
-      );
-      return select;
-
+        { capture: false },
+      )
+      return select
     },
 
-    createConfigLabel (key, name, type, forcedType, symbol = "fa-tag") {
-
-      if (name.at(0) === "#") {
-
-        symbol = "fa-hashtag";
-        name = name.slice(1);
-
+    createConfigLabel(key, name, type, forcedType, symbol = 'fa-tag') {
+      if (name.at(0) === '#') {
+        symbol = 'fa-hashtag'
+        name = name.slice(1)
       }
-      const label = document.createElement("label");
-      label.htmlFor = key;
-      label.className = "config-label";
+      const label = document.createElement('label')
+      label.htmlFor = key
+      label.className = 'config-label'
       const desc = Remote.createSymbolText(
         `fa fa-fw ${symbol}`,
         name,
         false,
-        "span"
-      );
-      desc.className = "label-name";
-      label.append(desc);
+        'span',
+      )
+      desc.className = 'label-name'
+      label.append(desc)
 
       if (!forcedType) {
-
         const typeLabel = Remote.createSymbolText(
-          "fa fa-fw fa-pencil",
+          'fa fa-fw fa-pencil',
           type,
           (event) => {
-
-            const thisElement = event.currentTarget;
+            const thisElement = event.currentTarget
             label.replaceChild(
               this.createTypeEditSelection(
                 key,
                 label,
                 type,
-                thisElement
+                thisElement,
               ),
-              thisElement
-            );
-
+              thisElement,
+            )
           },
-          "span"
-        );
-        typeLabel.classList.add("module-remove");
-        label.append(typeLabel);
+          'span',
+        )
+        typeLabel.classList.add('module-remove')
+        label.append(typeLabel)
 
         const remove = Remote.createSymbolText(
-          "fa fa-fw fa-times-circle",
-          this.translate("REMOVE"),
+          'fa fa-fw fa-times-circle',
+          this.translate('REMOVE'),
           (event) => {
-
-            const thisElement = event.currentTarget;
-            let elementToRemove = thisElement.parentNode;
-            if (type === "array" || type === "object") {
-
-              elementToRemove = elementToRemove.parentNode;
-
+            const thisElement = event.currentTarget
+            let elementToRemove = thisElement.parentNode
+            if (type === 'array' || type === 'object') {
+              elementToRemove = elementToRemove.parentNode
             }
-            elementToRemove.remove();
-
+            elementToRemove.remove()
           },
-          "span"
-        );
-        remove.classList.add("module-remove");
-        label.append(remove);
-
+          'span',
+        )
+        remove.classList.add('module-remove')
+        label.append(remove)
       }
-      return label;
-
+      return label
     },
 
-    createConfigInput (key, value, omitValue, element = "input") {
-
-      const input = document.createElement(element);
-      input.className = "config-input";
+    createConfigInput(key, value, omitValue, element = 'input') {
+      const input = document.createElement(element)
+      input.className = 'config-input'
       if (!omitValue) {
-
-        input.value = value;
-
+        input.value = value
       }
-      input.id = key;
-      return input;
-
+      input.id = key
+      return input
     },
 
-    createVisualCheckbox (key, wrapper, input, className) {
-
-      const visualCheckbox = document.createElement("span");
-      visualCheckbox.className = `visual-checkbox fa fa-fw ${className}`;
-      wrapper.append(visualCheckbox);
-
+    createVisualCheckbox(key, wrapper, input, className) {
+      const visualCheckbox = document.createElement('span')
+      visualCheckbox.className = `visual-checkbox fa fa-fw ${className}`
+      wrapper.append(visualCheckbox)
     },
 
-    createConfigElement (type) {
-
-      const makeDisabledInput = (typeName) => (key, name, value, type, forcedType) => {
-
+    createConfigElement(type) {
+      const makeDisabledInput = typeName => (key, name, value, type, forcedType) => {
         const label = this.createConfigLabel(
             key,
             name,
             type,
-            forcedType
+            forcedType,
           ),
           input = this.createConfigInput(
             key,
-            value
-          );
-        input.type = "text";
-        input.disabled = "disabled";
+            value,
+          )
+        input.type = 'text'
+        input.disabled = 'disabled'
         input.classList.add(
-          "disabled",
-          typeName
-        );
-        input.placeholder = typeName;
-        label.append(input);
-        return label;
-
-      };
+          'disabled',
+          typeName,
+        )
+        input.placeholder = typeName
+        label.append(input)
+        return label
+      }
       return {
-        "string": (key, name, value, type, forcedType) => {
-
+        string: (key, name, value, type, forcedType) => {
           const label = this.createConfigLabel(
               key,
               name,
               type,
-              forcedType
+              forcedType,
             ),
             input = this.createConfigInput(
               key,
-              value
-            );
-          input.type = "text";
-          label.append(input);
-          if (key === "<root>/header") {
-
-            input.placeholder = this.translate("NO_HEADER");
-
+              value,
+            )
+          input.type = 'text'
+          label.append(input)
+          if (key === '<root>/header') {
+            input.placeholder = this.translate('NO_HEADER')
           }
-          return label;
-
+          return label
         },
-        "number": (key, name, value, type, forcedType) => {
-
+        number: (key, name, value, type, forcedType) => {
           const label = this.createConfigLabel(
               key,
               name,
               type,
-              forcedType
+              forcedType,
             ),
             input = this.createConfigInput(
               key,
-              value
-            );
-          input.type = "number";
+              value,
+            )
+          input.type = 'number'
           if (value % 1 !== 0) {
-
-            input.step = 0.01;
-
+            input.step = 0.01
           }
-          label.append(input);
-          return label;
-
+          label.append(input)
+          return label
         },
-        "boolean": (key, name, value, type, forcedType) => {
-
+        boolean: (key, name, value, type, forcedType) => {
           const label = this.createConfigLabel(
               key,
               name,
               type,
-              forcedType
+              forcedType,
             ),
 
             input = this.createConfigInput(
               key,
               value,
-              true
-            );
-          input.type = "checkbox";
-          label.append(input);
+              true,
+            )
+          input.type = 'checkbox'
+          label.append(input)
           if (value) {
-
-            input.checked = true;
-
+            input.checked = true
           }
 
           this.createVisualCheckbox(
             key,
             label,
             input,
-            "fa-check-square-o",
-            false
-          );
+            'fa-check-square-o',
+            false,
+          )
           this.createVisualCheckbox(
             key,
             label,
             input,
-            "fa-square-o",
-            true
-          );
-          return label;
-
+            'fa-square-o',
+            true,
+          )
+          return label
         },
-        "undefined": makeDisabledInput("undefined"),
-        "null": makeDisabledInput("null"),
-        "position": (key, name, value, type, forcedType) => {
-
+        undefined: makeDisabledInput('undefined'),
+        null: makeDisabledInput('null'),
+        position: (key, name, value, type, forcedType) => {
           const label = this.createConfigLabel(
               key,
               name,
               type,
-              forcedType
+              forcedType,
             ),
             select = this.createConfigInput(
               key,
               value,
               false,
-              "select"
-            );
-          select.className = "config-input";
-          select.id = key;
+              'select',
+            )
+          select.className = 'config-input'
+          select.id = key
           for (const position of this.validPositions) {
-
-            const option = document.createElement("option");
-            option.value = position;
+            const option = document.createElement('option')
+            option.value = position
             option.textContent = position
               ? this.formatPosition(position)
-              : this.translate("NO_POSITION");
+              : this.translate('NO_POSITION')
             if (position === value) {
-
-              option.selected = true;
-
+              option.selected = true
             }
-            select.append(option);
-
+            select.append(option)
           }
-          label.append(select);
-          return label;
-
-        }
-      }[type];
-
+          label.append(select)
+          return label
+        },
+      }[type]
     },
 
-    getTypeAsString (dataToEdit, path) {
-
-      let type = typeof dataToEdit;
-      type = path === "<root>/position"
-        ? "position"
-        : type;
+    getTypeAsString(dataToEdit, path) {
+      let type = typeof dataToEdit
+      type = path === '<root>/position'
+        ? 'position'
+        : type
       if (this.createConfigElement(type)) {
-
-        return type;
-
+        return type
       }
       if (Array.isArray(dataToEdit)) {
-
-        return "array";
-
+        return 'array'
       }
       if (dataToEdit === null) {
-
-        return "null";
-
+        return 'null'
       }
-      return dataToEdit === undefined ? "undefined" : "object";
-
+      return dataToEdit === undefined ? 'undefined' : 'object'
     },
 
-    hasForcedType (path) {
-
-      return (path.match(/\//g) || []).length === 1;
-
+    hasForcedType(path) {
+      return (path.match(/\//g) || []).length === 1
     },
 
-    createObjectGUI (path, name, dataToEdit) {
-
+    createObjectGUI(path, name, dataToEdit) {
       const type = this.getTypeAsString(
           dataToEdit,
-          path
+          path,
         ),
         forcedType = this.hasForcedType(path),
-        leafElement = this.createConfigElement(type);
+        leafElement = this.createConfigElement(type)
       if (leafElement) {
-
         // Recursion stop
         return leafElement(
           path,
           name,
           dataToEdit,
           type,
-          forcedType
-        );
-
+          forcedType,
+        )
       }
 
       // Object and array
-      const wrapper = document.createElement("div");
-      wrapper.id = path;
-      wrapper.className = `indent config-input ${type}`;
-      if (type === "array") {
-
+      const wrapper = document.createElement('div')
+      wrapper.id = path
+      wrapper.className = `indent config-input ${type}`
+      if (type === 'array') {
         // Array
         const add = this.createSymbolText(
-          "fa fa-fw fa-plus",
-          this.translate("ADD_ENTRY")
-        );
+          'fa fa-fw fa-plus',
+          this.translate('ADD_ENTRY'),
+        )
         add.classList.add(
-          "bottom-spacing",
-          "button"
-        );
+          'bottom-spacing',
+          'button',
+        )
         wrapper.append(this.createConfigLabel(
           path,
           name,
           type,
           forcedType,
-          "fa-list-ol"
-        ));
-        wrapper.append(add);
+          'fa-list-ol',
+        ))
+        wrapper.append(add)
         for (const [index, item] of dataToEdit.entries()) {
-
-          const newName = `#${index}`;
+          const newName = `#${index}`
           wrapper.append(this.createObjectGUI(
             `${path}/${newName}`,
             newName,
-            item
-          ));
-
+            item,
+          ))
         }
         add.addEventListener(
-          "click",
+          'click',
           () => {
-
             const lastIndex = dataToEdit.length - 1,
               lastType = this.getTypeAsString(
                 `${path}/#${lastIndex}`,
-                dataToEdit[lastIndex]
-              );
-            dataToEdit.push(this.values[this.types.indexOf(lastType)]);
-            const nextName = `#${lastIndex + 1}`;
+                dataToEdit[lastIndex],
+              )
+            dataToEdit.push(this.values[this.types.indexOf(lastType)])
+            const nextName = `#${lastIndex + 1}`
             wrapper.append(this.createObjectGUI(
               `${path}/${nextName}`,
               nextName,
-              dataToEdit.at(-1)
-            ));
-
+              dataToEdit.at(-1),
+            ))
           },
-          {capture: false}
-        );
-        return wrapper;
-
+          { capture: false },
+        )
+        return wrapper
       }
 
       // Object
-      if (path !== "<root>") {
-
+      if (path !== '<root>') {
         wrapper.append(this.createConfigLabel(
           path,
           name,
           type,
           forcedType,
-          "fa-list-ul"
-        ));
+          'fa-list-ul',
+        ))
 
         const addElement = this.createConfigLabel(
           `${path}/<add>`,
-          this.translate("ADD_ENTRY"),
+          this.translate('ADD_ENTRY'),
           type,
           true,
-          "fa-plus"
-        );
-        addElement.classList.add("bottom-spacing");
-        const inputWrapper = document.createElement("div");
-        inputWrapper.className = "add-input-wrapper";
+          'fa-plus',
+        )
+        addElement.classList.add('bottom-spacing')
+        const inputWrapper = document.createElement('div')
+        inputWrapper.className = 'add-input-wrapper'
         const input = this.createConfigInput(
           `${path}/<add>`,
-          ""
-        );
-        input.type = "text";
-        input.placeholder = this.translate("NEW_ENTRY_NAME");
-        addElement.append(inputWrapper);
-        inputWrapper.append(input);
+          '',
+        )
+        input.type = 'text'
+        input.placeholder = this.translate('NEW_ENTRY_NAME')
+        addElement.append(inputWrapper)
+        inputWrapper.append(input)
         const addFunction = () => {
-
             const existingKey = Object.keys(dataToEdit)[0],
               lastType = this.getTypeAsString(
                 `${path}/${existingKey}`,
-                dataToEdit[existingKey]
+                dataToEdit[existingKey],
               ),
-              key = input.value.trim();
+              key = input.value.trim()
 
             if (!key || document.getElementById(`${path}/${key}`)) {
-
-              input.classList.add("input-error");
-              return;
-
+              input.classList.add('input-error')
+              return
             }
 
-            input.classList.remove("input-error");
-            dataToEdit[key] = this.values[this.types.indexOf(lastType)];
+            input.classList.remove('input-error')
+            dataToEdit[key] = this.values[this.types.indexOf(lastType)]
             const newElement = this.createObjectGUI(
               `${path}/${key}`,
               key,
-              dataToEdit[key]
-            );
-            addElement.after(newElement);
-            input.value = "";
-
+              dataToEdit[key],
+            )
+            addElement.after(newElement)
+            input.value = ''
           },
-          symbol = document.createElement("span");
-        symbol.className = "fa fa-fw fa-plus-square button";
+          symbol = document.createElement('span')
+        symbol.className = 'fa fa-fw fa-plus-square button'
         symbol.addEventListener(
-          "click",
+          'click',
           addFunction,
-          {capture: false}
-        );
-        inputWrapper.append(symbol);
+          { capture: false },
+        )
+        inputWrapper.append(symbol)
         input.addEventListener(
-          "keydown",
+          'keydown',
           (event) => {
-
-            if (event.key !== "Enter") {
-              return;
+            if (event.key !== 'Enter') {
+              return
             }
 
-
-            event.preventDefault();
-            addFunction();
-
-
-          }
-        );
-        wrapper.append(addElement);
-
+            event.preventDefault()
+            addFunction()
+          },
+        )
+        wrapper.append(addElement)
       }
-      let keys = Object.keys(dataToEdit);
-      if (path === "<root>") {
-
+      let keys = Object.keys(dataToEdit)
+      if (path === '<root>') {
         keys = [
-          "module",
-          "disabled",
-          "position",
-          "header",
-          "config"
-        ];
-
+          'module',
+          'disabled',
+          'position',
+          'header',
+          'config',
+        ]
       }
       for (const key of keys) {
-
         if (Object.hasOwn(
           dataToEdit,
-          key
+          key,
         )) {
-
           wrapper.append(this.createObjectGUI(
             `${path}/${key}`,
             key,
-            dataToEdit[key]
-          ));
-
+            dataToEdit[key],
+          ))
         }
-
       }
-      if (path === "<root>") {
-
+      if (path === '<root>') {
         // Additional css classes on root element
-        wrapper.className = "flex-fill small";
-
+        wrapper.className = 'flex-fill small'
       }
-      return wrapper;
-
+      return wrapper
     },
 
-    appendConfigMenu (index, wrapper) {
-
-      const menuDiv = document.createElement("div");
-      menuDiv.className = "fixed-size sub-menu";
+    appendConfigMenu(index, wrapper) {
+      const menuDiv = document.createElement('div')
+      menuDiv.className = 'fixed-size sub-menu'
 
       const help = this.createSymbolText(
-        "fa fa-fw fa-question-circle",
-        this.translate("HELP"),
+        'fa fa-fw fa-question-circle',
+        this.translate('HELP'),
         () => {
-
           window.open(
             `config-help.html?module=${this.currentConfig.module}`,
-            "_blank"
-          );
-
-        }
-      );
-      menuDiv.append(help);
+            '_blank',
+          )
+        },
+      )
+      menuDiv.append(help)
       const undo = this.createSymbolText(
-        "fa fa-fw fa-undo",
-        this.translate("RESET"),
+        'fa fa-fw fa-undo',
+        this.translate('RESET'),
         () => {
-
-          this.createConfigPopup(index);
-
-        }
-      );
-      menuDiv.append(undo);
+          this.createConfigPopup(index)
+        },
+      )
+      menuDiv.append(undo)
       const save = this.createSymbolText(
-        "fa fa-fw fa-save",
-        this.translate("SAVE"),
+        'fa fa-fw fa-save',
+        this.translate('SAVE'),
         () => {
-
-          this.savedData.config.modules[index] = this.getModuleConfigFromUI();
-          this.changedModules.push(index);
-          const parent = document.getElementById(`edit-module-${index}`).parentNode;
+          this.savedData.config.modules[index] = this.getModuleConfigFromUI()
+          this.changedModules.push(index)
+          const parent = document.getElementById(`edit-module-${index}`).parentNode
           if (parent.childElementCount === 2) {
-
-            const secondChild = parent.firstElementChild?.nextElementSibling;
+            const secondChild = parent.firstElementChild?.nextElementSibling
 
             parent.insertBefore(
               this.createChangedWarning(),
-              secondChild
-            );
-
+              secondChild,
+            )
           }
-          this.closePopup();
+          this.closePopup()
+        },
+      )
+      menuDiv.append(save)
 
-        }
-      );
-      menuDiv.append(save);
-
-      wrapper.append(menuDiv);
-
+      wrapper.append(menuDiv)
     },
 
-    setValue (parent, name, value) {
-
-      if (name.includes("#")) {
-
-        parent.push(value);
-
-      } else {
-
-        parent[name] = value;
-
+    setValue(parent, name, value) {
+      if (name.includes('#')) {
+        parent.push(value)
       }
-
+      else {
+        parent[name] = value
+      }
     },
 
-    navigate (parent, name) {
-
-      return name.includes("#") ? parent.at(-1) : parent[name];
-
+    navigate(parent, name) {
+      return name.includes('#') ? parent.at(-1) : parent[name]
     },
 
-    getModuleConfigFromUI () {
-
+    getModuleConfigFromUI() {
       const rootElement = {},
-        elements = [...document.querySelectorAll(".config-input")];
+        elements = [...document.querySelectorAll('.config-input')]
       for (const element of elements) {
-
         const path = element.id,
-          splitPath = path.split("/");
-        let parent = rootElement;
+          splitPath = path.split('/')
+        let parent = rootElement
         for (let k = 1; k < splitPath.length - 1; k++) {
-
           parent = this.navigate(
             parent,
-            splitPath[k]
-          );
-
+            splitPath[k],
+          )
         }
-        const name = splitPath.at(-1);
-        if (element.classList.contains("null")) {
-
+        const name = splitPath.at(-1)
+        if (element.classList.contains('null')) {
           this.setValue(
             parent,
             name,
-            null
-          );
-          continue;
-
+            null,
+          )
+          continue
         }
-        if (element.classList.contains("undefined")) {
-
+        if (element.classList.contains('undefined')) {
           this.setValue(
             parent,
             name,
-            undefined
-          );
-          continue;
-
+            undefined,
+          )
+          continue
         }
-        if (element.classList.contains("array")) {
-
+        if (element.classList.contains('array')) {
           this.setValue(
             parent,
             name,
-            []
-          );
-          continue;
-
+            [],
+          )
+          continue
         }
-        if (element.classList.contains("object")) {
-
+        if (element.classList.contains('object')) {
           this.setValue(
             parent,
             name,
-            {}
-          );
-          continue;
-
+            {},
+          )
+          continue
         }
 
-        let {value} = element;
-        if (name === "<add>" || path === "<root>/position" && value === "") {
-
-          continue;
-
+        let { value } = element
+        if (name === '<add>' || (path === '<root>/position' && value === '')) {
+          continue
         }
-        if (element.type === "checkbox") {
-
-          value = element.checked;
-
-        } else if (element.type === "number") {
-
-          value = Number(value);
-
+        if (element.type === 'checkbox') {
+          value = element.checked
+        }
+        else if (element.type === 'number') {
+          value = Number(value)
         }
         this.setValue(
           parent,
           name,
-          value
-        );
-
+          value,
+        )
       }
-      return rootElement;
-
+      return rootElement
     },
 
-    createConfigPopup (index) {
-
-      if (typeof index === "string") {
-
-        index = Number.parseInt(index);
-
+    createConfigPopup(index) {
+      if (typeof index === 'string') {
+        index = Number.parseInt(index)
       }
 
       const moduleData = this.savedData.config.modules,
-        data = moduleData[index];
+        data = moduleData[index]
 
-      this.currentConfig = data;
-      if (!("header" in this.currentConfig)) {
-
-        this.currentConfig.header = "";
-
+      this.currentConfig = data
+      if (!('header' in this.currentConfig)) {
+        this.currentConfig.header = ''
       }
-      if (!("position" in this.currentConfig)) {
-
-        this.currentConfig.position = "";
-
+      if (!('position' in this.currentConfig)) {
+        this.currentConfig.position = ''
       }
 
-      const wrapper = this.getPopupContent();
+      const wrapper = this.getPopupContent()
 
-      const title = document.createElement("div"),
-        subtitle = document.createElement("div");
-      title.className = "bright title medium";
-      title.textContent = data.module ?? "";
-      subtitle.className = "subtitle xsmall dimmed";
-      subtitle.textContent = `${data.module ?? ""} (#${index + 1})`;
+      const title = document.createElement('div'),
+        subtitle = document.createElement('div')
+      title.className = 'bright title medium'
+      title.textContent = data.module ?? ''
+      subtitle.className = 'subtitle xsmall dimmed'
+      subtitle.textContent = `${data.module ?? ''} (#${index + 1})`
       wrapper.append(
         title,
-        subtitle
-      );
+        subtitle,
+      )
 
       this.appendConfigMenu(
         index,
-        wrapper
-      );
+        wrapper,
+      )
 
       wrapper.append(this.createObjectGUI(
-        "<root>",
-        "",
-        this.currentConfig
-      ));
+        '<root>',
+        '',
+        this.currentConfig,
+      ))
 
       // Disable input for module name
-      const moduleInput = document.getElementById("<root>/module");
-      moduleInput.disabled = true;
-      moduleInput.classList.add("disabled");
+      const moduleInput = document.getElementById('<root>/module')
+      moduleInput.disabled = true
+      moduleInput.classList.add('disabled')
 
-      this.showPopup();
-
+      this.showPopup()
     },
 
-    createChangedWarning () {
-
+    createChangedWarning() {
       const changed = Remote.createSymbolText(
-        "fa fa-fw fa-warning",
-        this.translate("UNSAVED_CHANGES"),
+        'fa fa-fw fa-warning',
+        this.translate('UNSAVED_CHANGES'),
         () => {
-
-          const saveButton = document.querySelector("#save-config");
-          if (!saveButton.classList.contains("highlight")) {
-
-            saveButton.classList.add("highlight");
-
+          const saveButton = document.querySelector('#save-config')
+          if (!saveButton.classList.contains('highlight')) {
+            saveButton.classList.add('highlight')
           }
-
         },
-        "span"
-      );
-      changed.classList.add("module-remove");
-      return changed;
-
+        'span',
+      )
+      changed.classList.add('module-remove')
+      return changed
     },
 
-    async appendModuleEditElements (wrapper, moduleData) {
-
+    async appendModuleEditElements(wrapper, moduleData) {
       for (const [index, data] of moduleData.entries()) {
-
-        const moduleLine = document.createElement("div"),
-          moduleName = document.createElement("div"),
-          moduleButtons = document.createElement("div");
-        moduleLine.className = "module-line";
-        moduleLine.dataset.moduleIndex = index;
-        moduleName.className = "module-name";
-        moduleName.textContent = data.module ?? "";
-        moduleButtons.className = "module-buttons";
+        const moduleLine = document.createElement('div'),
+          moduleName = document.createElement('div'),
+          moduleButtons = document.createElement('div')
+        moduleLine.className = 'module-line'
+        moduleLine.dataset.moduleIndex = index
+        moduleName.className = 'module-name'
+        moduleName.textContent = data.module ?? ''
+        moduleButtons.className = 'module-buttons'
         moduleLine.append(
           moduleName,
-          moduleButtons
-        );
-        wrapper.append(moduleLine);
+          moduleButtons,
+        )
+        wrapper.append(moduleLine)
 
-        const buttonsContainer = wrapper.lastElementChild.querySelector(".module-buttons");
+        const buttonsContainer = wrapper.lastElementChild.querySelector('.module-buttons')
 
-        const url = await this.getModuleUrl(data.module);
+        const url = await this.getModuleUrl(data.module)
         if (url) {
-
-          const repoButton = this.createSymbolText(
-            "fa fa-fw fa-github",
-            this.translate("REPOSITORY"),
+          const repositoryButton = this.createSymbolText(
+            'fa fa-fw fa-github',
+            this.translate('REPOSITORY'),
             () => {
-
               window.open(
                 url,
-                "_blank"
-              );
-
+                '_blank',
+              )
             },
-            "span"
-          );
-          repoButton.className = "button";
+            'span',
+          )
+          repositoryButton.className = 'button'
           buttonsContainer.insertBefore(
-            repoButton,
-            buttonsContainer.firstChild
-          );
-
+            repositoryButton,
+            buttonsContainer.firstChild,
+          )
         }
 
         const editButton = this.createSymbolText(
-          "fa fa-fw fa-pencil",
-          this.translate("EDIT"),
+          'fa fa-fw fa-pencil',
+          this.translate('EDIT'),
           (event) => {
-
-            const index_ = event.currentTarget.closest(".module-line").dataset.moduleIndex;
-            this.createConfigPopup(index_);
-
+            const index_ = event.currentTarget.closest('.module-line').dataset.moduleIndex
+            this.createConfigPopup(index_)
           },
-          "span"
-        );
-        editButton.id = `edit-module-${index}`;
-        buttonsContainer.append(editButton);
+          'span',
+        )
+        editButton.id = `edit-module-${index}`
+        buttonsContainer.append(editButton)
 
         if (this.changedModules.includes(index)) {
-
-          buttonsContainer.append(this.createChangedWarning());
-
+          buttonsContainer.append(this.createChangedWarning())
         }
 
         const remove = Remote.createSymbolText(
-          "fa fa-fw fa-times-circle",
-          this.translate("REMOVE"),
+          'fa fa-fw fa-times-circle',
+          this.translate('REMOVE'),
           (event) => {
-
-            const line = event.currentTarget.closest(".module-line");
-            this.deletedModules.push(Number.parseInt(line.dataset.moduleIndex));
-            line.remove();
-
+            const line = event.currentTarget.closest('.module-line')
+            this.deletedModules.push(Number.parseInt(line.dataset.moduleIndex))
+            line.remove()
           },
-          "span"
-        );
-        remove.classList.add("module-remove");
-        buttonsContainer.append(remove);
-
+          'span',
+        )
+        remove.classList.add('module-remove')
+        buttonsContainer.append(remove)
       }
-
     },
 
-    async loadConfigModules () {
-
-      this.changedModules = [];
+    async loadConfigModules() {
+      this.changedModules = []
 
       try {
-
-        const {"data": configData} = await this.loadList(
-            "config-modules",
-            "config"
+        const { 'data': configData } = await this.loadList(
+            'config-modules',
+            'config',
           ),
-          parent = document.querySelector("#config-modules-results"),
-          moduleData = configData.modules;
+          parent = document.querySelector('#config-modules-results'),
+          moduleData = configData.modules
         if (this.addModule) {
-
-          const name = this.addModule;
+          const name = this.addModule
           // We came here from adding a module
           try {
-
             const response = await this.get(
-                "get",
-                `data=defaultConfig&module=${name}`
+                'get',
+                `data=defaultConfig&module=${name}`,
               ),
-              newData = JSON.parse(response);
-            moduleData.push({"module": name, "config": newData.data});
-            const index = moduleData.length - 1;
-            this.changedModules.push(index);
+              newData = JSON.parse(response)
+            moduleData.push({ module: name, config: newData.data })
+            const index = moduleData.length - 1
+            this.changedModules.push(index)
             this.appendModuleEditElements(
               parent,
-              moduleData
-            );
-            this.createConfigPopup(index);
-
-          } catch (error) {
-
-            console.error(
-              "Error loading default config:",
-              error
-            );
-
+              moduleData,
+            )
+            this.createConfigPopup(index)
           }
-          this.addModule = "";
-
-        } else {
-
+          catch (error) {
+            console.error(
+              'Error loading default config:',
+              error,
+            )
+          }
+          this.addModule = ''
+        }
+        else {
           this.appendModuleEditElements(
             parent,
-            moduleData
-          );
-
+            moduleData,
+          )
         }
-
-      } catch (error) {
-
+      }
+      catch (error) {
         console.error(
-          "Error loading config modules:",
-          error
-        );
-
+          'Error loading config modules:',
+          error,
+        )
       }
-
     },
 
-    restoreConfigMenu () {
-
+    restoreConfigMenu() {
       if (this.saving) {
-
-        return;
-
+        return
       }
-      const restoreButton = document.querySelector("#restore-config");
-      restoreButton.classList.remove("highlight");
-      this.setStatus("loading");
-      this.getData("saves");
-
+      const restoreButton = document.querySelector('#restore-config')
+      restoreButton.classList.remove('highlight')
+      this.setStatus('loading')
+      this.getData('saves')
     },
 
-    handleRestoreConfigMenu (result) {
-
+    handleRestoreConfigMenu(result) {
       if (result.success) {
-
-        const dates = {};
+        const dates = {}
         for (const dateValue of result.data) {
-          const dateLabel = String(new Date(dateValue));
+          const dateLabel = String(new Date(dateValue))
 
           dates[dateLabel] = () => {
-
-            this.restoreConfig(dateValue);
-
-          };
-
+            this.restoreConfig(dateValue)
+          }
         }
         this.offerOptions(
-          this.translate("RESTORE"),
-          dates
-        );
-
-      } else {
-
-        this.setStatus("error");
-
+          this.translate('RESTORE'),
+          dates,
+        )
       }
-
+      else {
+        this.setStatus('error')
+      }
     },
 
-    restoreConfig (date) {
-
+    restoreConfig(date) {
       // Prevent saving before current saving is finished
       if (this.saving) {
-
-        return;
-
+        return
       }
-      this.saving = true;
-      this.setStatus("loading");
+      this.saving = true
+      this.setStatus('loading')
 
       this.sendSocketNotification(
-        "UNDO_CONFIG",
-        date
-      );
-
+        'UNDO_CONFIG',
+        date,
+      )
     },
 
-    saveConfig () {
-
+    saveConfig() {
       // Prevent saving before current saving is finished
       if (this.saving) {
-
-        return;
-
+        return
       }
-      const saveButton = document.querySelector("#save-config");
-      saveButton.classList.remove("highlight");
-      this.saving = true;
-      this.setStatus("loading");
-      const configData = this.savedData.config;
-      configData.modules = configData.modules.filter((_, index) => !this.deletedModules.includes(index));
-      this.deletedModules = [];
+      const saveButton = document.querySelector('#save-config')
+      saveButton.classList.remove('highlight')
+      this.saving = true
+      this.setStatus('loading')
+      const configData = this.savedData.config
+      configData.modules = configData.modules.filter((_, index) => !this.deletedModules.includes(index))
+      this.deletedModules = []
       this.sendSocketNotification(
-        "NEW_CONFIG",
-        configData
-      );
-
+        'NEW_CONFIG',
+        configData,
+      )
     },
 
-    handleSaveConfig (result) {
-
+    handleSaveConfig(result) {
       if (result.success) {
-
-        this.offerReload(this.translate("DONE"));
-
-      } else {
-
-        this.setStatus("error");
-
+        this.offerReload(this.translate('DONE'))
       }
-      this.saving = false;
-      this.loadConfigModules();
+      else {
+        this.setStatus('error')
+      }
+      this.saving = false
+      this.loadConfigModules()
+    },
 
-    }
-
-  }
-);
+  },
+)

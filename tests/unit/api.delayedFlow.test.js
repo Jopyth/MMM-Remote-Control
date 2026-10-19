@@ -1,45 +1,45 @@
-const assert = require("node:assert/strict");
-const {test, describe} = require("node:test");
+const assert = require('node:assert/strict')
+const { test, describe } = require('node:test')
 
-const apiModule = require("../../API/api.js");
+const apiModule = require('../../API/api.js')
 
-function makeContext (overrides = {}) {
+function makeContext(overrides = {}) {
   return {
-    configOnHd: {modules: []},
+    configOnHd: { modules: [] },
     externalApiRoutes: {},
     moduleApiMenu: {},
     translation: {},
     sendSocketNotification: () => {},
     sendResponse: () => {},
     checkDelay: apiModule.checkDelay,
-    translate: (s) => s,
+    translate: s => s,
     delayedQuery: () => {},
     thisConfig: {},
-    ...overrides
-  };
+    ...overrides,
+  }
 }
 
-describe("Delayed flow (/delay)", () => {
-  test("answerNotifyApi wraps query into DELAYED and preserves payload", () => {
-    const captured = {};
+describe('Delayed flow (/delay)', () => {
+  test('answerNotifyApi wraps query into DELAYED and preserves payload', () => {
+    const captured = {}
     const context = makeContext({
-      delayedQuery: (query) => { captured.query = query; }
-    });
-    const answerNotifyApi = apiModule.answerNotifyApi.bind(context);
+      delayedQuery: (query) => { captured.query = query },
+    })
+    const answerNotifyApi = apiModule.answerNotifyApi.bind(context)
 
     const request = {
-      method: "GET",
-      params: {notification: "HELLO", delayed: "delay"},
-      query: {did: "ID1", timeout: 5}
-    };
-    const res = {json: () => {}};
+      method: 'GET',
+      params: { notification: 'HELLO', delayed: 'delay' },
+      query: { did: 'ID1', timeout: 5 },
+    }
+    const res = { json: () => {} }
 
-    answerNotifyApi(request, res);
+    answerNotifyApi(request, res)
 
-    assert.equal(captured.query.action, "DELAYED");
-    assert.equal(captured.query.did, "ID1");
-    assert.equal(captured.query.timeout, 5);
-    assert.equal(captured.query.query.action, "NOTIFICATION");
-    assert.equal(captured.query.query.notification, "HELLO");
-  });
-});
+    assert.equal(captured.query.action, 'DELAYED')
+    assert.equal(captured.query.did, 'ID1')
+    assert.equal(captured.query.timeout, 5)
+    assert.equal(captured.query.query.action, 'NOTIFICATION')
+    assert.equal(captured.query.query.notification, 'HELLO')
+  })
+})

@@ -1,436 +1,445 @@
-const {test, describe, before} = require("node:test");
-const assert = require("node:assert/strict");
+const { test, describe, before } = require('node:test')
+const assert = require('node:assert/strict')
 
 const buildMenu = (id, text) => ({
   id,
-  type: "menu",
+  type: 'menu',
   text,
-  icon: "window-restore",
-  items: [{id: `${id}-item`, type: "item", action: "NOTIFICATION", content: {notification: "TEST"}}]
-});
+  icon: 'window-restore',
+  items: [{ id: `${id}-item`, type: 'item', action: 'NOTIFICATION', content: { notification: 'TEST' } }],
+})
 
-const countButtons = (id) => [...document.querySelectorAll("[id]")].filter((element) => element.id === `${id}-button`).length;
+const countButtons = id => [...document.querySelectorAll('[id]')].filter(element => element.id === `${id}-button`).length
 
-describe("remote.js DOM smoke tests", () => {
-  let Remote;
+describe('remote.js DOM smoke tests', () => {
+  let Remote
 
   before(async () => {
-    const {setupRemote} = await import("./setup.mjs");
-    Remote = await setupRemote();
-  });
+    const { setupRemote } = await import('./setup.mjs')
+    Remote = await setupRemote()
+  })
 
-  test("Remote object is defined with expected structure", () => {
-    assert.ok(Remote, "Remote object should exist");
-    assert.equal(Remote.name, "MMM-Remote-Control");
-    assert.ok(Array.isArray(Remote.types));
-    assert.ok(Array.isArray(Remote.validPositions));
-  });
+  test('Remote object is defined with expected structure', () => {
+    assert.ok(Remote, 'Remote object should exist')
+    assert.equal(Remote.name, 'MMM-Remote-Control')
+    assert.ok(Array.isArray(Remote.types))
+    assert.ok(Array.isArray(Remote.validPositions))
+  })
 
-  test("Remote has expected configuration properties", () => {
-    assert.equal(typeof Remote.currentMenu, "string");
-    assert.equal(Remote.currentMenu, "main-menu");
-    assert.equal(Remote.autoHideDelay, 2000);
-    assert.equal(Remote.autoHideDelayError, 30 * 1000);
-    assert.equal(Remote.autoHideDelayInfo, 30 * 1000);
-  });
+  test('Remote has expected configuration properties', () => {
+    assert.equal(typeof Remote.currentMenu, 'string')
+    assert.equal(Remote.currentMenu, 'main-menu')
+    assert.equal(Remote.autoHideDelay, 2000)
+    assert.equal(Remote.autoHideDelayError, 30 * 1000)
+    assert.equal(Remote.autoHideDelayInfo, 30 * 1000)
+  })
 
-  test("validPositions contains expected MagicMirror positions", () => {
+  test('validPositions contains expected MagicMirror positions', () => {
     const expectedPositions = [
-      "top_left",
-      "top_center",
-      "top_right",
-      "middle_center",
-      "bottom_left",
-      "bottom_center",
-      "bottom_right"
-    ];
+      'top_left',
+      'top_center',
+      'top_right',
+      'middle_center',
+      'bottom_left',
+      'bottom_center',
+      'bottom_right',
+    ]
 
     for (const pos of expectedPositions) {
       assert.ok(
         Remote.validPositions.includes(pos),
-        `validPositions should include ${pos}`
-      );
+        `validPositions should include ${pos}`,
+      )
     }
-  });
+  })
 
-  test("types array contains JavaScript type names", () => {
-    const expected = ["string", "number", "boolean", "array", "object", "null", "undefined"];
-    assert.deepStrictEqual([...Remote.types], expected);
-  });
+  test('types array contains JavaScript type names', () => {
+    const expected = ['string', 'number', 'boolean', 'array', 'object', 'null', 'undefined']
+    assert.deepStrictEqual([...Remote.types], expected)
+  })
 
-  test("values array matches types array structure", () => {
-    assert.equal(Remote.values.length, Remote.types.length);
-    assert.equal(typeof Remote.values[0], "string"); // string default
-    assert.equal(typeof Remote.values[1], "number"); // number default
-    assert.equal(typeof Remote.values[2], "boolean"); // boolean default
-  });
+  test('values array matches types array structure', () => {
+    assert.equal(Remote.values.length, Remote.types.length)
+    assert.equal(typeof Remote.values[0], 'string') // string default
+    assert.equal(typeof Remote.values[1], 'number') // number default
+    assert.equal(typeof Remote.values[2], 'boolean') // boolean default
+  })
 
-  test("socket() creates and returns MMSocket instance", () => {
-    const socket = Remote.socket();
-    assert.ok(socket, "socket() should return an instance");
-    assert.equal(socket.name, "MMM-Remote-Control");
-    assert.equal(typeof socket.setNotificationCallback, "function");
-  });
+  test('socket() creates and returns MMSocket instance', () => {
+    const socket = Remote.socket()
+    assert.ok(socket, 'socket() should return an instance')
+    assert.equal(socket.name, 'MMM-Remote-Control')
+    assert.equal(typeof socket.setNotificationCallback, 'function')
+  })
 
-  test("socket() returns same instance on subsequent calls (singleton)", () => {
-    const socket1 = Remote.socket();
-    const socket2 = Remote.socket();
-    assert.strictEqual(socket1, socket2, "Should return same socket instance");
-  });
+  test('socket() returns same instance on subsequent calls (singleton)', () => {
+    const socket1 = Remote.socket()
+    const socket2 = Remote.socket()
+    assert.strictEqual(socket1, socket2, 'Should return same socket instance')
+  })
 
-  test("sendSocketNotification calls socket.sendNotification", () => {
-    let capturedNotification = null;
-    let capturedPayload = null;
+  test('sendSocketNotification calls socket.sendNotification', () => {
+    let capturedNotification = null
+    let capturedPayload = null
 
     Remote._socket = {
       sendNotification: (notification, payload) => {
-        capturedNotification = notification;
-        capturedPayload = payload;
+        capturedNotification = notification
+        capturedPayload = payload
       },
-      setNotificationCallback: () => {}
-    };
+      setNotificationCallback: () => {},
+    }
 
-    Remote.sendSocketNotification("TEST_ACTION", {data: "test"});
+    Remote.sendSocketNotification('TEST_ACTION', { data: 'test' })
 
-    assert.equal(capturedNotification, "TEST_ACTION");
-    assert.deepEqual(capturedPayload, {data: "test"});
-  });
+    assert.equal(capturedNotification, 'TEST_ACTION')
+    assert.deepEqual(capturedPayload, { data: 'test' })
+  })
 
-  test("socketNotificationReceived handles REMOTE_ACTION_RESULT", () => {
+  test('socketNotificationReceived handles REMOTE_ACTION_RESULT', () => {
     // Just verify it doesn't throw with valid payload structure
     assert.doesNotThrow(() => {
-      Remote.socketNotificationReceived("REMOTE_ACTION_RESULT", {
-        action: "UNKNOWN",
-        query: {data: "test"},
-        data: {}
-      });
-    });
-  });
+      Remote.socketNotificationReceived('REMOTE_ACTION_RESULT', {
+        action: 'UNKNOWN',
+        query: { data: 'test' },
+        data: {},
+      })
+    })
+  })
 
-  test("createDynamicMenu replaces old nested menu entries", () => {
+  test('createDynamicMenu replaces old nested menu entries', () => {
     document.body.innerHTML = `
       <div id="back-button"></div>
       <section class="menu-content"></section>
       <div id="alert-button"></div>
-    `;
+    `
 
     const guessedMenu = {
-      id: "module-control",
-      type: "menu",
-      text: "Module Controls",
-      icon: "window-restore",
+      id: 'module-control',
+      type: 'menu',
+      text: 'Module Controls',
+      icon: 'window-restore',
       items: [
         {
-          id: "mc-pages",
-          type: "menu",
-          text: "MMM-pages",
-          icon: "bars",
-          items: [{id: "mc-pages-pagechanged", type: "item", action: "NOTIFICATION", content: {notification: "PAGE_CHANGED"}}]
-        }
-      ]
-    };
+          id: 'mc-pages',
+          type: 'menu',
+          text: 'MMM-pages',
+          icon: 'bars',
+          items: [{ id: 'mc-pages-pagechanged', type: 'item', action: 'NOTIFICATION', content: { notification: 'PAGE_CHANGED' } }],
+        },
+      ],
+    }
 
     const explicitMenu = {
-      id: "module-control",
-      type: "menu",
-      text: "Module Controls",
-      icon: "window-restore",
+      id: 'module-control',
+      type: 'menu',
+      text: 'Module Controls',
+      icon: 'window-restore',
       items: [
         {
-          id: "mc-pages",
-          type: "menu",
-          text: "MMM-pages",
-          icon: "bars",
-          items: [{id: "mc-pages-next", type: "item", action: "NOTIFICATION", content: {notification: "PAGE_INCREMENT"}}]
-        }
-      ]
-    };
+          id: 'mc-pages',
+          type: 'menu',
+          text: 'MMM-pages',
+          icon: 'bars',
+          items: [{ id: 'mc-pages-next', type: 'item', action: 'NOTIFICATION', content: { notification: 'PAGE_INCREMENT' } }],
+        },
+      ],
+    }
 
-    Remote.createDynamicMenu(guessedMenu);
-    Remote.createDynamicMenu(explicitMenu);
+    Remote.createDynamicMenu(guessedMenu)
+    Remote.createDynamicMenu(explicitMenu)
 
     // Top-level menu button is present in DOM
-    assert.ok(document.querySelector("#module-control-button"));
+    assert.ok(document.querySelector('#module-control-button'))
     // Nested items are NOT pre-rendered (lazy rendering: loaded on navigation)
-    assert.equal(document.querySelector("#mc-pages-button"), null);
-    assert.equal(document.querySelector("#mc-pages-pagechanged-button"), null);
-    assert.equal(document.querySelector("#mc-pages-next-button"), null);
+    assert.equal(document.querySelector('#mc-pages-button'), null)
+    assert.equal(document.querySelector('#mc-pages-pagechanged-button'), null)
+    assert.equal(document.querySelector('#mc-pages-next-button'), null)
     // Data structure holds the latest (explicit) menu content
-    assert.equal(Remote.dynamicMenus["module-control"].items[0].items[0].id, "mc-pages-next");
-  });
+    assert.equal(Remote.dynamicMenus['module-control'].items[0].items[0].id, 'mc-pages-next')
+  })
 
-  test("injectDynamicMenuButtons renders each queued menu only once", () => {
+  test('injectDynamicMenuButtons renders each queued menu only once', () => {
     document.body.innerHTML = `
       <nav class="menu-nav"><div id="alert-button"></div></nav>
-    `;
+    `
 
     const originalCurrentMenu = Remote.currentMenu,
       originalPendingMenus = Remote.pendingDynamicMenus,
-      originalDynamicMenus = Remote.dynamicMenus;
+      originalDynamicMenus = Remote.dynamicMenus
 
-    Remote.currentMenu = "classes-menu";
-    Remote.pendingDynamicMenus = [];
-    Remote.dynamicMenus = {};
+    Remote.currentMenu = 'classes-menu'
+    Remote.pendingDynamicMenus = []
+    Remote.dynamicMenus = {}
 
     try {
       // Menus arriving while the main menu is not rendered are queued
-      Remote.createDynamicMenu(buildMenu("custom", "My Custom Menu"));
-      Remote.createDynamicMenu(buildMenu("module-control", "Module Controls"));
+      Remote.createDynamicMenu(buildMenu('custom', 'My Custom Menu'))
+      Remote.createDynamicMenu(buildMenu('module-control', 'Module Controls'))
 
-      Remote.injectDynamicMenuButtons();
+      Remote.injectDynamicMenuButtons()
 
-      assert.equal(countButtons("custom"), 1);
-      assert.equal(countButtons("module-control"), 1);
-      assert.equal(Remote.pendingDynamicMenus.length, 0);
+      assert.equal(countButtons('custom'), 1)
+      assert.equal(countButtons('module-control'), 1)
+      assert.equal(Remote.pendingDynamicMenus.length, 0)
 
       // Rendering again must not duplicate buttons either
-      Remote.injectDynamicMenuButtons();
-      assert.equal(countButtons("custom"), 1);
-      assert.equal(countButtons("module-control"), 1);
-    } finally {
-      Remote.currentMenu = originalCurrentMenu;
-      Remote.pendingDynamicMenus = originalPendingMenus;
-      Remote.dynamicMenus = originalDynamicMenus;
+      Remote.injectDynamicMenuButtons()
+      assert.equal(countButtons('custom'), 1)
+      assert.equal(countButtons('module-control'), 1)
     }
-  });
+    finally {
+      Remote.currentMenu = originalCurrentMenu
+      Remote.pendingDynamicMenus = originalPendingMenus
+      Remote.dynamicMenus = originalDynamicMenus
+    }
+  })
 
-  test("createDynamicMenu re-renders active dynamic submenu hash", () => {
-    document.body.replaceChildren();
+  test('createDynamicMenu re-renders active dynamic submenu hash', () => {
+    document.body.replaceChildren()
 
     const originalCurrentMenu = Remote.currentMenu,
       originalPendingMenus = Remote.pendingDynamicMenus,
       originalDynamicMenus = Remote.dynamicMenus,
       originalShowMenu = Remote.showMenu,
-      originalHash = location.hash;
+      originalHash = location.hash
 
-    let renderedMenu;
-    Remote.currentMenu = "mc-pages-menu";
-    Remote.pendingDynamicMenus = [];
-    Remote.dynamicMenus = {};
+    let renderedMenu
+    Remote.currentMenu = 'mc-pages-menu'
+    Remote.pendingDynamicMenus = []
+    Remote.dynamicMenus = {}
     Remote.showMenu = (menuName) => {
-      renderedMenu = menuName;
-    };
-    location.hash = "#mc-pages-menu";
+      renderedMenu = menuName
+    }
+    location.hash = '#mc-pages-menu'
 
     const moduleControlMenu = {
-      id: "module-control",
-      type: "menu",
-      text: "Module Controls",
-      icon: "window-restore",
+      id: 'module-control',
+      type: 'menu',
+      text: 'Module Controls',
+      icon: 'window-restore',
       items: [
         {
-          id: "mc-pages",
-          type: "menu",
-          text: "MMM-pages",
-          icon: "bars",
-          items: [{id: "mc-pages-next", type: "item", action: "NOTIFICATION", content: {notification: "PAGE_INCREMENT"}}]
-        }
-      ]
-    };
+          id: 'mc-pages',
+          type: 'menu',
+          text: 'MMM-pages',
+          icon: 'bars',
+          items: [{ id: 'mc-pages-next', type: 'item', action: 'NOTIFICATION', content: { notification: 'PAGE_INCREMENT' } }],
+        },
+      ],
+    }
 
     try {
-      Remote.createDynamicMenu(moduleControlMenu);
+      Remote.createDynamicMenu(moduleControlMenu)
 
-      assert.equal(renderedMenu, "mc-pages-menu");
-      assert.equal(Remote.dynamicMenus["module-control"].id, "module-control");
-      assert.equal(Remote.pendingDynamicMenus.length, 1);
-      assert.equal(location.hash, "#mc-pages-menu");
-    } finally {
-      Remote.currentMenu = originalCurrentMenu;
-      Remote.pendingDynamicMenus = originalPendingMenus;
-      Remote.dynamicMenus = originalDynamicMenus;
-      Remote.showMenu = originalShowMenu;
-      location.hash = originalHash;
+      assert.equal(renderedMenu, 'mc-pages-menu')
+      assert.equal(Remote.dynamicMenus['module-control'].id, 'module-control')
+      assert.equal(Remote.pendingDynamicMenus.length, 1)
+      assert.equal(location.hash, '#mc-pages-menu')
     }
-  });
+    finally {
+      Remote.currentMenu = originalCurrentMenu
+      Remote.pendingDynamicMenus = originalPendingMenus
+      Remote.dynamicMenus = originalDynamicMenus
+      Remote.showMenu = originalShowMenu
+      location.hash = originalHash
+    }
+  })
 
-  test("showMenu renders loading state for unresolved dynamic route", async () => {
+  test('showMenu renders loading state for unresolved dynamic route', async () => {
     document.body.innerHTML = `
       <header class="header"><span class="header-title"></span></header>
       <div id="back-button" class="hidden"></div>
       <main class="main-content"></main>
-    `;
+    `
 
     const originalDynamicMenus = Remote.dynamicMenus,
       originalPendingMenus = Remote.pendingDynamicMenus,
       originalTranslations = Remote.translations,
-      originalCurrentMenu = Remote.currentMenu;
+      originalCurrentMenu = Remote.currentMenu
 
-    Remote.dynamicMenus = {};
-    Remote.pendingDynamicMenus = [];
-    Remote.translations = {"LOADING": "Loading"};
-    Remote.currentMenu = "main-menu";
+    Remote.dynamicMenus = {}
+    Remote.pendingDynamicMenus = []
+    Remote.translations = { LOADING: 'Loading' }
+    Remote.currentMenu = 'main-menu'
 
     try {
-      await Remote.showMenu("mc-pages-menu");
+      await Remote.showMenu('mc-pages-menu')
 
-      assert.equal(Remote.currentRoute.status, "loading-dynamic");
-      assert.equal(Remote.currentRoute.targetMenu, "mc-pages-menu");
-      assert.equal(Remote.currentMenu, "mc-pages-menu");
-      assert.ok(document.querySelector(".main-content .route-state"));
-      assert.equal(document.querySelector("#back-button").classList.contains("hidden"), false);
-    } finally {
-      Remote.dynamicMenus = originalDynamicMenus;
-      Remote.pendingDynamicMenus = originalPendingMenus;
-      Remote.translations = originalTranslations;
-      Remote.currentMenu = originalCurrentMenu;
+      assert.equal(Remote.currentRoute.status, 'loading-dynamic')
+      assert.equal(Remote.currentRoute.targetMenu, 'mc-pages-menu')
+      assert.equal(Remote.currentMenu, 'mc-pages-menu')
+      assert.ok(document.querySelector('.main-content .route-state'))
+      assert.equal(document.querySelector('#back-button').classList.contains('hidden'), false)
     }
-  });
+    finally {
+      Remote.dynamicMenus = originalDynamicMenus
+      Remote.pendingDynamicMenus = originalPendingMenus
+      Remote.translations = originalTranslations
+      Remote.currentMenu = originalCurrentMenu
+    }
+  })
 
-  test("showMenu renders not-found state for invalid route", async () => {
+  test('showMenu renders not-found state for invalid route', async () => {
     document.body.innerHTML = `
       <header class="header"><span class="header-title"></span></header>
       <div id="back-button" class="hidden"></div>
       <main class="main-content"></main>
-    `;
+    `
 
-    const originalTranslations = Remote.translations;
-    Remote.translations = {"LOAD_ERROR": "Load error"};
+    const originalTranslations = Remote.translations
+    Remote.translations = { LOAD_ERROR: 'Load error' }
 
     try {
-      await Remote.showMenu("invalid-route");
+      await Remote.showMenu('invalid-route')
 
-      assert.equal(Remote.currentRoute.status, "not-found");
-      assert.ok(document.querySelector(".main-content .route-state"));
-    } finally {
-      Remote.translations = originalTranslations;
+      assert.equal(Remote.currentRoute.status, 'not-found')
+      assert.ok(document.querySelector('.main-content .route-state'))
     }
-  });
+    finally {
+      Remote.translations = originalTranslations
+    }
+  })
 
-  test("navigateToMenu renders immediately when target hash is already active", async () => {
+  test('navigateToMenu renders immediately when target hash is already active', async () => {
     const originalShowMenu = Remote.showMenu,
-      originalHash = location.hash;
+      originalHash = location.hash
 
-    let renderedMenu;
+    let renderedMenu
     Remote.showMenu = async (menuName) => {
-      renderedMenu = menuName;
-    };
-    location.hash = "#main-menu";
+      renderedMenu = menuName
+    }
+    location.hash = '#main-menu'
 
     try {
-      await Remote.navigateToMenu("main-menu");
+      await Remote.navigateToMenu('main-menu')
 
-      assert.equal(renderedMenu, "main-menu");
-      assert.equal(location.hash, "#main-menu");
-    } finally {
-      Remote.showMenu = originalShowMenu;
-      location.hash = originalHash;
+      assert.equal(renderedMenu, 'main-menu')
+      assert.equal(location.hash, '#main-menu')
     }
-  });
+    finally {
+      Remote.showMenu = originalShowMenu
+      location.hash = originalHash
+    }
+  })
 
-  test("navigateToMenu can suppress hashchange handling", () => {
+  test('navigateToMenu can suppress hashchange handling', () => {
     const originalSkipHashChange = Remote.skipHashChange,
-      originalHash = location.hash;
+      originalHash = location.hash
 
-    Remote.skipHashChange = false;
+    Remote.skipHashChange = false
 
     try {
       Remote.navigateToMenu(
-        "power-menu",
-        {"suppressHashChangeHandler": true}
-      );
+        'power-menu',
+        { suppressHashChangeHandler: true },
+      )
 
-      assert.equal(Remote.skipHashChange, true);
-      assert.equal(Remote.getCurrentHashMenu(), "power-menu");
-    } finally {
-      Remote.skipHashChange = originalSkipHashChange;
-      location.hash = originalHash;
+      assert.equal(Remote.skipHashChange, true)
+      assert.equal(Remote.getCurrentHashMenu(), 'power-menu')
     }
-  });
+    finally {
+      Remote.skipHashChange = originalSkipHashChange
+      location.hash = originalHash
+    }
+  })
 
-  test("handleHashChange ignores one suppressed hashchange event", () => {
+  test('handleHashChange ignores one suppressed hashchange event', () => {
     const originalSkipHashChange = Remote.skipHashChange,
-      originalShowMenu = Remote.showMenu;
+      originalShowMenu = Remote.showMenu
 
-    let isShowMenuCalled = false;
-    Remote.skipHashChange = true;
+    let isShowMenuCalled = false
+    Remote.skipHashChange = true
     Remote.showMenu = () => {
-      isShowMenuCalled = true;
-    };
+      isShowMenuCalled = true
+    }
 
     try {
-      Remote.handleHashChange();
+      Remote.handleHashChange()
 
-      assert.equal(isShowMenuCalled, false);
-      assert.equal(Remote.skipHashChange, false);
-    } finally {
-      Remote.skipHashChange = originalSkipHashChange;
-      Remote.showMenu = originalShowMenu;
+      assert.equal(isShowMenuCalled, false)
+      assert.equal(Remote.skipHashChange, false)
     }
-  });
+    finally {
+      Remote.skipHashChange = originalSkipHashChange
+      Remote.showMenu = originalShowMenu
+    }
+  })
 
-  test("handleHashChange routes to current hash menu", () => {
+  test('handleHashChange routes to current hash menu', () => {
     const originalShowMenu = Remote.showMenu,
       originalHash = location.hash,
-      originalSkipHashChange = Remote.skipHashChange;
+      originalSkipHashChange = Remote.skipHashChange
 
-    let routedMenu;
-    Remote.skipHashChange = false;
+    let routedMenu
+    Remote.skipHashChange = false
     Remote.showMenu = (menuName) => {
-      routedMenu = menuName;
-    };
-    location.hash = "#update-menu";
+      routedMenu = menuName
+    }
+    location.hash = '#update-menu'
 
     try {
-      Remote.handleHashChange();
+      Remote.handleHashChange()
 
-      assert.equal(routedMenu, "update-menu");
-    } finally {
-      Remote.showMenu = originalShowMenu;
-      location.hash = originalHash;
-      Remote.skipHashChange = originalSkipHashChange;
+      assert.equal(routedMenu, 'update-menu')
     }
-  });
+    finally {
+      Remote.showMenu = originalShowMenu
+      location.hash = originalHash
+      Remote.skipHashChange = originalSkipHashChange
+    }
+  })
 
-  test("onTranslationsLoaded binds delegated navigation handlers only once", () => {
+  test('onTranslationsLoaded binds delegated navigation handlers only once', () => {
     document.body.innerHTML = `
       <div id="back-button"></div>
       <main class="main-content">
         <div id="dynamic-button" data-hash="power-menu"><span>Open</span></div>
       </main>
-    `;
+    `
 
     const originalNavigateToMenu = Remote.navigateToMenu,
       originalShowMenu = Remote.showMenu,
       originalBoundFlag = Remote.areNavigationEventHandlersBound,
-      originalTranslations = Remote.translations;
+      originalTranslations = Remote.translations
 
-    let navigateCalls = 0;
-    Remote.translations = {"BACK": "Back"};
-    Remote.areNavigationEventHandlersBound = false;
+    let navigateCalls = 0
+    Remote.translations = { BACK: 'Back' }
+    Remote.areNavigationEventHandlersBound = false
     Remote.navigateToMenu = () => {
-      navigateCalls += 1;
-    };
-    Remote.showMenu = () => {};
+      navigateCalls += 1
+    }
+    Remote.showMenu = () => {}
 
     try {
-      Remote.onTranslationsLoaded();
-      Remote.onTranslationsLoaded();
+      Remote.onTranslationsLoaded()
+      Remote.onTranslationsLoaded()
 
-      const clickEvent = document.createEvent("Event");
+      const clickEvent = document.createEvent('Event')
       clickEvent.initEvent(
-        "click",
+        'click',
         true,
-        true
-      );
-      document.querySelector("#dynamic-button").dispatchEvent(clickEvent);
+        true,
+      )
+      document.querySelector('#dynamic-button').dispatchEvent(clickEvent)
 
-      assert.equal(navigateCalls, 1);
-      assert.equal(Remote.areNavigationEventHandlersBound, true);
-    } finally {
-      Remote.navigateToMenu = originalNavigateToMenu;
-      Remote.showMenu = originalShowMenu;
-      Remote.areNavigationEventHandlersBound = originalBoundFlag;
-      Remote.translations = originalTranslations;
+      assert.equal(navigateCalls, 1)
+      assert.equal(Remote.areNavigationEventHandlersBound, true)
     }
-  });
+    finally {
+      Remote.navigateToMenu = originalNavigateToMenu
+      Remote.showMenu = originalShowMenu
+      Remote.areNavigationEventHandlersBound = originalBoundFlag
+      Remote.translations = originalTranslations
+    }
+  })
 
-  test("data structures are initialized correctly", () => {
-    assert.ok(typeof Remote.savedData === "object");
-    assert.ok(typeof Remote.translations === "object");
-    assert.ok(typeof Remote.currentConfig === "object");
-    assert.ok(Array.isArray(Remote.changedModules));
-    assert.ok(Array.isArray(Remote.deletedModules));
-    assert.equal(Remote.addModule, "");
-  });
-});
+  test('data structures are initialized correctly', () => {
+    assert.ok(typeof Remote.savedData === 'object')
+    assert.ok(typeof Remote.translations === 'object')
+    assert.ok(typeof Remote.currentConfig === 'object')
+    assert.ok(Array.isArray(Remote.changedModules))
+    assert.ok(Array.isArray(Remote.deletedModules))
+    assert.equal(Remote.addModule, '')
+  })
+})

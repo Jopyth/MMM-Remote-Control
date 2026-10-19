@@ -1,4 +1,4 @@
-import {Remote} from "./remote.mjs";
+import { Remote } from './remote.mjs'
 
 /**
  * UI utility methods for MMM-Remote-Control.
@@ -8,84 +8,65 @@ Object.assign(
   Remote,
   {
 
-    translate (pattern) {
-
-      return this.translations[pattern];
-
+    translate(pattern) {
+      return this.translations[pattern]
     },
 
-    filterModules (pattern) {
-
-      let isFilterInstalled = false;
-      if (pattern.includes("installed")) {
-
-        isFilterInstalled = true;
-        pattern = pattern.replace("installed", "");
-
+    filterModules(pattern) {
+      let isFilterInstalled = false
+      if (pattern.includes('installed')) {
+        isFilterInstalled = true
+        pattern = pattern.replace('installed', '')
       }
-      pattern = pattern.trim();
+      pattern = pattern.trim()
 
-      const data = this.savedData.moduleAvailable;
+      const data = this.savedData.moduleAvailable
       if (!Array.isArray(data)) {
-
-        return;
-
+        return
       }
       const regex = new RegExp(
           pattern,
-          "i"
+          'i',
         ),
-        searchIn = ["maintainer", "description", "name"];
+        searchIn = ['maintainer', 'description', 'name']
       for (const [index, currentData] of data.entries()) {
-
         const id = `install-module-${index}`,
-          element = document.getElementById(id)?.closest(".module-line");
+          element = document.getElementById(id)?.closest('.module-line')
         if (!element) {
-
-          continue;
-
+          continue
         }
         if (!pattern) {
-
           // Cleared search input, show all
-          element.classList.remove("hidden");
-          continue;
-
+          element.classList.remove('hidden')
+          continue
         }
 
-        let match = isFilterInstalled && currentData.installed;
-        match ||= searchIn.some((key) => currentData[key]?.match(regex));
+        let match = isFilterInstalled && currentData.installed
+        match ||= searchIn.some(key => currentData[key]?.match(regex))
         element.classList.toggle(
-          "hidden",
-          !match
-        );
-
+          'hidden',
+          !match,
+        )
       }
-
     },
 
-    updateSliderThumbColor (slider, type) {
-
+    updateSliderThumbColor(slider, type) {
       const value = Number(slider.value),
         min = Number(slider.min),
         max = Number(slider.max),
-        percent = (value - min) / (max - min);
+        percent = (value - min) / (max - min)
 
-      let thumbColor, trackGradient;
+      let thumbColor, trackGradient
       switch (type) {
-
-        case "brightness": {
-
+        case 'brightness': {
           // Brightness: dark gray to bright white (neutral, no color)
-          const brightness = Math.round(50 + percent * 205);
-          thumbColor = `rgb(${brightness}, ${brightness}, ${brightness})`;
+          const brightness = Math.round(50 + percent * 205)
+          thumbColor = `rgb(${brightness}, ${brightness}, ${brightness})`
           // Track gradient: dark gray (left) to bright white (right)
-          trackGradient = "linear-gradient(to right, rgb(50, 50, 50), rgb(255, 255, 255))";
-          break;
-
+          trackGradient = 'linear-gradient(to right, rgb(50, 50, 50), rgb(255, 255, 255))'
+          break
         }
-        case "temp": {
-
+        case 'temp': {
           /*
            * Color temperature: warm (orange) to cool (blue)
            * Low values (140) = warm, High values (500) = cool
@@ -99,15 +80,13 @@ Object.assign(
             coolR = 100, // Cool blue
             r = Math.round(coolR + (warmR - coolR) * percent),
             g = Math.round(coolG + (warmG - coolG) * percent),
-            b = Math.round(coolB + (warmB - coolB) * percent);
-          thumbColor = `rgb(${r}, ${g}, ${b})`;
+            b = Math.round(coolB + (warmB - coolB) * percent)
+          thumbColor = `rgb(${r}, ${g}, ${b})`
           // Track gradient: cool blue (left) to warm orange (right)
-          trackGradient = `linear-gradient(to right, rgb(${coolR}, ${coolG}, ${coolB}), rgb(${warmR}, ${warmG}, ${warmB}))`;
-          break;
-
+          trackGradient = `linear-gradient(to right, rgb(${coolR}, ${coolG}, ${coolB}), rgb(${warmR}, ${warmG}, ${warmB}))`
+          break
         }
-        case "zoom": {
-
+        case 'zoom': {
           // Zoom: small (dim blue) to large (bright blue)
           const smallB = 180,
             smallG = 120,
@@ -117,296 +96,229 @@ Object.assign(
             largeR = 180,
             r = Math.round(smallR + (largeR - smallR) * percent),
             g = Math.round(smallG + (largeG - smallG) * percent),
-            b = Math.round(smallB + (largeB - smallB) * percent);
-          thumbColor = `rgb(${r}, ${g}, ${b})`;
-          trackGradient = `linear-gradient(to right, rgb(${smallR}, ${smallG}, ${smallB}), rgb(${largeR}, ${largeG}, ${largeB}))`;
-          break;
-
+            b = Math.round(smallB + (largeB - smallB) * percent)
+          thumbColor = `rgb(${r}, ${g}, ${b})`
+          trackGradient = `linear-gradient(to right, rgb(${smallR}, ${smallG}, ${smallB}), rgb(${largeR}, ${largeG}, ${largeB}))`
+          break
         }
-
       }
 
       if (thumbColor) {
-
         slider.style.setProperty(
-          "--thumb-color",
-          thumbColor
-        );
-
+          '--thumb-color',
+          thumbColor,
+        )
       }
       if (trackGradient) {
-
         slider.style.setProperty(
-          "--track-gradient",
-          trackGradient
-        );
-
+          '--track-gradient',
+          trackGradient,
+        )
       }
-
     },
 
-    closePopup () {
-
-      const popupContainer = document.querySelector("#popup-container"),
-        popupContents = document.querySelector("#popup-contents");
-      popupContainer?.classList.add("hidden");
+    closePopup() {
+      const popupContainer = document.querySelector('#popup-container'),
+        popupContents = document.querySelector('#popup-contents')
+      popupContainer?.classList.add('hidden')
       if (popupContents) {
-
-        popupContents.replaceChildren();
-
+        popupContents.replaceChildren()
       }
-
     },
 
-    showPopup () {
-
-      const popupContainer = document.querySelector("#popup-container");
-      popupContainer?.classList.remove("hidden");
-
+    showPopup() {
+      const popupContainer = document.querySelector('#popup-container')
+      popupContainer?.classList.remove('hidden')
     },
 
-    getPopupContent (shouldClear = true) {
-
+    getPopupContent(shouldClear = true) {
       if (shouldClear) {
-
-        this.closePopup();
-
+        this.closePopup()
       }
-      return document.querySelector("#popup-contents");
-
+      return document.querySelector('#popup-contents')
     },
 
-    setStatus (status, message, customContent) {
-
+    setStatus(status, message, customContent) {
       if (this.autoHideTimer !== undefined) {
-
-        clearTimeout(this.autoHideTimer);
-
+        clearTimeout(this.autoHideTimer)
       }
 
       // Simple status update
-      if (status === "success" && !message && !customContent) {
-
-        const successPopup = document.querySelector("#success-popup");
-        successPopup.classList.remove("hidden");
+      if (status === 'success' && !message && !customContent) {
+        const successPopup = document.querySelector('#success-popup')
+        successPopup.classList.remove('hidden')
         this.autoHideTimer = setTimeout(
           () => {
-
-            successPopup.classList.add("hidden");
-
+            successPopup.classList.add('hidden')
           },
-          this.autoHideDelay
-        );
-        return;
-
+          this.autoHideDelay,
+        )
+        return
       }
 
-      const parent = document.querySelector("#result-contents");
-      parent.replaceChildren();
+      const parent = document.querySelector('#result-contents')
+      parent.replaceChildren()
 
-      if (status === "none") {
-
-        document.querySelector("#result-overlay")?.classList.add("hidden");
-        document.querySelector("#result")?.classList.add("hidden");
-        return;
-
+      if (status === 'none') {
+        document.querySelector('#result-overlay')?.classList.add('hidden')
+        document.querySelector('#result')?.classList.add('hidden')
+        return
       }
 
       if (customContent) {
-
-        parent.append(customContent);
-        document.querySelector("#result-overlay")?.classList.remove("hidden");
-        document.querySelector("#result")?.classList.remove("hidden");
-        return;
-
+        parent.append(customContent)
+        document.querySelector('#result-overlay')?.classList.remove('hidden')
+        document.querySelector('#result')?.classList.remove('hidden')
+        return
       }
 
       let onClick,
         symbol,
-        text;
+        text
       switch (status) {
-        case "loading":
+        case 'loading':
 
-          symbol = "fa-spinner fa-pulse";
-          text = this.translate("LOADING");
-          onClick = false;
+          symbol = 'fa-spinner fa-pulse'
+          text = this.translate('LOADING')
+          onClick = false
 
+          break
+        case 'error':
 
-          break;
-        case "error":
-
-          symbol = "fa-exclamation-circle";
-          text = this.translate("ERROR");
+          symbol = 'fa-exclamation-circle'
+          text = this.translate('ERROR')
           onClick = () => {
-
-            this.setStatus("none");
-
-          };
+            this.setStatus('none')
+          }
           // Only auto-hide errors if autoHideDelayError > 0, otherwise user must click to dismiss
           if (this.autoHideDelayError > 0) {
-
             this.autoHideTimer = setTimeout(
               () => {
-
-                this.setStatus("none");
-
+                this.setStatus('none')
               },
-              this.autoHideDelayError
-            );
-
+              this.autoHideDelayError,
+            )
           }
 
+          break
+        case 'info':
 
-          break;
-        case "info":
-
-          symbol = "fa-info-circle";
-          text = this.translate("INFO");
+          symbol = 'fa-info-circle'
+          text = this.translate('INFO')
           onClick = () => {
-
-            this.setStatus("none");
-
-          };
+            this.setStatus('none')
+          }
           // Info messages (like restart/stop) should be displayed longer
           if (this.autoHideDelayInfo > 0) {
-
             this.autoHideTimer = setTimeout(
               () => {
-
-                this.setStatus("none");
-
+                this.setStatus('none')
               },
-              this.autoHideDelayInfo
-            );
-
+              this.autoHideDelayInfo,
+            )
           }
 
+          break
+        case 'success':
 
-          break;
-        case "success":
-
-          symbol = "fa-check-circle";
-          text = this.translate("DONE");
+          symbol = 'fa-check-circle'
+          text = this.translate('DONE')
           onClick = () => {
-
-            this.setStatus("none");
-
-          };
+            this.setStatus('none')
+          }
           this.autoHideTimer = setTimeout(
             () => {
-
-              this.setStatus("none");
-
+              this.setStatus('none')
             },
-            this.autoHideDelay
-          );
+            this.autoHideDelay,
+          )
 
-
-          break;
+          break
       // No default
       }
       if (message) {
-
-        text = typeof message === "object"
+        text = typeof message === 'object'
           ? JSON.stringify(
-            message,
-            undefined,
-            3
-          )
-          : message;
-
+              message,
+              undefined,
+              3,
+            )
+          : message
       }
       parent.append(this.createSymbolText(
         `fa fa-fw ${symbol}`,
         text,
-        onClick
-      ));
+        onClick,
+      ))
 
-      document.querySelector("#result-overlay")?.classList.remove("hidden");
-      document.querySelector("#result")?.classList.remove("hidden");
-
+      document.querySelector('#result-overlay')?.classList.remove('hidden')
+      document.querySelector('#result')?.classList.remove('hidden')
     },
 
-    formatPosition (string) {
-
+    formatPosition(string) {
       return string.replaceAll(
-        "_",
-        " "
+        '_',
+        ' ',
       ).replaceAll(
         /\w\S*/g,
-        (txt) => txt.at(0).toUpperCase() + txt.slice(1).toLowerCase()
-      );
-
+        txt => txt.at(0).toUpperCase() + txt.slice(1).toLowerCase(),
+      )
     },
 
-    openLink (url) {
-
+    openLink(url) {
       return () => window.open(
         url,
-        "_blank"
-      );
-
+        '_blank',
+      )
     },
 
-    loadLinks () {
-
-      const parent = document.querySelector("#links-container-nav");
+    loadLinks() {
+      const parent = document.querySelector('#links-container-nav')
       if (!parent) {
-
-        return;
-
+        return
       }
-      parent.replaceChildren();
+      parent.replaceChildren()
 
       const items = [
-        {"icon": "fa-book", "text": this.translate("API_DOCS"), "url": `${location.origin}/api/docs/`},
-        {"icon": "fa-globe", "text": this.translate("WEBSITE"), "url": "https://magicmirror.builders/"},
-        {"icon": "fa-comments", "text": this.translate("FORUM"), "url": "https://forum.magicmirror.builders/"},
-        {"icon": "fa-github", "text": this.translate("REPOSITORY"), "url": "https://github.com/Jopyth/MMM-Remote-Control"}
-      ];
+        { icon: 'fa-book', text: this.translate('API_DOCS'), url: `${location.origin}/api/docs/` },
+        { icon: 'fa-globe', text: this.translate('WEBSITE'), url: 'https://magicmirror.builders/' },
+        { icon: 'fa-comments', text: this.translate('FORUM'), url: 'https://forum.magicmirror.builders/' },
+        { icon: 'fa-github', text: this.translate('REPOSITORY'), url: 'https://github.com/Jopyth/MMM-Remote-Control' },
+      ]
 
-      for (const {icon, text, url} of items) {
-
+      for (const { icon, text, url } of items) {
         parent.append(this.createSymbolText(
           `fa fa-fw ${icon}`,
           text,
-          this.openLink(url)
-        ));
-
+          this.openLink(url),
+        ))
       }
-
     },
 
-    createSymbolText (symbol, text, eventListener, element) {
-
+    createSymbolText(symbol, text, eventListener, element) {
       if (element === undefined) {
-
-        element = "div";
-
+        element = 'div'
       }
-      const wrapper = document.createElement(element);
+      const wrapper = document.createElement(element)
       if (eventListener) {
-
-        wrapper.className = "button";
+        wrapper.className = 'button'
         wrapper.addEventListener(
-          "click",
+          'click',
           eventListener,
-          {capture: false}
-        );
-
+          { capture: false },
+        )
       }
-      const icon = document.createElement("span"),
-        label = document.createElement("span");
-      icon.className = symbol;
-      label.className = "symbol-text-padding";
-      label.textContent = text ?? "";
+      const icon = document.createElement('span'),
+        label = document.createElement('span')
+      icon.className = symbol
+      label.className = 'symbol-text-padding'
+      label.textContent = text ?? ''
       wrapper.append(
         icon,
-        label
-      );
-      return wrapper;
+        label,
+      )
+      return wrapper
+    },
 
-    }
-
-  }
-);
+  },
+)

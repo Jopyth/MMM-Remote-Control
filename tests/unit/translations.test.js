@@ -3,33 +3,33 @@
  * @description Tests for translation file completeness and consistency
  */
 
-const {describe, it} = require("node:test");
-const assert = require("node:assert");
-const fs = require("node:fs");
-const path = require("node:path");
+const { describe, it } = require('node:test')
+const assert = require('node:assert')
+const fs = require('node:fs')
+const path = require('node:path')
 
-const translationsDir = path.join(__dirname, "../../translations");
-const swaggerPath = path.join(__dirname, "../../docs/swagger.json");
+const translationsDir = path.join(__dirname, '../../translations')
+const swaggerPath = path.join(__dirname, '../../docs/swagger.json')
 
 /**
  * Get all translation files
  * @returns {object} Map of language code to translation object
  */
-function getAllTranslations () {
-  const files = fs.readdirSync(translationsDir);
-  const translations = {};
+function getAllTranslations() {
+  const files = fs.readdirSync(translationsDir)
+  const translations = {}
 
   for (const file of files) {
-    if (!file.endsWith(".json")) {
-      continue;
+    if (!file.endsWith('.json')) {
+      continue
     }
 
-    const lang = file.replace(".json", "");
-    const content = fs.readFileSync(path.join(translationsDir, file), "utf8");
-    translations[lang] = JSON.parse(content);
+    const lang = file.replace('.json', '')
+    const content = fs.readFileSync(path.join(translationsDir, file), 'utf8')
+    translations[lang] = JSON.parse(content)
   }
 
-  return translations;
+  return translations
 }
 
 /**
@@ -37,61 +37,62 @@ function getAllTranslations () {
  * @param {object} translations - All translations
  * @returns {Set} Set of all unique keys
  */
-function getAllKeys (translations) {
-  const allKeys = new Set();
+function getAllKeys(translations) {
+  const allKeys = new Set()
 
   for (const lang in translations) {
     for (const key in translations[lang]) {
-      allKeys.add(key);
+      allKeys.add(key)
     }
   }
 
-  return allKeys;
+  return allKeys
 }
 
 /**
  * Extract all translation keys used in code files
  * @returns {Set} Set of translation keys used in code
  */
-function getUsedTranslationKeys () {
-  const usedKeys = new Set();
+function getUsedTranslationKeys() {
+  const usedKeys = new Set()
   const searchDirectories = [
-    path.join(__dirname, "../../"),
-    path.join(__dirname, "../../API")
-  ];
+    path.join(__dirname, '../../'),
+    path.join(__dirname, '../../API'),
+  ]
 
-  const filesToSearch = [];
+  const filesToSearch = []
 
   // Collect JS, CSS, and HTML files (excluding node_modules, tests, coverage, docs)
-  function collectFiles (dir) {
-    const entries = fs.readdirSync(dir, {withFileTypes: true});
+  function collectFiles(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true })
 
     for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
+      const fullPath = path.join(dir, entry.name)
 
       // Skip certain directories
       if (entry.isDirectory()) {
         if (
-          ["node_modules", "tests", "coverage", "docs", "lib", ".git", "translations"].includes(entry.name)
+          ['node_modules', 'tests', 'coverage', 'docs', 'lib', '.git', 'translations'].includes(entry.name)
         ) {
-          continue;
+          continue
         }
-        collectFiles(fullPath);
-      } else if (
-        entry.isFile() &&
-        (
-          (/\.(js|mjs|html|css)$/).test(entry.name) ||
-          (/custom_menu.*\.json$/).test(entry.name)
+        collectFiles(fullPath)
+      }
+      else if (
+        entry.isFile()
+        && (
+          (/\.(js|mjs|html|css)$/).test(entry.name)
+          || (/custom_menu.*\.json$/).test(entry.name)
         )
       ) {
-        filesToSearch.push(fullPath);
+        filesToSearch.push(fullPath)
       }
     }
   }
 
   for (const dir of searchDirectories) {
     if (fs.existsSync(dir)) {
-      collectFiles(dir);
+      collectFiles(dir)
     }
   }
 
@@ -112,25 +113,26 @@ function getUsedTranslationKeys () {
     /data-i18n=["']([A-Z_]+)["']/g,
     /i18n\.([A-Z_]+)/g,
     /%%TRANSLATE:([A-Z_]+)%%/g,
-    /:\s*["']([A-Z][A-Z_]{3,})["']/g
-  ];
+    /:\s*["']([A-Z][A-Z_]{3,})["']/g,
+  ]
 
   for (const file of filesToSearch) {
     try {
-      const content = fs.readFileSync(file, "utf8");
+      const content = fs.readFileSync(file, 'utf8')
 
       for (const pattern of patterns) {
-        let match;
+        let match
         while ((match = pattern.exec(content)) !== null) {
-          usedKeys.add(match[1]);
+          usedKeys.add(match[1])
         }
       }
-    } catch {
+    }
+    catch {
       // Skip files that can't be read
     }
   }
 
-  return usedKeys;
+  return usedKeys
 }
 
 /**
@@ -138,8 +140,8 @@ function getUsedTranslationKeys () {
  * @param {unknown} value - Value to inspect
  * @returns {boolean} Whether the value is an object and not null
  */
-function isNonNullObject (value) {
-  return typeof value === "object" && value !== null;
+function isNonNullObject(value) {
+  return typeof value === 'object' && value !== null
 }
 
 /**
@@ -149,29 +151,29 @@ function isNonNullObject (value) {
  * @param {Array<object>} issues - Mutable issues accumulator
  * @returns {void}
  */
-function collectPathDescriptionIssues (pathName, pathObject, issues) {
+function collectPathDescriptionIssues(pathName, pathObject, issues) {
   for (const [method, methodObject] of Object.entries(pathObject)) {
     if (!isNonNullObject(methodObject)) {
-      continue;
+      continue
     }
 
     // Check summary
-    if (!methodObject.summary || methodObject.summary.trim() === "") {
+    if (!methodObject.summary || methodObject.summary.trim() === '') {
       issues.push({
-        type: "missing",
-        path: `paths["${pathName}"].${method}.summary`
-      });
+        type: 'missing',
+        path: `paths["${pathName}"].${method}.summary`,
+      })
     }
 
     // Check parameters descriptions
     if (methodObject.parameters) {
       for (const [parameterIndex, parameter] of methodObject.parameters.entries()) {
-        if (!parameter.description || parameter.description.trim() === "") {
+        if (!parameter.description || parameter.description.trim() === '') {
           issues.push({
-            type: "missing",
+            type: 'missing',
             path: `paths["${pathName}"].${method}.parameters[${parameterIndex}].description`,
-            name: parameter.name
-          });
+            name: parameter.name,
+          })
         }
       }
     }
@@ -179,11 +181,11 @@ function collectPathDescriptionIssues (pathName, pathObject, issues) {
     // Check response descriptions
     if (methodObject.responses) {
       for (const [code, response] of Object.entries(methodObject.responses)) {
-        if (!response.description || response.description.trim() === "") {
+        if (!response.description || response.description.trim() === '') {
           issues.push({
-            type: "empty",
-            path: `paths["${pathName}"].${method}.responses["${code}"].description`
-          });
+            type: 'empty',
+            path: `paths["${pathName}"].${method}.responses["${code}"].description`,
+          })
         }
       }
     }
@@ -194,29 +196,29 @@ function collectPathDescriptionIssues (pathName, pathObject, issues) {
  * Check if swagger.json has translatable descriptions
  * @returns {Array} Array of issues found
  */
-function checkSwaggerTranslations () {
+function checkSwaggerTranslations() {
   if (!fs.existsSync(swaggerPath)) {
-    return [{type: "missing", message: "swagger.json file not found"}];
+    return [{ type: 'missing', message: 'swagger.json file not found' }]
   }
 
-  const issues = [];
+  const issues = []
 
-  const swagger = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
+  const swagger = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'))
 
   // Check main description
   if (!swagger.info || !swagger.info.description) {
-    issues.push({type: "missing", path: "info.description"});
+    issues.push({ type: 'missing', path: 'info.description' })
   }
 
   // Check tags descriptions
   if (swagger.tags) {
     for (const [index, tag] of swagger.tags.entries()) {
-      if (!tag.description || tag.description.trim() === "") {
+      if (!tag.description || tag.description.trim() === '') {
         issues.push({
-          type: "missing",
+          type: 'missing',
           path: `tags[${index}].description`,
-          name: tag.name
-        });
+          name: tag.name,
+        })
       }
     }
   }
@@ -224,250 +226,251 @@ function checkSwaggerTranslations () {
   // Check paths for descriptions
   if (swagger.paths) {
     for (const [pathName, pathObject] of Object.entries(swagger.paths)) {
-      collectPathDescriptionIssues(pathName, pathObject, issues);
+      collectPathDescriptionIssues(pathName, pathObject, issues)
     }
   }
 
-  return issues;
+  return issues
 }
 
-describe("Translation Completeness", () => {
-  it("should have all translation files with same keys", () => {
-    const translations = getAllTranslations();
-    const allKeys = getAllKeys(translations);
-    const languages = Object.keys(translations);
+describe('Translation Completeness', () => {
+  it('should have all translation files with same keys', () => {
+    const translations = getAllTranslations()
+    const allKeys = getAllKeys(translations)
+    const languages = Object.keys(translations)
 
-    assert.ok(languages.length > 0, "At least one translation file should exist");
+    assert.ok(languages.length > 0, 'At least one translation file should exist')
 
-    const missingKeys = {};
+    const missingKeys = {}
 
     for (const lang of languages) {
-      const langKeys = Object.keys(translations[lang]);
-      const missing = [];
+      const langKeys = Object.keys(translations[lang])
+      const missing = []
 
       for (const key of allKeys) {
         if (!langKeys.includes(key)) {
-          missing.push(key);
+          missing.push(key)
         }
       }
 
       if (missing.length > 0) {
-        missingKeys[lang] = missing;
+        missingKeys[lang] = missing
       }
     }
 
-    if (Object.keys(missingKeys).length === 0) return;
+    if (Object.keys(missingKeys).length === 0) return
 
-    let errorMessage = "Missing translation keys found:\n";
+    let errorMessage = 'Missing translation keys found:\n'
     for (const [lang, keys] of Object.entries(missingKeys)) {
-      errorMessage += `\n${lang}.json is missing: ${keys.join(", ")}`;
+      errorMessage += `\n${lang}.json is missing: ${keys.join(', ')}`
     }
-    assert.fail(errorMessage);
-  });
+    assert.fail(errorMessage)
+  })
 
-  it("should have all translation files with same number of keys", () => {
-    const translations = getAllTranslations();
-    const languages = Object.keys(translations);
-    const keyCounts = {};
+  it('should have all translation files with same number of keys', () => {
+    const translations = getAllTranslations()
+    const languages = Object.keys(translations)
+    const keyCounts = {}
 
     for (const lang of languages) {
-      keyCounts[lang] = Object.keys(translations[lang]).length;
+      keyCounts[lang] = Object.keys(translations[lang]).length
     }
 
-    const counts = Object.values(keyCounts);
-    const allSame = counts.every((count) => count === counts[0]);
+    const counts = Object.values(keyCounts)
+    const allSame = counts.every(count => count === counts[0])
 
-    if (allSame) return;
+    if (allSame) return
 
-    let errorMessage = "Translation files have different number of keys:\n";
+    let errorMessage = 'Translation files have different number of keys:\n'
     for (const [lang, count] of Object.entries(keyCounts)) {
-      errorMessage += `\n${lang}.json: ${count} keys`;
+      errorMessage += `\n${lang}.json: ${count} keys`
     }
-    assert.fail(errorMessage);
-  });
+    assert.fail(errorMessage)
+  })
 
-  it("should have valid JSON in all translation files", () => {
-    const files = fs.readdirSync(translationsDir);
+  it('should have valid JSON in all translation files', () => {
+    const files = fs.readdirSync(translationsDir)
 
     for (const file of files) {
-      if (!file.endsWith(".json")) {
-        continue;
+      if (!file.endsWith('.json')) {
+        continue
       }
 
-      const filePath = path.join(translationsDir, file);
-      const content = fs.readFileSync(filePath, "utf8");
+      const filePath = path.join(translationsDir, file)
+      const content = fs.readFileSync(filePath, 'utf8')
 
       assert.doesNotThrow(() => {
-        JSON.parse(content);
-      }, `${file} should be valid JSON`);
+        JSON.parse(content)
+      }, `${file} should be valid JSON`)
     }
-  });
+  })
 
-  it("should have no empty translation values", () => {
-    const translations = getAllTranslations();
-    const emptyValues = {};
+  it('should have no empty translation values', () => {
+    const translations = getAllTranslations()
+    const emptyValues = {}
 
     for (const [lang, langTranslations] of Object.entries(translations)) {
-      const empty = [];
+      const empty = []
 
       for (const [key, value] of Object.entries(langTranslations)) {
-        if (typeof value === "string" && value.trim() === "") {
-          empty.push(key);
+        if (typeof value === 'string' && value.trim() === '') {
+          empty.push(key)
         }
       }
 
       if (empty.length > 0) {
-        emptyValues[lang] = empty;
+        emptyValues[lang] = empty
       }
     }
 
-    if (Object.keys(emptyValues).length === 0) return;
+    if (Object.keys(emptyValues).length === 0) return
 
-    let errorMessage = "Empty translation values found:\n";
+    let errorMessage = 'Empty translation values found:\n'
     for (const [lang, keys] of Object.entries(emptyValues)) {
-      errorMessage += `\n${lang}.json has empty values for: ${keys.join(", ")}`;
+      errorMessage += `\n${lang}.json has empty values for: ${keys.join(', ')}`
     }
-    assert.fail(errorMessage);
-  });
-});
+    assert.fail(errorMessage)
+  })
+})
 
-describe("Swagger.json Documentation", () => {
-  it("should have descriptions for all API endpoints", () => {
-    const issues = checkSwaggerTranslations();
+describe('Swagger.json Documentation', () => {
+  it('should have descriptions for all API endpoints', () => {
+    const issues = checkSwaggerTranslations()
 
-    if (issues.length === 0) return;
+    if (issues.length === 0) return
 
-    let errorMessage = "Missing or empty descriptions in swagger.json:\n";
+    let errorMessage = 'Missing or empty descriptions in swagger.json:\n'
 
     for (const issue of issues) {
-      if (issue.type === "missing") {
-        errorMessage += `\n- ${issue.path}${issue.name ? ` (${issue.name})` : ""}`;
-      } else if (issue.type === "empty") {
-        errorMessage += `\n- ${issue.path} is empty`;
+      if (issue.type === 'missing') {
+        errorMessage += `\n- ${issue.path}${issue.name ? ` (${issue.name})` : ''}`
+      }
+      else if (issue.type === 'empty') {
+        errorMessage += `\n- ${issue.path} is empty`
       }
     }
 
-    assert.fail(errorMessage);
-  });
+    assert.fail(errorMessage)
+  })
 
-  it("should have up-to-date translation example in /api/translations endpoint", () => {
+  it('should have up-to-date translation example in /api/translations endpoint', () => {
     if (!fs.existsSync(swaggerPath)) {
-      assert.fail("swagger.json file not found");
+      assert.fail('swagger.json file not found')
     }
 
-    const swagger = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
-    const translations = getAllTranslations();
-    const enTranslations = translations.en || {};
+    const swagger = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'))
+    const translations = getAllTranslations()
+    const enTranslations = translations.en || {}
 
     // Find the /api/translations endpoint
-    const translationsEndpoint = swagger.paths?.["/api/translations"]?.get;
+    const translationsEndpoint = swagger.paths?.['/api/translations']?.get
 
     if (!translationsEndpoint) {
-      assert.fail("Could not find /api/translations endpoint in swagger.json");
+      assert.fail('Could not find /api/translations endpoint in swagger.json')
     }
 
-    const exampleData = translationsEndpoint.responses?.["200"]?.content?.["application/json"]?.example?.data;
+    const exampleData = translationsEndpoint.responses?.['200']?.content?.['application/json']?.example?.data
 
     if (!exampleData) {
-      assert.fail("Could not find example translations data in /api/translations endpoint");
+      assert.fail('Could not find example translations data in /api/translations endpoint')
     }
 
     // Check if all keys from en.json are in the swagger example
-    const missingInSwagger = [];
-    const extraInSwagger = [];
+    const missingInSwagger = []
+    const extraInSwagger = []
 
     for (const key of Object.keys(enTranslations)) {
       if (!Object.hasOwn(exampleData, key)) {
-        missingInSwagger.push(key);
+        missingInSwagger.push(key)
       }
     }
 
     for (const key of Object.keys(exampleData)) {
       if (!Object.hasOwn(enTranslations, key)) {
-        extraInSwagger.push(key);
+        extraInSwagger.push(key)
       }
     }
 
-    const errors = [];
+    const errors = []
 
     if (missingInSwagger.length > 0) {
-      errors.push(`Missing keys in swagger.json /api/translations example: ${missingInSwagger.join(", ")}`);
+      errors.push(`Missing keys in swagger.json /api/translations example: ${missingInSwagger.join(', ')}`)
     }
 
     if (extraInSwagger.length > 0) {
-      errors.push(`Extra keys in swagger.json /api/translations example (not in en.json): ${extraInSwagger.join(", ")}`);
+      errors.push(`Extra keys in swagger.json /api/translations example (not in en.json): ${extraInSwagger.join(', ')}`)
     }
 
-    if (errors.length === 0) return;
+    if (errors.length === 0) return
 
-    assert.fail(errors.join("\n\n"));
-  });
-});
+    assert.fail(errors.join('\n\n'))
+  })
+})
 
-describe("Translation Usage", () => {
-  it("should have translations for all used keys in code", () => {
-    const translations = getAllTranslations();
-    const allKeys = getAllKeys(translations);
-    const usedKeys = getUsedTranslationKeys();
+describe('Translation Usage', () => {
+  it('should have translations for all used keys in code', () => {
+    const translations = getAllTranslations()
+    const allKeys = getAllKeys(translations)
+    const usedKeys = getUsedTranslationKeys()
 
-    const missingTranslations = [];
+    const missingTranslations = []
 
     for (const key of usedKeys) {
       if (!allKeys.has(key)) {
-        missingTranslations.push(key);
+        missingTranslations.push(key)
       }
     }
 
-    if (missingTranslations.length === 0) return;
+    if (missingTranslations.length === 0) return
 
     // Filter out common false positives (notification names, constants, etc.)
-    const likelyRealMissing = missingTranslations.filter((key) => ![
-      "MANAGE_CLASSES",
-      "COMMAND",
-      "USER_PRESENCE",
-      "STATUS",
-      "DELAYED",
-      "NOTIFICATION",
-      "GET_CHANGELOG",
-      "RESTART",
-      "STOP",
-      "SOME_UNIQUE_ID",
-      "SHOW_ALERT",
-      "TEMP",
-      "SHOW",
-      "HIDE",
-      "INSTALL",
-      "UPDATE",
-      "REFRESH",
-      "TOGGLEFULLSCREEN",
-      "HIDE_ALERT",
-      "ON",
-      "OFF",
-      "TOGGLE"
-    ].includes(key));
+    const likelyRealMissing = missingTranslations.filter(key => ![
+      'MANAGE_CLASSES',
+      'COMMAND',
+      'USER_PRESENCE',
+      'STATUS',
+      'DELAYED',
+      'NOTIFICATION',
+      'GET_CHANGELOG',
+      'RESTART',
+      'STOP',
+      'SOME_UNIQUE_ID',
+      'SHOW_ALERT',
+      'TEMP',
+      'SHOW',
+      'HIDE',
+      'INSTALL',
+      'UPDATE',
+      'REFRESH',
+      'TOGGLEFULLSCREEN',
+      'HIDE_ALERT',
+      'ON',
+      'OFF',
+      'TOGGLE',
+    ].includes(key))
 
-    if (likelyRealMissing.length === 0) return;
+    if (likelyRealMissing.length === 0) return
 
-    assert.fail(`Translation keys used in code but not found in translation files:\n${likelyRealMissing.join(", ")}`);
-  });
+    assert.fail(`Translation keys used in code but not found in translation files:\n${likelyRealMissing.join(', ')}`)
+  })
 
-  it("should only have translation keys that are used in code", () => {
-    const translations = getAllTranslations();
-    const allKeys = getAllKeys(translations);
-    const usedKeys = getUsedTranslationKeys();
+  it('should only have translation keys that are used in code', () => {
+    const translations = getAllTranslations()
+    const allKeys = getAllKeys(translations)
+    const usedKeys = getUsedTranslationKeys()
 
-    const unusedKeys = [];
+    const unusedKeys = []
 
     for (const key of allKeys) {
       if (!usedKeys.has(key)) {
-        unusedKeys.push(key);
+        unusedKeys.push(key)
       }
     }
 
-    if (unusedKeys.length === 0) return;
+    if (unusedKeys.length === 0) return
 
-    assert.fail(`Found ${unusedKeys.length} unused translation keys: ${unusedKeys.join(", ")}\n\n` +
-      "Remove these keys from translation files or add them to the code. " +
-      "If used dynamically (e.g., in custom_menu.example.json), add them to the code scanner patterns.");
-  });
-});
+    assert.fail(`Found ${unusedKeys.length} unused translation keys: ${unusedKeys.join(', ')}\n\n`
+      + 'Remove these keys from translation files or add them to the code. '
+      + 'If used dynamically (e.g., in custom_menu.example.json), add them to the code scanner patterns.')
+  })
+})

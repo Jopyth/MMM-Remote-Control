@@ -4,30 +4,30 @@
  * Updates service-worker.js with current version from package.json
  */
 
-const fs = require("node:fs");
-const path = require("node:path");
+const fs = require('node:fs')
+const path = require('node:path')
 
-const packagePath = path.resolve(__dirname, "../package.json");
-const serviceWorkerPath = path.resolve(__dirname, "../service-worker.js");
+const packagePath = path.resolve(__dirname, '../package.json')
+const serviceWorkerPath = path.resolve(__dirname, '../service-worker.js')
 
 // Read package.json
-const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
-const version = packageJson.version;
+const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
+const version = packageJson.version
 
 // Read service-worker.js
-let serviceWorker = fs.readFileSync(serviceWorkerPath, "utf8");
+let serviceWorker = fs.readFileSync(serviceWorkerPath, 'utf8')
 
 // Update version in CACHE_NAME
-const newCacheName = `mmm-remote-control-v${version}`;
-const cacheNamePattern = /const CACHE_NAME = "[^"]*";/u;
-const currentCacheNameLine = serviceWorker.match(cacheNamePattern)?.[0];
+const newCacheName = `mmm-remote-control-v${version}`
+const cacheNamePattern = /const CACHE_NAME = "[^"]*";/u
+const currentCacheNameLine = serviceWorker.match(cacheNamePattern)?.[0]
 if (!currentCacheNameLine) {
-  throw new Error("CACHE_NAME not found in service-worker.js");
+  throw new Error('CACHE_NAME not found in service-worker.js')
 }
-const updatedCacheNameLine = `const CACHE_NAME = "${newCacheName}";`;
-serviceWorker = serviceWorker.split(currentCacheNameLine).join(updatedCacheNameLine);
+const updatedCacheNameLine = `const CACHE_NAME = "${newCacheName}";`
+serviceWorker = serviceWorker.split(currentCacheNameLine).join(updatedCacheNameLine)
 
 // Write updated service-worker.js
-fs.writeFileSync(serviceWorkerPath, serviceWorker, "utf8");
+fs.writeFileSync(serviceWorkerPath, serviceWorker, 'utf8')
 
-console.log(`✓ Service Worker cache updated to version ${version}`);
+console.log(`✓ Service Worker cache updated to version ${version}`)

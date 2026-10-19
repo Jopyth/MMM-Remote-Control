@@ -1,6 +1,6 @@
-import {Remote} from "./remote.mjs";
-import {marked} from "marked";
-import {createSanitizedMarkdownBlock} from "./remote-sanitize.mjs";
+import { Remote } from './remote.mjs'
+import { marked } from 'marked'
+import { createSanitizedMarkdownBlock } from './remote-sanitize.mjs'
 
 /**
  * Socket communication methods for MMM-Remote-Control.
@@ -15,32 +15,24 @@ Object.assign(
      * Returns a socket object. If it doesn't exist, it's created.
      * It also registers the notification handler.
      */
-    socket () {
-
+    socket() {
       if (this._socket === undefined) {
-
-        const SocketConstructor = globalThis.MMSocket;
+        const SocketConstructor = globalThis.MMSocket
         if (!SocketConstructor) {
-
-          throw new Error("MMSocket is not available. socketclient.js failed to load.");
-
+          throw new Error('MMSocket is not available. socketclient.js failed to load.')
         }
 
-        this._socket = new SocketConstructor(this.name);
-
+        this._socket = new SocketConstructor(this.name)
       }
 
       this._socket.setNotificationCallback((notification, payload) => {
-
         this.socketNotificationReceived(
           notification,
-          payload
-        );
+          payload,
+        )
+      })
 
-      });
-
-      return this._socket;
-
+      return this._socket
     },
 
     /*
@@ -50,25 +42,19 @@ Object.assign(
      * argument notification string - The identifier of the notification.
      * argument payload mixed - The payload of the notification.
      */
-    sendSocketNotification (notification, payload) {
-
+    sendSocketNotification(notification, payload) {
       this.socket().sendNotification(
         notification,
-        payload
-      );
-
+        payload,
+      )
     },
 
-    action (name, extra = {}) {
-
-      this.sendSocketNotification("REMOTE_ACTION", {"action": name, ...extra});
-
+    action(name, extra = {}) {
+      this.sendSocketNotification('REMOTE_ACTION', { action: name, ...extra })
     },
 
-    getData (name, extra = {}) {
-
-      this.sendSocketNotification("REMOTE_ACTION", {"data": name, ...extra});
-
+    getData(name, extra = {}) {
+      this.sendSocketNotification('REMOTE_ACTION', { data: name, ...extra })
     },
 
     /*
@@ -78,368 +64,287 @@ Object.assign(
      * argument notification string - The identifier of the notification.
      * argument payload mixed - The payload of the notification.
      */
-    socketNotificationReceived (notification, payload) {
-
-      if (notification === "REMOTE_ACTION_RESULT") {
-
+    socketNotificationReceived(notification, payload) {
+      if (notification === 'REMOTE_ACTION_RESULT') {
         // Console.log("Result received:", JSON.stringify(payload, undefined, 4));
-        if ("action" in payload && payload.action === "INSTALL") {
-
-          this.handleInstall(payload);
-          return;
-
+        if ('action' in payload && payload.action === 'INSTALL') {
+          this.handleInstall(payload)
+          return
         }
-        if ("action" in payload && payload.action === "GET_CHANGELOG") {
-
-          this.handleShowChangelog(payload);
-          return;
-
+        if ('action' in payload && payload.action === 'GET_CHANGELOG') {
+          this.handleShowChangelog(payload)
+          return
         }
-        if ("query" in payload && "data" in payload.query) {
-
+        if ('query' in payload && 'data' in payload.query) {
           switch (payload.query.data) {
+            case 'config_update':
 
-            case "config_update":
+              this.handleSaveConfig(payload)
+              break
 
-              this.handleSaveConfig(payload);
-              break;
+            case 'saves':
 
+              this.handleRestoreConfigMenu(payload)
+              break
 
-            case "saves":
+            case 'mmUpdateAvailable':
 
-              this.handleRestoreConfigMenu(payload);
-              break;
+              this.handleMmUpdate(payload.result)
+              break
 
+            case 'translations':
 
-            case "mmUpdateAvailable":
-
-              this.handleMmUpdate(payload.result);
-              break;
-
-
-            case "translations":
-
-              this.translations = payload.data;
-              this.onTranslationsLoaded();
-              break;
-
+              this.translations = payload.data
+              this.onTranslationsLoaded()
+              break
 
             default: {
-
               const sliderMap = {
-                "brightness": {"selector": "#brightness-slider", "type": "brightness"},
-                "temp": {"selector": "#temp-slider", "type": "temp"},
-                "zoom": {"selector": "#zoom-slider", "type": "zoom"}
-              };
+                brightness: { selector: '#brightness-slider', type: 'brightness' },
+                temp: { selector: '#temp-slider', type: 'temp' },
+                zoom: { selector: '#zoom-slider', type: 'zoom' },
+              }
               const pickerMap = {
-                "backgroundColor": "#background-color-picker",
-                "fontColor": "#font-color-picker"
-              };
-              const dataKey = payload.query.data;
-              const sliderConfig = sliderMap[dataKey];
+                backgroundColor: '#background-color-picker',
+                fontColor: '#font-color-picker',
+              }
+              const dataKey = payload.query.data
+              const sliderConfig = sliderMap[dataKey]
               if (sliderConfig) {
-
-                const {selector, type} = sliderConfig,
-                  slider = document.querySelector(selector);
-                slider.value = payload.result;
+                const { selector, type } = sliderConfig,
+                  slider = document.querySelector(selector)
+                slider.value = payload.result
                 this.updateSliderThumbColor(
                   slider,
-                  type
-                );
-
-              } else {
-
-                const pickerSelector = pickerMap[dataKey];
-                if (pickerSelector) {
-
-                  const picker = document.querySelector(pickerSelector);
-                  if (payload.result) {
-
-                    picker.value = payload.result;
-
-                  }
-
-                } else {
-
-                  this.handleLoadList(payload);
-
-                }
-
+                  type,
+                )
               }
-
+              else {
+                const pickerSelector = pickerMap[dataKey]
+                if (pickerSelector) {
+                  const picker = document.querySelector(pickerSelector)
+                  if (payload.result) {
+                    picker.value = payload.result
+                  }
+                }
+                else {
+                  this.handleLoadList(payload)
+                }
+              }
             }
-
           }
-          return;
-
+          return
         }
-        if ("code" in payload && payload.code === "restart") {
-
-          const wrapper = document.createElement("div"),
-            info = document.createElement("span");
-          info.textContent = payload.info ?? "";
-          wrapper.append(info);
+        if ('code' in payload && payload.code === 'restart') {
+          const wrapper = document.createElement('div'),
+            info = document.createElement('span')
+          info.textContent = payload.info ?? ''
+          wrapper.append(info)
           if (payload.chlog) {
-
             wrapper.append(
-              document.createElement("br"),
+              document.createElement('br'),
               createSanitizedMarkdownBlock(
-                "Changelog",
-                marked.parse(payload.chlog)
-              )
-            );
-
+                'Changelog',
+                marked.parse(payload.chlog),
+              ),
+            )
           }
-          this.offerRestart(wrapper);
-          return;
-
+          this.offerRestart(wrapper)
+          return
         }
-        if ("success" in payload) {
-
-          if (!("status" in payload)) {
-
+        if ('success' in payload) {
+          if (!('status' in payload)) {
             payload.status = payload.success
-              ? "success"
-              : "error";
-
+              ? 'success'
+              : 'error'
           }
-          const message = payload.status === "error"
-            ? `${this.translate("RESPONSE_ERROR")
+          const message = payload.status === 'error'
+            ? `${this.translate('RESPONSE_ERROR')
             }: <br><pre><code>${JSON.stringify(
               payload,
               undefined,
-              3
+              3,
             )}</code></pre>`
-            : payload.info;
+            : payload.info
           this.setStatus(
             payload.status,
-            message
-          );
-          return;
-
+            message,
+          )
+          return
         }
-
       }
       switch (notification) {
-
-        case "REFRESH":
-        case "RESTART": {
-
-          const delay = notification === "RESTART" ? 62_000 : 2000;
+        case 'REFRESH':
+        case 'RESTART': {
+          const delay = notification === 'RESTART' ? 62_000 : 2000
           setTimeout(
-            () => { document.location.reload(); },
-            delay
-          );
-          return;
-
+            () => { document.location.reload() },
+            delay,
+          )
+          return
         }
 
-
-        case "REMOTE_CLIENT_CUSTOM_MENU":
-        case "REMOTE_CLIENT_MODULEAPI_MENU": {
-
-          const menuKey = notification === "REMOTE_CLIENT_CUSTOM_MENU" ? "customMenu" : "moduleApiMenu";
-          this[menuKey] = payload;
-          this.createDynamicMenu(payload);
-          return;
-
+        case 'REMOTE_CLIENT_CUSTOM_MENU':
+        case 'REMOTE_CLIENT_MODULEAPI_MENU': {
+          const menuKey = notification === 'REMOTE_CLIENT_CUSTOM_MENU' ? 'customMenu' : 'moduleApiMenu'
+          this[menuKey] = payload
+          this.createDynamicMenu(payload)
+          return
         }
-
-
       }
-
     },
 
-    async getWithStatus (parameters) {
-
-      this.setStatus("loading");
+    async getWithStatus(parameters) {
+      this.setStatus('loading')
       const response = await this.get(
-        "remote",
-        parameters
-      );
+        'remote',
+        parameters,
+      )
 
       try {
-
-        const result = JSON.parse(response);
+        const result = JSON.parse(response)
         if (result.success) {
-
           this.setStatus(
-            "success",
-            result.info || null
-          );
-
-        } else {
-
-          this.setStatus("error");
-
+            'success',
+            result.info || null,
+          )
         }
-
-      } catch (error) {
-
-        console.error(
-          "Error parsing response:",
-          error
-        );
-        this.setStatus("error");
-
+        else {
+          this.setStatus('error')
+        }
       }
-
+      catch (error) {
+        console.error(
+          'Error parsing response:',
+          error,
+        )
+        this.setStatus('error')
+      }
     },
 
-    async get (route, parameters, timeout) {
-
+    async get(route, parameters, timeout) {
       const url = `${route}?${parameters}`,
         controller = new AbortController(),
-        {signal} = controller;
+        { signal } = controller
 
       if (timeout) {
-
         setTimeout(
           () => controller.abort(),
-          timeout
-        );
-
+          timeout,
+        )
       }
 
       try {
-
         const response = await fetch(
           url,
           {
-            "method": "GET",
-            signal
-          }
-        );
+            method: 'GET',
+            signal,
+          },
+        )
 
         if (!response.ok) {
-
-          throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
-
+          throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`)
         }
 
-        return await response.text();
-
-      } catch (error) {
-
-        if (error.name === "AbortError") {
-
-          console.error("Request was aborted.");
-          const errorMessage = document.createElement("div");
-          errorMessage.className = "error-message";
-          errorMessage.textContent = "The request was aborted. Please try again.";
-          document.body.append(errorMessage);
-
-        } else {
-
-          console.error(
-            "Fetch error:",
-            error
-          );
-
-        }
-        throw error;
-
+        return await response.text()
       }
-
+      catch (error) {
+        if (error.name === 'AbortError') {
+          console.error('Request was aborted.')
+          const errorMessage = document.createElement('div')
+          errorMessage.className = 'error-message'
+          errorMessage.textContent = 'The request was aborted. Please try again.'
+          document.body.append(errorMessage)
+        }
+        else {
+          console.error(
+            'Fetch error:',
+            error,
+          )
+        }
+        throw error
+      }
     },
 
-    loadList (listname, dataId, timeoutMs = 30_000) {
-
+    loadList(listname, dataId, timeoutMs = 30_000) {
       const loadingIndicator = document.getElementById(`${listname}-loading`),
-        parent = document.getElementById(`${listname}-results`);
+        parent = document.getElementById(`${listname}-results`)
 
-      parent?.replaceChildren();
-      loadingIndicator?.classList.remove("hidden");
+      parent?.replaceChildren()
+      loadingIndicator?.classList.remove('hidden')
 
-      this._listResolvers ??= new Map();
+      this._listResolvers ??= new Map()
 
       // Supersede any previous pending request for the same list
-      const existing = this._listResolvers.get(listname);
+      const existing = this._listResolvers.get(listname)
       if (existing) {
-
-        clearTimeout(existing.timeoutId);
-        existing.abort.abort("superseded");
-
+        clearTimeout(existing.timeoutId)
+        existing.abort.abort('superseded')
       }
 
-      const {promise, resolve, reject} = Promise.withResolvers(),
-        abort = new AbortController();
+      const { promise, resolve, reject } = Promise.withResolvers(),
+        abort = new AbortController()
 
       const timeoutId = setTimeout(() => {
+        this._listResolvers.delete(listname)
+        loadingIndicator?.classList.add('hidden')
+        document.getElementById(`${listname}-empty`)?.classList.remove('hidden')
+        reject(new Error(`loadList: timeout after ${timeoutMs}ms for "${listname}"`))
+      }, timeoutMs)
 
-        this._listResolvers.delete(listname);
-        loadingIndicator?.classList.add("hidden");
-        document.getElementById(`${listname}-empty`)?.classList.remove("hidden");
-        reject(new Error(`loadList: timeout after ${timeoutMs}ms for "${listname}"`));
+      this._listResolvers.set(listname, { resolve, reject, abort, timeoutId })
+      this.getData(dataId, { listname })
 
-      }, timeoutMs);
-
-      this._listResolvers.set(listname, {resolve, reject, abort, timeoutId});
-      this.getData(dataId, {listname});
-
-      return promise;
-
+      return promise
     },
 
-    handleLoadList (result) {
-
+    handleLoadList(result) {
       const listname = result.query.listname,
         loadingIndicator = document.getElementById(`${listname}-loading`),
         emptyIndicator = document.getElementById(`${listname}-empty`),
-        parent = document.getElementById(`${listname}-results`);
+        parent = document.getElementById(`${listname}-results`)
 
-      loadingIndicator?.classList.add("hidden");
-      this.savedData[result.query.data] = false;
+      loadingIndicator?.classList.add('hidden')
+      this.savedData[result.query.data] = false
 
-      const resolver = this._listResolvers?.get(listname);
+      const resolver = this._listResolvers?.get(listname)
 
       if (resolver) {
-
-        clearTimeout(resolver.timeoutId);
-        resolver.abort.abort("resolved");
-        this._listResolvers.delete(listname);
-
+        clearTimeout(resolver.timeoutId)
+        resolver.abort.abort('resolved')
+        this._listResolvers.delete(listname)
       }
 
       try {
-
         const dataItems = Array.isArray(result.data)
           ? result.data
-          : Object.keys(result.data ?? {});
-        const dataSize = dataItems.length;
-        emptyIndicator?.classList.toggle("hidden", dataSize > 0);
-        this.savedData[result.query.data] = result.data;
+          : Object.keys(result.data ?? {})
+        const dataSize = dataItems.length
+        emptyIndicator?.classList.toggle('hidden', dataSize > 0)
+        this.savedData[result.query.data] = result.data
 
         // Cache moduleInstalled data for repository buttons
-        if (result.query.data === "moduleInstalled" && this.installedModulesCacheResolver) {
-
-          this.installedModulesCacheResolver(result);
-          delete this.installedModulesCacheResolver;
-
+        if (result.query.data === 'moduleInstalled' && this.installedModulesCacheResolver) {
+          this.installedModulesCacheResolver(result)
+          delete this.installedModulesCacheResolver
         }
 
         if (resolver) {
-
-          resolver.resolve({parent, "data": result.data});
-
+          resolver.resolve({ parent, data: result.data })
         }
-
-      } catch (error) {
-
-        console.debug(
-          "Error loading list:",
-          error
-        );
-        emptyIndicator?.classList.remove("hidden");
-        if (resolver) {
-
-          resolver.reject(error);
-
-        }
-
       }
+      catch (error) {
+        console.debug(
+          'Error loading list:',
+          error,
+        )
+        emptyIndicator?.classList.remove('hidden')
+        if (resolver) {
+          resolver.reject(error)
+        }
+      }
+    },
 
-    }
-
-  }
-);
+  },
+)

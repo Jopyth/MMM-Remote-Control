@@ -1,66 +1,67 @@
-const CACHE_NAME = "mmm-remote-control-v6.0.0";
+const CACHE_NAME = 'mmm-remote-control-v6.0.0'
 const urlsToCache = [
-  "./remote.html",
-  "./css/main.css",
-  "./css/roboto.css",
-  "./css/font-awesome.css",
-  "./js/socketclient.js",
-  "./modules/MMM-Remote-Control/remote/remote.css",
-  "./modules/MMM-Remote-Control/manifest.json",
-  "./modules/MMM-Remote-Control/img/favicon.svg",
-  "./modules/MMM-Remote-Control/img/icon-192.png",
-  "./modules/MMM-Remote-Control/img/icon-512.png",
-  "./modules/MMM-Remote-Control/remote/remote.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-menu-routing.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-menu-ui.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-menu.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-utils.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-socket.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-modules.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-config.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-render.mjs",
-  "./modules/MMM-Remote-Control/remote/remote-sanitize.mjs",
-  "./modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js",
-  "./modules/MMM-Remote-Control/node_modules/dompurify/dist/purify.es.mjs"
-];
+  './remote.html',
+  './css/main.css',
+  './css/roboto.css',
+  './css/font-awesome.css',
+  './js/socketclient.js',
+  './modules/MMM-Remote-Control/remote/remote.css',
+  './modules/MMM-Remote-Control/manifest.json',
+  './modules/MMM-Remote-Control/img/favicon.svg',
+  './modules/MMM-Remote-Control/img/icon-192.png',
+  './modules/MMM-Remote-Control/img/icon-512.png',
+  './modules/MMM-Remote-Control/remote/remote.mjs',
+  './modules/MMM-Remote-Control/remote/remote-menu-routing.mjs',
+  './modules/MMM-Remote-Control/remote/remote-menu-ui.mjs',
+  './modules/MMM-Remote-Control/remote/remote-menu.mjs',
+  './modules/MMM-Remote-Control/remote/remote-utils.mjs',
+  './modules/MMM-Remote-Control/remote/remote-socket.mjs',
+  './modules/MMM-Remote-Control/remote/remote-modules.mjs',
+  './modules/MMM-Remote-Control/remote/remote-config.mjs',
+  './modules/MMM-Remote-Control/remote/remote-render.mjs',
+  './modules/MMM-Remote-Control/remote/remote-sanitize.mjs',
+  './modules/MMM-Remote-Control/node_modules/marked/lib/marked.esm.js',
+  './modules/MMM-Remote-Control/node_modules/dompurify/dist/purify.es.mjs',
+]
 
 // Install service worker and skip waiting
-addEventListener("install", (event) => {
+addEventListener('install', (event) => {
   event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_NAME);
+    const cache = await caches.open(CACHE_NAME)
     await Promise.allSettled(urlsToCache.map(async (url) => {
       try {
-        await cache.add(url);
-      } catch (error) {
-        console.warn(`Cache: skipping ${url}:`, error);
+        await cache.add(url)
       }
-    }));
-    globalThis.skipWaiting();
-  })());
-});
+      catch (error) {
+        console.warn(`Cache: skipping ${url}:`, error)
+      }
+    }))
+    globalThis.skipWaiting()
+  })())
+})
 
 // Cache and return requests
-addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") {
-    return;
+addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') {
+    return
   }
 
   event.respondWith((async () => {
-    const response = await caches.match(event.request);
+    const response = await caches.match(event.request)
     // Cache hit - return response
-    return response || fetch(event.request);
-  })());
-});
+    return response || fetch(event.request)
+  })())
+})
 
 // Update service worker
-addEventListener("activate", (event) => {
+addEventListener('activate', (event) => {
   event.waitUntil((async () => {
-    const cacheNames = await caches.keys();
+    const cacheNames = await caches.keys()
     await Promise.all(cacheNames.map((cacheName) => {
       if (cacheName !== CACHE_NAME) {
-        return caches.delete(cacheName);
+        return caches.delete(cacheName)
       }
-    }));
-    return globalThis.clients.claim();
-  })());
-});
+    }))
+    return globalThis.clients.claim()
+  })())
+})
