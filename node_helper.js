@@ -492,10 +492,9 @@ module.exports = NodeHelper.create({
   },
 
   async handleGetSaves(query, response) {
-    const backupHistorySize = 5
     const times = []
 
-    for (let index = backupHistorySize - 1; index > 0; index--) {
+    for (let index = configManager.BACKUP_HISTORY_SIZE - 1; index > 0; index--) {
       const backupPath = path.resolve(`config/config.js.backup${index}`)
       try {
         const stats = await fs.promises.stat(backupPath)
@@ -1118,10 +1117,9 @@ module.exports = NodeHelper.create({
 
         break
       case 'UNDO_CONFIG': {
-        const backupHistorySize = 5
         let iteration = -1
 
-        for (let index = backupHistorySize - 1; index > 0; index--) {
+        for (let index = configManager.BACKUP_HISTORY_SIZE - 1; index > 0; index--) {
           const backupPath = path.resolve(`config/config.js.backup${index}`)
           try {
             const stats = fs.statSync(backupPath)

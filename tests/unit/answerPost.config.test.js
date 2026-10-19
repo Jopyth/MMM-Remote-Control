@@ -98,14 +98,13 @@ describe('answerPost config persistence', () => {
     // The actual path configManager will resolve to
     const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
 
-    const mtimeBySlot = {
-      4: new Date('2025-10-07T12:00:00Z'),
-      3: new Date('2025-10-01T12:00:00Z'),
-      2: new Date('2025-10-08T12:00:00Z'),
-      1: new Date('2025-10-06T12:00:00Z'),
-    }
+    const mtimeBySlot = Object.fromEntries(Array.from(
+      { length: configManager.BACKUP_HISTORY_SIZE - 1 },
+      (_, index) => [index + 1, new Date(Date.UTC(2025, 9, 7, 12) + index * 1000)],
+    ))
+    mtimeBySlot[3] = new Date('2025-10-01T12:00:00Z')
     fs.promises.stat = async (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath)
+      const match = (/backup(\d+)$/u).exec(filePath)
       if (!match) throw Object.assign(new Error('unexpected'), { code: 'ENOENT' })
       const slot = Number(match[1])
       if (Object.hasOwn(mtimeBySlot, slot)) {
@@ -293,7 +292,7 @@ describe('answerPost config persistence', () => {
 
     const targetTime = new Date('2025-10-09T10:00:00Z')
     fs.statSync = (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath)
+      const match = (/backup(\d+)$/u).exec(filePath)
       if (!match) {
         const error = new Error('missing')
         error.code = 'ENOENT'
@@ -337,7 +336,7 @@ describe('answerPost config persistence', () => {
 
     const time = new Date('2025-10-05T09:00:00Z')
     fs.statSync = (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath)
+      const match = (/backup(\d+)$/u).exec(filePath)
       if (!match) {
         const error = new Error('missing')
         error.code = 'ENOENT'

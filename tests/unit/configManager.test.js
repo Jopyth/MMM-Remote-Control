@@ -112,15 +112,14 @@ describe('configManager.findBestBackupSlot', () => {
   })
 
   test('selects oldest backup when all slots exist', async () => {
-    const mtimes = {
-      1: new Date('2025-01-03T10:00:00Z'),
-      2: new Date('2025-01-01T10:00:00Z'), // oldest
-      3: new Date('2025-01-02T15:00:00Z'),
-      4: new Date('2025-01-02T10:00:00Z'),
-    }
+    const mtimes = Object.fromEntries(Array.from(
+      { length: configManager.BACKUP_HISTORY_SIZE - 1 },
+      (_, index) => [index + 1, new Date(Date.UTC(2025, 0, 2) + index * 1000)],
+    ))
+    mtimes[2] = new Date('2025-01-01T10:00:00Z')
 
     fs.promises.stat = async (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath)
+      const match = (/backup(\d+)$/u).exec(filePath)
       if (match && Object.hasOwn(mtimes, Number(match[1]))) {
         return { mtime: mtimes[Number(match[1])] }
       }
@@ -137,7 +136,7 @@ describe('configManager.findBestBackupSlot', () => {
 
   test('selects empty slot over old backups', async () => {
     fs.promises.stat = async (filePath) => {
-      const match = (/backup(\d)/u).exec(filePath)
+      const match = (/backup(\d+)$/u).exec(filePath)
       if (!match) {
         const error = new Error('missing')
         error.code = 'ENOENT'
@@ -171,6 +170,10 @@ describe('configManager.findBestBackupSlot', () => {
 
     assert.equal(result.slot, 1)
     assert.deepEqual(result.mtime, new Date(0))
+  })
+
+  test('retains 30 backup files in addition to the current config', () => {
+    assert.equal(configManager.BACKUP_HISTORY_SIZE - 1, 30)
   })
 })
 

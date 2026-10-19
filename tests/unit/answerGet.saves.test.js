@@ -36,27 +36,20 @@ describe('/api/saves contract', () => {
   test('returns backup timestamps in descending order (newest first)', async () => {
     const helper = freshHelper()
 
-    // Mock 3 backups with different timestamps
+    // Mock three backups with different timestamps
     const oldTime = new Date('2025-01-01T10:00:00Z')
     const middleTime = new Date('2025-01-02T15:00:00Z')
     const newestTime = new Date('2025-01-03T20:00:00Z')
+    const backupTimes = new Map([[30, oldTime], [20, newestTime], [2, middleTime]])
 
     fs.promises.stat = async (filePath) => {
-      if (filePath.includes('backup4')) {
-        return { mtime: oldTime }
+      const slot = Number((/backup(\d+)$/u).exec(filePath)?.[1])
+      if (backupTimes.has(slot)) {
+        return { mtime: backupTimes.get(slot) }
       }
-      if (filePath.includes('backup3')) {
-        return { mtime: newestTime }
-      }
-      if (filePath.includes('backup2')) {
-        return { mtime: middleTime }
-      }
-      if (filePath.includes('backup1')) {
-        const error = new Error('missing')
-        error.code = 'ENOENT'
-        throw error
-      }
-      throw new Error('Unexpected file path')
+      const error = new Error('missing')
+      error.code = 'ENOENT'
+      throw error
     }
 
     await helper.handleGetSaves({ data: 'saves' }, {})
@@ -77,7 +70,7 @@ describe('/api/saves contract', () => {
     const time1 = new Date('2025-01-01T10:00:00Z')
 
     fs.promises.stat = async (filePath) => {
-      if (filePath.includes('backup4')) {
+      if (Number((/backup(\d+)$/u).exec(filePath)?.[1]) === 30) {
         return { mtime: time1 }
       }
       // All others missing
@@ -108,7 +101,7 @@ describe('/api/saves contract', () => {
     assert.deepEqual(payload.data, [])
   })
 
-  test('checks backup files 1-4 (not backup0)', async () => {
+  test('checks backup files 1-30 (not backup0)', async () => {
     const helper = freshHelper()
     const checkedFiles = []
 
@@ -121,12 +114,9 @@ describe('/api/saves contract', () => {
 
     await helper.handleGetSaves({ data: 'saves' }, {})
 
-    // Should check backup4, backup3, backup2, backup1 (not backup0)
-    assert.deepEqual(checkedFiles, [
-      'config.js.backup4',
-      'config.js.backup3',
-      'config.js.backup2',
-      'config.js.backup1',
-    ])
+    assert.deepEqual(checkedFiles, Array.from(
+      { length: 30 },
+      (_, index) => `config.js.backup${30 - index}`,
+    ))
   })
 })
