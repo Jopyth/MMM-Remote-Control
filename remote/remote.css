@@ -183,6 +183,8 @@ a {
   flex-direction: column;
   height: 100vh;
   max-height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
 }
 
 .main-content {
@@ -192,6 +194,7 @@ a {
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-block-end: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
 }
 
 .menu-content {
@@ -259,6 +262,21 @@ a {
 .settings-warning .fa {
   font-size: 1.1em;
   flex-shrink: 0;
+}
+
+.general-config-warning {
+  flex-direction: row;
+  max-width: none;
+  margin-inline: 0;
+  text-align: left;
+}
+
+.general-config-fields {
+  margin-bottom: var(--spacing-lg);
+}
+
+.general-config-field {
+  grid-template-columns: minmax(150px, 0.3fr) minmax(0, 1fr);
 }
 
 .menu-element-container {

@@ -160,6 +160,7 @@ Object.assign(Remote, {
     const t = key => this.translate(key)
     return `<section class="menu-content">
         ${this.renderSettingsMenuContent()}
+        <div id="general-config-settings"></div>
         ${resultList('config-modules', t('LOADING'), t('NO_MODULES_LOADED'))}
       </section>`
   },

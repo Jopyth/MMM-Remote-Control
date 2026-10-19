@@ -720,6 +720,7 @@ Object.assign(
 
     async loadConfigModules() {
       this.changedModules = []
+      this.generalConfigChanged = new Set()
 
       try {
         const { 'data': configData } = await this.loadList(
@@ -729,6 +730,12 @@ Object.assign(
           parent = document.querySelector('#config-modules-results'),
           moduleData = configData.modules
         this.configModulesOriginal = structuredClone(moduleData)
+        this.generalConfigOriginal = Object.fromEntries(
+          ['address', 'port', 'ipWhitelist']
+            .filter(key => Object.hasOwn(configData, key))
+            .map(key => [key, structuredClone(configData[key])]),
+        )
+        this.renderGeneralConfigSettings(configData)
         if (this.addModule) {
           const name = this.addModule
           // We came here from adding a module
@@ -768,6 +775,58 @@ Object.assign(
           error,
         )
       }
+    },
+
+    renderGeneralConfigSettings(configData) {
+      const container = document.querySelector('#general-config-settings')
+      if (!container) return
+      const heading = document.createElement('h2')
+      heading.textContent = 'General settings'
+      const warning = document.createElement('div')
+      warning.className = 'settings-warning general-config-warning'
+      warning.hidden = true
+      warning.innerHTML = '<span class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></span><span>Changing address, port or IP whitelist can lock you out of Remote Control. Make sure you have another way to reach the mirror before saving.</span>'
+
+      const fields = document.createElement('div')
+      fields.className = 'general-config-fields'
+      const addField = (key, type, value, help) => {
+        const label = document.createElement('label')
+        label.className = 'config-label general-config-field'
+        const name = document.createElement('span')
+        name.className = 'label-name'
+        name.textContent = key
+        const input = document.createElement(key === 'ipWhitelist' ? 'textarea' : 'input')
+        input.className = 'global-config-input'
+        input.dataset.configKey = key
+        if (key === 'ipWhitelist') {
+          input.rows = 4
+          input.value = Array.isArray(value) ? value.join('\n') : ''
+          input.placeholder = 'One IP address or CIDR range per line'
+        }
+        else {
+          input.type = type
+          input.value = value ?? ''
+          if (key === 'port') {
+            input.required = true
+            input.min = '1'
+            input.max = '65535'
+            input.step = '1'
+          }
+        }
+        input.addEventListener('input', () => {
+          this.generalConfigChanged.add(key)
+          warning.hidden = false
+          document.querySelector('#save-config')?.classList.add('highlight')
+        })
+        label.title = help
+        label.append(name, input)
+        fields.append(label)
+      }
+
+      addField('address', 'text', configData.address, 'MagicMirror listen address')
+      addField('port', 'number', configData.port, 'MagicMirror server port')
+      addField('ipWhitelist', 'text', configData.ipWhitelist, 'Allowed client IP addresses or CIDR ranges')
+      container.replaceChildren(heading, warning, fields)
     },
 
     restoreConfigMenu() {
@@ -842,6 +901,29 @@ Object.assign(
         const originalIndex = originalModules.length + index
         if (!deletedModules.has(originalIndex)) operations.push({ op: 'append', path: ['modules'], value: module })
       }
+
+      const updatedGeneralConfig = structuredClone(this.generalConfigOriginal || {})
+      const changedGeneralConfigKeys = this.generalConfigChanged || new Set()
+      const globalInputs = [...document.querySelectorAll('.global-config-input')]
+      for (const key of changedGeneralConfigKeys) {
+        const input = globalInputs.find(element => element.dataset.configKey === key)
+        if (key === 'port') {
+          if (!input.reportValidity()) {
+            this.saving = false
+            this.setStatus('error')
+            return
+          }
+          updatedGeneralConfig[key] = input.valueAsNumber
+        }
+        else if (key === 'ipWhitelist') {
+          updatedGeneralConfig[key] = input.value.split(/\r?\n/u).map(value => value.trim()).filter(Boolean)
+        }
+        else {
+          updatedGeneralConfig[key] = input.value
+        }
+      }
+      this.appendConfigDiff([], this.generalConfigOriginal || {}, updatedGeneralConfig, operations)
+      Object.assign(configData, updatedGeneralConfig)
 
       configData.modules = currentModules.filter((_, index) => !deletedModules.has(index))
       this.deletedModules = []

@@ -93,6 +93,13 @@ describe('configSource', () => {
     assert.match(next, /timeFormat: 24/)
   })
 
+  test('applyOps adds a missing property when setting a defaulted value', () => {
+    const next = configSource.applyOps(SAMPLE, [
+      { op: 'set', path: ['ipWhitelist'], value: ['127.0.0.1'] },
+    ])
+    assert.match(next, /ipWhitelist: \["127\.0\.0\.1"\]/u)
+  })
+
   test('applyOps normalizes indentation to the file preferred style', () => {
     const source = `let config = {
   address: "localhost",
