@@ -9,156 +9,183 @@ import markdown from "@eslint/markdown";
 import stylistic from "@stylistic/eslint-plugin";
 import unicorn from "eslint-plugin-unicorn";
 
-const sharedJsExtends = [
-    importX.recommended,
-    jsdocConfigs["flat/recommended"],
-    "js/recommended",
-    stylistic.configs.all,
-    unicorn.configs.recommended
-  ],
-
-  sharedJsRules = {
-    "@stylistic/array-element-newline": ["error", "consistent"],
-    "@stylistic/brace-style": ["error", "1tbs", {"allowSingleLine": true}],
-    "@stylistic/function-call-argument-newline": ["error", "consistent"],
-    "@stylistic/indent": ["error", 2],
-    "@stylistic/max-statements-per-line": ["error", {"max": 3}],
-    "@stylistic/multiline-ternary": "off",
-    "@stylistic/newline-per-chained-call": "off",
-    "@stylistic/no-extra-parens": "off",
-    "@stylistic/no-mixed-operators": "off",
-    "@stylistic/object-property-newline": ["error", {"allowAllPropertiesOnSameLine": true}],
-    "@stylistic/padded-blocks": "off",
-    "@stylistic/quote-props": ["error", "consistent"],
-    "capitalized-comments": "off",
-    "jsdoc/require-jsdoc": [
-      "error", {
-        "require": {
-          "FunctionDeclaration": true,
-          "MethodDefinition": true,
-          "ClassDeclaration": true,
-          "ArrowFunctionExpression": false,
-          "FunctionExpression": false
-        }
-      }
-    ],
-    "jsdoc/require-param": "error",
-    "jsdoc/require-param-type": "error",
-    "jsdoc/require-returns": "error",
-    "jsdoc/require-returns-type": "error",
-    "max-lines-per-function": ["warn", 250],
-    "max-statements": ["warn", 60],
-    "no-inline-comments": "off",
-    "no-magic-numbers": "off",
-    "no-var": "error",
-    "one-var": "off",
-    "sort-keys": "off",
-    "unicorn/filename-case": "off",
-    "unicorn/no-null": "off",
-    "unicorn/prefer-module": "off",
-    "unicorn/prefer-query-selector": "off",
-    "unicorn/prevent-abbreviations": "off",
-    "unicorn/name-replacements": ["error", {"checkFilenames": false}],
-    "unicorn/switch-case-braces": ["error", "avoid"]
-  };
-
-export default defineConfig([
-  globalIgnores(["**/*.min.js", "coverage/**"]),
-  {"files": ["**/*.css"], "plugins": {css}, "language": "css/css", "extends": ["css/recommended"], "rules": {"css/use-baseline": "off"}},
-  {
-    "files": ["**/*.js"],
-    "languageOptions": {
-      "ecmaVersion": "latest",
-      "globals": {
-        ...globals.browser,
-        ...globals.node,
-        "$item": "writable",
-        "$node": "writable",
-        "MMSocket": "readonly"
-      }
-    },
-    "plugins": {js, "jsdoc": pluginJsdoc},
-    "extends": sharedJsExtends,
-    "rules": sharedJsRules
-  },
-  {
-    "files": ["tests/**/*.js"],
-    "rules": {
-      "jsdoc/require-jsdoc": "off",
-      "max-lines-per-function": "off",
-      "unicorn/name-replacements": "off",
-      "unicorn/no-global-object-property-assignment": "off",
-      "unicorn/no-top-level-assignment-in-function": "off"
-    }
-  },
-  {
-    "files": ["tests/**/*.mjs"],
-    "rules": {
-      "class-methods-use-this": "off",
-      "func-style": "off",
-      "init-declarations": "off",
-      "jsdoc/require-jsdoc": "off",
-      "max-lines-per-function": "off",
-      "max-statements": "off",
-      "no-empty-function": "off",
-      "one-var": "off",
-      "require-atomic-updates": "off",
-      "unicorn/name-replacements": "off",
-      "unicorn/no-global-object-property-assignment": "off",
-      "unicorn/no-top-level-assignment-in-function": "off"
-    }
-  },
-  {
-    "files": ["remote/remote.mjs", "remote/remote-*.mjs"],
-    "languageOptions": {
-      "ecmaVersion": "latest",
-      "sourceType": "module",
-      "globals": {
+const sharedGlobals = {
         ...globals.browser,
         ...globals.node,
         "$item": "writable",
         "$node": "writable"
-      }
     },
-    "plugins": {js, "jsdoc": pluginJsdoc},
-    "extends": sharedJsExtends,
-    "rules": {
-      ...sharedJsRules,
-      "unicorn/no-this-outside-of-class": "off"
-    }
-  },
-  {
-    "files": ["**/*.mjs"],
-    "ignores": ["remote/remote.mjs", "remote/remote-*.mjs", "tests/**/*.mjs"],
-    "languageOptions": {
-      "ecmaVersion": "latest",
-      "globals": {
-        ...globals.browser,
-        ...globals.node,
-        "MMSocket": "readonly"
-      },
-      "sourceType": "module"
+
+    sharedJsExtends = [
+        importX.recommended,
+        jsdocConfigs["flat/recommended"],
+        "js/recommended",
+        stylistic.configs.recommended,
+        unicorn.configs.recommended
+    ],
+
+    sharedJsPlugins = {js,
+        "jsdoc": pluginJsdoc},
+
+    sharedJsRules = {
+        "jsdoc/require-jsdoc": [
+            "error",
+            {
+                "require": {
+                    "FunctionDeclaration": true,
+                    "MethodDefinition": true,
+                    "ClassDeclaration": true,
+                    "ArrowFunctionExpression": false,
+                    "FunctionExpression": false
+                }
+            }
+        ],
+        "jsdoc/require-param": "error",
+        "jsdoc/require-param-type": "error",
+        "jsdoc/require-returns": "error",
+        "jsdoc/require-returns-type": "error",
+        "max-lines-per-function": [
+            "warn",
+            250
+        ],
+        "@stylistic/max-statements-per-line": [
+            "error",
+            {"max": 2}
+        ],
+        "max-statements": [
+            "warn",
+            60
+        ],
+        "no-var": "error",
+        "unicorn/filename-case": "off",
+        "unicorn/no-asterisk-prefix-in-documentation-comments": "off",
+        "unicorn/no-null": "off",
+        "unicorn/prefer-module": "off",
+        "unicorn/prefer-query-selector": "off",
+        "unicorn/name-replacements": [
+            "error",
+            {"checkFilenames": false}
+        ],
+        "unicorn/switch-case-braces": [
+            "error",
+            "avoid"
+        ]
+    };
+
+const config = defineConfig([
+    globalIgnores([
+        "**/*.min.js",
+        "coverage/**"
+    ]),
+    {"files": ["**/*.css"],
+        "plugins": {css},
+        "language": "css/css",
+        "extends": ["css/recommended"],
+        "rules": {"css/use-baseline": "off"}},
+    {
+        "files": ["**/*.js"],
+        "languageOptions": {"globals": {...sharedGlobals,
+            "MMSocket": "readonly"}},
+        "plugins": sharedJsPlugins,
+        "extends": sharedJsExtends,
+        "rules": sharedJsRules
     },
-    "plugins": {js},
-    "extends": [importX.recommended, "js/all", stylistic.configs.all, unicorn.configs.recommended],
-    "rules": {
-      "@stylistic/array-element-newline": ["error", "consistent"],
-      "@stylistic/indent": ["error", 2],
-      "@stylistic/object-property-newline": ["error", {"allowAllPropertiesOnSameLine": true}],
-      "import-x/no-unresolved": ["error", {"ignore": ["eslint/config"]}],
-      "no-magic-numbers": "off",
-      "sort-keys": "off",
-      "unicorn/filename-case": "off",
-      "unicorn/name-replacements": ["error", {"checkFilenames": false}]
+    {
+        "files": ["tests/**/*.{js,mjs}"],
+        "rules": {
+            "unicorn/no-asterisk-prefix-in-documentation-comments": "off",
+            "jsdoc/require-jsdoc": "off",
+            "max-lines-per-function": "off",
+            "unicorn/name-replacements": "off",
+            "unicorn/no-global-object-property-assignment": "off",
+            "unicorn/no-top-level-assignment-in-function": "off"
+        }
+    },
+    {
+        "files": ["tests/**/*.mjs"],
+        "rules": {
+            "class-methods-use-this": "off",
+            "func-style": "off",
+            "init-declarations": "off",
+            "max-statements": "off",
+            "no-empty-function": "off",
+            "one-var": "off",
+            "require-atomic-updates": "off"
+        }
+    },
+    {
+        "files": [
+            "remote/remote.mjs",
+            "remote/remote-*.mjs"
+        ],
+        "languageOptions": {"globals": sharedGlobals},
+        "plugins": sharedJsPlugins,
+        "extends": sharedJsExtends,
+        "rules": {
+            ...sharedJsRules,
+            "unicorn/no-this-outside-of-class": "off"
+        }
+    },
+    {
+        "files": ["**/*.mjs"],
+        "ignores": [
+            "remote/remote.mjs",
+            "remote/remote-*.mjs",
+            "tests/**/*.mjs"
+        ],
+        "languageOptions": {
+            "globals": {
+                ...globals.browser,
+                ...globals.node,
+                "MMSocket": "readonly"
+            }
+        },
+        "plugins": {js},
+        "extends": [
+            importX.recommended,
+            "js/all",
+            stylistic.configs.all,
+            unicorn.configs.recommended
+        ],
+        "rules": {
+            "import-x/no-unresolved": [
+                "error",
+                {"ignore": ["eslint/config"]}
+            ],
+            "no-magic-numbers": "off",
+            "sort-keys": "off",
+            "unicorn/filename-case": "off",
+            "unicorn/name-replacements": [
+                "error",
+                {"checkFilenames": false}
+            ]
+        }
+    },
+    {
+        "files": [
+            "MMM-Remote-Control.js",
+            "node_helper.js",
+            "API/api.js"
+        ],
+        "rules": {
+            "unicorn/no-this-outside-of-class": "off"
+        }
+    },
+    {"files": ["**/*.json"],
+        "ignores": ["package-lock.json"],
+        "plugins": {json},
+        "extends": ["json/recommended"],
+        "language": "json/json"},
+    {"files": ["docs/**/*.js"],
+        "rules": {"unicorn/no-global-object-property-assignment": "off"}},
+    {"files": ["**/*.md"],
+        "plugins": {markdown},
+        "extends": ["markdown/recommended"],
+        "language": "markdown/gfm"},
+    {
+        "files": ["eslint.config.mjs"],
+        "rules": {"one-var": "off"}
     }
-  },
-  {
-    "files": ["MMM-Remote-Control.js", "node_helper.js", "API/api.js"],
-    "rules": {
-      "unicorn/no-this-outside-of-class": "off"
-    }
-  },
-  {"files": ["**/*.json"], "ignores": ["package-lock.json"], "plugins": {json}, "extends": ["json/recommended"], "language": "json/json"},
-  {"files": ["docs/**/*.js"], "rules": {"unicorn/no-global-object-property-assignment": "off"}},
-  {"files": ["**/*.md"], "plugins": {markdown}, "extends": ["markdown/recommended"], "language": "markdown/gfm"}
 ]);
+
+export default config;
