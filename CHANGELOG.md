@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.1.0](https://github.com/jopyth/MMM-Remote-Control/compare/v6.0.0...v6.1.0) (2026-10-19)
+
+### Added
+
+- **config:** add global settings editor ([f57069a](https://github.com/jopyth/MMM-Remote-Control/commit/f57069a464e68f29fc395155fe2a4c922ada977a))
+- **config:** preserve config formatting ([cc22a0e](https://github.com/jopyth/MMM-Remote-Control/commit/cc22a0e3ba36616a9a542b40c46dfa2db9865158))
+- **config:** retain 30 config backups ([a7329c7](https://github.com/jopyth/MMM-Remote-Control/commit/a7329c7a0a31a0da302098de003122e1d329a491))
+- **config:** use module schemas in editor ([4a72b52](https://github.com/jopyth/MMM-Remote-Control/commit/4a72b527d597b35c45305f57950c8f0e9f74c758))
+- **config:** validate config before saving ([faa2fc1](https://github.com/jopyth/MMM-Remote-Control/commit/faa2fc1df8cb4968822151b6d0faed4b2676538f))
+
+### Fixed
+
+- **config:** create array items from defaults ([d9cbff3](https://github.com/jopyth/MMM-Remote-Control/commit/d9cbff3bb3c0ebfc50df9410931a7e6be31aa489))
+- **config:** improve config entry creation ([c9bdc7d](https://github.com/jopyth/MMM-Remote-Control/commit/c9bdc7d672a47969c651bdeb12109c3c42998794))
+- **config:** reject invalid config exports ([e83c6c9](https://github.com/jopyth/MMM-Remote-Control/commit/e83c6c97c4a55ff018d695e9c37eb27499c93d66))
+- **config:** write saves atomically ([cbda394](https://github.com/jopyth/MMM-Remote-Control/commit/cbda3949942120596f09fd93ce98312d2085eb23))
+- **release:** match cache name declaration ([8ecf9a8](https://github.com/jopyth/MMM-Remote-Control/commit/8ecf9a83a481dcc128215563cf9c637d315dd6bc))
+
+### Documentation
+
+- clarify setup and configuration ([b7f0257](https://github.com/jopyth/MMM-Remote-Control/commit/b7f02572ef18a2904aec5e5005f6b82dfafb4c85))
+
+### Chores
+
+- update dependencies ([dced0a5](https://github.com/jopyth/MMM-Remote-Control/commit/dced0a5b8a94779b3b59ed9b9d53971fbb2d07a0))
+
+### Code Refactoring
+
+- apply new linter rules ([d8b3aa5](https://github.com/jopyth/MMM-Remote-Control/commit/d8b3aa50ee8107d63b7f860192718503fd04d3ff))
+- **eslint:** update and simplify ruleset ([efed373](https://github.com/jopyth/MMM-Remote-Control/commit/efed373abeefcd6697cf926016197489b636aa1a))
+
 ## [6.0.0](https://github.com/jopyth/MMM-Remote-Control/compare/v5.1.1...v6.0.0) (2026-10-02)
 
 ### ⚠ BREAKING CHANGES
