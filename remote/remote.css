@@ -918,9 +918,22 @@ nav.notification-menu {
   display: flex;
   align-items: stretch;
   align-content: stretch;
+  gap: var(--spacing-sm);
+}
+
+.add-input-wrapper .config-add-select {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+}
+
+.add-input-wrapper .config-add-custom {
+  flex: 1 1 100%;
+  min-width: 0;
 }
 
 .add-input-wrapper .fa-plus {
+  flex: 0 0 auto;
   justify-content: space-around;
 }
 

@@ -414,6 +414,110 @@ Object.assign(
       return typeIndex === -1 ? '' : structuredClone(this.values[typeIndex])
     },
 
+    createObjectAddElement(path, dataToEdit, type) {
+      const addElement = this.createConfigLabel(
+        `${path}/<add>`,
+        this.translate('ADD_ENTRY'),
+        type,
+        true,
+        'fa-plus',
+      )
+      addElement.classList.add('bottom-spacing')
+      const inputWrapper = document.createElement('div')
+      inputWrapper.className = 'add-input-wrapper'
+      const select = document.createElement('select')
+      select.id = `${path}/<add>`
+      select.className = 'config-add-select'
+      select.setAttribute('aria-label', this.translate('ADD_ENTRY'))
+      const placeholder = document.createElement('option')
+      placeholder.value = ''
+      placeholder.textContent = this.translate('ADD_ENTRY')
+      placeholder.disabled = true
+      placeholder.selected = true
+      select.append(placeholder)
+      for (const [index, key] of this.getSuggestedConfigKeys(path, dataToEdit).entries()) {
+        const option = document.createElement('option')
+        option.value = `suggestion-${index}`
+        option.dataset.key = key
+        option.textContent = key
+        select.append(option)
+      }
+      const customOption = document.createElement('option')
+      customOption.value = 'custom-property'
+      customOption.textContent = this.translate('NEW_ENTRY_NAME')
+      select.append(customOption)
+      const input = document.createElement('input')
+      input.id = `${path}/<custom>`
+      input.className = 'config-add-custom'
+      input.type = 'text'
+      input.placeholder = this.translate('NEW_ENTRY_NAME')
+      input.hidden = true
+      input.setAttribute('aria-label', this.translate('NEW_ENTRY_NAME'))
+      select.addEventListener('change', () => {
+        const isCustom = select.value === customOption.value
+        input.hidden = !isCustom
+        input.classList.remove('input-error')
+        select.classList.remove('input-error')
+        if (isCustom) input.focus()
+      })
+      addElement.append(inputWrapper)
+      inputWrapper.append(select, input)
+      const addFunction = () => {
+          const existingKey = Object.keys(dataToEdit)[0],
+            lastType = existingKey === undefined
+              ? 'string'
+              : this.getTypeAsString(dataToEdit[existingKey], `${path}/${existingKey}`),
+            selectedOption = select.selectedOptions[0],
+            isCustom = select.value === customOption.value,
+            key = isCustom ? input.value.trim() : selectedOption?.dataset.key
+
+          if (!key || document.getElementById(`${path}/${key}`)) {
+            const invalidInput = isCustom ? input : select
+            invalidInput.classList.add('input-error')
+            return
+          }
+
+          input.classList.remove('input-error')
+          select.classList.remove('input-error')
+          dataToEdit[key] = this.getNewConfigValue(path, key, lastType)
+          const newElement = this.createObjectGUI(
+            `${path}/${key}`,
+            key,
+            dataToEdit[key],
+          )
+          addElement.after(newElement)
+          input.value = ''
+          input.hidden = true
+          select.value = ''
+          if (!isCustom) selectedOption.remove()
+        },
+        symbol = document.createElement('span')
+      symbol.className = 'fa fa-fw fa-plus-square button'
+      symbol.addEventListener(
+        'click',
+        addFunction,
+        { capture: false },
+      )
+      inputWrapper.append(symbol)
+      input.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key !== 'Enter') return
+          event.preventDefault()
+          addFunction()
+        },
+      )
+      select.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key !== 'Enter' || !select.value) return
+          event.preventDefault()
+          addFunction()
+        },
+      )
+      return addElement
+    },
+
     hasForcedType(path) {
       return (path.match(/\//g) || []).length === 1
     },
@@ -500,77 +604,7 @@ Object.assign(
           'fa-list-ul',
           schema,
         ))
-
-        const addElement = this.createConfigLabel(
-          `${path}/<add>`,
-          this.translate('ADD_ENTRY'),
-          type,
-          true,
-          'fa-plus',
-        )
-        addElement.classList.add('bottom-spacing')
-        const inputWrapper = document.createElement('div')
-        inputWrapper.className = 'add-input-wrapper'
-        const input = this.createConfigInput(
-          `${path}/<add>`,
-          '',
-        )
-        input.type = 'text'
-        input.placeholder = this.translate('NEW_ENTRY_NAME')
-        const datalist = document.createElement('datalist')
-        this.configSuggestionId = (this.configSuggestionId ?? 0) + 1
-        datalist.id = `config-key-suggestions-${this.configSuggestionId}`
-        input.setAttribute('list', datalist.id)
-        for (const key of this.getSuggestedConfigKeys(path, dataToEdit)) {
-          const option = document.createElement('option')
-          option.value = key
-          datalist.append(option)
-        }
-        addElement.append(inputWrapper)
-        inputWrapper.append(input, datalist)
-        const addFunction = () => {
-            const existingKey = Object.keys(dataToEdit)[0],
-              lastType = this.getTypeAsString(
-                `${path}/${existingKey}`,
-                dataToEdit[existingKey],
-              ),
-              key = input.value.trim()
-
-            if (!key || document.getElementById(`${path}/${key}`)) {
-              input.classList.add('input-error')
-              return
-            }
-
-            input.classList.remove('input-error')
-            dataToEdit[key] = this.getNewConfigValue(path, key, lastType)
-            const newElement = this.createObjectGUI(
-              `${path}/${key}`,
-              key,
-              dataToEdit[key],
-            )
-            addElement.after(newElement)
-            input.value = ''
-          },
-          symbol = document.createElement('span')
-        symbol.className = 'fa fa-fw fa-plus-square button'
-        symbol.addEventListener(
-          'click',
-          addFunction,
-          { capture: false },
-        )
-        inputWrapper.append(symbol)
-        input.addEventListener(
-          'keydown',
-          (event) => {
-            if (event.key !== 'Enter') {
-              return
-            }
-
-            event.preventDefault()
-            addFunction()
-          },
-        )
-        wrapper.append(addElement)
+        wrapper.append(this.createObjectAddElement(path, dataToEdit, type))
       }
       let keys = Object.keys(dataToEdit)
       if (path === '<root>') {

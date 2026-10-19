@@ -196,6 +196,72 @@ describe('config schema helpers', () => {
       Remote.translate = previousTranslate
     }
   })
+
+  test('adds a suggested property selected from the native dropdown', () => {
+    const previousSchema = Remote.currentConfigSchema,
+      previousDefaults = Remote.currentConfigDefaults,
+      previousTranslate = Remote.translate,
+      config = {}
+    Remote.currentConfigSchema = {
+      type: 'object',
+      properties: { suggested: { type: 'boolean' } },
+    }
+    Remote.currentConfigDefaults = { suggested: true }
+    Remote.translate = key => key
+    const editor = Remote.createObjectGUI('<root>', '', {
+      module: 'example',
+      config,
+    })
+    document.body.append(editor)
+
+    try {
+      const select = editor.querySelector(':scope .config-add-select')
+      assert.equal(select.options[1].dataset.key, 'suggested')
+      select.value = 'suggestion-0'
+      select.dispatchEvent(new document.defaultView.Event('change'))
+      editor.querySelector(':scope .add-input-wrapper .fa-plus-square').click()
+      assert.deepEqual(config, { suggested: true })
+      assert.deepEqual(Remote.getModuleConfigFromUI().config, { suggested: true })
+    }
+    finally {
+      editor.remove()
+      Remote.currentConfigSchema = previousSchema
+      Remote.currentConfigDefaults = previousDefaults
+      Remote.translate = previousTranslate
+    }
+  })
+
+  test('adds a manually entered property without serializing the key input', () => {
+    const previousSchema = Remote.currentConfigSchema,
+      previousDefaults = Remote.currentConfigDefaults,
+      previousTranslate = Remote.translate,
+      config = {}
+    Remote.currentConfigSchema = { type: 'object', properties: {} }
+    Remote.currentConfigDefaults = {}
+    Remote.translate = key => key
+    const editor = Remote.createObjectGUI('<root>', '', {
+      module: 'example',
+      config,
+    })
+    document.body.append(editor)
+
+    try {
+      const select = editor.querySelector(':scope .config-add-select'),
+        input = editor.querySelector(':scope .config-add-custom')
+      select.value = 'custom-property'
+      select.dispatchEvent(new document.defaultView.Event('change'))
+      input.value = 'manualKey'
+      editor.querySelector(':scope .add-input-wrapper .fa-plus-square').click()
+      assert.deepEqual(config, { manualKey: '' })
+      assert.deepEqual(Remote.getModuleConfigFromUI().config, { manualKey: '' })
+    }
+    finally {
+      editor.remove()
+      Remote.currentConfigSchema = previousSchema
+      Remote.currentConfigDefaults = previousDefaults
+      Remote.translate = previousTranslate
+    }
+  })
 })
 
 describe('createConfigInput', () => {
