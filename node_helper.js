@@ -407,8 +407,22 @@ module.exports = NodeHelper.create({
     const temporaryPath = path.join(path.dirname(configPath), `.config-validation-${randomUUID()}.js`)
     try {
       await fs.promises.writeFile(temporaryPath, source, { flag: 'wx' })
+      const validationScript = `
+        const config = require(${JSON.stringify(temporaryPath)});
+        if (!config || typeof config !== 'object' || Array.isArray(config)) {
+          throw new Error('config.js must export a config object.');
+        }
+        if (!Array.isArray(config.modules)) {
+          throw new Error('config.modules must be an array.');
+        }
+        for (const [index, module] of config.modules.entries()) {
+          if (!module || typeof module !== 'object' || Array.isArray(module) || typeof module.module !== 'string' || !module.module.trim()) {
+            throw new Error('config.modules[' + index + '] must have a non-empty module name.');
+          }
+        }
+      `
       await new Promise((resolve, reject) => {
-        execFile(process.execPath, [temporaryPath], {
+        execFile(process.execPath, ['-e', validationScript], {
           cwd: path.dirname(configPath),
           timeout: 10_000,
         }, (error, _stdout, stderr) => {

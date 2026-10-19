@@ -273,10 +273,28 @@ describe('answerPost config persistence', () => {
     const temporaryDirectory = await fs.promises.mkdtemp(path.join(require('node:os').tmpdir(), 'mmm-config-validation-'))
     const configPath = path.join(temporaryDirectory, 'config.js')
     try {
-      await fs.promises.writeFile(configPath, 'let config = {};')
-      await helper.validateConfigSource(configPath, 'let config = {};')
+      await fs.promises.writeFile(path.join(temporaryDirectory, 'modules.js'), 'module.exports = [{ module: "MMM-CustomNotInstalled" }];')
+      const validSource = `const modules = require('./modules.js');
+let config = { modules };
+if (typeof module !== 'undefined') { module.exports = config; }`
+      await fs.promises.writeFile(configPath, validSource)
+      await helper.validateConfigSource(configPath, validSource)
+      await helper.validateConfigSource(configPath, 'module.exports = { modules: [] };')
       await assert.rejects(helper.validateConfigSource(configPath, 'let config = {;'), /SyntaxError/u)
-      assert.deepEqual(await fs.promises.readdir(temporaryDirectory), ['config.js'])
+      await assert.rejects(
+        helper.validateConfigSource(configPath, 'module.exports = { modules: {} };'),
+        /config\.modules must be an array/u,
+      )
+      await assert.rejects(
+        helper.validateConfigSource(configPath, 'module.exports = { modules: [{}] };'),
+        /non-empty module name/u,
+      )
+      await assert.rejects(
+        helper.validateConfigSource(configPath, 'module.exports = null;'),
+        /must export a config object/u,
+      )
+      const remainingFiles = await fs.promises.readdir(temporaryDirectory)
+      assert.deepEqual(new Set(remainingFiles), new Set(['config.js', 'modules.js']))
     }
     finally {
       await fs.promises.rm(temporaryDirectory, { recursive: true, force: true })
