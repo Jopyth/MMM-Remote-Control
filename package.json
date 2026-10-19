@@ -43,6 +43,7 @@
     "test:unit": "node --test tests/unit/**/*.test.js"
   },
   "dependencies": {
+    "acorn": "^8.19.0",
     "dompurify": "^3.4.17",
     "marked": "^18.1.1",
     "qrcode": "^1.5.4",

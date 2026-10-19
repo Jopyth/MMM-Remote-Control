@@ -728,6 +728,7 @@ Object.assign(
           ),
           parent = document.querySelector('#config-modules-results'),
           moduleData = configData.modules
+        this.configModulesOriginal = structuredClone(moduleData)
         if (this.addModule) {
           const name = this.addModule
           // We came here from adding a module
@@ -823,12 +824,46 @@ Object.assign(
       this.saving = true
       this.setStatus('loading')
       const configData = this.savedData.config
-      configData.modules = configData.modules.filter((_, index) => !this.deletedModules.includes(index))
+      const originalModules = this.configModulesOriginal || []
+      const currentModules = configData.modules
+      const deletedModules = new Set(this.deletedModules)
+      const operations = []
+
+      for (const [index, original] of originalModules.entries()) {
+        if (deletedModules.has(index) || index >= currentModules.length) continue
+        this.appendConfigDiff(['modules', index], original, currentModules[index], operations)
+      }
+      const deletedIndices = [...deletedModules].toSorted((left, right) => right - left)
+      for (const index of deletedIndices) {
+        operations.push({ op: 'remove', path: ['modules', index] })
+      }
+      const addedModules = currentModules.slice(originalModules.length)
+      for (const [index, module] of addedModules.entries()) {
+        const originalIndex = originalModules.length + index
+        if (!deletedModules.has(originalIndex)) operations.push({ op: 'append', path: ['modules'], value: module })
+      }
+
+      configData.modules = currentModules.filter((_, index) => !deletedModules.has(index))
       this.deletedModules = []
       this.sendSocketNotification(
         'NEW_CONFIG',
-        configData,
+        { config: configData, operations },
       )
+    },
+
+    appendConfigDiff(path, original, updated, operations) {
+      if (JSON.stringify(original) === JSON.stringify(updated)) return
+      if (original && updated && typeof original === 'object' && typeof updated === 'object' && !Array.isArray(original) && !Array.isArray(updated)) {
+        for (const key of Object.keys(original)) {
+          if (!Object.hasOwn(updated, key)) operations.push({ op: 'remove', path: [...path, key] })
+        }
+        for (const [key, value] of Object.entries(updated)) {
+          if (Object.hasOwn(original, key)) this.appendConfigDiff([...path, key], original[key], value, operations)
+          else operations.push({ op: 'add', path, key, value })
+        }
+        return
+      }
+      operations.push({ op: 'set', path, value: updated })
     },
 
     handleSaveConfig(result) {
