@@ -23,7 +23,8 @@
 
 const Log = require('logger')
 const NodeHelper = require('node_helper')
-const { exec } = require('node:child_process')
+const { exec, execFile } = require('node:child_process')
+const { randomUUID } = require('node:crypto')
 const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
@@ -362,10 +363,10 @@ module.exports = NodeHelper.create({
     }
 
     const backupPath = path.resolve(`config/config.js.backup${backupSlot.slot}`)
+    let hasBackup = false
 
     try {
       const currentSource = await fs.promises.readFile(configPath, 'utf8')
-      await fs.promises.copyFile(configPath, backupPath)
 
       const newConfig = configManager.removeDefaultValues(__dirname, configData, this.configData)
       let configContent
@@ -377,6 +378,9 @@ module.exports = NodeHelper.create({
         configContent = configDiff.applyConfigDiff(currentSource, oldConfig, newConfig)
       }
 
+      await this.validateConfigSource(configPath, configContent)
+      await fs.promises.copyFile(configPath, backupPath)
+      hasBackup = true
       await fs.promises.writeFile(configPath, configContent)
       this.configOnHd = newConfig
 
@@ -393,9 +397,32 @@ module.exports = NodeHelper.create({
       query.data = 'config_update'
       this.sendResponse(response, error, {
         query,
-        backup: backupPath,
+        backup: hasBackup ? backupPath : undefined,
         data: this.configOnHd,
       })
+    }
+  },
+
+  async validateConfigSource(configPath, source) {
+    const temporaryPath = path.join(path.dirname(configPath), `.config-validation-${randomUUID()}.js`)
+    try {
+      await fs.promises.writeFile(temporaryPath, source, { flag: 'wx' })
+      await new Promise((resolve, reject) => {
+        execFile(process.execPath, [temporaryPath], {
+          cwd: path.dirname(configPath),
+          timeout: 10_000,
+        }, (error, _stdout, stderr) => {
+          if (error) {
+            reject(new Error(stderr.trim() || error.message, { cause: error }))
+          }
+          else {
+            resolve()
+          }
+        })
+      })
+    }
+    finally {
+      await fs.promises.rm(temporaryPath, { force: true })
     }
   },
 

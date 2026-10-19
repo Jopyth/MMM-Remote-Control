@@ -94,6 +94,7 @@ describe('answerPost config persistence', () => {
 
   test('rotates oldest backup and writes new config', async () => {
     const helper = freshHelper()
+    helper.validateConfigSource = async () => {}
     // The actual path configManager will resolve to
     const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
 
@@ -168,6 +169,7 @@ describe('answerPost config persistence', () => {
 
   test('propagates write errors', async () => {
     const helper = freshHelper()
+    helper.validateConfigSource = async () => {}
 
     fs.promises.stat = async () => {
       const error_ = new Error('missing')
@@ -201,6 +203,7 @@ describe('answerPost config persistence', () => {
 
   test('NEW_CONFIG applies explicit source operations', async () => {
     const helper = freshHelper()
+    helper.validateConfigSource = async () => {}
     const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
     fs.promises.stat = async () => {
       const error = new Error('missing')
@@ -228,6 +231,57 @@ describe('answerPost config persistence', () => {
     assert.match(written.contents, /if \(typeof module !== "undefined"\)/u)
     assert.equal(helper.__responses[0].error, undefined)
     assert.equal(helper.__responses[0].payload.query.data, 'config_update')
+  })
+
+  test('rejects invalid config before backup or overwrite', async () => {
+    const helper = freshHelper()
+    const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
+    const originalSource = BASE_CONFIG_SOURCE
+    fs.promises.stat = async () => {
+      const error = new Error('missing')
+      error.code = 'ENOENT'
+      throw error
+    }
+    fs.promises.readFile = async () => originalSource
+    let hasBackup = false
+    let wasConfigWritten = false
+    fs.promises.copyFile = async () => {
+      hasBackup = true
+    }
+    fs.promises.writeFile = async (target) => {
+      if (target === expectedConfigPath) wasConfigWritten = true
+    }
+    helper.validateConfigSource = async () => {
+      throw new Error('Config has invalid syntax')
+    }
+
+    const responsePromise = new Promise((resolve) => {
+      helper.sendResponse = (_res, error, payload) => {
+        resolve({ error, payload })
+      }
+    })
+    await helper.answerPost({ data: 'config' }, { body: { foo: 'bar' } }, {})
+    const { error, payload } = await responsePromise
+
+    assert.match(error.message, /invalid syntax/u)
+    assert.equal(hasBackup, false)
+    assert.equal(wasConfigWritten, false)
+    assert.equal(payload.backup, undefined)
+  })
+
+  test('loads candidate config in a subprocess and removes temporary file', async () => {
+    const helper = freshHelper()
+    const temporaryDirectory = await fs.promises.mkdtemp(path.join(require('node:os').tmpdir(), 'mmm-config-validation-'))
+    const configPath = path.join(temporaryDirectory, 'config.js')
+    try {
+      await fs.promises.writeFile(configPath, 'let config = {};')
+      await helper.validateConfigSource(configPath, 'let config = {};')
+      await assert.rejects(helper.validateConfigSource(configPath, 'let config = {;'), /SyntaxError/u)
+      assert.deepEqual(await fs.promises.readdir(temporaryDirectory), ['config.js'])
+    }
+    finally {
+      await fs.promises.rm(temporaryDirectory, { recursive: true, force: true })
+    }
   })
 
   test('UNDO_CONFIG restores backup when timestamp matches', () => {
