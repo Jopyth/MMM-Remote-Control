@@ -51,6 +51,9 @@ describe('answerPost config persistence', () => {
     originalFs.copyFile = fs.promises.copyFile
     originalFs.writeFile = fs.promises.writeFile
     originalFs.readFile = fs.promises.readFile
+    originalFs.chmod = fs.promises.chmod
+    originalFs.rename = fs.promises.rename
+    originalFs.rm = fs.promises.rm
 
     // Store original configManager method
     originalSaveConfigWithBackup = configManager.saveConfigWithBackup
@@ -79,6 +82,9 @@ describe('answerPost config persistence', () => {
     fs.promises.copyFile = originalFs.copyFile
     fs.promises.writeFile = originalFs.writeFile
     fs.promises.readFile = originalFs.readFile
+    fs.promises.chmod = originalFs.chmod
+    fs.promises.rename = originalFs.rename
+    fs.promises.rm = originalFs.rm
 
     // Restore configManager
     if (originalSaveConfigWithBackup) {
@@ -104,6 +110,7 @@ describe('answerPost config persistence', () => {
     ))
     mtimeBySlot[3] = new Date('2025-10-01T12:00:00Z')
     fs.promises.stat = async (filePath) => {
+      if (filePath === expectedConfigPath) return { mode: 0o640 }
       const match = (/backup(\d+)$/u).exec(filePath)
       if (!match) throw Object.assign(new Error('unexpected'), { code: 'ENOENT' })
       const slot = Number(match[1])
@@ -116,6 +123,7 @@ describe('answerPost config persistence', () => {
     }
 
     let written
+    let renamed
     fs.promises.readFile = async () => BASE_CONFIG_SOURCE
     fs.promises.copyFile = async (source, destination) => {
       assert.equal(source, expectedConfigPath)
@@ -123,6 +131,13 @@ describe('answerPost config persistence', () => {
     }
     fs.promises.writeFile = async (target, contents) => {
       written = { target, contents }
+    }
+    fs.promises.chmod = async (target, mode) => {
+      assert.equal(target, written.target)
+      assert.equal(mode, 0o640)
+    }
+    fs.promises.rename = async (source, target) => {
+      renamed = { source, target }
     }
 
     const payload = { modules: [], foo: 'bar' }
@@ -139,7 +154,10 @@ describe('answerPost config persistence', () => {
 
     const { error, data } = await responsePromise
     assert.equal(error, undefined)
-    assert.equal(written.target, expectedConfigPath)
+    assert.notEqual(written.target, expectedConfigPath)
+    assert.match(path.basename(written.target), /^\.config\.js\..+\.tmp$/u)
+    assert.equal(renamed.source, written.target)
+    assert.equal(renamed.target, expectedConfigPath)
     assert.match(written.contents, /modules: \[\]/u)
     assert.match(written.contents, /foo: "bar"/u)
     assert.equal(data.backup, path.resolve('config/config.js.backup3'))
@@ -177,6 +195,13 @@ describe('answerPost config persistence', () => {
     }
 
     const writeError = new Error('disk full')
+    const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
+    fs.promises.stat = async (filePath) => {
+      if (filePath === expectedConfigPath) return { mode: 0o644 }
+      const error_ = new Error('missing')
+      error_.code = 'ENOENT'
+      throw error_
+    }
     fs.promises.readFile = async () => BASE_CONFIG_SOURCE
     fs.promises.copyFile = async () => {
       // Copy succeeds
@@ -204,28 +229,40 @@ describe('answerPost config persistence', () => {
     const helper = freshHelper()
     helper.validateConfigSource = async () => {}
     const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
-    fs.promises.stat = async () => {
+    fs.promises.stat = async (filePath) => {
+      if (filePath === expectedConfigPath) return { mode: 0o644 }
       const error = new Error('missing')
       error.code = 'ENOENT'
       throw error
     }
     fs.promises.readFile = async () => BASE_CONFIG_SOURCE
     fs.promises.copyFile = async () => {}
+    fs.promises.chmod = async () => {}
     let written
+    let renamed
     fs.promises.writeFile = async (target, contents) => {
       written = { target, contents }
     }
-    helper.sendSocketNotification = (notification, payload) => {
-      helper.__responses.push({ notification, payload })
+    fs.promises.rename = async (source, target) => {
+      renamed = { source, target }
     }
+    const originalSendResponse = helper.sendResponse
+    const responsePromise = new Promise((resolve) => {
+      helper.sendResponse = (response, error, payload) => {
+        originalSendResponse(response, error, payload)
+        resolve()
+      }
+    })
 
     helper.socketNotificationReceived('NEW_CONFIG', {
       config: { modules: [], foo: 'bar' },
       operations: [{ op: 'add', path: [], key: 'foo', value: 'bar' }],
     })
-    await new Promise(resolve => setImmediate(resolve))
+    await responsePromise
 
-    assert.equal(written.target, expectedConfigPath)
+    assert.notEqual(written.target, expectedConfigPath)
+    assert.equal(renamed.source, written.target)
+    assert.equal(renamed.target, expectedConfigPath)
     assert.match(written.contents, /foo: "bar"/u)
     assert.match(written.contents, /if \(typeof module !== "undefined"\)/u)
     assert.equal(helper.__responses[0].error, undefined)
@@ -236,7 +273,8 @@ describe('answerPost config persistence', () => {
     const helper = freshHelper()
     const expectedConfigPath = path.resolve(__dirname, '../../../../config/config.js')
     const originalSource = BASE_CONFIG_SOURCE
-    fs.promises.stat = async () => {
+    fs.promises.stat = async (filePath) => {
+      if (filePath === expectedConfigPath) return { mode: 0o644 }
       const error = new Error('missing')
       error.code = 'ENOENT'
       throw error
@@ -244,11 +282,15 @@ describe('answerPost config persistence', () => {
     fs.promises.readFile = async () => originalSource
     let hasBackup = false
     let wasConfigWritten = false
+    let wasConfigReplaced = false
     fs.promises.copyFile = async () => {
       hasBackup = true
     }
     fs.promises.writeFile = async (target) => {
       if (target === expectedConfigPath) wasConfigWritten = true
+    }
+    fs.promises.rename = async (_source, target) => {
+      if (target === expectedConfigPath) wasConfigReplaced = true
     }
     helper.validateConfigSource = async () => {
       throw new Error('Config has invalid syntax')
@@ -265,6 +307,7 @@ describe('answerPost config persistence', () => {
     assert.match(error.message, /invalid syntax/u)
     assert.equal(hasBackup, false)
     assert.equal(wasConfigWritten, false)
+    assert.equal(wasConfigReplaced, false)
     assert.equal(payload.backup, undefined)
   })
 

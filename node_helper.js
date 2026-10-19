@@ -367,6 +367,7 @@ module.exports = NodeHelper.create({
 
     try {
       const currentSource = await fs.promises.readFile(configPath, 'utf8')
+      const configStats = await fs.promises.stat(configPath)
 
       const newConfig = configManager.removeDefaultValues(__dirname, configData, this.configData)
       let configContent
@@ -381,7 +382,7 @@ module.exports = NodeHelper.create({
       await this.validateConfigSource(configPath, configContent)
       await fs.promises.copyFile(configPath, backupPath)
       hasBackup = true
-      await fs.promises.writeFile(configPath, configContent)
+      await this.writeConfigAtomically(configPath, configContent, configStats.mode)
       this.configOnHd = newConfig
 
       query.data = 'config_update'
@@ -400,6 +401,18 @@ module.exports = NodeHelper.create({
         backup: hasBackup ? backupPath : undefined,
         data: this.configOnHd,
       })
+    }
+  },
+
+  async writeConfigAtomically(configPath, source, mode) {
+    const temporaryPath = path.join(path.dirname(configPath), `.${path.basename(configPath)}.${randomUUID()}.tmp`)
+    try {
+      await fs.promises.writeFile(temporaryPath, source, { flag: 'wx', mode: mode & 0o7777 })
+      await fs.promises.chmod(temporaryPath, mode & 0o7777)
+      await fs.promises.rename(temporaryPath, configPath)
+    }
+    finally {
+      await fs.promises.rm(temporaryPath, { force: true })
     }
   },
 
