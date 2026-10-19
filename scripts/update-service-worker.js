@@ -19,13 +19,16 @@ let serviceWorker = fs.readFileSync(serviceWorkerPath, 'utf8')
 
 // Update version in CACHE_NAME
 const newCacheName = `mmm-remote-control-v${version}`
-const cacheNamePattern = /const CACHE_NAME = "[^"]*";/u
-const currentCacheNameLine = serviceWorker.match(cacheNamePattern)?.[0]
+const cacheNamePattern = /const CACHE_NAME = (["'])([^"']*)\1;?/u
+const currentCacheNameMatch = serviceWorker.match(cacheNamePattern)
+const currentCacheNameLine = currentCacheNameMatch?.[0]
 if (!currentCacheNameLine) {
   throw new Error('CACHE_NAME not found in service-worker.js')
 }
-const updatedCacheNameLine = `const CACHE_NAME = "${newCacheName}";`
-serviceWorker = serviceWorker.split(currentCacheNameLine).join(updatedCacheNameLine)
+const quote = currentCacheNameMatch[1]
+const semicolon = currentCacheNameLine.endsWith(';') ? ';' : ''
+const updatedCacheNameLine = `const CACHE_NAME = ${quote}${newCacheName}${quote}${semicolon}`
+serviceWorker = serviceWorker.replace(cacheNamePattern, () => updatedCacheNameLine)
 
 // Write updated service-worker.js
 fs.writeFileSync(serviceWorkerPath, serviceWorker, 'utf8')

@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict')
+const { execFileSync } = require('node:child_process')
 const fs = require('node:fs')
+const os = require('node:os')
 const path = require('node:path')
 const { describe, test } = require('node:test')
 
@@ -51,6 +53,29 @@ describe('basePath-safe remote asset paths', () => {
     const { version } = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf8'))
 
     assert.match(serviceWorker, new RegExp(`const CACHE_NAME = ['"]mmm-remote-control-v${version.replaceAll('.', String.raw`\.`)}['"];?`))
+  })
+
+  test('release script updates cache names with either quote style', () => {
+    const temporaryDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'mmm-remote-release-')),
+      scriptsDirectory = path.join(temporaryDirectory, 'scripts'),
+      scriptPath = path.join(scriptsDirectory, 'update-service-worker.js'),
+      sourceScript = path.resolve(__dirname, '../../scripts/update-service-worker.js')
+    fs.mkdirSync(scriptsDirectory)
+    fs.copyFileSync(sourceScript, scriptPath)
+    fs.writeFileSync(path.join(temporaryDirectory, 'package.json'), JSON.stringify({ version: '6.1.0' }))
+
+    try {
+      for (const [quote, semicolon] of [[String.fromCodePoint(39), ''], [String.fromCodePoint(34), ';']]) {
+        const originalCacheLine = `const CACHE_NAME = ${quote}old-cache${quote}${semicolon}`
+        fs.writeFileSync(path.join(temporaryDirectory, 'service-worker.js'), originalCacheLine)
+        execFileSync(process.execPath, [scriptPath])
+        const updatedCacheLine = fs.readFileSync(path.join(temporaryDirectory, 'service-worker.js'), 'utf8')
+        assert.equal(updatedCacheLine, `const CACHE_NAME = ${quote}mmm-remote-control-v6.1.0${quote}${semicolon}`)
+      }
+    }
+    finally {
+      fs.rmSync(temporaryDirectory, { recursive: true, force: true })
+    }
   })
 
   test('service worker cache list covers every remote module and import-map target', () => {
