@@ -362,6 +362,34 @@ Object.assign(
       ])].filter(key => !Object.hasOwn(currentValue, key))
     },
 
+    getNewArrayItemValue(path, index, currentItems, fallbackType) {
+      const defaults = this.getConfigDefaultsAtPath(path)
+      if (Array.isArray(defaults) && defaults.length > 0) {
+        return structuredClone(defaults[Math.min(index, defaults.length - 1)])
+      }
+
+      const schema = this.getConfigSchemaAtPath(`${path}/#${index}`)
+      if (schema && Object.hasOwn(schema, 'default')) return structuredClone(schema.default)
+      if (Array.isArray(schema?.enum) && schema.enum.length > 0) return structuredClone(schema.enum[0])
+
+      let type = schema?.type
+      if (Array.isArray(type)) type = type.find(candidate => candidate !== 'null')
+      const schemaDefaults = {
+        string: '',
+        number: 0,
+        integer: 0,
+        boolean: false,
+        array: [],
+        object: {},
+        null: null,
+      }
+      if (Object.hasOwn(schemaDefaults, type)) return structuredClone(schemaDefaults[type])
+      if (currentItems.length > 0) return structuredClone(currentItems.at(-1))
+
+      const typeIndex = this.types.indexOf(fallbackType)
+      return typeIndex === -1 ? '' : structuredClone(this.values[typeIndex])
+    },
+
     getNewConfigValue(path, key, fallbackType) {
       const defaults = this.getConfigDefaultsAtPath(path),
         schema = this.getConfigSchemaAtPath(`${path}/${key}`)
@@ -443,17 +471,18 @@ Object.assign(
         add.addEventListener(
           'click',
           () => {
-            const lastIndex = dataToEdit.length - 1,
-              lastType = this.getTypeAsString(
-                `${path}/#${lastIndex}`,
-                dataToEdit[lastIndex],
-              )
-            dataToEdit.push(this.values[this.types.indexOf(lastType)])
-            const nextName = `#${lastIndex + 1}`
+            const nextIndex = dataToEdit.length,
+              lastIndex = nextIndex - 1,
+              lastType = lastIndex >= 0
+                ? this.getTypeAsString(dataToEdit[lastIndex], `${path}/#${lastIndex}`)
+                : 'string',
+              newValue = this.getNewArrayItemValue(path, nextIndex, dataToEdit, lastType)
+            dataToEdit.push(newValue)
+            const nextName = `#${nextIndex}`
             wrapper.append(this.createObjectGUI(
               `${path}/${nextName}`,
               nextName,
-              dataToEdit.at(-1),
+              newValue,
             ))
           },
           { capture: false },

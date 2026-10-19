@@ -133,6 +133,69 @@ describe('config schema helpers', () => {
       Remote.translate = previousTranslate
     }
   })
+
+  test('adds array items using the schema item enum', () => {
+    const previousSchema = Remote.currentConfigSchema,
+      previousDefaults = Remote.currentConfigDefaults,
+      previousTranslate = Remote.translate,
+      items = [true]
+    Remote.currentConfigSchema = {
+      type: 'object',
+      properties: {
+        items: { type: 'array', items: { type: 'boolean', enum: [false, true] } },
+      },
+    }
+    Remote.currentConfigDefaults = { items: [] }
+    Remote.translate = key => key
+    const editor = Remote.createObjectGUI('<root>', '', {
+      module: 'example',
+      config: { items },
+    })
+    document.body.append(editor)
+
+    try {
+      document.getElementById('<root>/config/items').querySelector(':scope > .button').click()
+      assert.deepEqual(items, [true, false])
+      assert.equal(document.getElementById('<root>/config/items/#1').tagName.toLowerCase(), 'select')
+    }
+    finally {
+      editor.remove()
+      Remote.currentConfigSchema = previousSchema
+      Remote.currentConfigDefaults = previousDefaults
+      Remote.translate = previousTranslate
+    }
+  })
+
+  test('clones object templates from module default arrays', () => {
+    const previousSchema = Remote.currentConfigSchema,
+      previousDefaults = Remote.currentConfigDefaults,
+      previousTranslate = Remote.translate,
+      template = { enabled: true },
+      items = []
+    Remote.currentConfigSchema = {
+      type: 'object',
+      properties: { items: { type: 'array', items: { type: 'object', properties: { enabled: { type: 'boolean' } } } } },
+    }
+    Remote.currentConfigDefaults = { items: [template] }
+    Remote.translate = key => key
+    const editor = Remote.createObjectGUI('<root>', '', {
+      module: 'example',
+      config: { items },
+    })
+    document.body.append(editor)
+
+    try {
+      document.getElementById('<root>/config/items').querySelector(':scope > .button').click()
+      assert.deepEqual(items[0], template)
+      assert.notEqual(items[0], template)
+    }
+    finally {
+      editor.remove()
+      Remote.currentConfigSchema = previousSchema
+      Remote.currentConfigDefaults = previousDefaults
+      Remote.translate = previousTranslate
+    }
+  })
 })
 
 describe('createConfigInput', () => {
