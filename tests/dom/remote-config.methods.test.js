@@ -295,12 +295,18 @@ describe('schema descriptions', () => {
       '<root>/config/enabled',
       'enabled',
       'boolean',
-      true,
+      false,
       'fa-tag',
       { description: 'Enable the module feature' },
     )
     const description = label.querySelector('.config-description')
+    const input = Remote.createConfigInput('<root>/config/enabled', true)
+    Remote.appendConfigControl(label, input)
 
+    assert.equal(label.tagName.toLowerCase(), 'div')
+    assert.ok(label.querySelector('.config-label-info').contains(description))
+    assert.ok(label.querySelector('.config-label-control').contains(input))
+    assert.ok(label.querySelector('.config-label-actions'))
     assert.equal(description.textContent, 'Enable the module feature')
     assert.equal(description.title, '')
   })

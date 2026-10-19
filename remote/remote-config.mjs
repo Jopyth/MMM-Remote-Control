@@ -73,31 +73,37 @@ Object.assign(
         symbol = 'fa-hashtag'
         name = name.slice(1)
       }
-      const label = document.createElement('label')
-      label.htmlFor = key
+      const label = document.createElement('div')
       label.className = 'config-label'
-      const desc = Remote.createSymbolText(
-        `fa fa-fw ${symbol}`,
-        name,
-        false,
-        'span',
-      )
+      const info = document.createElement('div')
+      info.className = 'config-label-info'
+      const desc = document.createElement('label')
+      desc.htmlFor = key
       desc.className = 'label-name'
-      label.append(desc)
+      const icon = document.createElement('span')
+      icon.className = `fa fa-fw ${symbol}`
+      const labelText = document.createElement('span')
+      labelText.className = 'symbol-text-padding'
+      labelText.textContent = name
+      desc.append(icon, labelText)
+      info.append(desc)
       if (schema?.description) {
         const description = document.createElement('small')
         description.className = 'config-description'
         description.textContent = schema.description
-        label.append(description)
+        info.append(description)
       }
+      label.append(info)
 
       if (!forcedType) {
+        const actions = document.createElement('div')
+        actions.className = 'config-label-actions'
         const typeLabel = Remote.createSymbolText(
           'fa fa-fw fa-pencil',
           type,
           (event) => {
             const thisElement = event.currentTarget
-            label.replaceChild(
+            thisElement.replaceWith(
               this.createTypeEditSelection(
                 key,
                 label,
@@ -110,7 +116,7 @@ Object.assign(
           'span',
         )
         typeLabel.classList.add('module-remove')
-        label.append(typeLabel)
+        actions.append(typeLabel)
 
         const remove = Remote.createSymbolText(
           'fa fa-fw fa-times-circle',
@@ -126,9 +132,21 @@ Object.assign(
           'span',
         )
         remove.classList.add('module-remove')
-        label.append(remove)
+        actions.append(remove)
+        label.append(actions)
       }
       return label
+    },
+
+    appendConfigControl(label, control) {
+      let container = label.querySelector(':scope > .config-label-control')
+      if (!container) {
+        container = document.createElement('div')
+        container.className = 'config-label-control'
+        label.append(container)
+      }
+      container.append(control)
+      return container
     },
 
     createConfigInput(key, value, omitValue, element = 'input') {
@@ -170,12 +188,14 @@ Object.assign(
     },
 
     createConfigElement(type) {
-      const makeDisabledInput = typeName => (key, name, value, type, forcedType) => {
+      const makeDisabledInput = typeName => (key, name, value, type, forcedType, schema) => {
         const label = this.createConfigLabel(
             key,
             name,
             type,
             forcedType,
+            'fa-tag',
+            schema,
           ),
           input = this.createConfigInput(
             key,
@@ -188,7 +208,7 @@ Object.assign(
           typeName,
         )
         input.placeholder = typeName
-        label.append(input)
+        this.appendConfigControl(label, input)
         return label
       }
       return {
@@ -203,7 +223,7 @@ Object.assign(
             ),
             input = this.createSchemaEnumInput(key, value, schema) ?? this.createConfigInput(key, value)
           if (input.tagName.toLowerCase() === 'input') input.type = 'text'
-          label.append(input)
+          this.appendConfigControl(label, input)
           if (key === '<root>/header' && input.tagName.toLowerCase() === 'input') {
             input.placeholder = this.translate('NO_HEADER')
           }
@@ -223,7 +243,7 @@ Object.assign(
           if (input.tagName.toLowerCase() === 'input' && value % 1 !== 0) {
             input.step = 0.01
           }
-          label.append(input)
+          this.appendConfigControl(label, input)
           return label
         },
         boolean: (key, name, value, type, forcedType, schema) => {
@@ -237,7 +257,7 @@ Object.assign(
             ),
             input = this.createSchemaEnumInput(key, value, schema) ?? this.createConfigInput(key, value, true)
           if (input.tagName.toLowerCase() === 'input') input.type = 'checkbox'
-          label.append(input)
+          const control = this.appendConfigControl(label, input)
           if (input.type === 'checkbox') {
             if (value) {
               input.checked = true
@@ -245,14 +265,14 @@ Object.assign(
 
             this.createVisualCheckbox(
               key,
-              label,
+              control,
               input,
               'fa-check-square-o',
               false,
             )
             this.createVisualCheckbox(
               key,
-              label,
+              control,
               input,
               'fa-square-o',
               true,
@@ -288,7 +308,7 @@ Object.assign(
             }
             select.append(option)
           }
-          label.append(select)
+          this.appendConfigControl(label, select)
           return label
         },
       }[type]

@@ -613,6 +613,7 @@ nav.notification-menu {
 .config-label {
   display: grid;
   grid-template-columns: minmax(180px, 0.45fr) minmax(0, 1fr) auto;
+  grid-template-areas: "info control actions";
   gap: var(--spacing-md);
   align-items: center;
   padding: var(--spacing-md);
@@ -622,22 +623,43 @@ nav.notification-menu {
   border-radius: calc(var(--border-radius) * 1.5);
 }
 
+.config-label-info {
+  grid-area: info;
+  min-width: 0;
+}
+
 .label-name {
   flex: 1 1 auto;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  white-space: nowrap;
-  overflow-x: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .config-description {
-  grid-column: 1 / -1;
+  display: block;
+  margin-top: 0.25em;
   color: var(--text-color-medium);
   font-size: 0.85em;
   line-height: 1.4;
   white-space: normal;
   overflow-wrap: anywhere;
+}
+
+.config-label-control {
+  grid-area: control;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.config-label-actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .module-remove.module-remove:hover {
@@ -667,6 +689,11 @@ nav.notification-menu {
 .config-label select,
 .config-label textarea {
   width: 100%;
+}
+
+.config-label-control input[type="checkbox"] {
+  flex: 0 0 1px;
+  width: 1px;
 }
 
 .config-input.indent {
@@ -811,8 +838,15 @@ nav.notification-menu {
   }
 
   .config-label {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "info info"
+      "control actions";
     align-items: flex-start;
+  }
+
+  .config-label-actions {
+    flex-wrap: wrap;
   }
 
   .module-remove {
