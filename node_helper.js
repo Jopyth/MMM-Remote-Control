@@ -48,6 +48,7 @@ const systemControl = require('./lib/systemControl.js')
 // eslint-disable-next-line no-global-assign
 Module = {
   configDefaults: {},
+  configSchemas: {},
   notificationHandler: {},
   register(name, moduleDefinition) {
     Module.configDefaults[name] = moduleDefinition.defaults
@@ -299,6 +300,16 @@ module.exports = NodeHelper.create({
         Log.error(`Could not load main module js file for ${module.name}. Error found: ${error}`)
       }
     }
+    try {
+      const schemaPath = path.join(modulePath, 'config.schema.json')
+      Module.configSchemas[module.name] = JSON.parse(await fs.promises.readFile(schemaPath, 'utf8'))
+    }
+    catch (error) {
+      delete Module.configSchemas[module.name]
+      if (error.code !== 'ENOENT') {
+        Log.warn(`Could not load config schema for ${module.name}: ${error.message || error}`)
+      }
+    }
     if (lastOne) { this.onModulesLoaded() }
   },
 
@@ -537,7 +548,8 @@ module.exports = NodeHelper.create({
 
   handleGetDefaultConfig(query, response) {
     const config = Object.hasOwn(Module.configDefaults, query.module) ? Module.configDefaults[query.module] : {}
-    this.sendResponse(response, undefined, { query, data: config })
+    const schema = Module.configSchemas[query.module]
+    this.sendResponse(response, undefined, { query, data: config, ...(schema && { schema }) })
   },
 
   handleGetModules(query, response) {

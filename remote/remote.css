@@ -631,6 +631,15 @@ nav.notification-menu {
   overflow-x: auto;
 }
 
+.config-description {
+  grid-column: 1 / -1;
+  color: var(--text-color-medium);
+  font-size: 0.85em;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .module-remove.module-remove:hover {
   color: #ff4444;
   text-shadow: 0 0 8px rgba(255, 68, 68, 0.5);

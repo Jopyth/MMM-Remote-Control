@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict')
 const { describe, test } = require('node:test')
+const fs = require('node:fs/promises')
+const os = require('node:os')
 const path = require('node:path')
 const ModuleLib = require('node:module')
 
@@ -30,6 +32,41 @@ function freshHelper(overrides = {}) {
 }
 
 describe('answerGet contract coverage', () => {
+  test('loads an optional module config schema from its directory', async () => {
+    const helper = freshHelper(),
+      moduleName = 'schema-fixture',
+      modulePath = await fs.mkdtemp(path.join(os.tmpdir(), 'mmm-remote-schema-')),
+      schema = { type: 'object', properties: { enabled: { type: 'boolean' } } },
+      schemasMap = globalThis.Module.configSchemas,
+      previousSchema = schemasMap[moduleName],
+      defaultsMap = globalThis.Module.configDefaults,
+      previousDefaults = defaultsMap[moduleName],
+      moduleFile = path.join(modulePath, `${moduleName}.js`)
+
+    try {
+      await fs.writeFile(moduleFile, `Module.register(${JSON.stringify(moduleName)}, { defaults: { enabled: false } })`)
+      await fs.writeFile(path.join(modulePath, 'config.schema.json'), JSON.stringify(schema))
+      await helper.loadModuleDefaultConfig({ name: moduleName }, modulePath, false)
+      assert.deepEqual(schemasMap[moduleName], schema)
+    }
+    finally {
+      delete require.cache[require.resolve(moduleFile)]
+      if (previousSchema === undefined) {
+        delete schemasMap[moduleName]
+      }
+      else {
+        schemasMap[moduleName] = previousSchema
+      }
+      if (previousDefaults === undefined) {
+        delete defaultsMap[moduleName]
+      }
+      else {
+        defaultsMap[moduleName] = previousDefaults
+      }
+      await fs.rm(modulePath, { recursive: true, force: true })
+    }
+  })
+
   test('moduleInstalled returns array of metadata objects', () => {
     const helper = freshHelper()
     helper.modulesAvailable = [
@@ -236,7 +273,10 @@ describe('answerGet contract coverage', () => {
 
     const defaultsMap = globalThis.Module.configDefaults
     const previousDefaults = defaultsMap.clock
+    const schemasMap = globalThis.Module.configSchemas
+    const previousSchema = schemasMap.clock
     defaultsMap.clock = { timeFormat: 24, showDate: true }
+    schemasMap.clock = { type: 'object', properties: { timeFormat: { enum: [12, 24] } } }
 
     try {
       helper.answerGet({ data: 'defaultConfig', module: 'clock' })
@@ -244,6 +284,7 @@ describe('answerGet contract coverage', () => {
       const { payload } = helper.__responses[0]
       assert.deepEqual(payload.query, { data: 'defaultConfig', module: 'clock' })
       assert.deepEqual(payload.data, { timeFormat: 24, showDate: true })
+      assert.deepEqual(payload.schema, schemasMap.clock)
     }
     finally {
       if (previousDefaults === undefined) {
@@ -251,6 +292,12 @@ describe('answerGet contract coverage', () => {
       }
       else {
         defaultsMap.clock = previousDefaults
+      }
+      if (previousSchema === undefined) {
+        delete schemasMap.clock
+      }
+      else {
+        schemasMap.clock = previousSchema
       }
     }
   })

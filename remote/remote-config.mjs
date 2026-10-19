@@ -68,7 +68,7 @@ Object.assign(
       return select
     },
 
-    createConfigLabel(key, name, type, forcedType, symbol = 'fa-tag') {
+    createConfigLabel(key, name, type, forcedType, symbol = 'fa-tag', schema) {
       if (name.at(0) === '#') {
         symbol = 'fa-hashtag'
         name = name.slice(1)
@@ -84,6 +84,12 @@ Object.assign(
       )
       desc.className = 'label-name'
       label.append(desc)
+      if (schema?.description) {
+        const description = document.createElement('small')
+        description.className = 'config-description'
+        description.textContent = schema.description
+        label.append(description)
+      }
 
       if (!forcedType) {
         const typeLabel = Remote.createSymbolText(
@@ -135,6 +141,28 @@ Object.assign(
       return input
     },
 
+    createSchemaEnumInput(key, value, schema) {
+      const enumValues = schema?.enum
+      if (!Array.isArray(enumValues) || enumValues.some(item => item !== null && !['string', 'number', 'boolean'].includes(typeof item))) {
+        return null
+      }
+
+      const values = enumValues.some(item => Object.is(item, value))
+        ? enumValues
+        : [value, ...enumValues]
+      const select = this.createConfigInput(key, '', false, 'select')
+      select.dataset.schemaEnum = 'true'
+      for (const [index, enumValue] of values.entries()) {
+        const option = document.createElement('option')
+        option.value = String(index)
+        option.textContent = String(enumValue)
+        option.dataset.configValue = JSON.stringify(enumValue)
+        option.selected = Object.is(enumValue, value)
+        select.append(option)
+      }
+      return select
+    },
+
     createVisualCheckbox(key, wrapper, input, className) {
       const visualCheckbox = document.createElement('span')
       visualCheckbox.className = `visual-checkbox fa fa-fw ${className}`
@@ -164,75 +192,72 @@ Object.assign(
         return label
       }
       return {
-        string: (key, name, value, type, forcedType) => {
+        string: (key, name, value, type, forcedType, schema) => {
           const label = this.createConfigLabel(
               key,
               name,
               type,
               forcedType,
+              'fa-tag',
+              schema,
             ),
-            input = this.createConfigInput(
-              key,
-              value,
-            )
-          input.type = 'text'
+            input = this.createSchemaEnumInput(key, value, schema) ?? this.createConfigInput(key, value)
+          if (input.tagName.toLowerCase() === 'input') input.type = 'text'
           label.append(input)
-          if (key === '<root>/header') {
+          if (key === '<root>/header' && input.tagName.toLowerCase() === 'input') {
             input.placeholder = this.translate('NO_HEADER')
           }
           return label
         },
-        number: (key, name, value, type, forcedType) => {
+        number: (key, name, value, type, forcedType, schema) => {
           const label = this.createConfigLabel(
               key,
               name,
               type,
               forcedType,
+              'fa-tag',
+              schema,
             ),
-            input = this.createConfigInput(
-              key,
-              value,
-            )
-          input.type = 'number'
-          if (value % 1 !== 0) {
+            input = this.createSchemaEnumInput(key, value, schema) ?? this.createConfigInput(key, value)
+          if (input.tagName.toLowerCase() === 'input') input.type = 'number'
+          if (input.tagName.toLowerCase() === 'input' && value % 1 !== 0) {
             input.step = 0.01
           }
           label.append(input)
           return label
         },
-        boolean: (key, name, value, type, forcedType) => {
+        boolean: (key, name, value, type, forcedType, schema) => {
           const label = this.createConfigLabel(
               key,
               name,
               type,
               forcedType,
+              'fa-tag',
+              schema,
             ),
+            input = this.createSchemaEnumInput(key, value, schema) ?? this.createConfigInput(key, value, true)
+          if (input.tagName.toLowerCase() === 'input') input.type = 'checkbox'
+          label.append(input)
+          if (input.type === 'checkbox') {
+            if (value) {
+              input.checked = true
+            }
 
-            input = this.createConfigInput(
+            this.createVisualCheckbox(
               key,
-              value,
+              label,
+              input,
+              'fa-check-square-o',
+              false,
+            )
+            this.createVisualCheckbox(
+              key,
+              label,
+              input,
+              'fa-square-o',
               true,
             )
-          input.type = 'checkbox'
-          label.append(input)
-          if (value) {
-            input.checked = true
           }
-
-          this.createVisualCheckbox(
-            key,
-            label,
-            input,
-            'fa-check-square-o',
-            false,
-          )
-          this.createVisualCheckbox(
-            key,
-            label,
-            input,
-            'fa-square-o',
-            true,
-          )
           return label
         },
         undefined: makeDisabledInput('undefined'),
@@ -270,6 +295,18 @@ Object.assign(
     },
 
     getTypeAsString(dataToEdit, path) {
+      const schemaType = this.getConfigSchemaAtPath(path)?.type
+      if (schemaType) {
+        const types = Array.isArray(schemaType) ? schemaType : [schemaType]
+        let dataType = typeof dataToEdit
+        if (Array.isArray(dataToEdit)) dataType = 'array'
+        else if (dataToEdit === null) dataType = 'null'
+        const selectedType = types.includes(dataType)
+          ? dataType
+          : types.find(type => type !== 'null')
+        const normalizedType = selectedType === 'integer' ? 'number' : selectedType
+        if (this.createConfigElement(normalizedType)) return normalizedType
+      }
       let type = typeof dataToEdit
       type = path === '<root>/position'
         ? 'position'
@@ -286,11 +323,75 @@ Object.assign(
       return dataToEdit === undefined ? 'undefined' : 'object'
     },
 
+    getConfigSchemaAtPath(path) {
+      let schema = this.currentConfigSchema
+      const segments = path.split('/'),
+        configIndex = segments.indexOf('config')
+      if (!schema || configIndex === -1) return
+
+      const propertySegments = segments.slice(configIndex + 1)
+      for (const segment of propertySegments) {
+        schema = segment.startsWith('#')
+          ? schema?.items
+          : schema?.properties?.[segment]
+      }
+      return schema
+    },
+
+    getConfigDefaultsAtPath(path) {
+      let defaults = this.currentConfigDefaults
+      const segments = path.split('/'),
+        configIndex = segments.indexOf('config')
+      if (!defaults || configIndex === -1) return
+
+      const propertySegments = segments.slice(configIndex + 1)
+      for (const segment of propertySegments) {
+        defaults = segment.startsWith('#')
+          ? defaults?.[Number.parseInt(segment.slice(1))]
+          : defaults?.[segment]
+      }
+      return defaults
+    },
+
+    getSuggestedConfigKeys(path, currentValue) {
+      const defaults = this.getConfigDefaultsAtPath(path),
+        properties = this.getConfigSchemaAtPath(path)?.properties ?? {}
+      return [...new Set([
+        ...Object.keys(defaults ?? {}),
+        ...Object.keys(properties),
+      ])].filter(key => !Object.hasOwn(currentValue, key))
+    },
+
+    getNewConfigValue(path, key, fallbackType) {
+      const defaults = this.getConfigDefaultsAtPath(path),
+        schema = this.getConfigSchemaAtPath(`${path}/${key}`)
+      if (defaults && Object.hasOwn(defaults, key)) return structuredClone(defaults[key])
+      if (schema && Object.hasOwn(schema, 'default')) return structuredClone(schema.default)
+      if (Array.isArray(schema?.enum) && schema.enum.length > 0) return structuredClone(schema.enum[0])
+
+      let type = schema?.type
+      if (Array.isArray(type)) type = type.find(candidate => candidate !== 'null')
+      const schemaDefaults = {
+        string: '',
+        number: 0,
+        integer: 0,
+        boolean: false,
+        array: [],
+        object: {},
+        null: null,
+      }
+      if (Object.hasOwn(schemaDefaults, type)) return structuredClone(schemaDefaults[type])
+
+      const typeIndex = this.types.indexOf(fallbackType)
+      return typeIndex === -1 ? '' : structuredClone(this.values[typeIndex])
+    },
+
     hasForcedType(path) {
       return (path.match(/\//g) || []).length === 1
     },
 
     createObjectGUI(path, name, dataToEdit) {
+      const schema = this.getConfigSchemaAtPath(path)
       const type = this.getTypeAsString(
           dataToEdit,
           path,
@@ -305,6 +406,7 @@ Object.assign(
           dataToEdit,
           type,
           forcedType,
+          schema,
         )
       }
 
@@ -367,6 +469,7 @@ Object.assign(
           type,
           forcedType,
           'fa-list-ul',
+          schema,
         ))
 
         const addElement = this.createConfigLabel(
@@ -385,8 +488,17 @@ Object.assign(
         )
         input.type = 'text'
         input.placeholder = this.translate('NEW_ENTRY_NAME')
+        const datalist = document.createElement('datalist')
+        this.configSuggestionId = (this.configSuggestionId ?? 0) + 1
+        datalist.id = `config-key-suggestions-${this.configSuggestionId}`
+        input.setAttribute('list', datalist.id)
+        for (const key of this.getSuggestedConfigKeys(path, dataToEdit)) {
+          const option = document.createElement('option')
+          option.value = key
+          datalist.append(option)
+        }
         addElement.append(inputWrapper)
-        inputWrapper.append(input)
+        inputWrapper.append(input, datalist)
         const addFunction = () => {
             const existingKey = Object.keys(dataToEdit)[0],
               lastType = this.getTypeAsString(
@@ -401,7 +513,7 @@ Object.assign(
             }
 
             input.classList.remove('input-error')
-            dataToEdit[key] = this.values[this.types.indexOf(lastType)]
+            dataToEdit[key] = this.getNewConfigValue(path, key, lastType)
             const newElement = this.createObjectGUI(
               `${path}/${key}`,
               key,
@@ -573,6 +685,9 @@ Object.assign(
         if (element.type === 'checkbox') {
           value = element.checked
         }
+        else if (element.dataset.schemaEnum === 'true') {
+          value = JSON.parse(element.selectedOptions[0].dataset.configValue)
+        }
         else if (element.type === 'number') {
           value = Number(value)
         }
@@ -585,7 +700,30 @@ Object.assign(
       return rootElement
     },
 
-    createConfigPopup(index) {
+    cacheModuleConfigMetadata(moduleName, payload) {
+      if (!this.moduleConfigMetadata) this.moduleConfigMetadata = new Map()
+      const metadata = {
+        defaults: payload?.data && typeof payload.data === 'object' ? payload.data : {},
+        schema: payload?.schema && typeof payload.schema === 'object' ? payload.schema : null,
+      }
+      this.moduleConfigMetadata.set(moduleName, metadata)
+      return metadata
+    },
+
+    async getModuleConfigMetadata(moduleName) {
+      if (!this.moduleConfigMetadata) this.moduleConfigMetadata = new Map()
+      if (this.moduleConfigMetadata.has(moduleName)) return this.moduleConfigMetadata.get(moduleName)
+
+      try {
+        const response = await this.get('get', `data=defaultConfig&module=${encodeURIComponent(moduleName)}`)
+        return this.cacheModuleConfigMetadata(moduleName, JSON.parse(response))
+      }
+      catch {
+        return this.cacheModuleConfigMetadata(moduleName, null)
+      }
+    },
+
+    async createConfigPopup(index) {
       if (typeof index === 'string') {
         index = Number.parseInt(index)
       }
@@ -593,7 +731,10 @@ Object.assign(
       const moduleData = this.savedData.config.modules,
         data = moduleData[index]
 
+      const metadata = await this.getModuleConfigMetadata(data.module)
       this.currentConfig = data
+      this.currentConfigDefaults = metadata.defaults
+      this.currentConfigSchema = metadata.schema
       if (!('header' in this.currentConfig)) {
         this.currentConfig.header = ''
       }
@@ -744,8 +885,8 @@ Object.assign(
                 'get',
                 `data=defaultConfig&module=${name}`,
               ),
-              newData = JSON.parse(response)
-            moduleData.push({ module: name, config: newData.data })
+              newData = this.cacheModuleConfigMetadata(name, JSON.parse(response))
+            moduleData.push({ module: name, config: newData.defaults })
             const index = moduleData.length - 1
             this.changedModules.push(index)
             this.appendModuleEditElements(

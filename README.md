@@ -86,6 +86,30 @@ You can also allow a whole IP range, such as all devices with an address from `1
 ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.0.0/120", "192.168.0.0/24"],
 ```
 
+### Module config schemas
+
+Modules may provide a `config.schema.json` file beside their main module file to improve the
+configuration editor. The editor uses `properties`, `items`, `type`, `enum`, `default`, and
+`description` to suggest missing settings and render typed controls. For example:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "units": {
+      "type": "string",
+      "enum": ["metric", "imperial"],
+      "description": "Temperature and distance units"
+    }
+  }
+}
+```
+
+Module `defaults` remain the source of suggested initial values and take precedence over schema
+`default` values. Schemas are optional and currently provide editor hints, not full JSON Schema
+validation. Modules without a schema still get missing-property suggestions from their defaults;
+other properties continue to use type inference and manual entry.
+
 ## Start and Access
 
 1. Restart MagicMirror².

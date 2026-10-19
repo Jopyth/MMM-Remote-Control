@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "customCommand": {
+      "type": "object",
+      "description": "Override system commands used by Remote Control",
+      "properties": {
+        "monitorOnCommand": { "type": "string" },
+        "monitorOffCommand": { "type": "string" },
+        "monitorStatusCommand": { "type": "string" },
+        "shutdownCommand": { "type": "string" },
+        "rebootCommand": { "type": "string" }
+      }
+    },
+    "showModuleApiMenu": {
+      "type": "boolean",
+      "description": "Show module API controls in the remote menu"
+    },
+    "showNotificationMenu": {
+      "type": "boolean",
+      "description": "Show the notification menu"
+    },
+    "showQRCode": {
+      "type": "boolean",
+      "description": "Display the remote access QR code on the mirror"
+    },
+    "qrCodeSize": {
+      "type": "number",
+      "description": "QR code size in pixels"
+    },
+    "qrCodePosition": {
+      "type": "string",
+      "enum": ["below", "above", "replace"],
+      "description": "Place the QR code below or above the URL, or show it instead"
+    },
+    "secureEndpoints": {
+      "type": "boolean",
+      "description": "Require an API key for protected endpoints when enabled"
+    },
+    "apiKey": {
+      "type": "string",
+      "description": "Optional API key for protected endpoints"
+    },
+    "customMenu": {
+      "type": "string",
+      "description": "Config-relative path to a custom menu JSON file"
+    },
+    "classes": {
+      "type": "object",
+      "description": "Named CSS class groups used by the classes API"
+    }
+  }
+}

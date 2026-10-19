@@ -74,6 +74,67 @@ describe('getTypeAsString', () => {
   })
 })
 
+describe('config schema helpers', () => {
+  test('suggests missing default and schema properties with their values', () => {
+    const previousSchema = Remote.currentConfigSchema,
+      previousDefaults = Remote.currentConfigDefaults
+    Remote.currentConfigSchema = {
+      type: 'object',
+      properties: {
+        fromSchema: { type: 'boolean', default: true },
+        existing: { type: 'number' },
+      },
+    }
+    Remote.currentConfigDefaults = {
+      fromDefaults: { enabled: true },
+      existing: 1,
+    }
+
+    try {
+      const path = '<root>/config'
+      assert.deepEqual(Remote.getSuggestedConfigKeys(path, { existing: 2 }), ['fromDefaults', 'fromSchema'])
+      assert.deepEqual(Remote.getNewConfigValue(path, 'fromDefaults', 'string'), { enabled: true })
+      assert.equal(Remote.getNewConfigValue(path, 'fromSchema', 'string'), true)
+      assert.equal(Remote.getTypeAsString(undefined, `${path}/fromSchema`), 'boolean')
+    }
+    finally {
+      Remote.currentConfigSchema = previousSchema
+      Remote.currentConfigDefaults = previousDefaults
+    }
+  })
+
+  test('enum controls preserve boolean values when reading the editor', () => {
+    const previousSchema = Remote.currentConfigSchema,
+      previousDefaults = Remote.currentConfigDefaults,
+      previousTranslate = Remote.translate
+    Remote.currentConfigSchema = {
+      type: 'object',
+      properties: { enabled: { type: 'boolean', enum: [false, true] } },
+    }
+    Remote.currentConfigDefaults = {}
+    Remote.translate = key => key
+    const editor = Remote.createObjectGUI('<root>', '', {
+      module: 'example',
+      config: { enabled: true },
+    })
+    document.body.append(editor)
+
+    try {
+      const select = document.getElementById('<root>/config/enabled')
+      select.value = '0'
+      const result = Remote.getModuleConfigFromUI()
+      assert.equal(result.config.enabled, false)
+      assert.equal(typeof result.config.enabled, 'boolean')
+    }
+    finally {
+      editor.remove()
+      Remote.currentConfigSchema = previousSchema
+      Remote.currentConfigDefaults = previousDefaults
+      Remote.translate = previousTranslate
+    }
+  })
+})
+
 describe('createConfigInput', () => {
   test('creates input element with correct id and class', () => {
     const input = Remote.createConfigInput('my-key', 'my-value', false)
@@ -96,6 +157,23 @@ describe('createConfigInput', () => {
     const select = Remote.createConfigInput('s', '', false, 'select')
     assert.equal(select.tagName.toLowerCase(), 'select')
     assert.equal(select.id, 's')
+  })
+})
+
+describe('schema descriptions', () => {
+  test('renders descriptions as visible helper text', () => {
+    const label = Remote.createConfigLabel(
+      '<root>/config/enabled',
+      'enabled',
+      'boolean',
+      true,
+      'fa-tag',
+      { description: 'Enable the module feature' },
+    )
+    const description = label.querySelector('.config-description')
+
+    assert.equal(description.textContent, 'Enable the module feature')
+    assert.equal(description.title, '')
   })
 })
 
