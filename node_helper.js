@@ -1,4 +1,4 @@
-/* global Module */
+/* global Module:writable */
 
 /**
  * @file MagicMirror² Remote Control Module - Node Helper
@@ -45,7 +45,7 @@ const configSource = require('./lib/configSource.js')
 const moduleManager = require('./lib/moduleManager.js')
 const systemControl = require('./lib/systemControl.js')
 
-// eslint-disable-next-line no-global-assign
+// Shim of the frontend "Module" object so module files using Module.register() can be loaded server-side
 Module = {
   configDefaults: {},
   configSchemas: {},
