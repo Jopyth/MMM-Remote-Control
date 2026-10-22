@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.1.1](https://github.com/jopyth/MMM-Remote-Control/compare/v6.1.0...v6.1.1) (2026-10-22)
+
+### Fixed
+
+- await module callbacks before lifecycle hook ([dae42d3](https://github.com/jopyth/MMM-Remote-Control/commit/dae42d3a06481b4ca4fa568618581d57856aecee))
+
+### Documentation
+
+- require current versions in bug reports ([53f61da](https://github.com/jopyth/MMM-Remote-Control/commit/53f61da9683280c4cadd09f182e57b672031c20d))
+
+### Chores
+
+- update devDependencies ([99e2fd9](https://github.com/jopyth/MMM-Remote-Control/commit/99e2fd9bd3a26963565edeaf18d24239994f8a97))
+
+### Code Refactoring
+
+- declare Module shim as writable global ([cb6a7ae](https://github.com/jopyth/MMM-Remote-Control/commit/cb6a7aeb60759038824435dce024dee3a39368f7))
+
 ## [6.1.0](https://github.com/jopyth/MMM-Remote-Control/compare/v6.0.0...v6.1.0) (2026-10-19)
 
 ### Added
