@@ -203,7 +203,7 @@ module.exports = NodeHelper.create({
         __dirname,
         this.getModuleDir(),
         async (module, modulePath) => {
-          await this.loadModuleDefaultConfig(module, modulePath, false)
+          await this.loadModuleDefaultConfig(module, modulePath)
         },
       )
 
@@ -211,9 +211,11 @@ module.exports = NodeHelper.create({
       this.modulesInstalled = result.modulesInstalled
 
       // Process installed modules
-      for (const [index, directory] of result.installedModules.entries()) {
-        await this.addModule(directory, index === result.installedModules.length - 1)
+      for (const directory of result.installedModules) {
+        await this.addModule(directory)
       }
+
+      this.onModulesLoaded()
     }
     catch (error) {
       Log.error(`Error reading module data: ${error.message || error}`)
@@ -230,14 +232,14 @@ module.exports = NodeHelper.create({
       : 'modules')
   },
 
-  async addModule(directoryName, lastOne) {
+  async addModule(directoryName) {
     await moduleManager.addModule({
       directoryName,
       modulesDirectory: this.getModuleDir(),
       modulesAvailable: this.modulesAvailable,
       modulesInstalled: this.modulesInstalled,
-      onModuleLoaded: (module, modulePath) => {
-        this.loadModuleDefaultConfig(module, modulePath, lastOne)
+      onModuleLoaded: async (module, modulePath) => {
+        await this.loadModuleDefaultConfig(module, modulePath)
       },
       onUpdateCheckQueued: (check) => {
         // Track pending update check
@@ -253,7 +255,6 @@ module.exports = NodeHelper.create({
         // Start processing queue
         this.processUpdateCheckQueue()
       },
-      isLast: lastOne,
     })
   },
 
@@ -281,7 +282,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  async loadModuleDefaultConfig(module, modulePath, lastOne) {
+  async loadModuleDefaultConfig(module, modulePath) {
     try {
       await moduleManager.loadModuleDefaultConfig(module, modulePath)
     }
@@ -310,7 +311,6 @@ module.exports = NodeHelper.create({
         Log.warn(`Could not load config schema for ${module.name}: ${error.message || error}`)
       }
     }
-    if (lastOne) { this.onModulesLoaded() }
   },
 
   answerConfigHelp(query, response) {

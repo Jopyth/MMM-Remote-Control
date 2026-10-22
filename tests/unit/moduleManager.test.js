@@ -173,13 +173,13 @@ describe('lib/moduleManager additional coverage', () => {
       modulesDirectory,
       modulesAvailable,
       modulesInstalled,
-      onModuleLoaded: (module, loadedPath, isLast) => {
-        loaded.push({ module, loadedPath, isLast })
+      onModuleLoaded: async (module, loadedPath) => {
+        await Promise.resolve()
+        loaded.push({ module, loadedPath })
       },
       onUpdateCheckQueued: (entry) => {
         queued.push(entry)
       },
-      isLast: true,
     })
 
     assert.deepEqual(modulesInstalled, [directoryName])
@@ -188,7 +188,6 @@ describe('lib/moduleManager additional coverage', () => {
     assert.equal(modulesAvailable[0].url, 'https://github.com/foo/bar')
     assert.equal(loaded.length, 1)
     assert.equal(loaded[0].loadedPath, modulePath)
-    assert.equal(loaded[0].isLast, true)
     assert.equal(queued.length, 1)
     assert.equal(queued[0].directoryName, directoryName)
   })
@@ -213,7 +212,6 @@ describe('lib/moduleManager additional coverage', () => {
       onUpdateCheckQueued: (entry) => {
         queued.push(entry)
       },
-      isLast: false,
     })
 
     assert.deepEqual(modulesInstalled, [directoryName])

@@ -104,6 +104,56 @@ describe('node_helper lifecycle and queue', () => {
     assert.equal(clearCalls, 2)
   })
 
+  test('readModuleData completes module loading before the lifecycle callback', async () => {
+    const helper = freshHelper()
+    helper.configOnHd = {}
+    helper.getModuleDir = () => 'modules'
+
+    const installedModules = Array.from({ length: 7 }, (_, index) => `MMM-${index}`)
+    const loadedModules = []
+    let activeScans = 0
+    let maxActiveScans = 0
+    let hasDefaultConfigLoaded = false
+    let lifecycleCalls = 0
+
+    const originalReadModuleData = moduleManager.readModuleData
+    moduleManager.readModuleData = async (_baseDirectory, _modulesDirectory, onModuleLoaded) => {
+      await onModuleLoaded({ name: 'Default' }, 'defaultmodules/Default')
+      return {
+        modulesAvailable: [],
+        modulesInstalled: [],
+        installedModules,
+      }
+    }
+
+    helper.loadModuleDefaultConfig = async () => {
+      await new Promise(resolve => setImmediate(resolve))
+      hasDefaultConfigLoaded = true
+    }
+    helper.addModule = async (directory) => {
+      activeScans++
+      maxActiveScans = Math.max(maxActiveScans, activeScans)
+      await new Promise(resolve => setImmediate(resolve))
+      loadedModules.push(directory)
+      activeScans--
+    }
+    helper.onModulesLoaded = () => {
+      lifecycleCalls++
+      assert.equal(hasDefaultConfigLoaded, true)
+      assert.equal(loadedModules.length, installedModules.length)
+    }
+
+    try {
+      await helper.readModuleData()
+    }
+    finally {
+      moduleManager.readModuleData = originalReadModuleData
+    }
+
+    assert.equal(maxActiveScans, 1)
+    assert.equal(lifecycleCalls, 1)
+  })
+
   test('processUpdateCheckQueue starts checks up to configured parallel limit', () => {
     const helper = freshHelper()
     helper.activeUpdateChecks = 0
