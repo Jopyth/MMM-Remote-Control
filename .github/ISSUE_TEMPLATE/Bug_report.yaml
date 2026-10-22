@@ -10,6 +10,8 @@ body:
         Thanks for taking the time to help make MMM-Remote-Control better!
         Please share clear steps to reproduce the issue so we can verify and fix it quickly.
 
+        Please test with the latest MagicMirror² and MMM-Remote-Control releases before opening an issue.
+
         Not sure it's a bug? Feel free to ask first in the community forum:
         https://forum.magicmirror.builders/category/29/troubleshooting
 
@@ -46,7 +48,7 @@ body:
       required: true
   - type: checkboxes
     attributes:
-      label: Version verification
+      label: Node.js version verification
       description: Please confirm you reproduced the bug on an up-to-date Node.js release.
       options:
         - label: I verified the issue also occurs on a current Node.js version (e.g., latest LTS or 24.x), not only on an outdated one.
@@ -61,10 +63,6 @@ body:
         How to check your MagicMirror² version:
         - When you run MagicMirror², the version is shown in the terminal output at startup.
         - Or open `~/MagicMirror/package.json` and copy the `version`
-
-        Important:
-        - Please only report bugs reproducible on the current MagicMirror² release.
-        - If you're on an older version, update first and re-test before opening an issue.
       placeholder: "2.x.x"
     validations:
       required: true
@@ -80,10 +78,18 @@ body:
       label: Remote Control Version
       description: |
         example:
-        - Remote Control: 3.0.0
-      placeholder: "3.x.x"
+        - Remote Control: 6.1.0
+
+        How to check: Open the MMM-Remote-Control directory and run `git describe --tags --always`.
     validations:
       required: true
+  - type: checkboxes
+    attributes:
+      label: Remote Control version verification
+      description: Please confirm you reproduced the bug with the latest MMM-Remote-Control release.
+      options:
+        - label: I updated MMM-Remote-Control to the latest release and verified that the issue still occurs.
+          required: true
   - type: checkboxes
     attributes:
       label: Minimal reproduction
