@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.2.0](https://github.com/jopyth/MMM-Remote-Control/compare/v6.1.1...v6.2.0) (2026-11-01)
+
+### Added
+
+- add hostname option to show a hostname instead of the IP address ([#430](https://github.com/jopyth/MMM-Remote-Control/issues/430)) ([08ddc1e](https://github.com/jopyth/MMM-Remote-Control/commit/08ddc1e648daeadcf1daf721077c395af9d5390a))
+
+### Chores
+
+- update dependencies ([7fd5486](https://github.com/jopyth/MMM-Remote-Control/commit/7fd5486076527c2435eb4aa4975c520d01bda16f))
+
+### Code Refactoring
+
+- solve new linter issues ([6f92104](https://github.com/jopyth/MMM-Remote-Control/commit/6f921049a71f120eac2fc8d172832e9f5603c503))
+
 ## [6.1.1](https://github.com/jopyth/MMM-Remote-Control/compare/v6.1.0...v6.1.1) (2026-10-22)
 
 ### Fixed
