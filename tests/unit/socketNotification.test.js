@@ -104,19 +104,6 @@ describe('socketNotificationReceived', () => {
     assert.ok(Array.isArray(ipNotification.payload))
   })
 
-  test('sends hostnames as IP_ADDRESSES on REQUEST_DEFAULT_SETTINGS with useHostname', async () => {
-    const helper = freshHelper()
-    helper.getIpAddresses = () => ['192.168.0.7']
-    helper.getHostnames = async addresses => addresses.map(() => 'mirror.local')
-    helper.socketNotificationReceived = helperFactory.socketNotificationReceived.bind(helper)
-
-    helper.socketNotificationReceived('REQUEST_DEFAULT_SETTINGS', { useHostname: true })
-    await new Promise(resolve => setImmediate(resolve))
-
-    const ipNotification = helper.__socketNotifications.find(n => n.action === 'IP_ADDRESSES')
-    assert.deepEqual(ipNotification.payload, ['mirror.local'])
-  })
-
   test('sends LOAD_PORT on REQUEST_DEFAULT_SETTINGS', () => {
     const helper = freshHelper()
     helper.configOnHd.port = 9090

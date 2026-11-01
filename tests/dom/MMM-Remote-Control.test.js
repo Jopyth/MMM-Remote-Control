@@ -106,4 +106,36 @@ describe('MMM-Remote-Control.js module', () => {
       }, payload)
     })
   })
+
+  const getDom = (config, addresses) => {
+    const notifications = []
+    const wrapper = Module.getDom.call({
+      config: { showQRCode: true, qrCodeSize: 150, qrCodePosition: 'above', hostname: '', ...config },
+      addresses,
+      port: '',
+      qrCodeDataUrl: null,
+      sendSocketNotification: (notification, payload) => {
+        notifications.push({ notification, payload })
+      },
+    })
+    return { wrapper, notifications }
+  }
+
+  test('getDom shows the IP address when no hostname is configured', () => {
+    const { wrapper, notifications } = getDom({}, ['192.168.0.7'])
+    assert.match(wrapper.textContent, /http:\/\/192\.168\.0\.7:8080\/remote\.html/)
+    assert.equal(notifications[0].payload.url, 'http://192.168.0.7:8080/remote.html')
+  })
+
+  test('getDom shows the configured hostname instead of the IP address', () => {
+    const { wrapper, notifications } = getDom({ hostname: 'mirror.local' }, ['192.168.0.7'])
+    assert.match(wrapper.textContent, /http:\/\/mirror\.local:8080\/remote\.html/)
+    assert.equal(notifications[0].payload.url, 'http://mirror.local:8080/remote.html')
+  })
+
+  test('getDom does not request a QR code for the placeholder address', () => {
+    const { wrapper, notifications } = getDom({}, [])
+    assert.match(wrapper.textContent, /ip-of-your-mirror/)
+    assert.equal(notifications.length, 0)
+  })
 })

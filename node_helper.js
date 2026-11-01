@@ -1114,65 +1114,6 @@ module.exports = NodeHelper.create({
   },
 
   /**
-   * Send the current ip addresses (or their hostnames if requested) to the frontend
-   * @param {boolean} useHostname - Whether to resolve the addresses to mDNS hostnames
-   * @returns {Promise<void>}
-   */
-  async sendIpAddresses(useHostname) {
-    const addresses = this.getIpAddresses()
-    this.sendSocketNotification('IP_ADDRESSES', useHostname ? await this.getHostnames(addresses) : addresses)
-  },
-
-  /**
-   * Look up the mDNS hostname of each address, keeping the address when there is no answer
-   * @param {string[]} addresses - IPv4 addresses
-   * @returns {Promise<string[]>} Hostnames (e.g. "mirror.local") or the original addresses
-   */
-  getHostnames(addresses) {
-    return Promise.all(addresses.map(address => this.getHostname(address)))
-  },
-
-  /**
-   * Ask the local network over mDNS (reverse PTR query) which hostname belongs to an IPv4 address
-   * @param {string} address - IPv4 address
-   * @returns {Promise<string>} Hostname, or the address if nobody answers within the timeout
-   */
-  getHostname(address) {
-    return new Promise((resolve) => {
-      let mdns
-      try {
-        mdns = require('multicast-dns')()
-      }
-      catch (error) {
-        Log.warn(`mDNS hostname lookup unavailable: ${error.message}`)
-        resolve(address)
-        return
-      }
-
-      const name = `${address.split('.').toReversed().join('.')}.in-addr.arpa`
-      let isDone = false
-      const finish = (hostname) => {
-        if (isDone) return
-        isDone = true
-        clearTimeout(timer)
-        mdns.destroy()
-        resolve(hostname)
-      }
-      const timer = setTimeout(() => finish(address), 1500)
-
-      mdns.on('response', (response) => {
-        const answer = response.answers.find(record => record.type === 'PTR' && record.name === name)
-        if (answer) finish(answer.data)
-      })
-      mdns.on('error', (error) => {
-        Log.warn(`mDNS hostname lookup for ${address} failed: ${error.message}`)
-        finish(address)
-      })
-      mdns.query({ questions: [{ name, type: 'PTR' }] })
-    })
-  },
-
-  /**
    * Handle socket notifications from the frontend module
    * @param {string} notification - Notification type
    * @param {object | ConfigData} payload - Notification payload (varies by type)
@@ -1194,8 +1135,8 @@ module.exports = NodeHelper.create({
 
         break
       case 'REQUEST_DEFAULT_SETTINGS':
-      // module started, answer with current ip addresses (or their hostnames if requested)
-        this.sendIpAddresses(payload?.useHostname)
+      // module started, answer with current ip addresses
+        this.sendSocketNotification('IP_ADDRESSES', this.getIpAddresses())
         this.sendSocketNotification('LOAD_PORT', this.configOnHd.port || '')
         // check if we have got saved default settings
         this.loadDefaultSettings()
