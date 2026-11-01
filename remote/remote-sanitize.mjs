@@ -9,7 +9,7 @@ const purifier = createDOMPurify(window)
  * @returns {DocumentFragment} Sanitized fragment.
  */
 export function sanitizeHtmlFragment(html = '') {
-  return purifier.sanitize(String(html ?? ''), { RETURN_DOM_FRAGMENT: true })
+  return purifier.sanitize((html ?? ''), { RETURN_DOM_FRAGMENT: true })
 }
 
 /**

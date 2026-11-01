@@ -177,12 +177,12 @@ module.exports = NodeHelper.create({
 
   /**
    * Update the list of available modules from 3rd-party repository
-   * @param {boolean} force - Force re-download even if cache exists
+   * @param {boolean} shouldForce - Force re-download even if cache exists
    * @returns {void}
    */
-  updateModuleList(force) {
+  updateModuleList(shouldForce) {
     moduleManager.updateModuleList({
-      force,
+      force: shouldForce,
       callback: (result) => {
         if (result?.startsWith('ERROR')) {
           Log.error(result)

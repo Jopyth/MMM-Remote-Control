@@ -277,9 +277,9 @@ describe('Translation Completeness', () => {
     }
 
     const counts = Object.values(keyCounts)
-    const allSame = counts.every(count => count === counts[0])
+    const isAllSame = counts.every(count => count === counts[0])
 
-    if (allSame) return
+    if (isAllSame) return
 
     let errorMessage = 'Translation files have different number of keys:\n'
     for (const [lang, count] of Object.entries(keyCounts)) {
