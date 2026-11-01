@@ -34,6 +34,10 @@
       "enum": ["below", "above", "replace"],
       "description": "Place the QR code below or above the URL, or show it instead"
     },
+    "hostname": {
+      "type": "string",
+      "description": "Hostname to show instead of the IP address in the URL and QR code (e.g. mirror.local), empty to show the IP address"
+    },
     "secureEndpoints": {
       "type": "boolean",
       "description": "Require an API key for protected endpoints when enabled"

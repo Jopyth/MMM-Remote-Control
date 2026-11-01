@@ -21,6 +21,7 @@ Module.register('MMM-Remote-Control', {
     showQRCode: true,
     qrCodeSize: 150,
     qrCodePosition: 'above', // "below", "above", or "replace"
+    hostname: '', // Hostname to show instead of the IP address (e.g. "mirror.local")
   },
 
   // Define start sequence.
@@ -83,6 +84,10 @@ Module.register('MMM-Remote-Control', {
         break
 
       case 'IP_ADDRESSES':
+        // A different address changes the URL, so the QR code has to be generated again
+        if (payload.join(',') !== this.addresses.join(',')) {
+          this.qrCodeDataUrl = null
+        }
         this.addresses = payload
         if (this.data.position) {
           this.updateDom()
@@ -301,16 +306,14 @@ Module.register('MMM-Remote-Control', {
   getDom() {
     const wrapper = document.createElement('div')
     let portToShow
-    if (this.addresses.length === 0) {
-      this.addresses = ['ip-of-your-mirror']
-    }
+    const host = this.config.hostname || this.addresses[0]
     switch (this.port) {
       case '': case '8080': portToShow = ':8080'; break
       case '80': portToShow = ''; break
       default: portToShow = `:${this.port}`; break
     }
 
-    const url = `http://${this.addresses[0]}${portToShow}/remote.html`
+    const url = `http://${host ?? 'ip-of-your-mirror'}${portToShow}/remote.html`
 
     // Show QR code if enabled
     if (this.config.showQRCode) {
@@ -327,8 +330,8 @@ Module.register('MMM-Remote-Control', {
         }
       }
 
-      // Request QR code generation if not already done
-      if (!this.qrCodeDataUrl) {
+      // Request QR code generation if not already done (not for the placeholder before the address is known)
+      if (host && !this.qrCodeDataUrl) {
         this.sendSocketNotification('GENERATE_QR_CODE', {
           url,
           size: this.config.qrCodeSize,
